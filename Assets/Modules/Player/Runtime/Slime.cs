@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MadSlime.Movement;
 using UnityEngine;
 
@@ -7,23 +7,41 @@ namespace MadSlime.Player
     public sealed class Slime : MonoBehaviour
     {
         private IMover _mover;
-        private IPlayerInput _playerInput;
-        
-        private bool _isSetupFinished;
+        private IPlayerInput _input;
+
+        private void Awake()
+        {
+            _mover = GetComponent<IMover>();
+
+            if (_mover == null)
+            {
+                throw new InvalidOperationException($"{nameof(Slime)} requires a component implementing {nameof(IMover)} on the same GameObject.");
+            }
+
+            _input = GetComponent<IPlayerInput>();
+
+            if (_input == null)
+            {
+                throw new InvalidOperationException($"{nameof(Slime)} requires a component implementing {nameof(IPlayerInput)} on the same GameObject.");
+            }
+        }
 
         private void Update()
         {
-            if (_isSetupFinished==false) 
-                return;
-
-            _mover.Move(_playerInput.Direction);
+            _mover.Move(_input.Direction);
         }
 
-        public void Setup(IMover mover, IPlayerInput playerInput)
+        private void OnValidate()
         {
-            _mover = mover;
-            _playerInput = playerInput;
-            _isSetupFinished = true;
+            if (GetComponent<IMover>() == null)
+            {
+                Debug.LogError($"{nameof(Slime)} requires a component implementing {nameof(IMover)} on the same GameObject.", this);
+            }
+
+            if (GetComponent<IPlayerInput>() == null)
+            {
+                Debug.LogError($"{nameof(Slime)} requires a component implementing {nameof(IPlayerInput)} on the same GameObject.", this);
+            }
         }
     }
 }

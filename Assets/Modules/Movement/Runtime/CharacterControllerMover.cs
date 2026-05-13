@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace MadSlime.Movement
@@ -12,6 +13,11 @@ namespace MadSlime.Movement
         private void Awake()
         {
             _characterController = GetComponent<CharacterController>();
+
+            if (_characterController == null)
+            {
+                throw new InvalidOperationException($"{nameof(CharacterControllerMover)} requires a {nameof(CharacterController)} on the same GameObject.");
+            }
         }
 
         public void Move(Vector2 direction)
