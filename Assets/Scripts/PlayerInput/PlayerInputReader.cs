@@ -4,24 +4,29 @@ using UnityEngine.InputSystem;
 
 public sealed class PlayerInputReader : MonoBehaviour
 {
-    [SerializeField] private InputActionReference _moveAction;
+    private PlayerInputActions _inputActions;
 
     public event Action<Vector2> MoveInputChanged;
 
     public Vector2 MoveInput { get; private set; }
 
+    private void Awake()
+    {
+        _inputActions = new PlayerInputActions();
+    }
+
     private void OnEnable()
     {
-        _moveAction.action.performed += OnMovePerformed;
-        _moveAction.action.canceled += OnMoveCanceled;
-        _moveAction.action.Enable();
+        _inputActions.Player.Move.performed += OnMovePerformed;
+        _inputActions.Player.Move.canceled += OnMoveCanceled;
+        _inputActions.Player.Enable();
     }
 
     private void OnDisable()
     {
-        _moveAction.action.performed -= OnMovePerformed;
-        _moveAction.action.canceled -= OnMoveCanceled;
-        _moveAction.action.Disable();
+        _inputActions.Player.Move.performed -= OnMovePerformed;
+        _inputActions.Player.Move.canceled -= OnMoveCanceled;
+        _inputActions.Player.Disable();
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)

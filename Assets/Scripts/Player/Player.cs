@@ -15,9 +15,7 @@ public sealed class Player : MonoBehaviour
 
     private void Update()
     {
-        Vector2 input = _inputReader.MoveInput;
-        Vector3 direction = ConvertToWorldDirection(input);
-
+        Vector3 direction = ConvertToWorldDirection(_inputReader.MoveInput);
         _mover.Move(direction);
     }
 
