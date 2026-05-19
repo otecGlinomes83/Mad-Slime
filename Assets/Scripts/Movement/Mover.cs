@@ -1,22 +1,21 @@
-using System;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Rigidbody))]
 public sealed class Mover : MonoBehaviour
 {
     [SerializeField] private float _maxSpeed = 6f;
     [SerializeField] private float _acceleration = 30f;
     [SerializeField] private float _deceleration = 30f;
 
-    private CharacterController _characterController;
-    private Vector3 _currentVelocity;
+    private Rigidbody _rigidbody;
+    private Vector3 _currentHorizontalVelocity;
 
-    public Vector3 Velocity => _currentVelocity;
-    public float CurrentSpeed => _currentVelocity.magnitude;
+    public Vector3 Velocity => _rigidbody.velocity;
+    public float CurrentSpeed => _currentHorizontalVelocity.magnitude;
 
     private void Awake()
     {
-        _characterController = GetComponent<CharacterController>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     public void Move(Vector3 worldDirection)
@@ -29,10 +28,20 @@ public sealed class Mover : MonoBehaviour
         }
 
         Vector3 targetVelocity = direction * _maxSpeed;
-        float rate = targetVelocity.sqrMagnitude > _currentVelocity.sqrMagnitude ? _acceleration : _deceleration;
+        float rate;
 
-        _currentVelocity = Vector3.MoveTowards(_currentVelocity, targetVelocity, rate * Time.deltaTime);
+        if (targetVelocity.sqrMagnitude > _currentHorizontalVelocity.sqrMagnitude)
+        {
+            rate = _acceleration;
+        }
+        else
+        {
+            rate = _deceleration;
+        }
 
-        _characterController.SimpleMove(_currentVelocity);
+        _currentHorizontalVelocity = Vector3.MoveTowards(_currentHorizontalVelocity, targetVelocity, rate * Time.fixedDeltaTime);
+
+        Vector3 newVelocity = new Vector3(_currentHorizontalVelocity.x, _rigidbody.velocity.y, _currentHorizontalVelocity.z);
+        _rigidbody.velocity = newVelocity;
     }
 }
