@@ -1,22 +1,27 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Mover))]
+[RequireComponent(typeof(Rotator))]
 public sealed class Player : MonoBehaviour
 {
     [SerializeField] private PlayerInputReader _inputReader;
     [SerializeField] private Transform _cameraTransform;
 
     private Mover _mover;
+    private Rotator _rotator;
 
     private void Awake()
     {
         _mover = GetComponent<Mover>();
+        _rotator = GetComponent<Rotator>();
     }
 
     private void Update()
     {
         Vector3 direction = ConvertToWorldDirection(_inputReader.MoveInput);
+
         _mover.Move(direction);
+        _rotator.Rotate(direction);
     }
 
     private Vector3 ConvertToWorldDirection(Vector2 input)
