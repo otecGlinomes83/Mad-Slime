@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Mover))]
@@ -6,14 +7,27 @@ public sealed class Player : MonoBehaviour
 {
     [SerializeField] private PlayerInputReader _inputReader;
     [SerializeField] private Transform _cameraTransform;
-
+    [SerializeField] private Collector _collector;
+    
     private Mover _mover;
     private Rotator _rotator;
 
+    private int _mass;
+    
     private void Awake()
     {
         _mover = GetComponent<Mover>();
         _rotator = GetComponent<Rotator>();
+    }
+
+    private void OnEnable()
+    {
+       _collector.OnCollect += IncreaseMass;
+    }
+
+    private void OnDisable()
+    {
+       _collector.OnCollect -= IncreaseMass;
     }
 
     private void Update()
@@ -24,6 +38,11 @@ public sealed class Player : MonoBehaviour
         _rotator.Rotate(direction);
     }
 
+    private void IncreaseMass(int mass)
+    {
+        _mass += mass;
+    }
+    
     private Vector3 ConvertToWorldDirection(Vector2 input)
     {
         if (_cameraTransform == null)

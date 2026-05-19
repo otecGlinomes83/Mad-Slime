@@ -1,12 +1,32 @@
-﻿using UnityEngine;
+using System;
+using UnityEngine;
 
 namespace Collectables
 {
-    public class SimpleCollectable : MonoBehaviour, ICollectable
+    [RequireComponent(typeof(Collider))]
+    public sealed class SimpleCollectable : MonoBehaviour, ICollectable
     {
+        [SerializeField] private int _mass = 1;
+
+        private Collider _collider;
+
+        public int Mass => _mass;
+
+        public event Action<ICollectable> ReadyToRelease;
+
+        private void Awake()
+        {
+            _collider = GetComponent<Collider>();
+        }
+
         public void Collect()
         {
-            gameObject.SetActive(false);
+            _collider.enabled = false;
+        }
+
+        public void Release()
+        {
+            ReadyToRelease?.Invoke(this);
         }
     }
 }

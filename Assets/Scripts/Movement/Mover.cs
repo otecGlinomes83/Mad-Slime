@@ -11,8 +11,6 @@ public sealed class Mover : MonoBehaviour
     private CharacterController _characterController;
     private Vector3 _currentVelocity;
 
-    public event Action<Vector3> VelocityChanged;
-
     public Vector3 Velocity => _currentVelocity;
     public float CurrentSpeed => _currentVelocity.magnitude;
 
@@ -36,7 +34,5 @@ public sealed class Mover : MonoBehaviour
         _currentVelocity = Vector3.MoveTowards(_currentVelocity, targetVelocity, rate * Time.deltaTime);
 
         _characterController.SimpleMove(_currentVelocity);
-
-        VelocityChanged?.Invoke(_currentVelocity);
     }
 }
