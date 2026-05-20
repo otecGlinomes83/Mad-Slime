@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Mover))]
 [RequireComponent(typeof(Rotator))]
 public sealed class Player : MonoBehaviour
@@ -11,7 +11,6 @@ public sealed class Player : MonoBehaviour
 
     private Mover _mover;
     private Rotator _rotator;
-    private Vector3 _moveDirection;
 
     private int _mass;
 
@@ -33,20 +32,17 @@ public sealed class Player : MonoBehaviour
 
     private void Update()
     {
-        _moveDirection = ConvertToWorldDirection(_inputReader.MoveInput);
-    }
+        Vector3 moveDirection = ConvertToWorldDirection(_inputReader.MoveInput);
 
-    private void FixedUpdate()
-    {
-        _mover.Move(_moveDirection);
-        _rotator.Rotate(_moveDirection);
+        _mover.Move(moveDirection);
+        _rotator.Rotate(moveDirection);
     }
 
     private void IncreaseMass(int mass)
     {
         _mass += mass;
     }
-    
+
     private Vector3 ConvertToWorldDirection(Vector2 input)
     {
         if (_cameraTransform == null)
