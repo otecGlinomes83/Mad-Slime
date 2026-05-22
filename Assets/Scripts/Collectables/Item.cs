@@ -3,26 +3,25 @@ using UnityEngine;
 
 namespace Collectables
 {
-    [RequireComponent(typeof(Collider))]
-    public sealed class SimpleCollectable : MonoBehaviour, ICollectable, IAttractable
+    [RequireComponent(typeof(BoxCollider))]
+    public sealed class Item : MonoBehaviour, IAttractable
     {
         private const float MinDistanceSqr = 0.0001f;
         private const int MinMass = 1;
 
-        [SerializeField] private int _mass = 1;
+        [SerializeField] private ItemDefinition _definition;
 
-        private Collider _collider;
+        private BoxCollider _collider;
         private Vector3 _defaultScale = Vector3.one;
 
-        private float _attractionSpeed;
-        
-        public int Mass => _mass;
+        public ItemDefinition Definition => _definition;
+        public int Mass => _definition.BaseMass;
 
-        public event Action<SimpleCollectable> ReadyToRelease;
+        public event Action<Item> ReadyToRelease;
 
         private void Awake()
         {
-            _collider = GetComponent<Collider>();
+            _collider = GetComponent<BoxCollider>();
         }
 
         public void Initialize(Vector3 position)
@@ -52,12 +51,11 @@ namespace Collectables
                 return;
             }
 
-            int safeMass = Mathf.Max(_mass, MinMass);
+            int safeMass = Mathf.Max(Mass, MinMass);
             float speed = attractForce / safeMass;
 
             Vector3 direction = toTarget.normalized;
             transform.position += direction * (speed * Time.deltaTime);
         }
-
     }
 }

@@ -277,7 +277,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _detectionRadius: 1
-  _collectableMask:
+  _itemMask:
     serializedVersion: 2
     m_Bits: 8
 --- !u!114 &370859642
@@ -1086,6 +1086,8 @@ GameObject:
   - component: {fileID: 2023802801}
   - component: {fileID: 2023802805}
   - component: {fileID: 2023802806}
+  - component: {fileID: 2023802808}
+  - component: {fileID: 2023802807}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1138,6 +1140,7 @@ MonoBehaviour:
   _inputReader: {fileID: 2023802801}
   _cameraTransform: {fileID: 1809261850}
   _collector: {fileID: 370859640}
+  _inventory: {fileID: 2023802808}
 --- !u!114 &2023802803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1192,6 +1195,32 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.15, z: 0}
+--- !u!114 &2023802807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023802799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5947d908f860a0489c5e8c460af0a8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inventory: {fileID: 2023802808}
+  _rules: {fileID: 11400000, guid: 7168fa8f6130e024c9193ead2c53aef0, type: 2}
+--- !u!114 &2023802808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023802799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c8743f158840214a8d2ffa1c00d091f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

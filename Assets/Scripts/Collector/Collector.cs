@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Collectables;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -8,47 +9,45 @@ public sealed class Collector : MonoBehaviour
     [SerializeField] private CollectableDetector _detector;
     [SerializeField] private float _absorptionDuration = 0.3f;
 
-    public event Action<int> OnCollect;
+    public event Action<Item> ItemCollected;
 
     private void OnEnable()
     {
-        _detector.Detected += OnCollectableDetected;
+        _detector.Detected += OnItemDetected;
     }
 
     private void OnDisable()
     {
-        _detector.Detected -= OnCollectableDetected;
+        _detector.Detected -= OnItemDetected;
     }
 
-    private void OnCollectableDetected(ICollectable collectable, Transform collectableTransform)
+    private void OnItemDetected(Item item)
     {
-        collectable.Collect();
-        AbsorbAsync(collectable, collectableTransform).Forget();
+        item.Collect();
+        AbsorbAsync(item).Forget();
     }
 
-    private async UniTaskVoid AbsorbAsync(ICollectable collectable, Transform collectableTransform)
+    private async UniTaskVoid AbsorbAsync(Item item)
     {
         CancellationToken cancellationToken = this.GetCancellationTokenOnDestroy();
 
         try
         {
-            await AnimateAbsorptionAsync(collectableTransform, cancellationToken);
+            await AnimateAbsorptionAsync(item.transform, cancellationToken);
         }
         catch (OperationCanceledException)
         {
             return;
         }
 
-        int mass = collectable.Mass;
-        collectable.Release();
-
-        OnCollect?.Invoke(mass);
+        item.Release();
+        ItemCollected?.Invoke(item);
     }
 
-    private async UniTask AnimateAbsorptionAsync(Transform collectableTransform, CancellationToken cancellationToken)
+    private async UniTask AnimateAbsorptionAsync(Transform itemTransform, CancellationToken cancellationToken)
     {
-        Vector3 startPosition = collectableTransform.position;
-        Vector3 startScale = collectableTransform.localScale;
+        Vector3 startPosition = itemTransform.position;
+        Vector3 startScale = itemTransform.localScale;
         float elapsedTime = 0f;
 
         while (elapsedTime < _absorptionDuration)
@@ -59,8 +58,8 @@ public sealed class Collector : MonoBehaviour
             float progress = Mathf.Clamp01(elapsedTime / _absorptionDuration);
             float smoothedProgress = Mathf.SmoothStep(0f, 1f, progress);
 
-            collectableTransform.position = Vector3.Lerp(startPosition, transform.position, smoothedProgress);
-            collectableTransform.localScale = Vector3.Lerp(startScale, Vector3.zero, smoothedProgress);
+            itemTransform.position = Vector3.Lerp(startPosition, transform.position, smoothedProgress);
+            itemTransform.localScale = Vector3.Lerp(startScale, Vector3.zero, smoothedProgress);
 
             await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
         }

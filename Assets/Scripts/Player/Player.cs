@@ -1,3 +1,4 @@
+using Collectables;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -8,11 +9,14 @@ public sealed class Player : MonoBehaviour
     [SerializeField] private PlayerInputReader _inputReader;
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private Collector _collector;
+    [SerializeField] private Inventory _inventory;
 
     private Mover _mover;
     private Rotator _rotator;
 
     private int _mass;
+
+    public int Mass => _mass;
 
     private void Awake()
     {
@@ -22,12 +26,12 @@ public sealed class Player : MonoBehaviour
 
     private void OnEnable()
     {
-        _collector.OnCollect += IncreaseMass;
+        _collector.ItemCollected += OnItemCollected;
     }
 
     private void OnDisable()
     {
-        _collector.OnCollect -= IncreaseMass;
+        _collector.ItemCollected -= OnItemCollected;
     }
 
     private void Update()
@@ -38,9 +42,10 @@ public sealed class Player : MonoBehaviour
         _rotator.Rotate(moveDirection);
     }
 
-    private void IncreaseMass(int mass)
+    private void OnItemCollected(Item item)
     {
-        _mass += mass;
+        _mass += item.Mass;
+        _inventory.Add(item.Definition);
     }
 
     private Vector3 ConvertToWorldDirection(Vector2 input)

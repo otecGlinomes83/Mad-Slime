@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Spawners
 {
     [RequireComponent(typeof(BoxCollider))]
-    public sealed class SimpleSpawner : Spawner<SimpleCollectable>
+    public sealed class SimpleSpawner : Spawner<Item>
     {
         [SerializeField] private float _spawnInterval = 1f;
         [SerializeField] private int _maxSpawns = 32;
@@ -27,13 +27,13 @@ namespace Spawners
             SpawnLoopAsync().Forget();
         }
 
-        protected override void OnSpawned(SimpleCollectable instance)
+        protected override void OnSpawned(Item instance)
         {
             instance.Initialize(GetRandomSpawnPosition());
             instance.ReadyToRelease += OnInstanceReadyToRelease;
         }
 
-        protected override void OnReleased(SimpleCollectable instance)
+        protected override void OnReleased(Item instance)
         {
             instance.ReadyToRelease -= OnInstanceReadyToRelease;
         }
@@ -62,7 +62,7 @@ namespace Spawners
             }
         }
 
-        private void OnInstanceReadyToRelease(SimpleCollectable instance)
+        private void OnInstanceReadyToRelease(Item instance)
         {
             Release(instance);
         }
