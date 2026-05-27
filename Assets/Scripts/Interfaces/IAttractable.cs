@@ -2,5 +2,5 @@ using UnityEngine;
 
 public interface IAttractable
 {
-    void Attract(Vector3 direction, float attractForce);
+    public void Attract(Vector3 direction, float attractForce);
 }

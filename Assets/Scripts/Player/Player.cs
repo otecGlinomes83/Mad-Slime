@@ -1,3 +1,4 @@
+using System;
 using Collectables;
 using UnityEngine;
 
@@ -52,7 +53,7 @@ public sealed class Player : MonoBehaviour
     {
         if (_cameraTransform == null)
         {
-            return new Vector3(input.x, 0f, input.y);
+            throw new InvalidOperationException("Player.ConvertToWorldDirection requires _cameraTransform to be assigned. The camera transform is null.");
         }
 
         Vector3 forward = _cameraTransform.forward;

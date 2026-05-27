@@ -15,10 +15,10 @@ public sealed class Inventory : MonoBehaviour
     {
         if (definition == null)
         {
-            return;
+            throw new ArgumentNullException(nameof(definition), "Inventory.Add was called with a null ItemDefinition.");
         }
 
-        if (_items.TryGetValue(definition, out int currentCount) == true)
+        if (_items.TryGetValue(definition, out int currentCount))
         {
             _items[definition] = currentCount + 1;
         }
@@ -34,14 +34,14 @@ public sealed class Inventory : MonoBehaviour
     {
         if (definition == null)
         {
-            return 0;
+            throw new ArgumentNullException(nameof(definition), "Inventory.GetCount was called with a null ItemDefinition.");
         }
 
-        if (_items.TryGetValue(definition, out int count) == true)
+        if (_items.TryGetValue(definition, out int count))
         {
             return count;
         }
 
-        return 0;
+        throw new InvalidOperationException(string.Format("Inventory does not contain item '{0}'. Call Add before GetCount or check presence via Items.", definition.DisplayName));
     }
 }

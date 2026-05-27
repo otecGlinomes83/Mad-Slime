@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -87,8 +88,7 @@ namespace Spawners
 
                 if (instance == null)
                 {
-                    _activeInstances.Remove(instance);
-                    continue;
+                    throw new InvalidOperationException("GenericSpawner.ReleaseAll encountered a null instance in _activeInstances. This indicates an instance was destroyed or became null without being released properly.");
                 }
 
                 _pool.Release(instance);
