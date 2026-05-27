@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Spawners
 {
     [RequireComponent(typeof(BoxCollider))]
-    public sealed class SimpleSpawner : Spawner<Item>
+    public sealed class SimpleSpawner : GenericSpawner<Item>
     {
         [SerializeField] private float _spawnInterval = 1f;
         [SerializeField] private int _maxSpawns = 32;
