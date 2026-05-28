@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Spawners;
 using UnityEngine;
 
@@ -8,43 +9,86 @@ namespace Game
     {
         [SerializeField] private Timer _timer;
         [SerializeField] private float _timerDuration;
-        [SerializeField] private List<> _spawners;
+        [SerializeField] private QuotaTreker _quotaTreker;
+        [SerializeField] private MonoBehaviour[] _spawnerSources;
+
+        private readonly List<ISpawner> _spawners = new List<ISpawner>();
+        private bool _isFinished;
+
+        public event Action GameFinished;
 
         private void Awake()
         {
             _timer.Setup(_timerDuration);
+
+            CollectSpawners();
+
+            _timer.TimerFinished += OnTimerFinished;
+            _quotaTreker.QuotaCompleted += OnQuotaCompleted;
+
+            _timer.Start();
+            StartSpawners();
         }
 
-        public void Start()
+        private void OnDisable()
         {
-            _timer.Start();
-
-            StartSpawners();
+            _timer.TimerFinished -= OnTimerFinished;
+            _quotaTreker.QuotaCompleted -= OnQuotaCompleted;
         }
 
         public void Pause()
         {
             _timer.Stop();
-            Time.timeScale = 0;
+            Time.timeScale = 0f;
         }
 
         public void Resume()
         {
-            _timer.Start();
-            Time.timeScale = 1;
+            _timer.Continue();
+            Time.timeScale = 1f;
         }
 
-        public void Finish()
+        private void OnTimerFinished()
         {
+            if (_isFinished == true)
+            {
+                return;
+            }
+
+            _isFinished = true;
+            StopSpawners();
+
+            GameFinished?.Invoke();
+        }
+
+        private void OnQuotaCompleted()
+        {
+            if (_isFinished == true)
+            {
+                return;
+            }
+
+            _isFinished = true;
             _timer.Stop();
             StopSpawners();
+
+            GameFinished?.Invoke();
         }
 
-        private void StopSpawners()
+        private void CollectSpawners()
         {
-            foreach (ISpawner spawner in _spawners)
+            for (int i = 0; i < _spawnerSources.Length; i++)
             {
-                spawner.StopSpawn();
+                MonoBehaviour source = _spawnerSources[i];
+
+                if (source is ISpawner spawner)
+                {
+                    _spawners.Add(spawner);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"SessionHandler: {source.name} does not implement ISpawner.");
+                }
             }
         }
 
@@ -53,6 +97,14 @@ namespace Game
             foreach (ISpawner spawner in _spawners)
             {
                 spawner.StartSpawn();
+            }
+        }
+
+        private void StopSpawners()
+        {
+            foreach (ISpawner spawner in _spawners)
+            {
+                spawner.StopSpawn();
             }
         }
     }

@@ -5,32 +5,36 @@ using UnityEngine.Pool;
 
 namespace Spawners
 {
-    public abstract class GenericSpawner<T> : MonoBehaviour where T : MonoBehaviour
+    public sealed class GenericSpawner<T> where T : MonoBehaviour
     {
-        [SerializeField] private T _prefab;
-        [SerializeField] private int _defaultCapacity = 16;
-        [SerializeField] private int _maxSize = 64;
-
-        private ObjectPool<T> _pool;
+        private readonly T _prefab;
+        private readonly Transform _parent;
+        private readonly ObjectPool<T> _pool;
         private readonly HashSet<T> _activeInstances = new HashSet<T>();
 
         public int ActiveCount => _activeInstances.Count;
 
-        protected virtual void Awake()
+        public event Action<T> Spawned;
+        public event Action<T> Released;
+
+        public GenericSpawner(T prefab, Transform parent, int defaultCapacity, int maxSize)
         {
+            if (prefab == null)
+            {
+                throw new ArgumentNullException(nameof(prefab));
+            }
+
+            _prefab = prefab;
+            _parent = parent;
+
             _pool = new ObjectPool<T>(
                 createFunc: Create,
                 actionOnGet: OnPoolGet,
                 actionOnRelease: OnPoolRelease,
                 actionOnDestroy: OnPoolDestroy,
-                defaultCapacity: _defaultCapacity,
-                maxSize: _maxSize
+                defaultCapacity: defaultCapacity,
+                maxSize: maxSize
             );
-        }
-
-        protected virtual void OnDisable()
-        {
-            ReleaseAll();
         }
 
         public T Spawn()
@@ -43,41 +47,7 @@ namespace Spawners
             _pool.Release(instance);
         }
 
-        protected virtual T Create()
-        {
-            return Instantiate(_prefab, transform);
-        }
-
-        protected virtual void OnSpawned(T instance)
-        {
-        }
-
-        protected virtual void OnReleased(T instance)
-        {
-        }
-
-        private void OnPoolGet(T instance)
-        {
-            instance.gameObject.SetActive(true);
-            _activeInstances.Add(instance);
-
-            OnSpawned(instance);
-        }
-
-        private void OnPoolRelease(T instance)
-        {
-            OnReleased(instance);
-
-            _activeInstances.Remove(instance);
-            instance.gameObject.SetActive(false);
-        }
-
-        private void OnPoolDestroy(T instance)
-        {
-            Destroy(instance.gameObject);
-        }
-
-        private void ReleaseAll()
+        public void ReleaseAll()
         {
             T[] snapshot = new T[_activeInstances.Count];
             _activeInstances.CopyTo(snapshot);
@@ -88,11 +58,37 @@ namespace Spawners
 
                 if (instance == null)
                 {
-                    throw new InvalidOperationException("GenericSpawner.ReleaseAll encountered a null instance in _activeInstances. This indicates an instance was destroyed or became null without being released properly.");
+                    throw new InvalidOperationException("GenericPool.ReleaseAll encountered a null instance.");
                 }
 
                 _pool.Release(instance);
             }
+        }
+
+        private T Create()
+        {
+            return UnityEngine.Object.Instantiate(_prefab, _parent);
+        }
+
+        private void OnPoolGet(T instance)
+        {
+            instance.gameObject.SetActive(true);
+            _activeInstances.Add(instance);
+
+            Spawned?.Invoke(instance);
+        }
+
+        private void OnPoolRelease(T instance)
+        {
+            Released?.Invoke(instance);
+
+            _activeInstances.Remove(instance);
+            instance.gameObject.SetActive(false);
+        }
+
+        private void OnPoolDestroy(T instance)
+        {
+            UnityEngine.Object.Destroy(instance.gameObject);
         }
     }
 }
