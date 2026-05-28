@@ -84,6 +84,7 @@ namespace Game
                 if (source is ISpawner spawner)
                 {
                     _spawners.Add(spawner);
+                    spawner.Setup();
                 }
                 else
                 {

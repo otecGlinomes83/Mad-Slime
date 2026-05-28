@@ -92,7 +92,7 @@ namespace Spawners
         {
             try
             {
-                while (true)
+                while (cancellationToken.IsCancellationRequested == false)
                 {
                     await UniTask.Delay(TimeSpan.FromSeconds(_spawnInterval), cancellationToken: cancellationToken);
 
