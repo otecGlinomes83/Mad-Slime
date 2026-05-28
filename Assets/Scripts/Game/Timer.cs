@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 namespace Game
 {
     public sealed class Timer : MonoBehaviour
     {
+        [SerializeField] private TMP_Text _timerText;
+        
         private float _duration;
         private float _remaining;
         private bool _isSetupFinished;
@@ -99,6 +102,8 @@ namespace Game
 
                     float delta = Time.deltaTime;
                     _remaining -= delta;
+
+                    _timerText.text = $"{_remaining}";
                 }
 
                 _remaining = 0f;

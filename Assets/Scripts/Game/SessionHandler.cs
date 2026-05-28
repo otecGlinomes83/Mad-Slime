@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Spawners;
 using UnityEngine;
 
 namespace Game
@@ -7,9 +8,9 @@ namespace Game
     {
         [SerializeField] private Timer _timer;
         [SerializeField] private float _timerDuration;
-        [SerializeField] private List<ISpawner> _spawners;
+        [SerializeField] private List<> _spawners;
 
-        public void Setup()
+        private void Awake()
         {
             _timer.Setup(_timerDuration);
         }
@@ -32,9 +33,9 @@ namespace Game
             _timer.Start();
             Time.timeScale = 1;
         }
-        
+
         public void Finish()
-        {   
+        {
             _timer.Stop();
             StopSpawners();
         }

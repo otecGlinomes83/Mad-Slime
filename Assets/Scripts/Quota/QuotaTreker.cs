@@ -11,7 +11,7 @@ public sealed class QuotaTreker : MonoBehaviour
     [SerializeField] private Inventory _inventory;
 
     public event Action QuotaCompleted;
-    public event Action< int, QuotaEntry> QuotaChanged;
+    public event Action<int, QuotaEntry> QuotaChanged;
 
     private void OnEnable()
     {
@@ -28,6 +28,7 @@ public sealed class QuotaTreker : MonoBehaviour
         if (_quota.All(entry => entry.IsCompleted == true))
         {
             QuotaCompleted?.Invoke();
+            Debug.Log($"All quota collected");
             return;
         }
 
@@ -39,7 +40,9 @@ public sealed class QuotaTreker : MonoBehaviour
                 {
                     entry.Decrease();
                     int remaining = entry.TargetCount - _inventory.GetCount(definition);
-                    QuotaChanged?.Invoke(remaining,entry);
+
+                    Debug.Log($"{entry.Definition.DisplayName}/{remaining}");
+                    QuotaChanged?.Invoke(remaining, entry);
                     return;
                 }
             }
