@@ -13,7 +13,7 @@ namespace Game
         private float _duration;
         private float _remaining;
         private bool _isSetupFinished;
-        private bool _isRunning;
+        private bool _isRunning = false;
 
         private CancellationTokenSource _runCancellationTokenSource;
 
@@ -31,7 +31,7 @@ namespace Game
             _isSetupFinished = true;
         }
 
-        public void Start()
+        public void StartCount()
         {
             if (_isSetupFinished == false)
             {

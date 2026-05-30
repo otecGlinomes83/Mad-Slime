@@ -42,6 +42,12 @@ public sealed class Inventory : MonoBehaviour
             return count;
         }
 
-        throw new InvalidOperationException(string.Format("Inventory does not contain item '{0}'. Call Add before GetCount or check presence via Items.", definition.DisplayName));
+        throw new InvalidOperationException(string.Format($"Inventory does not contain item '{ definition.DisplayName}'." +
+                                                          $" Call Add before GetCount or check presence via Items."));
+    }
+
+    public bool IsContains(ItemDefinition definition)
+    {
+        return _items.ContainsKey(definition);
     }
 }

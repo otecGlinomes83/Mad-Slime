@@ -26,7 +26,7 @@ namespace Game
             _timer.TimerFinished += OnTimerFinished;
             _quotaTreker.QuotaCompleted += OnQuotaCompleted;
 
-            _timer.Start();
+            _timer.StartCount();
             StartSpawners();
         }
 
@@ -57,7 +57,8 @@ namespace Game
 
             _isFinished = true;
             StopSpawners();
-
+            Pause();
+            
             GameFinished?.Invoke();
         }
 
@@ -71,7 +72,8 @@ namespace Game
             _isFinished = true;
             _timer.Stop();
             StopSpawners();
-
+            Pause();
+            
             GameFinished?.Invoke();
         }
 

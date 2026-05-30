@@ -25,6 +25,7 @@ public sealed class CollectableAttractor : MonoBehaviour
                 continue;
             }
 
+            
             attractable.Attract(transform.position, _attractionForce);
         }
     }

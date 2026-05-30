@@ -6,6 +6,7 @@ using UnityEngine;
 
 public sealed class Collector : MonoBehaviour
 {
+    [SerializeField] private Player _player;
     [SerializeField] private CollectableDetector _detector;
     [SerializeField] private float _absorptionDuration = 0.3f;
 
@@ -23,6 +24,11 @@ public sealed class Collector : MonoBehaviour
 
     private void OnItemDetected(Item item)
     {
+        if (_player.Mass < item.Mass)
+        {
+            return;
+        }
+
         item.Collect();
         AbsorbAsync(item).Forget();
     }

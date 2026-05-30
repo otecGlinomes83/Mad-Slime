@@ -25,7 +25,7 @@ public sealed class QuotaTreker : MonoBehaviour
 
     private void OnItemAdded(ItemDefinition definition)
     {
-        if (_quota.All(entry => entry.IsCompleted == true))
+        if (IsAllQuotaComplete())
         {
             QuotaCompleted?.Invoke();
             Debug.Log($"All quota collected");
@@ -34,18 +34,47 @@ public sealed class QuotaTreker : MonoBehaviour
 
         foreach (QuotaEntry entry in _quota)
         {
-            if (entry.Definition == definition)
+            if (entry.Definition != definition)
             {
-                if (entry.IsCompleted == false)
-                {
-                    entry.Decrease();
-                    int remaining = entry.TargetCount - _inventory.GetCount(definition);
+                continue;
+            }
 
-                    Debug.Log($"{entry.Definition.DisplayName}/{remaining}");
-                    QuotaChanged?.Invoke(remaining, entry);
-                    return;
-                }
+            int remaining = entry.TargetCount - _inventory.GetCount(definition);
+
+            if (remaining <= 0)
+            {
+                continue;
+            }
+
+            Debug.Log($"{entry.Definition.DisplayName}/{remaining}");
+            QuotaChanged?.Invoke(remaining, entry);
+        }
+    }
+
+    private bool IsQuotaComplete(QuotaEntry entry)
+    {
+        int collectedQuota = _inventory.GetCount(entry.Definition);
+
+        return collectedQuota >= entry.TargetCount;
+    }
+
+    private bool IsAllQuotaComplete()
+    {
+        for (int i = 0; i < _quota.Count; i++)
+        {
+            QuotaEntry quotaEntry = _quota[i];
+
+            if (_inventory.IsContains(quotaEntry.Definition) == false)
+            {
+                return false;
+            }
+
+            if (_inventory.GetCount(quotaEntry.Definition) < quotaEntry.TargetCount)
+            {
+                return false;
             }
         }
+
+        return true;
     }
 }

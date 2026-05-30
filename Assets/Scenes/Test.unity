@@ -260,7 +260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _timer: {fileID: 292377133}
-  _timerDuration: 60
+  _timerDuration: 10
   _quotaTreker: {fileID: 2023802809}
   _spawnerSources:
   - {fileID: 1894205820}
@@ -720,8 +720,8 @@ MonoBehaviour:
   _prefab: {fileID: 8787120317356441805, guid: 64b688f06bc72194aa396d55b042d504, type: 3}
   _defaultCapacity: 16
   _maxSize: 64
-  _spawnInterval: 5
-  _maxSpawns: 3
+  _spawnInterval: 0.25
+  _maxSpawns: 5
 --- !u!1 &1125405778
 GameObject:
   m_ObjectHideFlags: 0
@@ -1449,8 +1449,8 @@ MonoBehaviour:
   _prefab: {fileID: 579543653202783334, guid: 7b66697213747f44a819d022c436a145, type: 3}
   _defaultCapacity: 16
   _maxSize: 64
-  _spawnInterval: 8
-  _maxSpawns: 3
+  _spawnInterval: 0.25
+  _maxSpawns: 5
 --- !u!65 &1894205821
 BoxCollider:
   m_ObjectHideFlags: 0
