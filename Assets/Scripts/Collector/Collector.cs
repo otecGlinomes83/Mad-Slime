@@ -6,11 +6,26 @@ using UnityEngine;
 
 public sealed class Collector : MonoBehaviour
 {
-    [SerializeField] private Player _player;
-    [SerializeField] private CollectableDetector _detector;
+    [SerializeField] private MonoBehaviour _massHolderSource;
+    [SerializeField] private ItemDetector _detector;
     [SerializeField] private float _absorptionDuration = 0.3f;
 
+    private IMassHolder _massHolder;
+    
     public event Action<Item> ItemCollected;
+
+    private void Awake()
+    {
+        if (_massHolderSource is IMassHolder massHolder)
+        {
+            _massHolder = massHolder;
+        }
+        else
+        {
+            throw new InvalidOperationException(
+                $"SessionHandler: {_massHolderSource.name} does not implement IMassHolder.");
+        }
+    }
 
     private void OnEnable()
     {
@@ -24,7 +39,7 @@ public sealed class Collector : MonoBehaviour
 
     private void OnItemDetected(Item item)
     {
-        if (_player.Mass < item.Mass)
+        if (_massHolder.Mass < item.Mass)
         {
             return;
         }

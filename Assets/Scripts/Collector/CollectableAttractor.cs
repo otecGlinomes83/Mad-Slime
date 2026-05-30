@@ -1,44 +1,46 @@
+using System;
 using UnityEngine;
 
 public sealed class CollectableAttractor : MonoBehaviour
 {
-    private const int BufferSize = 32;
-
-    [SerializeField] private float _attractionRadius = 5f;
     [SerializeField] private float _attractionForce = 12f;
-    [SerializeField] private LayerMask _attractableMask;
-    [SerializeField] private Player _player;
+    [SerializeField] private AttractableDetector _detector;
+    [SerializeField] private MonoBehaviour _massHolderSource;
 
-    private readonly Collider[] _attractionBuffer = new Collider[BufferSize];
+    private IMassHolder _massHolder;
 
-    public float Radius => _attractionRadius;
+    public float Radius => _detector.Radius;
 
-    private void Update()
+    private void Awake()
     {
-        int hitsCount =
-            Physics.OverlapSphereNonAlloc(transform.position, _attractionRadius, _attractionBuffer, _attractableMask);
-
-        for (int i = 0; i < hitsCount; i++)
+        if (_massHolderSource is IMassHolder massHolder)
         {
-            Collider hitCollider = _attractionBuffer[i];
-
-            if (hitCollider.TryGetComponent(out IAttractable attractable) == false)
-            {
-                continue;
-            }
-
-            if (attractable.Mass > _player.Mass)
-            {
-                return;
-            }
-
-            attractable.Attract(transform.position, _attractionForce);
+            _massHolder = massHolder;
+        }
+        else
+        {
+            throw new InvalidOperationException(
+                $"SessionHandler: {_massHolderSource.name} does not implement IMassHolder.");
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnEnable()
     {
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, _attractionRadius);
+        _detector.Detected += OnDetected;
+    }
+
+    private void OnDisable()
+    {
+        _detector.Detected -= OnDetected;
+    }
+
+    private void OnDetected(IAttractable attractable)
+    {
+        if (attractable.Mass > _massHolder.Mass)
+        {
+            return;
+        }
+
+        attractable.Attract(transform.position, _attractionForce);
     }
 }

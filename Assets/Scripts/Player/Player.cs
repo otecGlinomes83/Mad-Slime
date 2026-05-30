@@ -16,11 +16,7 @@ public sealed class Player : MonoBehaviour
     private Mover _mover;
     private Rotator _rotator;
     private PlayerMass _playerMass;
-
-    private int _mass;
-
-    public int Mass => _mass;
-
+    
     private void Awake()
     {
         _mover = GetComponent<Mover>();
@@ -48,8 +44,8 @@ public sealed class Player : MonoBehaviour
 
     private void OnItemCollected(Item item)
     {
-        _mass += item.Mass;
         _inventory.Add(item.Definition);
+        _playerMass.Add(item.Mass);
     }
 
     private Vector3 ConvertToWorldDirection(Vector2 input)
