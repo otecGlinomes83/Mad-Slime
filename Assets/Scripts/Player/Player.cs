@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Mover))]
 [RequireComponent(typeof(Rotator))]
+[RequireComponent(typeof(PlayerMass))]
 public sealed class Player : MonoBehaviour
 {
     [SerializeField] private PlayerInputReader _inputReader;
@@ -14,6 +15,7 @@ public sealed class Player : MonoBehaviour
 
     private Mover _mover;
     private Rotator _rotator;
+    private PlayerMass _playerMass;
 
     private int _mass;
 
@@ -23,6 +25,7 @@ public sealed class Player : MonoBehaviour
     {
         _mover = GetComponent<Mover>();
         _rotator = GetComponent<Rotator>();
+        _playerMass = GetComponent<PlayerMass>();
     }
 
     private void OnEnable()
@@ -53,7 +56,8 @@ public sealed class Player : MonoBehaviour
     {
         if (_cameraTransform == null)
         {
-            throw new InvalidOperationException("Player.ConvertToWorldDirection requires _cameraTransform to be assigned. The camera transform is null.");
+            throw new InvalidOperationException(
+                "Player.ConvertToWorldDirection requires _cameraTransform to be assigned. The camera transform is null.");
         }
 
         Vector3 forward = _cameraTransform.forward;

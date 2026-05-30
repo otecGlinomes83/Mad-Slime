@@ -13,15 +13,10 @@ public sealed class AttractionRadiusView : MonoBehaviour
     {
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.loop = true;
-        _lineRenderer.useWorldSpace = false;
+        _lineRenderer.useWorldSpace = true;
     }
 
     private void LateUpdate()
-    {
-        BuildCircle(_attractor.Radius);
-    }
-
-    private void BuildCircle(float radius)
     {
         _lineRenderer.positionCount = _segments;
 
@@ -30,8 +25,8 @@ public sealed class AttractionRadiusView : MonoBehaviour
         for (int i = 0; i < _segments; i++)
         {
             float angleRad = Mathf.Deg2Rad * angleStep * i;
-            float x = Mathf.Cos(angleRad) * radius;
-            float z = Mathf.Sin(angleRad) * radius;
+            float x = Mathf.Cos(angleRad) * _attractor.Radius;
+            float z = Mathf.Sin(angleRad) * _attractor.Radius;
 
             _lineRenderer.SetPosition(i, new Vector3(x, _heightOffset, z));
         }

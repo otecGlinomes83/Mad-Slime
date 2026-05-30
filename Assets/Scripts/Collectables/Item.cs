@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Collectables
 {
     [RequireComponent(typeof(BoxCollider))]
-    public sealed class Item : MonoBehaviour, IAttractable
+    public sealed class Item : MonoBehaviour, IAttractable, IMassHolder
     {
         private const float MinDistanceSqr = 0.0001f;
         private const int MinMass = 1;
