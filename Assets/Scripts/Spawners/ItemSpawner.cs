@@ -33,7 +33,7 @@ namespace Spawners
             }
         }
 
-        
+
         public void Setup()
         {
             _spawnZone = GetComponent<BoxCollider>();
@@ -122,9 +122,8 @@ namespace Spawners
 
             float x = UnityEngine.Random.Range(bounds.min.x, bounds.max.x);
             float z = UnityEngine.Random.Range(bounds.min.z, bounds.max.z);
-            float y = UnityEngine.Random.Range(bounds.min.y, bounds.max.y);
 
-            return new Vector3(x, y, z);
+            return new Vector3(x, _spawnZone.transform.position.y, z);
         }
     }
 }
