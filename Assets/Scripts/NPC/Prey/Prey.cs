@@ -28,7 +28,7 @@ namespace NPC.Prey
             _isCollected = false;
 
             Enable();
-            
+
             _item.Collected += OnCollect;
             _playerSensor.PlayerEntered += OnPlayerEntered;
         }
@@ -48,12 +48,10 @@ namespace NPC.Prey
 
             if (_playerSensor.IsPlayerInRange)
             {
-                Debug.Log("Player is in range");
                 _fleer.Tick(_playerSensor.DetectedPlayer.position);
             }
             else
             {
-                Debug.Log("Player is in not range");
                 _wander.Tick();
             }
         }
@@ -81,7 +79,7 @@ namespace NPC.Prey
         {
             _wander.enabled = true;
             _fleer.enabled = true;
-            _playerSensor.enabled = true; 
+            _playerSensor.enabled = true;
         }
     }
 }

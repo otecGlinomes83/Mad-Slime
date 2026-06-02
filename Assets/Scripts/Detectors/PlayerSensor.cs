@@ -6,13 +6,12 @@ namespace NPC.Prey
     public sealed class PlayerSensor : MonoBehaviour
     {
         private const int BufferSize = 4;
-        private const float CheckInterval = 0.2f;
 
         [SerializeField] private float _radius = 5f;
         [SerializeField] private LayerMask _playerLayer;
 
         private readonly Collider[] _buffer = new Collider[BufferSize];
-        
+
         private Transform _detectedPlayer;
         private bool _isPlayerInRange = false;
 
