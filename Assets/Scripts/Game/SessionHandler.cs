@@ -23,7 +23,7 @@ namespace Game
 
             CollectSpawners();
 
-            _timer.TimerFinished += OnTimerFinished;
+            _timer.Finished += OnFinished;
             _quotaTreker.QuotaCompleted += OnQuotaCompleted;
 
             _timer.StartCount();
@@ -32,7 +32,7 @@ namespace Game
 
         private void OnDisable()
         {
-            _timer.TimerFinished -= OnTimerFinished;
+            _timer.Finished -= OnFinished;
             _quotaTreker.QuotaCompleted -= OnQuotaCompleted;
         }
 
@@ -48,7 +48,7 @@ namespace Game
             Time.timeScale = 1f;
         }
 
-        private void OnTimerFinished()
+        private void OnFinished()
         {
             if (_isFinished == true)
             {

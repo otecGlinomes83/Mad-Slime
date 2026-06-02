@@ -3,10 +3,61 @@ using UnityEngine;
 
 public class PlayerScaler : MonoBehaviour
 {
+    private const float MinLogInput = 0.1f;
+
     [SerializeField] private PlayerMass _playerMass;
     [SerializeField] private Transform _transfromToScale;
     [SerializeField] private ItemDetector _itemDetector;
     [SerializeField] private AttractableDetector _attractableDetector;
+    [SerializeField] private float _growthRate = 0.1f;
+    [SerializeField] private float _smoothTime = 0.4f;
+
+    private float _startScale;
+    private float _itemDetectorStartRadius;
+    private float _attractableDetectorStartRadius;
+    private int _startMass;
+
+    private float _currentMultiplier;
+    private float _targetMultiplier;
+    private float _multiplierVelocity;
+
+    private void Awake()
+    {
+        if (_playerMass == null)
+        {
+            throw new InvalidOperationException(
+                "PlayerScaler requires _playerMass to be assigned. The player mass is null.");
+        }
+
+        if (_transfromToScale == null)
+        {
+            throw new InvalidOperationException(
+                "PlayerScaler requires _transfromToScale to be assigned. The transform to scale is null.");
+        }
+
+        if (_itemDetector == null)
+        {
+            throw new InvalidOperationException(
+                "PlayerScaler requires _itemDetector to be assigned. The item detector is null.");
+        }
+
+        if (_attractableDetector == null)
+        {
+            throw new InvalidOperationException(
+                "PlayerScaler requires _attractableDetector to be assigned. The attractable detector is null.");
+        }
+
+        _startScale = _transfromToScale.localScale.x;
+        _itemDetectorStartRadius = _itemDetector.Radius;
+        _attractableDetectorStartRadius = _attractableDetector.Radius;
+        _startMass = _playerMass.Mass;
+
+        _currentMultiplier = 1f;
+        _targetMultiplier = 1f;
+        _multiplierVelocity = 0f;
+
+        ApplyMultiplier();
+    }
 
     private void OnEnable()
     {
@@ -17,9 +68,28 @@ public class PlayerScaler : MonoBehaviour
     {
         _playerMass.Changed -= OnMassChanged;
     }
-    
+
+    private void Update()
+    {
+        _currentMultiplier = Mathf.SmoothDamp(
+            _currentMultiplier,
+            _targetMultiplier,
+            ref _multiplierVelocity,
+            _smoothTime);
+
+        ApplyMultiplier();
+    }
+
     private void OnMassChanged(int previous, int current)
     {
-    
+        float input = Mathf.Max(current - _startMass + 1, MinLogInput);
+        _targetMultiplier = 1f + Mathf.Log(input) * _growthRate;
+    }
+
+    private void ApplyMultiplier()
+    {
+        _transfromToScale.localScale = Vector3.one * (_startScale * _currentMultiplier);
+        _itemDetector.SetRadius(_itemDetectorStartRadius * _currentMultiplier);
+        _attractableDetector.SetRadius(_attractableDetectorStartRadius * _currentMultiplier);
     }
 }

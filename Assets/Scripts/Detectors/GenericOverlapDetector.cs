@@ -30,7 +30,7 @@ public abstract class GenericOverlapDetector<T> : MonoBehaviour where T : class
         }
     }
 
-    public void ChangeRadius(float newRadius)
+    public void SetRadius(float newRadius)
     {
         if (newRadius < 0f)
         {

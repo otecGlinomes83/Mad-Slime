@@ -3,26 +3,21 @@ using UnityEngine;
 
 namespace Collectables
 {
-    [RequireComponent(typeof(BoxCollider))]
     public sealed class Item : MonoBehaviour, IAttractable, IMassHolder
     {
         private const float MinDistanceSqr = 0.0001f;
         private const int MinMass = 1;
 
         [SerializeField] private ItemDefinition _definition;
+        [SerializeField] private Collider _collider;
 
-        private BoxCollider _collider;
         private Vector3 _defaultScale = Vector3.one;
 
         public ItemDefinition Definition => _definition;
         public int Mass => _definition.BaseMass;
 
         public event Action<Item> ReadyToRelease;
-
-        private void Awake()
-        {
-            _collider = GetComponent<BoxCollider>();
-        }
+        public event Action Collected;
 
         public void Initialize(Vector3 position)
         {
@@ -34,6 +29,7 @@ namespace Collectables
         public void Collect()
         {
             _collider.enabled = false;
+            Collected?.Invoke();
         }
 
         public void Release()

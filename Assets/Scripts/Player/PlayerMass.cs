@@ -10,6 +10,11 @@ public class PlayerMass : MonoBehaviour, IMassHolder
 
     public event Action<int, int> Changed;
 
+    private void Awake()
+    {
+        _mass = _defaultMass;
+    }
+
     public void ResetMass()
     {
         _mass = _defaultMass;

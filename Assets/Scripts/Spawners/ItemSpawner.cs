@@ -21,6 +21,19 @@ namespace Spawners
         private bool _isSetupFinished;
         private bool _isRunning;
 
+        private void OnDisable()
+        {
+            StopSpawn();
+
+            if (_spawner != null)
+            {
+                _spawner.ReleaseAll();
+                _spawner.Spawned -= OnSpawned;
+                _spawner.Released -= OnReleased;
+            }
+        }
+
+        
         public void Setup()
         {
             _spawnZone = GetComponent<BoxCollider>();
@@ -64,19 +77,7 @@ namespace Spawners
             _loopCancellationTokenSource = null;
             _isRunning = false;
         }
-
-        private void OnDisable()
-        {
-            StopSpawn();
-
-            if (_spawner != null)
-            {
-                _spawner.ReleaseAll();
-                _spawner.Spawned -= OnSpawned;
-                _spawner.Released -= OnReleased;
-            }
-        }
-
+        
         private void OnSpawned(Item instance)
         {
             instance.Initialize(GetRandomSpawnPosition());

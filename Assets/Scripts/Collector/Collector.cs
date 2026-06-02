@@ -16,7 +16,7 @@ public sealed class Collector : MonoBehaviour
 
     private void Awake()
     {
-        if (_massHolderSource is IMassHolder massHolder)
+        if (_massHolderSource.TryGetComponent(out IMassHolder massHolder))
         {
             _massHolder = massHolder;
         }

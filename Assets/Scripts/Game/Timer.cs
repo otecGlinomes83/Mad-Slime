@@ -9,7 +9,7 @@ namespace Game
     public sealed class Timer : MonoBehaviour
     {
         [SerializeField] private TMP_Text _timerText;
-        
+
         private float _duration;
         private float _remaining;
         private bool _isSetupFinished;
@@ -17,13 +17,14 @@ namespace Game
 
         private CancellationTokenSource _runCancellationTokenSource;
 
-        public event Action TimerFinished;
+        public event Action Finished;
 
         public void Setup(float duration)
         {
             if (duration <= 0f)
             {
-                throw new ArgumentOutOfRangeException(nameof(duration), "Timer.Setup requires a positive duration in seconds.");
+                throw new ArgumentOutOfRangeException(nameof(duration),
+                    "Timer.Setup requires a positive duration in seconds.");
             }
 
             _duration = duration;
@@ -73,7 +74,8 @@ namespace Game
 
             if (_remaining <= 0f)
             {
-                throw new InvalidOperationException("Timer cannot be continued because remaining time is zero. Call Setup to reset duration.");
+                throw new InvalidOperationException(
+                    "Timer cannot be continued because remaining time is zero. Call Setup to reset duration.");
             }
 
             StartInternal();
@@ -109,7 +111,7 @@ namespace Game
                 _remaining = 0f;
                 _isRunning = false;
 
-                TimerFinished?.Invoke();
+                Finished?.Invoke();
             }
             catch (OperationCanceledException)
             {
