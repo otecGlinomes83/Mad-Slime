@@ -12,10 +12,9 @@ namespace NPC.Prey
         [SerializeField] private LayerMask _playerLayer;
 
         private readonly Collider[] _buffer = new Collider[BufferSize];
-
-        private float _elapsedSinceLastCheck;
+        
         private Transform _detectedPlayer;
-        private bool _isPlayerInRange;
+        private bool _isPlayerInRange = false;
 
         public event Action<Transform> PlayerEntered;
         public event Action PlayerExited;
@@ -24,19 +23,6 @@ namespace NPC.Prey
         public Transform DetectedPlayer => _detectedPlayer;
 
         private void Update()
-        {
-            _elapsedSinceLastCheck += Time.deltaTime;
-
-            if (_elapsedSinceLastCheck < CheckInterval)
-            {
-                return;
-            }
-
-            _elapsedSinceLastCheck = 0f;
-            CheckForPlayer();
-        }
-
-        private void CheckForPlayer()
         {
             int hitsCount = Physics.OverlapSphereNonAlloc(
                 transform.position,

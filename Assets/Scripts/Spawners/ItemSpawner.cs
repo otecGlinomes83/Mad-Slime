@@ -77,7 +77,7 @@ namespace Spawners
             _loopCancellationTokenSource = null;
             _isRunning = false;
         }
-        
+
         private void OnSpawned(Item instance)
         {
             instance.Initialize(GetRandomSpawnPosition());

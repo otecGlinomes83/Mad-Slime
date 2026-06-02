@@ -20,12 +20,14 @@ namespace NPC.Prey
         private void Awake()
         {
             _timer = GetComponent<Timer>();
-            _zoneCenter = transform.position;
-            _targetPosition = GetRandomTarget();
         }
 
         private void OnEnable()
         {
+            _zoneCenter = transform.position;
+            _targetPosition = GetRandomTarget();
+            _isWaiting = false;
+
             _timer.Finished += OnTimerFinished;
         }
 
@@ -83,7 +85,7 @@ namespace NPC.Prey
             float x = _zoneCenter.x + Random.Range(-halfX, halfX);
             float z = _zoneCenter.z + Random.Range(-halfZ, halfZ);
 
-            return new Vector3(x, 0f, z);
+            return new Vector3(x, _zoneCenter.y, z);
         }
 
         private void OnDrawGizmosSelected()

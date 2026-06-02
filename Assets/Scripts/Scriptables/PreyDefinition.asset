@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _displayName: Prey
   _previewModel: {fileID: 6927681610715191558, guid: 64b688f06bc72194aa396d55b042d504, type: 3}
-  _baseMass: 40
+  _baseMass: 2
