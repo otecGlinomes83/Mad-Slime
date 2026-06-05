@@ -32,17 +32,17 @@ namespace Health
 
         private void OnEnable()
         {
-            _health.Damaged += OnDamaged;
+            _health.InvulnerabilityEnded += OnInvulnerabilityEnded;
             _timer.Finished += OnTimerFinished;
         }
 
         private void OnDisable()
         {
-            _health.Damaged -= OnDamaged;
+            _health.InvulnerabilityEnded -= OnInvulnerabilityEnded;
             _timer.Finished -= OnTimerFinished;
         }
 
-        private void OnDamaged(int amount)
+        private void OnInvulnerabilityEnded()
         {
             _timer.Stop();
             _timer.Setup(_regenDelay);

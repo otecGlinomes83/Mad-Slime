@@ -7,7 +7,7 @@ namespace UI
 {
     public sealed class HealthUI : MonoBehaviour
     {
-        [SerializeField] private Health _health;
+        [SerializeField] private Health.Health _health;
         [SerializeField] private TMP_Text _valueText;
 
         private void Awake()

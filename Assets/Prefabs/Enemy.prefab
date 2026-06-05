@@ -165,7 +165,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db98a5466b7e4fc6bab9d542d3729fb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timerText: {fileID: 8433812561411168561}
 --- !u!114 &8395559728231203424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,7 +179,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sensor: {fileID: 2764113529158104793}
   _damage: 1
-  _cooldown: 0.5
+  _cooldown: 0.25
   _timer: {fileID: 3793880130356339000}
 --- !u!1 &5136968250238537044
 GameObject:
@@ -191,6 +190,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7204984574881135023}
+  - component: {fileID: 5906837600469907579}
+  - component: {fileID: 162751745661272665}
   m_Layer: 3
   m_Name: UI (1)
   m_TagString: Untagged
@@ -214,6 +215,34 @@ Transform:
   - {fileID: 4937577723599252985}
   m_Father: {fileID: 7322495227066885763}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5906837600469907579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5136968250238537044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95cb0fdcaf55b274bbafcad9a8d9cf9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timer: {fileID: 6243789003536924323}
+  _timerText: {fileID: 7331522584300479124}
+--- !u!114 &162751745661272665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5136968250238537044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95cb0fdcaf55b274bbafcad9a8d9cf9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timer: {fileID: 3793880130356339000}
+  _timerText: {fileID: 8433812561411168561}
 --- !u!1 &5417208343130265693
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,7 +482,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db98a5466b7e4fc6bab9d542d3729fb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timerText: {fileID: 7331522584300479124}
 --- !u!114 &1622602021942020714
 MonoBehaviour:
   m_ObjectHideFlags: 0

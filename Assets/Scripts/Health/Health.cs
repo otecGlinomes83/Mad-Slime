@@ -1,6 +1,5 @@
 ﻿using System;
 using Game;
-using TMPro;
 using UnityEngine;
 
 namespace Health
@@ -10,15 +9,13 @@ namespace Health
         [SerializeField] private int _maxValue;
         [SerializeField] private int _value;
         [SerializeField] private Timer _timer;
-        [SerializeField] private float _invulnerabilityWindow = 0.75f;
-
-        [SerializeField] TMP_Text _healthText;
+        [SerializeField] private float _invulnerabilityWindow = 0.5f;
 
         private bool _isInvulnerable;
-
-        public event Action<int> Damaged;
+        
         public event Action Died;
         public event Action<int> ValueChanged;
+        public event Action InvulnerabilityEnded;
 
         public int Value => _value;
         public int MaxValue => _maxValue;
@@ -36,7 +33,7 @@ namespace Health
                 throw new ArgumentOutOfRangeException(nameof(_value), "Health value cannot be negative");
             }
 
-            _value = Mathf.Min(_value, _maxValue);
+            _value = _maxValue;
             _isInvulnerable = false;
 
             if (_timer == null)
@@ -53,34 +50,12 @@ namespace Health
 
         private void OnEnable()
         {
-            _timer.Finished += OnInvulnerabilityEnded;
-        }
-
-            if (_value < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(_value), "Health value cannot be negative");
-            }
-
-            if (_timer == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Timer is not assigned. Drag a Timer component into the _timer field in the inspector.");
-            }
-
-            _value = _maxValue;
-            _healthText.text = $"{_value}/ {_maxValue}";
-
-            _isInvulnerable = false;
-        }
-
-        private void OnEnable()
-        {
-            _timer.Finished += OnInvulnerabilityEnded;
+            _timer.Finished += OnIFramesTimerFinished;
         }
 
         private void OnDisable()
         {
-            _timer.Finished -= OnInvulnerabilityEnded;
+            _timer.Finished -= OnIFramesTimerFinished;
         }
 
         public void TryApplyDamage(int amount)
@@ -95,9 +70,8 @@ namespace Health
                 return;
             }
 
-            if (_isInvulnerable)
+            if (_isInvulnerable == true)
             {
-                Debug.Log("Health is INVULNERABLE");
                 return;
             }
 
@@ -106,14 +80,11 @@ namespace Health
             _timer.StartCount();
 
             _value = Mathf.Max(0, _value - amount);
-            _healthText.text = $"{_value}/ {_maxValue}";
-
-            Damaged?.Invoke(amount);
+            
             ValueChanged?.Invoke(_value);
 
             if (_value <= 0)
             {
-                Debug.Log($"{name}: Health {_value} has been die");
                 Died?.Invoke();
             }
         }
@@ -131,14 +102,14 @@ namespace Health
             }
 
             _value = Mathf.Min(_maxValue, _value + amount);
-            _healthText.text = $"{_value}/ {_maxValue}";
 
             ValueChanged?.Invoke(_value);
         }
 
-        private void OnInvulnerabilityEnded()
+        private void OnIFramesTimerFinished()
         {
             _isInvulnerable = false;
+            InvulnerabilityEnded?.Invoke();
         }
     }
 }

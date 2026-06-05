@@ -8,6 +8,8 @@ public sealed class Rotator : MonoBehaviour
 
     public void Rotate(Vector3 direction)
     {
+        direction.y = 0f;
+
         if (direction.sqrMagnitude < MinDirectionSqrMagnitude)
         {
             return;
