@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using TMPro;
 using UnityEngine;
 
 namespace Game
 {
     public sealed class Timer : MonoBehaviour
     {
-        [SerializeField] private TMP_Text _timerText;
-
         private float _duration;
         private float _remaining;
         private bool _isSetupFinished;
@@ -18,6 +15,7 @@ namespace Game
         private CancellationTokenSource _runCancellationTokenSource;
 
         public event Action Finished;
+        public event Action<float> Ticked;
 
         public void Setup(float duration)
         {
@@ -105,7 +103,7 @@ namespace Game
                     float delta = Time.deltaTime;
                     _remaining -= delta;
 
-                    _timerText.text = $"{_remaining}";
+                    Ticked?.Invoke(_remaining);
                 }
 
                 _remaining = 0f;
