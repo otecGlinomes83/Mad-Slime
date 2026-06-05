@@ -5,6 +5,7 @@ namespace NPC.Prey
     public class Fleer : MonoBehaviour
     {
         [SerializeField] private Mover _mover;
+        [SerializeField] private Rotator _rotator;
 
         public void Tick(Vector3 playerPosition)
         {
@@ -12,6 +13,7 @@ namespace NPC.Prey
             Vector3 direction = offset.normalized;
 
             _mover.Move(-direction);
+            _rotator.Rotate(-direction);
         }
     }
 }

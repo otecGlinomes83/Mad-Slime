@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading;
+﻿using Detectors;
+using Interfaces;
 using NPC.Prey;
 using UnityEngine;
 
@@ -7,38 +7,35 @@ namespace NPC.Enemy
 {
     [RequireComponent(typeof(Wander))]
     [RequireComponent(typeof(Chaser))]
-    [RequireComponent(typeof(PlayerSensor))]
+    [RequireComponent(typeof(TargetSensor))]
     public class Enemy : MonoBehaviour
     {
         private Wander _wander;
-        private PlayerSensor _playerSensor;
-
+        private TargetSensor _targetSensor;
         private Chaser _chaser;
 
         private void Awake()
         {
             _wander = GetComponent<Wander>();
-            _playerSensor = GetComponent<PlayerSensor>();
+            _targetSensor = GetComponent<TargetSensor>();
             _chaser = GetComponent<Chaser>();
         }
 
         private void OnEnable()
         {
-            _playerSensor.PlayerEntered += OnPlayerEntered;
-            _playerSensor.PlayerExited += OnPlayerExited;
+            _targetSensor.TargetEntered += OnTargetEntered;
         }
 
         private void OnDisable()
         {
-            _playerSensor.PlayerEntered -= OnPlayerEntered;
-            _playerSensor.PlayerExited -= OnPlayerExited;
+            _targetSensor.TargetEntered -= OnTargetEntered;
         }
 
         private void Update()
         {
-            if (_playerSensor.IsPlayerInRange)
+            if (_targetSensor.IsTargetInRange)
             {
-                _chaser.Tick(_playerSensor.DetectedPlayer.position);
+                _chaser.Tick(_targetSensor.DetectedTarget.Transform.position);
             }
             else
             {
@@ -46,14 +43,9 @@ namespace NPC.Enemy
             }
         }
 
-        private void OnPlayerEntered(Transform player)
+        private void OnTargetEntered(ITarget target)
         {
             _wander.Stop();
-        }
-
-        private void OnPlayerExited()
-        {
-            // потом добавлю тут некоторое время погони независимо от того, что игрок вышел из зоны видимости
         }
     }
 }

@@ -7,6 +7,7 @@ namespace NPC.Prey
     public sealed class Wander : MonoBehaviour
     {
         [SerializeField] private Mover _mover;
+        [SerializeField] private Rotator _rotator;
         [SerializeField] private Vector2 _zoneSize = new Vector2(10f, 10f);
         [SerializeField] private float _idleDuration = 2f;
 
@@ -62,6 +63,7 @@ namespace NPC.Prey
 
             Vector3 direction = offset.normalized;
             _mover.Move(direction);
+            _rotator.Rotate(direction);
         }
 
         private void OnTimerFinished()

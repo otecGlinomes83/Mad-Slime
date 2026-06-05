@@ -286,7 +286,8 @@ GameObject:
   - component: {fileID: 832013035377784935}
   - component: {fileID: 1736917964042803579}
   - component: {fileID: 7008858521313850658}
-  - component: {fileID: 8394988038824624224}
+  - component: {fileID: 6320031492248704579}
+  - component: {fileID: 1132206293376527077}
   m_Layer: 3
   m_Name: Prey
   m_TagString: Untagged
@@ -386,6 +387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mover: {fileID: 1736917964042803579}
+  _rotator: {fileID: 1132206293376527077}
   _zoneSize: {x: 15, y: 15}
   _idleDuration: 5
 --- !u!114 &6312755702110349147
@@ -401,6 +403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mover: {fileID: 1736917964042803579}
+  _rotator: {fileID: 1132206293376527077}
 --- !u!114 &5682169450587136980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -469,7 +472,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _definition: {fileID: 11400000, guid: 70d3ede1c6cb73141915fe01a3d22125, type: 2}
   _collider: {fileID: 832013035377784935}
---- !u!114 &8394988038824624224
+--- !u!114 &6320031492248704579
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -478,10 +481,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 8084145183848702198}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d30b23deeaf04306ac4bb3eadb820560, type: 3}
+  m_Script: {fileID: 11500000, guid: 52f8a6c9bbfe189488dec658f2f2b43b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _radius: 5
-  _playerLayer:
+  _targetLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &1132206293376527077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8084145183848702198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52b9f47cd45c32247a235b5a1ee71db1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rotationSpeed: 420

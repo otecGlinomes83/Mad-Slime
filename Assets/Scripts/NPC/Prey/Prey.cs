@@ -1,18 +1,20 @@
 ﻿using Collectables;
+using Detectors;
+using Interfaces;
 using UnityEngine;
 
 namespace NPC.Prey
 {
     [RequireComponent(typeof(Wander))]
     [RequireComponent(typeof(Fleer))]
-    [RequireComponent(typeof(PlayerSensor))]
+    [RequireComponent(typeof(TargetSensor))]
     public sealed class Prey : MonoBehaviour
     {
         [SerializeField] private Item _item;
 
         private Fleer _fleer;
         private Wander _wander;
-        private PlayerSensor _playerSensor;
+        private TargetSensor _targetSensor;
 
         private bool _isCollected;
 
@@ -20,7 +22,7 @@ namespace NPC.Prey
         {
             _fleer = GetComponent<Fleer>();
             _wander = GetComponent<Wander>();
-            _playerSensor = GetComponent<PlayerSensor>();
+            _targetSensor = GetComponent<TargetSensor>();
         }
 
         private void OnEnable()
@@ -30,13 +32,13 @@ namespace NPC.Prey
             Enable();
 
             _item.Collected += OnCollect;
-            _playerSensor.PlayerEntered += OnPlayerEntered;
+            _targetSensor.TargetEntered += OnTargetEntered;
         }
 
         private void OnDisable()
         {
             _item.Collected -= OnCollect;
-            _playerSensor.PlayerEntered -= OnPlayerEntered;
+            _targetSensor.TargetEntered -= OnTargetEntered;
         }
 
         private void Update()
@@ -46,9 +48,9 @@ namespace NPC.Prey
                 return;
             }
 
-            if (_playerSensor.IsPlayerInRange)
+            if (_targetSensor.IsTargetInRange)
             {
-                _fleer.Tick(_playerSensor.DetectedPlayer.position);
+                _fleer.Tick(_targetSensor.DetectedTarget.Transform.position);
             }
             else
             {
@@ -56,7 +58,7 @@ namespace NPC.Prey
             }
         }
 
-        private void OnPlayerEntered(Transform player)
+        private void OnTargetEntered(ITarget target)
         {
             _wander.Stop();
         }
@@ -72,14 +74,14 @@ namespace NPC.Prey
             _wander.Stop();
             _wander.enabled = false;
             _fleer.enabled = false;
-            _playerSensor.enabled = false;
+            _targetSensor.enabled = false;
         }
 
         private void Enable()
         {
             _wander.enabled = true;
             _fleer.enabled = true;
-            _playerSensor.enabled = true;
+            _targetSensor.enabled = true;
         }
     }
 }

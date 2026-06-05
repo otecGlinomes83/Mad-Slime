@@ -2,7 +2,8 @@
 
 public class Chaser : MonoBehaviour
 {
-    [SerializeField] private Mover _mover;
+        [SerializeField] private Mover _mover;
+        [SerializeField] private Rotator _rotator;
 
     public void Tick(Vector3 playerPosition)
     {
@@ -10,5 +11,6 @@ public class Chaser : MonoBehaviour
         Vector3 direction = offset.normalized;
 
         _mover.Move(direction);
+        _rotator.Rotate(direction);
     }
 }

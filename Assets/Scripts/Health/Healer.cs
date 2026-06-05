@@ -1,0 +1,62 @@
+using System;
+using Game;
+using UnityEngine;
+
+namespace Health
+{
+    public sealed class Healer : MonoBehaviour
+    {
+        [SerializeField] private Health _health;
+        [SerializeField] private Timer _timer;
+        [SerializeField] private float _regenDelay = 5f;
+
+        private void Awake()
+        {
+            if (_health == null)
+            {
+                _health = GetComponent<Health>();
+            }
+
+            if (_health == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Health component is missing. Attach a Health component to the same GameObject.");
+            }
+
+            if (_timer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Timer is not assigned. Drag a Timer component into the _timer field in the inspector.");
+            }
+        }
+
+        private void OnEnable()
+        {
+            _health.Damaged += OnDamaged;
+            _timer.Finished += OnTimerFinished;
+        }
+
+        private void OnDisable()
+        {
+            _health.Damaged -= OnDamaged;
+            _timer.Finished -= OnTimerFinished;
+        }
+
+        private void OnDamaged(int amount)
+        {
+            _timer.Stop();
+            _timer.Setup(_regenDelay);
+            _timer.StartCount();
+        }
+
+        private void OnTimerFinished()
+        {
+            int missing = _health.MaxValue - _health.Value;
+
+            if (missing > 0)
+            {
+                _health.Heal(missing);
+            }
+        }
+    }
+}

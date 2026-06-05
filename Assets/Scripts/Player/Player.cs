@@ -1,12 +1,16 @@
 using System;
 using Collectables;
+using Health;
+using Interfaces;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Mover))]
 [RequireComponent(typeof(Rotator))]
 [RequireComponent(typeof(PlayerMass))]
-public sealed class Player : MonoBehaviour
+[RequireComponent(typeof(Health.Health))]
+[RequireComponent(typeof(Healer))]
+public sealed class Player : MonoBehaviour, ITarget
 {
     [SerializeField] private PlayerInputReader _inputReader;
     [SerializeField] private Transform _cameraTransform;
@@ -16,12 +20,19 @@ public sealed class Player : MonoBehaviour
     private Mover _mover;
     private Rotator _rotator;
     private PlayerMass _playerMass;
-    
+    private Health.Health _health;
+    private Healer _healer;
+
+    public Transform Transform => transform;
+    public Health.Health Health => _health;
+
     private void Awake()
     {
         _mover = GetComponent<Mover>();
         _rotator = GetComponent<Rotator>();
         _playerMass = GetComponent<PlayerMass>();
+        _health = GetComponent<Health.Health>();
+        _healer = GetComponent<Healer>();
     }
 
     private void OnEnable()
