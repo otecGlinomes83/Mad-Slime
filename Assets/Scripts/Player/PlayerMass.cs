@@ -1,10 +1,13 @@
 ﻿using System;
+using Health;
 using UnityEngine;
 
 public class PlayerMass : MonoBehaviour, IMassHolder
 {
     [SerializeField] private int _mass;
     [SerializeField] private int _defaultMass;
+    [SerializeField] private Health.Health _playerHealth;
+    [SerializeField] private int _damageAmount = 5;
 
     public int Mass => _mass;
 
@@ -13,6 +16,16 @@ public class PlayerMass : MonoBehaviour, IMassHolder
     private void Awake()
     {
         _mass = _defaultMass;
+    }
+
+    private void OnEnable()
+    {
+        _playerHealth.Damaged += Decrease;
+    }
+
+    private void OnDisable()
+    {
+        _playerHealth.Damaged -= Decrease;
     }
 
     public void ResetMass()
@@ -42,14 +55,16 @@ public class PlayerMass : MonoBehaviour, IMassHolder
         Changed?.Invoke(previous, _mass);
     }
 
-    public void Decrease(int amount)
+    public void Decrease()
     {
-        if (amount < 0)
-            throw new ArgumentOutOfRangeException(nameof(amount),
-                "PlayerMass.Decrease requires amount to be non-negative. The provided value was negative.");
+        if (_damageAmount < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(_damageAmount),
+                "PlayerMass.Decrease requires _damageAmount to be non-negative. The value is negative.");
+        }
 
         int previous = _mass;
-        _mass = Mathf.Max(_mass - amount, _defaultMass);
+        _mass = Mathf.Max(_mass - _damageAmount, _defaultMass);
         Changed?.Invoke(previous, _mass);
     }
 }

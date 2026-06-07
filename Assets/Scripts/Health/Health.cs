@@ -14,6 +14,7 @@ namespace Health
         private bool _isInvulnerable;
         
         public event Action Died;
+        public event Action Damaged;
         public event Action<int> ValueChanged;
         public event Action InvulnerabilityEnded;
 
@@ -80,8 +81,9 @@ namespace Health
             _timer.StartCount();
 
             _value = Mathf.Max(0, _value - amount);
-            
+
             ValueChanged?.Invoke(_value);
+            Damaged?.Invoke();
 
             if (_value <= 0)
             {

@@ -3,13 +3,11 @@ using UnityEngine;
 
 public class PlayerScaler : MonoBehaviour
 {
-    private const float MinLogInput = 0.1f;
-
     [SerializeField] private PlayerMass _playerMass;
     [SerializeField] private Transform _transfromToScale;
     [SerializeField] private ItemDetector _itemDetector;
     [SerializeField] private AttractableDetector _attractableDetector;
-    [SerializeField] private float _growthRate = 0.1f;
+    [SerializeField] private float _scaleDivisor = 20f;
     [SerializeField] private float _smoothTime = 0.4f;
 
     private float _startScale;
@@ -82,8 +80,7 @@ public class PlayerScaler : MonoBehaviour
 
     private void OnMassChanged(int previous, int current)
     {
-        float input = Mathf.Max(current - _startMass + 1, MinLogInput);
-        _targetMultiplier = 1f + Mathf.Log(input) * _growthRate;
+        _targetMultiplier = 1f + (current - _startMass) / _scaleDivisor;
     }
 
     private void ApplyMultiplier()
