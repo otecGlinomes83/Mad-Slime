@@ -28,10 +28,11 @@ public class PlayerMass : MonoBehaviour, IMassHolder
         _playerHealth.Damaged -= Decrease;
     }
 
-    public void ResetMass()
+    public void Reset()
     {
+        int current = _mass;
         _mass = _defaultMass;
-        Changed?.Invoke(_mass, _defaultMass);
+        Changed?.Invoke(current, _defaultMass);
     }
 
     public void Setup(int mass)

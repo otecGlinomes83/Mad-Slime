@@ -34,11 +34,18 @@ namespace Detectors
 
             for (int i = 0; i < hitsCount; i++)
             {
-                if (_buffer[i].gameObject.TryGetComponent(out ITarget found) == true)
+                if (_buffer[i].gameObject.TryGetComponent(out ITarget found) == false)
                 {
-                    target = found;
-                    break;
+                    continue;
                 }
+
+                if (found.Health.IsAlive == false)
+                {
+                    continue;
+                }
+
+                target = found;
+                break;
             }
 
             if (target != null)

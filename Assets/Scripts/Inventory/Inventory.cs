@@ -9,7 +9,14 @@ public sealed class Inventory : MonoBehaviour
 
     public IReadOnlyDictionary<ItemDefinition, int> Items => _items;
 
+    public event Action Cleared;
     public event Action<ItemDefinition> ItemAdded;
+
+    public void Clear()
+    {
+        _items.Clear();
+        Cleared?.Invoke();
+    }
 
     public void Add(ItemDefinition definition)
     {
@@ -34,7 +41,8 @@ public sealed class Inventory : MonoBehaviour
     {
         if (definition == null)
         {
-            throw new ArgumentNullException(nameof(definition), "Inventory.GetCount was called with a null ItemDefinition.");
+            throw new ArgumentNullException(nameof(definition),
+                "Inventory.GetCount was called with a null ItemDefinition.");
         }
 
         if (_items.TryGetValue(definition, out int count))
@@ -42,8 +50,9 @@ public sealed class Inventory : MonoBehaviour
             return count;
         }
 
-        throw new InvalidOperationException(string.Format($"Inventory does not contain item '{ definition.DisplayName}'." +
-                                                          $" Call Add before GetCount or check presence via Items."));
+        throw new InvalidOperationException(string.Format(
+            $"Inventory does not contain item '{definition.DisplayName}'." +
+            $" Call Add before GetCount or check presence via Items."));
     }
 
     public bool IsContains(ItemDefinition definition)

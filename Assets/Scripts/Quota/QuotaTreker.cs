@@ -13,6 +13,8 @@ public sealed class QuotaTreker : MonoBehaviour
     [SerializeField] private Health.Health _playerHealth;
     [SerializeField] private int _minIncrease;
     [SerializeField] private int _maxIncrease;
+    [SerializeField] private int _minDeathIncrease = 5;
+    [SerializeField] private int _maxDeathIncrease = 10;
 
     public IReadOnlyList<QuotaEntry> Entries => _quota;
 
@@ -24,13 +26,17 @@ public sealed class QuotaTreker : MonoBehaviour
     private void OnEnable()
     {
         _inventory.ItemAdded += OnItemAdded;
+        _inventory.Cleared += OnInventoryCleared;
         _playerHealth.Damaged += OnPlayerDamaged;
+        _playerHealth.Died += OnPlayerDie;
     }
 
     private void OnDisable()
     {
         _inventory.ItemAdded -= OnItemAdded;
+        _inventory.Cleared -= OnInventoryCleared;
         _playerHealth.Damaged -= OnPlayerDamaged;
+        _playerHealth.Died -= OnPlayerDie;
     }
 
     public void ReportCurrentStates()
@@ -39,6 +45,11 @@ public sealed class QuotaTreker : MonoBehaviour
         {
             Recalculate(_quota[i]);
         }
+    }
+
+    private void OnInventoryCleared()
+    {
+        ReportCurrentStates();
     }
 
     private void OnItemAdded(ItemDefinition definition)
@@ -60,6 +71,21 @@ public sealed class QuotaTreker : MonoBehaviour
             QuotaCompleted?.Invoke();
             Debug.Log($"All quota collected");
         }
+    }
+
+    private void OnPlayerDie()
+    {
+        int amount = UnityEngine.Random.Range(_minDeathIncrease, _maxDeathIncrease + 1);
+        if (amount <= 0)
+        {
+            return;
+        }
+
+        int randomIndex = UnityEngine.Random.Range(0, _quota.Count);
+        QuotaEntry target = _quota[randomIndex];
+
+        target.Add(amount);
+        ReportCurrentStates();
     }
 
     private void OnPlayerDamaged()

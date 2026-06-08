@@ -44,13 +44,20 @@ public sealed class Player : MonoBehaviour, ITarget
     {
         _collector.ItemCollected -= OnItemCollected;
     }
-
+    
     private void Update()
     {
         Vector3 moveDirection = ConvertToWorldDirection(_inputReader.MoveInput);
 
         _mover.Move(moveDirection);
         _rotator.Rotate(moveDirection);
+    }
+
+    public void Reset()
+    {
+        _health.Reset();
+        _playerMass.Reset();
+        _inventory.Clear();
     }
 
     private void OnItemCollected(Item item)

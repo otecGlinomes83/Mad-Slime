@@ -12,7 +12,7 @@ namespace Health
         [SerializeField] private float _invulnerabilityWindow = 0.5f;
 
         private bool _isInvulnerable;
-        
+
         public event Action Died;
         public event Action Damaged;
         public event Action<int> ValueChanged;
@@ -57,6 +57,14 @@ namespace Health
         private void OnDisable()
         {
             _timer.Finished -= OnIFramesTimerFinished;
+        }
+
+        public void Reset()
+        {
+            _value = _maxValue;
+            _timer.Stop();
+            _isInvulnerable = false;
+            ValueChanged?.Invoke(_value);
         }
 
         public void TryApplyDamage(int amount)

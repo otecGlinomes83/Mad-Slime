@@ -605,6 +605,7 @@ Transform:
   - {fileID: 756532228}
   - {fileID: 1882917499}
   - {fileID: 821251763}
+  - {fileID: 784581821}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &588792778
@@ -929,6 +930,52 @@ MonoBehaviour:
   _maxSize: 64
   _spawnInterval: 0.25
   _maxSpawns: 5
+--- !u!1 &784581820
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 784581821}
+  - component: {fileID: 784581822}
+  m_Layer: 0
+  m_Name: PlayerRespawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &784581821
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784581820}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 424541640}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &784581822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784581820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bd351f9aa504984bb4b3f545f9ac90d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _player: {fileID: 2023802802}
+  _spawnPoint: {fileID: 784581821}
 --- !u!1 &821251762
 GameObject:
   m_ObjectHideFlags: 0
@@ -956,7 +1003,7 @@ Transform:
   m_GameObject: {fileID: 821251762}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.33, y: 0.5, z: -12.29}
+  m_LocalPosition: {x: 15.3, y: 0.5, z: -1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1453,6 +1500,8 @@ MonoBehaviour:
   _playerHealth: {fileID: 2023802812}
   _minIncrease: 2
   _maxIncrease: 3
+  _minDeathIncrease: 5
+  _maxDeathIncrease: 10
 --- !u!1 &1125405778
 GameObject:
   m_ObjectHideFlags: 0
@@ -2873,7 +2922,7 @@ CharacterController:
   m_Height: 1
   m_Radius: 0.55
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.12, z: 0}
@@ -2932,7 +2981,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 755178f3bb4140199e7a8bc34fe51b13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxValue: 10
+  _maxValue: 2
   _value: 0
   _timer: {fileID: 272063726}
   _invulnerabilityWindow: 0.5

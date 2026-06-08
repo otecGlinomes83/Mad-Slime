@@ -28,23 +28,16 @@ namespace UI
         private void OnEnable()
         {
             _health.ValueChanged += OnHealthValueChanged;
-            _health.Died += OnHealthDied;
         }
 
         private void OnDisable()
         {
             _health.ValueChanged -= OnHealthValueChanged;
-            _health.Died -= OnHealthDied;
         }
 
         private void OnHealthValueChanged(int currentValue)
         {
             _valueText.text = $"{currentValue} / {_health.MaxValue}";
-        }
-
-        private void OnHealthDied()
-        {
-            _valueText.text = $"0 / {_health.MaxValue}";
         }
     }
 }

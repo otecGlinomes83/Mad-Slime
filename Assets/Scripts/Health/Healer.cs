@@ -34,12 +34,19 @@ namespace Health
         {
             _health.InvulnerabilityEnded += OnInvulnerabilityEnded;
             _timer.Finished += OnTimerFinished;
+            _health.Died += OnDied;
         }
 
         private void OnDisable()
         {
             _health.InvulnerabilityEnded -= OnInvulnerabilityEnded;
             _timer.Finished -= OnTimerFinished;
+        }
+
+        private void OnDied()
+        {
+            _timer.Stop();
+            _timer.Setup(_regenDelay);
         }
 
         private void OnInvulnerabilityEnded()
@@ -51,12 +58,7 @@ namespace Health
 
         private void OnTimerFinished()
         {
-            int missing = _health.MaxValue - _health.Value;
-
-            if (missing > 0)
-            {
-                _health.Heal(missing);
-            }
+            _health.Heal(_health.MaxValue);
         }
     }
 }

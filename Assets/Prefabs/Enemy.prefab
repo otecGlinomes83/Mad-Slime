@@ -179,7 +179,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sensor: {fileID: 2764113529158104793}
   _damage: 1
-  _cooldown: 0.25
+  _cooldown: 1
   _timer: {fileID: 3793880130356339000}
 --- !u!1 &5136968250238537044
 GameObject:
@@ -412,7 +412,7 @@ Transform:
   m_GameObject: {fileID: 8726553128794765645}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.26, y: 0.48000002, z: -15.61}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
