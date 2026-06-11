@@ -12,9 +12,9 @@ public sealed class ShapeFiller : MonoBehaviour
     [SerializeField] private Transform _cubesParent;
     [SerializeField] private SpriteRenderer _ghostBackground;
     [SerializeField] private Color _ghostColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
-    [SerializeField] private float _spawnInterval = 0.08f;
+    [SerializeField] private float _spawnInterval = 0.04f;
     [SerializeField] private float _flightDuration = 0.5f;
-    [SerializeField] private float _spawnOffsetY = 6f;
+    [SerializeField] private Vector3 _spawnPosition;
     [SerializeField] private Vector3 _spinSpeed = new Vector3(360f, 720f, 180f);
     [SerializeField] private Color _borderColor = Color.black;
 
@@ -109,6 +109,17 @@ public sealed class ShapeFiller : MonoBehaviour
         }
     }
 
+    private void SetCubeColor(GameObject cube, Color color)
+    {
+        if (cube.TryGetComponent(out Renderer cubeRenderer) == false)
+        {
+            return;
+        }
+
+        _propertyBlock.SetColor(Shader.PropertyToID("_Color"), color);
+        cubeRenderer.SetPropertyBlock(_propertyBlock);
+    }
+
     private async UniTaskVoid FillAsync(CancellationToken cancellationToken)
     {
         _isFilling = true;
@@ -126,9 +137,8 @@ public sealed class ShapeFiller : MonoBehaviour
             cancellationToken.ThrowIfCancellationRequested();
 
             Vector2Int cell = fillCells[_fillIndex];
-            Vector3 targetPosition = _gridShape.GridToWorld(cell.x, cell.y);
 
-            FlyingCube fillCube = Instantiate(_cubePrefab, _cubesParent);
+            FlyingCube fillCube = Instantiate(_cubePrefab, _spawnPosition, UnityEngine.Random.rotation, _cubesParent);
             fillCube.transform.localScale = Vector3.one * _gridShape.CellSize;
 
             Color pixelColor = _gridShape.GetPixelColor(cell.x, cell.y);
@@ -142,8 +152,7 @@ public sealed class ShapeFiller : MonoBehaviour
                 SetCubeColor(fillCube.gameObject, Color.white);
             }
 
-            Vector3 spawnPosition = targetPosition + _gridShape.transform.up * _spawnOffsetY;
-            fillCube.transform.position = spawnPosition;
+            Vector3 targetPosition = _gridShape.GridToWorld(cell.x, cell.y);
 
             fillCube.Arrived += OnCubeArrived;
             fillCube.Launch(targetPosition, _flightDuration, _spinSpeed);
@@ -162,16 +171,5 @@ public sealed class ShapeFiller : MonoBehaviour
     private void OnCubeArrived(FlyingCube cube)
     {
         cube.Arrived -= OnCubeArrived;
-    }
-
-    private void SetCubeColor(GameObject cube, Color color)
-    {
-        if (cube.TryGetComponent(out Renderer cubeRenderer) == false)
-        {
-            return;
-        }
-
-        _propertyBlock.SetColor(Shader.PropertyToID("_Color"), color);
-        cubeRenderer.SetPropertyBlock(_propertyBlock);
     }
 }

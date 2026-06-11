@@ -50,6 +50,9 @@ public sealed class GridShape : MonoBehaviour
             }
         }
 
+        _borderCells.Clear();
+        _fillCells.Clear();
+
         for (int gridX = 0; gridX < _gridWidth; gridX++)
         {
             for (int gridY = 0; gridY < _gridHeight; gridY++)
@@ -70,15 +73,11 @@ public sealed class GridShape : MonoBehaviour
             }
         }
 
-        System.Random random = new System.Random();
-
-        for (int i = _fillCells.Count - 1; i > 0; i--)
+        _fillCells.Sort((Vector2Int a, Vector2Int b) =>
         {
-            int swapIndex = random.Next(i + 1);
-            Vector2Int temp = _fillCells[i];
-            _fillCells[i] = _fillCells[swapIndex];
-            _fillCells[swapIndex] = temp;
-        }
+            int compareY = b.y.CompareTo(a.y);
+            return compareY != 0 ? compareY : a.x.CompareTo(b.x);
+        });
     }
 
     public Vector3 GridToWorld(int gridX, int gridY)
