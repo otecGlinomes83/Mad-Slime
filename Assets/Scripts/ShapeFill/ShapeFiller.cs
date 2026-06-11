@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public sealed class ShapeFiller : MonoBehaviour
 {
@@ -17,11 +18,17 @@ public sealed class ShapeFiller : MonoBehaviour
     [SerializeField] private Vector3 _spinSpeed = new Vector3(360f, 720f, 180f);
     [SerializeField] private Color _borderColor = Color.black;
 
+    private MaterialPropertyBlock _propertyBlock;
     private readonly List<GameObject> _cubes = new List<GameObject>();
     private int _fillIndex;
     private bool _isFilling;
 
     public event Action<float> ProgressUpdated;
+
+    private void Awake()
+    {
+        _propertyBlock = new MaterialPropertyBlock();
+    }
 
     private void Start()
     {
@@ -68,16 +75,21 @@ public sealed class ShapeFiller : MonoBehaviour
             return;
         }
 
+        Texture2D texture = _gridShape.ShapeTexture;
+
         _ghostBackground.sprite = Sprite.Create(
-            _gridShape.ShapeTexture,
-            new Rect(0f, 0f, _gridShape.Width, _gridShape.Height),
+            texture,
+            new Rect(0f, 0f, texture.width, texture.height),
             Vector2.one * 0.5f,
-            1f
+            texture.width / (_gridShape.Width * _gridShape.CellSize)
         );
 
         _ghostBackground.color = _ghostColor;
-        _ghostBackground.transform.localScale = Vector3.one * _gridShape.CellSize;
-        _ghostBackground.transform.position = _gridShape.transform.position;
+        _ghostBackground.transform.SetPositionAndRotation(
+            _gridShape.transform.position,
+            _gridShape.transform.rotation
+        );
+        _ghostBackground.transform.localScale = Vector3.one;
     }
 
     private void BuildBorder()
@@ -130,7 +142,7 @@ public sealed class ShapeFiller : MonoBehaviour
                 SetCubeColor(fillCube.gameObject, Color.white);
             }
 
-            Vector3 spawnPosition = targetPosition + Vector3.up * _spawnOffsetY;
+            Vector3 spawnPosition = targetPosition + _gridShape.transform.up * _spawnOffsetY;
             fillCube.transform.position = spawnPosition;
 
             fillCube.Arrived += OnCubeArrived;
@@ -141,7 +153,7 @@ public sealed class ShapeFiller : MonoBehaviour
 
             ProgressUpdated?.Invoke((float)_fillIndex / totalCells);
 
-            await UniTask.Delay(TimeSpan.FromSeconds(_spawnInterval), cancellationToken: cancellationToken);
+            await UniTask.Delay((int)(_spawnInterval * 1000f), cancellationToken: cancellationToken);
         }
 
         _isFilling = false;
@@ -159,8 +171,7 @@ public sealed class ShapeFiller : MonoBehaviour
             return;
         }
 
-        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-        propertyBlock.SetColor(Shader.PropertyToID("_Color"), color);
-        cubeRenderer.SetPropertyBlock(propertyBlock);
+        _propertyBlock.SetColor(Shader.PropertyToID("_Color"), color);
+        cubeRenderer.SetPropertyBlock(_propertyBlock);
     }
 }

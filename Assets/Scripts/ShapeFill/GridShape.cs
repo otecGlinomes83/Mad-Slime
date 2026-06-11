@@ -5,7 +5,7 @@ public sealed class GridShape : MonoBehaviour
 {
     [SerializeField] private Texture2D _shapeTexture;
     [SerializeField] private float _cellSize = 0.5f;
-    [SerializeField] private int _gridResolution = 10;
+    [SerializeField] private int _gridResolution = 64;
 
     private int _gridWidth;
     private int _gridHeight;
@@ -27,11 +27,13 @@ public sealed class GridShape : MonoBehaviour
         int textureWidth = _shapeTexture.width;
         int textureHeight = _shapeTexture.height;
 
-        int step = Mathf.Max(textureWidth, textureHeight) / _gridResolution;
-        step = Mathf.Max(step, 1);
+        int stepX = Mathf.CeilToInt((float)textureWidth / _gridResolution);
+        int stepY = Mathf.CeilToInt((float)textureHeight / _gridResolution);
+        stepX = Mathf.Max(stepX, 1);
+        stepY = Mathf.Max(stepY, 1);
 
-        _gridWidth = Mathf.CeilToInt((float)textureWidth / step);
-        _gridHeight = Mathf.CeilToInt((float)textureHeight / step);
+        _gridWidth = Mathf.CeilToInt((float)textureWidth / stepX);
+        _gridHeight = Mathf.CeilToInt((float)textureHeight / stepY);
 
         _filledCells = new bool[_gridWidth, _gridHeight];
         _pixelColors = new Color[_gridWidth, _gridHeight];
@@ -40,8 +42,8 @@ public sealed class GridShape : MonoBehaviour
         {
             for (int gridY = 0; gridY < _gridHeight; gridY++)
             {
-                int pixelX = gridX * step;
-                int pixelY = gridY * step;
+                int pixelX = gridX * stepX;
+                int pixelY = gridY * stepY;
                 Color pixelColor = pixels[pixelX + pixelY * textureWidth];
                 _filledCells[gridX, gridY] = pixelColor.a > 0.1f;
                 _pixelColors[gridX, gridY] = pixelColor;
@@ -68,19 +70,23 @@ public sealed class GridShape : MonoBehaviour
             }
         }
 
-        _fillCells.Sort((Vector2Int a, Vector2Int b) =>
+        System.Random random = new System.Random();
+
+        for (int i = _fillCells.Count - 1; i > 0; i--)
         {
-            int compareY = b.y.CompareTo(a.y);
-            return compareY != 0 ? compareY : a.x.CompareTo(b.x);
-        });
+            int swapIndex = random.Next(i + 1);
+            Vector2Int temp = _fillCells[i];
+            _fillCells[i] = _fillCells[swapIndex];
+            _fillCells[swapIndex] = temp;
+        }
     }
 
     public Vector3 GridToWorld(int gridX, int gridY)
     {
-        Vector3 origin = transform.position;
-        float worldX = (gridX - (_gridWidth - 1) * 0.5f) * _cellSize + origin.x;
-        float worldY = (gridY - (_gridHeight - 1) * 0.5f) * _cellSize + origin.y;
-        return new Vector3(worldX, worldY, origin.z);
+        float localX = (gridX - (_gridWidth - 1) * 0.5f) * _cellSize;
+        float localY = (gridY - (_gridHeight - 1) * 0.5f) * _cellSize;
+
+        return transform.TransformPoint(new Vector3(localX, localY, 0f));
     }
 
     public Color GetPixelColor(int gridX, int gridY)
