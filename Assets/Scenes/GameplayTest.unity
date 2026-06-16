@@ -363,6 +363,7 @@ MonoBehaviour:
   - {fileID: 756532230}
   - {fileID: 1882917500}
   - {fileID: 821251764}
+  _inputReader: {fileID: 2023802801}
 --- !u!4 &292377135
 Transform:
   m_ObjectHideFlags: 0
@@ -2885,8 +2886,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxSpeed: 6
-  _acceleration: 15
-  _deceleration: 15
+  _smoothTime: 0.1
 --- !u!114 &2023802805
 MonoBehaviour:
   m_ObjectHideFlags: 0

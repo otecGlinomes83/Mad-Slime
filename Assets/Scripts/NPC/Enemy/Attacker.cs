@@ -1,6 +1,5 @@
 using System;
 using Detectors;
-using Game;
 using Interfaces;
 using UnityEngine;
 
@@ -62,7 +61,6 @@ namespace NPC.Enemy
             }
 
             target.Health.TryApplyDamage(_damage);
-            Debug.Log("target has been damaged");
 
             _isCooldown = true;
             _timer.Setup(_cooldown);

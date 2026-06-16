@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7524265083367708567}
   - component: {fileID: 578937835718022201}
   - component: {fileID: 6460348777994001712}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ GameObject:
   - component: {fileID: 7204984574881135023}
   - component: {fileID: 5906837600469907579}
   - component: {fileID: 162751745661272665}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: UI (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 6978599693218570646}
   - component: {fileID: 8803296626489619851}
   - component: {fileID: 8433812561411168561}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: AttackTimer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -563,8 +563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxSpeed: 2
-  _acceleration: 30
-  _deceleration: 30
+  _smoothTime: 0.12
 --- !u!114 &5939861823466794241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -605,7 +604,7 @@ GameObject:
   - component: {fileID: 9039247836720124160}
   - component: {fileID: 4557631497453738990}
   - component: {fileID: 7331522584300479124}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: WanderTimer
   m_TagString: Untagged
   m_Icon: {fileID: 0}

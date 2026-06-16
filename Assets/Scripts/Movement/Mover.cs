@@ -4,11 +4,11 @@ using UnityEngine;
 public sealed class Mover : MonoBehaviour
 {
     [SerializeField] private float _maxSpeed = 6f;
-    [SerializeField] private float _acceleration = 30f;
-    [SerializeField] private float _deceleration = 30f;
+    [SerializeField] private float _smoothTime = 0.12f;
 
     private CharacterController _characterController;
     private Vector3 _currentVelocity;
+    private Vector3 _velocityRef;
 
     public Vector3 Velocity => _currentVelocity;
     public float CurrentSpeed => _currentVelocity.magnitude;
@@ -28,19 +28,21 @@ public sealed class Mover : MonoBehaviour
         }
 
         Vector3 targetVelocity = direction * _maxSpeed;
-        float rate;
 
-        if (targetVelocity.sqrMagnitude > _currentVelocity.sqrMagnitude)
-        {
-            rate = _acceleration;
-        }
-        else
-        {
-            rate = _deceleration;
-        }
-
-        _currentVelocity = Vector3.MoveTowards(_currentVelocity, targetVelocity, rate * Time.deltaTime);
+        _currentVelocity = Vector3.SmoothDamp(
+            _currentVelocity,
+            targetVelocity,
+            ref _velocityRef,
+            _smoothTime
+        );
 
         _characterController.SimpleMove(_currentVelocity);
+        
+    }
+
+    public void Reset()
+    {
+        _currentVelocity = Vector3.zero;
+        _velocityRef = Vector3.zero;
     }
 }

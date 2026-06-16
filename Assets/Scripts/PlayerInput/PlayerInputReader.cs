@@ -2,40 +2,53 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public sealed class PlayerInputReader : MonoBehaviour
+namespace PlayerInput
 {
-    private PlayerInputActions _inputActions;
-
-    public Vector2 MoveInput { get; private set; }
-
-    private void Awake()
+    public sealed class PlayerInputReader : MonoBehaviour
     {
-        _inputActions = new PlayerInputActions();
-    }
+        private PlayerInputActions _inputActions;
 
-    private void OnEnable()
-    {
-        _inputActions.Player.Move.performed += OnMovePerformed;
-        _inputActions.Player.Move.canceled += OnMoveCanceled;
-        
-        _inputActions.Player.Enable();
-    }
+        public Vector2 MoveInput { get; private set; }
+        public event Action MovementKeyPressed;
 
-    private void OnDisable()
-    {
-        _inputActions.Player.Move.performed -= OnMovePerformed;
-        _inputActions.Player.Move.canceled -= OnMoveCanceled;
-        
-        _inputActions.Player.Disable();
-    }
+        private void Awake()
+        {
+            _inputActions = new PlayerInputActions();
+        }
 
-    private void OnMovePerformed(InputAction.CallbackContext context)
-    {
-        MoveInput = context.ReadValue<Vector2>();
-    }
+        private void OnEnable()
+        {
+            _inputActions.Player.Move.performed += OnMovePerformed;
+            _inputActions.Player.Move.canceled += OnMoveCanceled;
 
-    private void OnMoveCanceled(InputAction.CallbackContext context)
-    {
-        MoveInput = Vector2.zero;
+            _inputActions.Player.Enable();
+            MoveInput = Vector2.zero;
+        }
+
+        private void OnDisable()
+        {
+            _inputActions.Player.Move.performed -= OnMovePerformed;
+            _inputActions.Player.Move.canceled -= OnMoveCanceled;
+
+            _inputActions.Player.Disable();
+            
+            MoveInput = Vector2.zero;
+        }
+
+        private void OnMovePerformed(InputAction.CallbackContext context)
+        {
+            bool wasZero = MoveInput == Vector2.zero;
+            MoveInput = context.ReadValue<Vector2>();
+
+            if (wasZero == true)
+            {
+                MovementKeyPressed?.Invoke();
+            }
+        }
+
+        private void OnMoveCanceled(InputAction.CallbackContext context)
+        {
+            MoveInput = Vector2.zero;
+        }
     }
 }

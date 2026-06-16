@@ -2,6 +2,7 @@ using System;
 using Collectables;
 using Health;
 using Interfaces;
+using PlayerInput;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -58,6 +59,7 @@ public sealed class Player : MonoBehaviour, ITarget
         _health.Reset();
         _playerMass.Reset();
         _inventory.Clear();
+        _mover.Reset();
     }
 
     private void OnItemCollected(Item item)

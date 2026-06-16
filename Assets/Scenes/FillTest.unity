@@ -157,8 +157,8 @@ MonoBehaviour:
   _cubesParent: {fileID: 745279426}
   _ghostBackground: {fileID: 825682195}
   _ghostColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 0.5}
-  _spawnInterval: 0.025
-  _flightDuration: 0.5
+  _spawnInterval: 0.05
+  _flightDuration: 0.75
   _spawnPosition: {x: 0, y: 35, z: -100}
   _spinSpeed: {x: 240, y: 540, z: 90}
   _borderColor: {r: 0, g: 0, b: 0, a: 1}
