@@ -152,11 +152,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67c2c4d75d8f488ba4d14d3db828e1b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _radius: 2.5
+  _radius: 2
   _layerMask:
     serializedVersion: 2
     m_Bits: 8
-  _gizmoColor: {r: 0, g: 1, b: 1, a: 1}
+  _gizmoColor: {r: 1, g: 0.80092674, b: 0, a: 1}
 --- !u!114 &241509739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,11 +451,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d079e1e756155944b820a8893b2d20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _radius: 1.5
+  _radius: 0.7
   _layerMask:
     serializedVersion: 2
     m_Bits: 8
-  _gizmoColor: {r: 0, g: 1, b: 1, a: 1}
+  _gizmoColor: {r: 1, g: 0, b: 0.15190268, a: 1}
 --- !u!1 &398415633
 GameObject:
   m_ObjectHideFlags: 0
