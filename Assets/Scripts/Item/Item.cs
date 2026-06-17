@@ -1,13 +1,10 @@
 using System;
 using UnityEngine;
 
-namespace Collectables
+namespace Item
 {
-    public sealed class Item : MonoBehaviour, IAttractable, IMassHolder
+    public sealed class Item : MonoBehaviour, IAttractable
     {
-        private const float MinDistanceSqr = 0.0001f;
-        private const int MinMass = 1;
-
         [SerializeField] private ItemDefinition _definition;
         [SerializeField] private Collider _collider;
 
@@ -15,6 +12,7 @@ namespace Collectables
 
         public ItemDefinition Definition => _definition;
         public int Mass => _definition.BaseMass;
+        public Transform Self => transform;
 
         public event Action<Item> ReadyToRelease;
         public event Action Collected;
@@ -35,23 +33,6 @@ namespace Collectables
         public void Release()
         {
             ReadyToRelease?.Invoke(this);
-        }
-
-        public void Attract(Vector3 targetPosition, float attractForce)
-        {
-            Vector3 toTarget = targetPosition - transform.position;
-            toTarget.y = 0f;
-
-            if (toTarget.sqrMagnitude < MinDistanceSqr)
-            {
-                return;
-            }
-
-            int safeMass = Mathf.Max(Mass, MinMass);
-            float speed = attractForce / safeMass;
-
-            Vector3 direction = toTarget.normalized;
-            transform.position += direction * (speed * Time.deltaTime);
         }
     }
 }

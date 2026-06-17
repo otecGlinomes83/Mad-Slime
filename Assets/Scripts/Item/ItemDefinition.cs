@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Collectables
+namespace Item
 {
     [CreateAssetMenu(menuName = "Mad Slime/Item Definition", fileName = "NewItemDefinition")]
     public sealed class ItemDefinition : ScriptableObject

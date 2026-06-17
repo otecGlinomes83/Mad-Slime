@@ -1,6 +1,6 @@
 using System;
 using System.Threading;
-using Collectables;
+using Item;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -9,14 +9,14 @@ namespace Spawners
     [RequireComponent(typeof(BoxCollider))]
     public sealed class ItemSpawner : MonoBehaviour, ISpawner
     {
-        [SerializeField] private Item _prefab;
+        [SerializeField] private Item.Item _prefab;
         [SerializeField] private int _defaultCapacity = 16;
         [SerializeField] private int _maxSize = 64;
         [SerializeField] private float _spawnInterval = 1f;
         [SerializeField] private int _maxSpawns = 32;
 
         private BoxCollider _spawnZone;
-        private GenericSpawner<Item> _spawner;
+        private GenericSpawner<Item.Item> _spawner;
         private CancellationTokenSource _loopCancellationTokenSource;
         private bool _isSetupFinished;
         private bool _isRunning;
@@ -39,7 +39,7 @@ namespace Spawners
             _spawnZone = GetComponent<BoxCollider>();
             _spawnZone.isTrigger = true;
 
-            _spawner = new GenericSpawner<Item>(_prefab, transform, _defaultCapacity, _maxSize);
+            _spawner = new GenericSpawner<Item.Item>(_prefab, transform, _defaultCapacity, _maxSize);
             _spawner.Spawned += OnSpawned;
             _spawner.Released += OnReleased;
 
@@ -78,13 +78,13 @@ namespace Spawners
             _isRunning = false;
         }
 
-        private void OnSpawned(Item instance)
+        private void OnSpawned(Item.Item instance)
         {
             instance.Initialize(GetRandomSpawnPosition());
             instance.ReadyToRelease += OnInstanceReadyToRelease;
         }
 
-        private void OnReleased(Item instance)
+        private void OnReleased(Item.Item instance)
         {
             instance.ReadyToRelease -= OnInstanceReadyToRelease;
         }
@@ -111,7 +111,7 @@ namespace Spawners
             }
         }
 
-        private void OnInstanceReadyToRelease(Item instance)
+        private void OnInstanceReadyToRelease(Item.Item instance)
         {
             _spawner.Release(instance);
         }

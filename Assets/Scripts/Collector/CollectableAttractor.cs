@@ -3,6 +3,8 @@ using UnityEngine;
 
 public sealed class CollectableAttractor : MonoBehaviour
 {
+    private const float MinDistanceSqr = 0.0001f;
+
     [SerializeField] private float _attractionForce = 12f;
     [SerializeField] private AttractableDetector _detector;
     [SerializeField] private MonoBehaviour _massHolderSource;
@@ -41,6 +43,17 @@ public sealed class CollectableAttractor : MonoBehaviour
             return;
         }
 
-        attractable.Attract(transform.position, _attractionForce);
+        Transform target = attractable.Self;
+        Vector3 toTarget = transform.position - target.position;
+        toTarget.y = 0f;
+
+        if (toTarget.sqrMagnitude < MinDistanceSqr)
+        {
+            return;
+        }
+
+        float speed = _attractionForce / attractable.Mass;
+
+        target.position += toTarget.normalized * (speed * Time.deltaTime);
     }
 }

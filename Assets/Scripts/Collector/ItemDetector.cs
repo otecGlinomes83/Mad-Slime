@@ -1,5 +1,5 @@
 using System;
-using Collectables;
+using Item;
 using UnityEngine;
 
-public sealed class ItemDetector : GenericOverlapDetector<Item> { }
+public sealed class ItemDetector : GenericOverlapDetector<Item.Item> { }

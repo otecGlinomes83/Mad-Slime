@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerScaler : MonoBehaviour
@@ -13,11 +14,14 @@ public class PlayerScaler : MonoBehaviour
     private float _startScale;
     private float _itemDetectorStartRadius;
     private float _attractableDetectorStartRadius;
+
     private int _startMass;
 
     private float _currentMultiplier;
     private float _targetMultiplier;
     private float _multiplierVelocity;
+
+    private bool _isChanging;
 
     private void Awake()
     {
@@ -67,20 +71,10 @@ public class PlayerScaler : MonoBehaviour
         _playerMass.Changed -= OnMassChanged;
     }
 
-    private void Update()
-    {
-        _currentMultiplier = Mathf.SmoothDamp(
-            _currentMultiplier,
-            _targetMultiplier,
-            ref _multiplierVelocity,
-            _smoothTime);
-
-        ApplyMultiplier();
-    }
-
     private void OnMassChanged(int previous, int current)
     {
         _targetMultiplier = 1f + (current - _startMass) / _scaleDivisor;
+        ChangeScale().Forget();
     }
 
     private void ApplyMultiplier()
@@ -88,5 +82,28 @@ public class PlayerScaler : MonoBehaviour
         _transfromToScale.localScale = Vector3.one * (_startScale * _currentMultiplier);
         _itemDetector.SetRadius(_itemDetectorStartRadius * _currentMultiplier);
         _attractableDetector.SetRadius(_attractableDetectorStartRadius * _currentMultiplier);
+    }
+
+    private async UniTaskVoid ChangeScale()
+    {
+        if (_isChanging)
+        {
+            return;
+        }
+
+        _isChanging = true;
+
+        while (Mathf.Approximately(_currentMultiplier, _targetMultiplier) == false)
+        {
+            _currentMultiplier = Mathf.SmoothDamp(
+                _currentMultiplier,
+                _targetMultiplier,
+                ref _multiplierVelocity,
+                _smoothTime);
+
+            ApplyMultiplier();
+        }
+        
+        _isChanging = false;
     }
 }

@@ -1,5 +1,5 @@
 using System;
-using Collectables;
+using Item;
 using Health;
 using Interfaces;
 using PlayerInput;
@@ -62,7 +62,7 @@ public sealed class Player : MonoBehaviour, ITarget
         _mover.Reset();
     }
 
-    private void OnItemCollected(Item item)
+    private void OnItemCollected(Item.Item item)
     {
         _inventory.Add(item.Definition);
         _playerMass.Add(item.Mass);

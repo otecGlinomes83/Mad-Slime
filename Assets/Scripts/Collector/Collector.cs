@@ -1,6 +1,6 @@
 using System;
 using System.Threading;
-using Collectables;
+using Item;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -12,7 +12,7 @@ public sealed class Collector : MonoBehaviour
 
     private IMassHolder _massHolder;
     
-    public event Action<Item> ItemCollected;
+    public event Action<Item.Item> ItemCollected;
 
     private void Awake()
     {
@@ -37,7 +37,7 @@ public sealed class Collector : MonoBehaviour
         _detector.Detected -= OnItemDetected;
     }
 
-    private void OnItemDetected(Item item)
+    private void OnItemDetected(Item.Item item)
     {
         if (_massHolder.Mass < item.Mass)
         {
@@ -48,7 +48,7 @@ public sealed class Collector : MonoBehaviour
         AbsorbAsync(item).Forget();
     }
 
-    private async UniTaskVoid AbsorbAsync(Item item)
+    private async UniTaskVoid AbsorbAsync(Item.Item item)
     {
         CancellationToken cancellationToken = this.GetCancellationTokenOnDestroy();
 

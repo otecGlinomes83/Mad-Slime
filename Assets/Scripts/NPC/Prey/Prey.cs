@@ -1,4 +1,4 @@
-﻿using Collectables;
+﻿using Item;
 using Detectors;
 using Interfaces;
 using UnityEngine;
@@ -10,7 +10,7 @@ namespace NPC.Prey
     [RequireComponent(typeof(TargetSensor))]
     public sealed class Prey : MonoBehaviour
     {
-        [SerializeField] private Item _item;
+        [SerializeField] private Item.Item _item;
 
         private Fleer _fleer;
         private Wander _wander;
