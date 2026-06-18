@@ -8,8 +8,8 @@
 
 - **Название:** Mad Slime
 - **Тип:** Аркадная мобильная игра, low-poly 3D
-- **Engine:** Unity 6
-- **Code style rules:** `AI_RULES.md` (рядом)
+- **Engine:** Unity 2022.3.62f2 (LTS)
+- **Code style rules:** global `AI_RULES.md` (загружается opencode-конфигом)
 
 ---
 
