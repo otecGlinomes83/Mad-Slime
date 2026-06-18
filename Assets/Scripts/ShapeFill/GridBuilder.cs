@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ShapeFill
 {
-    public sealed class GridShape : MonoBehaviour
+    public sealed class GridBuilder : MonoBehaviour
     {
         private const int BorderThickness = 2;
 

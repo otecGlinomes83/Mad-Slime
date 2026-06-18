@@ -69,7 +69,6 @@ public sealed class QuotaTreker : MonoBehaviour
         if (IsAllQuotaComplete())
         {
             QuotaCompleted?.Invoke();
-            Debug.Log($"All quota collected");
         }
     }
 

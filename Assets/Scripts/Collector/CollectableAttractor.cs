@@ -12,6 +12,12 @@ public sealed class CollectableAttractor : MonoBehaviour
     private IMassHolder _massHolder;
 
     public float Radius => _detector.Radius;
+    public float Force => _attractionForce;
+
+    public void SetForce(float force)
+    {
+        _attractionForce = force;
+    }
 
     private void Awake()
     {

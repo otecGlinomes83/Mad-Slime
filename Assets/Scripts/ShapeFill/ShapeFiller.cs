@@ -8,7 +8,7 @@ namespace ShapeFill
 {
     public sealed class ShapeFiller : MonoBehaviour
     {
-        [SerializeField] private GridShape _gridShape;
+        [SerializeField] private GridBuilder _gridShape;
         [SerializeField] private FlyingCube _cubePrefab;
         [SerializeField] private Transform _cubesParent;
         [SerializeField] private SpriteRenderer _ghostBackground;
@@ -24,17 +24,31 @@ namespace ShapeFill
         private int _fillIndex;
         private bool _isFilling;
 
+        public int RequiredFillCount => _gridShape.FillCells.Count;
+
         public event Action<float> ProgressUpdated;
 
         private void Awake()
         {
-            _propertyBlock = new MaterialPropertyBlock();
-        }
+            if (_gridShape == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: GridShape is not assigned. Drag a GridShape component into the _gridShape field in the inspector.");
+            }
 
-        private void Start()
-        {
-            BuildShape();
-            StartFill();
+            if (_cubePrefab == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: FlyingCube prefab is not assigned. Drag a FlyingCube prefab into the _cubePrefab field in the inspector.");
+            }
+
+            if (_cubesParent == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Cubes parent is not assigned. Drag a Transform into the _cubesParent field in the inspector.");
+            }
+
+            _propertyBlock = new MaterialPropertyBlock();
         }
 
         public void BuildShape()
@@ -48,15 +62,19 @@ namespace ShapeFill
             _fillIndex = 0;
         }
 
-        public void StartFill()
+        public void Fill(int cubesCount)
         {
-            if (_isFilling == true)
+            if (cubesCount <= 0)
             {
                 return;
             }
 
+            int target = Mathf.Clamp(cubesCount, 0, RequiredFillCount);
+
+            StopFill();
+            _fillIndex = 0;
             _isFilling = true;
-            FillAsync(this.GetCancellationTokenOnDestroy()).Forget();
+            FillAsync(this.GetCancellationTokenOnDestroy(), target).Forget();
         }
 
         public void StopFill()
@@ -130,12 +148,12 @@ namespace ShapeFill
             cubeRenderer.SetPropertyBlock(_propertyBlock);
         }
 
-        private async UniTaskVoid FillAsync(CancellationToken cancellationToken)
+        private async UniTaskVoid FillAsync(CancellationToken cancellationToken, int target)
         {
             IReadOnlyList<Vector2Int> fillCells = _gridShape.FillCells;
             int totalCells = fillCells.Count;
 
-            while (_fillIndex < totalCells)
+            while (_fillIndex < target)
             {
                 if (_isFilling == false)
                 {
