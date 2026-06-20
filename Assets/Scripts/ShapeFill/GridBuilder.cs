@@ -138,10 +138,25 @@ namespace ShapeFill
 
         private bool HasEmptyNeighborAtDistanceTwo(int gridX, int gridY)
         {
-            if (_filledCells[gridX - 1, gridY] == true && _filledCells[gridX - 2, gridY] == false) { return true; }
-            if (_filledCells[gridX + 1, gridY] == true && _filledCells[gridX + 2, gridY] == false) { return true; }
-            if (_filledCells[gridX, gridY - 1] == true && _filledCells[gridX, gridY - 2] == false) { return true; }
-            if (_filledCells[gridX, gridY + 1] == true && _filledCells[gridX, gridY + 2] == false) { return true; }
+            if (_filledCells[gridX - 1, gridY] == true && _filledCells[gridX - 2, gridY] == false)
+            {
+                return true;
+            }
+
+            if (_filledCells[gridX + 1, gridY] == true && _filledCells[gridX + 2, gridY] == false)
+            {
+                return true;
+            }
+
+            if (_filledCells[gridX, gridY - 1] == true && _filledCells[gridX, gridY - 2] == false)
+            {
+                return true;
+            }
+
+            if (_filledCells[gridX, gridY + 1] == true && _filledCells[gridX, gridY + 2] == false)
+            {
+                return true;
+            }
 
             return false;
         }

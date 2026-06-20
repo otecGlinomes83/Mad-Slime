@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Camera;
 using PlayerInput;
-using Spawners;
+using ShapeFill;
+using System;
+using System.Collections.Generic;
+using UI;
 using UnityEngine;
 
 namespace Game
@@ -9,10 +11,17 @@ namespace Game
     public sealed class SessionHandler : MonoBehaviour
     {
         [SerializeField] private Timer _timer;
+        [SerializeField] private ShapeFillOrchestrator _shapeFillOrchestrator;
+        [SerializeField] private FillCounter _fillCounter;
+        [SerializeField] private QuotaGenerator _quotaGenerator;
         [SerializeField] private float _timerDuration;
-        [SerializeField] private QuotaTreker _quotaTreker;
+        [SerializeField] private QuotaTracker _quotaTracker;
+        [SerializeField] private QuotaUI _quotaUI;
+        [SerializeField] private CameraArriver _cameraArriver;
         [SerializeField] private MonoBehaviour[] _spawnerSources;
         [SerializeField] private PlayerInputReader _inputReader;
+
+      //  [SerializeField] private CubeTweener _cubeTweener;
 
         private readonly List<ISpawner> _spawners = new List<ISpawner>();
         private bool _isStarted;
@@ -22,20 +31,30 @@ namespace Game
         {
             _timer.Setup(_timerDuration);
             CollectSpawners();
+
+            if (_cameraArriver == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: CameraArriver is not assigned. Drag a CameraArriver into the _cameraArriver field in the inspector.");
+            }
         }
 
         private void OnEnable()
         {
             _inputReader.MovementKeyPressed += Begin;
             _timer.Finished += OnFinished;
-            _quotaTreker.QuotaCompleted += OnQuotaCompleted;
+            _quotaTracker.QuotaCompleted += OnQuotaCompleted;
+            _cameraArriver.Arrived += OnCameraArrived;
+       //     _cubeTweener.AnimationFinished += OnAnimationFinished;
         }
 
         private void OnDisable()
         {
             _inputReader.MovementKeyPressed -= Begin;
             _timer.Finished -= OnFinished;
-            _quotaTreker.QuotaCompleted -= OnQuotaCompleted;
+            _quotaTracker.QuotaCompleted -= OnQuotaCompleted;
+            _cameraArriver.Arrived -= OnCameraArrived;
+         //   _cubeTweener.AnimationFinished -= OnAnimationFinished;
         }
 
         public void Begin()
@@ -48,6 +67,8 @@ namespace Game
             _isStarted = true;
             _timer.StartCount();
             StartSpawners();
+            _quotaTracker.Initialize(_quotaGenerator.Generate(_shapeFillOrchestrator.RequiredFillCount));
+            _quotaUI.Setup(_quotaTracker);
         }
 
         public void Pause()
@@ -98,7 +119,18 @@ namespace Game
         {
             StopSpawners();
             _timer.Stop();
-            Time.timeScale = 0f;
+            //_cubeTweener.MoveCube();
+            _cameraArriver.Move();
+        }
+
+        //private void OnAnimationFinished()
+        //{
+        //}
+
+        private void OnCameraArrived()
+        {
+            int fillCount = _fillCounter.Calculate(_shapeFillOrchestrator.RequiredFillCount);
+            _shapeFillOrchestrator.StartFilling(fillCount);
         }
 
         private void CollectSpawners()

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Item;
-using Health;
+﻿using Item;
 using Quota;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class QuotaTreker : MonoBehaviour
+public sealed class QuotaTracker : MonoBehaviour
 {
-    [SerializeField] private List<QuotaEntry> _quota = new List<QuotaEntry>();
+    private readonly List<QuotaEntry> _quota = new List<QuotaEntry>();
     [SerializeField] private Inventory _inventory;
     [SerializeField] private Health.Health _playerHealth;
     [SerializeField] private int _minIncrease;
@@ -26,7 +24,7 @@ public sealed class QuotaTreker : MonoBehaviour
     private void OnEnable()
     {
         _inventory.ItemAdded += OnItemAdded;
-        _inventory.Cleared += OnInventoryCleared;
+        _inventory.Cleared += ReportCurrentStates;
         _playerHealth.Damaged += OnPlayerDamaged;
         _playerHealth.Died += OnPlayerDie;
     }
@@ -34,7 +32,7 @@ public sealed class QuotaTreker : MonoBehaviour
     private void OnDisable()
     {
         _inventory.ItemAdded -= OnItemAdded;
-        _inventory.Cleared -= OnInventoryCleared;
+        _inventory.Cleared -= ReportCurrentStates;
         _playerHealth.Damaged -= OnPlayerDamaged;
         _playerHealth.Died -= OnPlayerDie;
     }
@@ -47,9 +45,35 @@ public sealed class QuotaTreker : MonoBehaviour
         }
     }
 
-    private void OnInventoryCleared()
+    public void Initialize(List<QuotaEntry> entries)
     {
+        if (entries == null)
+        {
+            throw new ArgumentNullException(nameof(entries),
+                "QuotaTracker.Initialize requires entries to be non-null.");
+        }
+
+        _quota.Clear();
+        _quota.AddRange(entries);
         ReportCurrentStates();
+    }
+
+    public bool IsQuotaItem(ItemDefinition definition)
+    {
+        if (definition == null)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < _quota.Count; i++)
+        {
+            if (_quota[i].Definition == definition)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void OnItemAdded(ItemDefinition definition)

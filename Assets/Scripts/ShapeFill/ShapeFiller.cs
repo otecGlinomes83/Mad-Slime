@@ -16,7 +16,6 @@ namespace ShapeFill
         [SerializeField] private float _spawnInterval = 0.04f;
         [SerializeField] private float _flightDuration = 0.5f;
         [SerializeField] private Vector3 _spawnPosition;
-        [SerializeField] private Vector3 _spinSpeed = new Vector3(360f, 720f, 180f);
         [SerializeField] private Color _borderColor = Color.black;
 
         private MaterialPropertyBlock _propertyBlock;
@@ -28,7 +27,7 @@ namespace ShapeFill
 
         public event Action<float> ProgressUpdated;
 
-        private void Awake()
+        public void Initialize()
         {
             if (_gridShape == null)
             {
@@ -48,7 +47,10 @@ namespace ShapeFill
                     $"{name}: Cubes parent is not assigned. Drag a Transform into the _cubesParent field in the inspector.");
             }
 
-            _propertyBlock = new MaterialPropertyBlock();
+            if (_propertyBlock == null)
+            {
+                _propertyBlock = new MaterialPropertyBlock();
+            }
         }
 
         public void BuildShape()
@@ -151,7 +153,6 @@ namespace ShapeFill
         private async UniTaskVoid FillAsync(CancellationToken cancellationToken, int target)
         {
             IReadOnlyList<Vector2Int> fillCells = _gridShape.FillCells;
-            int totalCells = fillCells.Count;
 
             while (_fillIndex < target)
             {
@@ -162,16 +163,17 @@ namespace ShapeFill
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                SpawnFillCube(fillCells[_fillIndex], totalCells);
+                SpawnFillCube(fillCells[_fillIndex], target);
                 _fillIndex++;
 
                 await UniTask.Delay((int)(_spawnInterval * 1000f), cancellationToken: cancellationToken);
             }
 
+            ProgressUpdated?.Invoke(1f);
             _isFilling = false;
         }
 
-        private void SpawnFillCube(Vector2Int cell, int totalCells)
+        private void SpawnFillCube(Vector2Int cell, int target)
         {
             FlyingCube fillCube = Instantiate(_cubePrefab, _spawnPosition, UnityEngine.Random.rotation, _cubesParent);
             fillCube.transform.localScale = Vector3.one * _gridShape.CellSize;
@@ -180,11 +182,11 @@ namespace ShapeFill
             SetCubeColor(fillCube.gameObject, pixelColor);
 
             fillCube.Arrived += OnCubeArrived;
-            fillCube.Launch(_gridShape.GridToWorld(cell.x, cell.y), _flightDuration, _spinSpeed);
+            fillCube.Launch(_gridShape.GridToWorld(cell.x, cell.y), _flightDuration);
 
             _spawnedCubes.Add(fillCube.gameObject);
 
-            ProgressUpdated?.Invoke((float)_fillIndex / totalCells);
+            ProgressUpdated?.Invoke((float)_fillIndex / target);
         }
 
         private void OnCubeArrived(FlyingCube cube)

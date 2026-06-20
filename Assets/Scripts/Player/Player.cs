@@ -76,8 +76,8 @@ public sealed class Player : MonoBehaviour, ITarget
                 "Player.ConvertToWorldDirection requires _cameraTransform to be assigned. The camera transform is null.");
         }
 
-        Vector3 forward = _cameraTransform.forward;
-        Vector3 right = _cameraTransform.right;
+        Vector3 forward = Vector3.forward;
+        Vector3 right = Vector3.right;
 
         forward.y = 0f;
         right.y = 0f;

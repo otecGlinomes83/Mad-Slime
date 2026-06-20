@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace ShapeFill
 {
-    [RequireComponent(typeof(GridShape))]
+    [RequireComponent(typeof(GridBuilder))]
     [RequireComponent(typeof(ShapeFiller))]
     public sealed class ShapeFillOrchestrator : MonoBehaviour
     {
-        private GridShape _gridShape;
+        private GridBuilder _gridShape;
         private ShapeFiller _shapeFiller;
 
         public int RequiredFillCount => _gridShape.FillCells.Count;
@@ -16,7 +16,7 @@ namespace ShapeFill
 
         private void Awake()
         {
-            _gridShape = GetComponent<GridShape>();
+            _gridShape = GetComponent<GridBuilder>();
             _shapeFiller = GetComponent<ShapeFiller>();
 
             if (_gridShape == null)
@@ -46,6 +46,7 @@ namespace ShapeFill
 
         public void Build()
         {
+            _shapeFiller.Initialize();
             _gridShape.Build();
             _shapeFiller.BuildShape();
         }

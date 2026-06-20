@@ -6,26 +6,24 @@ namespace UI
 {
     public sealed class QuotaUI : MonoBehaviour
     {
-        [SerializeField] private QuotaTreker _quotaTreker;
         [SerializeField] private QuotaPlateUI _platePrefab;
         [SerializeField] private RectTransform _container;
         [SerializeField] private float _verticalSpacing = 60f;
 
         private readonly List<QuotaPlateUI> _plates = new List<QuotaPlateUI>();
-
-        private void OnEnable()
-        {
-            _quotaTreker.QuotaChanged += OnQuotaChanged;
-        }
+        private QuotaTracker _quotaTracker;
 
         private void OnDisable()
         {
-            _quotaTreker.QuotaChanged -= OnQuotaChanged;
+            _quotaTracker.QuotaChanged -= OnQuotaChanged;
         }
 
-        private void Start()
+        public void Setup(QuotaTracker quotaTreker)
         {
-            IReadOnlyList<QuotaEntry> entries = _quotaTreker.Entries;
+            _quotaTracker = quotaTreker;
+            _quotaTracker.QuotaChanged += OnQuotaChanged;
+
+            IReadOnlyList<QuotaEntry> entries = _quotaTracker.Entries;
 
             for (int i = 0; i < entries.Count; i++)
             {
@@ -38,7 +36,7 @@ namespace UI
                 _plates.Add(plate);
             }
 
-            _quotaTreker.ReportCurrentStates();
+            _quotaTracker.ReportCurrentStates();
         }
 
         private void OnQuotaChanged(int remaining, QuotaEntry entry)
