@@ -2,24 +2,13 @@
 
 public sealed class PlayerRespawner : MonoBehaviour
 {
-    [SerializeField] private Player _player;
+    [SerializeField] private Transform _playerTransform;
     [SerializeField] private Transform _spawnPoint;
 
-    private void Start()
+    public void Respawn()
     {
-        _player.Health.Died += OnPlayerDied;
-    }
-
-    private void OnDisable()
-    {
-        _player.Health.Died -= OnPlayerDied;
-    }
-
-    private void OnPlayerDied()
-    {
-        _player.gameObject.SetActive(false);
-        _player.transform.position = _spawnPoint.position;
-        _player.gameObject.SetActive(true);
-        _player.Reset();
+        _playerTransform.gameObject.SetActive(false);
+        _playerTransform.transform.position = _spawnPoint.position;
+        _playerTransform.gameObject.SetActive(true);
     }
 }

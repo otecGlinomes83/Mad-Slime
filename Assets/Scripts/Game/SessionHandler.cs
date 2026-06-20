@@ -1,60 +1,40 @@
-﻿using Camera;
-using PlayerInput;
-using ShapeFill;
+﻿using PlayerInput;
 using System;
-using System.Collections.Generic;
-using UI;
 using UnityEngine;
 
 namespace Game
 {
     public sealed class SessionHandler : MonoBehaviour
     {
+        [SerializeField] private Health.Health _health;
         [SerializeField] private Timer _timer;
-        [SerializeField] private ShapeFillOrchestrator _shapeFillOrchestrator;
-        [SerializeField] private FillCounter _fillCounter;
-        [SerializeField] private QuotaGenerator _quotaGenerator;
         [SerializeField] private float _timerDuration;
         [SerializeField] private QuotaTracker _quotaTracker;
-        [SerializeField] private QuotaUI _quotaUI;
-        [SerializeField] private CameraArriver _cameraArriver;
-        [SerializeField] private MonoBehaviour[] _spawnerSources;
         [SerializeField] private PlayerInputReader _inputReader;
 
-      //  [SerializeField] private CubeTweener _cubeTweener;
-
-        private readonly List<ISpawner> _spawners = new List<ISpawner>();
         private bool _isStarted;
         private bool _isFinished;
 
         private void Awake()
         {
             _timer.Setup(_timerDuration);
-            CollectSpawners();
-
-            if (_cameraArriver == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: CameraArriver is not assigned. Drag a CameraArriver into the _cameraArriver field in the inspector.");
-            }
+            Time.timeScale = 0f;
         }
 
         private void OnEnable()
         {
+            _health.Died += OnDie;
             _inputReader.MovementKeyPressed += Begin;
             _timer.Finished += OnFinished;
             _quotaTracker.QuotaCompleted += OnQuotaCompleted;
-            _cameraArriver.Arrived += OnCameraArrived;
-       //     _cubeTweener.AnimationFinished += OnAnimationFinished;
         }
 
         private void OnDisable()
         {
+            _health.Died -= OnDie;
             _inputReader.MovementKeyPressed -= Begin;
             _timer.Finished -= OnFinished;
             _quotaTracker.QuotaCompleted -= OnQuotaCompleted;
-            _cameraArriver.Arrived -= OnCameraArrived;
-         //   _cubeTweener.AnimationFinished -= OnAnimationFinished;
         }
 
         public void Begin()
@@ -65,10 +45,9 @@ namespace Game
             }
 
             _isStarted = true;
+            Time.timeScale = 1f;
+
             _timer.StartCount();
-            StartSpawners();
-            _quotaTracker.Initialize(_quotaGenerator.Generate(_shapeFillOrchestrator.RequiredFillCount));
-            _quotaUI.Setup(_quotaTracker);
         }
 
         public void Pause()
@@ -91,6 +70,12 @@ namespace Game
 
             _timer.Continue();
             Time.timeScale = 1f;
+        }
+
+        private void OnDie()
+        {
+            Pause();
+            //Покажи юай респауна и дай возможность игроку начать заново
         }
 
         private void OnFinished()
@@ -117,54 +102,7 @@ namespace Game
 
         private void StopGame()
         {
-            StopSpawners();
             _timer.Stop();
-            //_cubeTweener.MoveCube();
-            _cameraArriver.Move();
-        }
-
-        //private void OnAnimationFinished()
-        //{
-        //}
-
-        private void OnCameraArrived()
-        {
-            int fillCount = _fillCounter.Calculate(_shapeFillOrchestrator.RequiredFillCount);
-            _shapeFillOrchestrator.StartFilling(fillCount);
-        }
-
-        private void CollectSpawners()
-        {
-            for (int i = 0; i < _spawnerSources.Length; i++)
-            {
-                MonoBehaviour source = _spawnerSources[i];
-
-                if (source is ISpawner spawner)
-                {
-                    _spawners.Add(spawner);
-                    spawner.Setup();
-                }
-                else
-                {
-                    throw new InvalidOperationException($"SessionHandler: {source.name} does not implement ISpawner.");
-                }
-            }
-        }
-
-        private void StartSpawners()
-        {
-            for (int i = 0; i < _spawners.Count; i++)
-            {
-                _spawners[i].StartSpawn();
-            }
-        }
-
-        private void StopSpawners()
-        {
-            for (int i = 0; i < _spawners.Count; i++)
-            {
-                _spawners[i].StopSpawn();
-            }
         }
     }
 }
