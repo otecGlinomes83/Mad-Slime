@@ -59,14 +59,6 @@ namespace Health
             _timer.Finished -= OnIFramesTimerFinished;
         }
 
-        public void Reset()
-        {
-            _value = _maxValue;
-            _timer.Stop();
-            _isInvulnerable = false;
-            ValueChanged?.Invoke(_value);
-        }
-
         public void TryApplyDamage(int amount)
         {
             if (amount <= 0)

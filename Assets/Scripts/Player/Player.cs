@@ -1,8 +1,7 @@
-using System;
-using Item;
 using Health;
 using Interfaces;
 using PlayerInput;
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -14,6 +13,7 @@ using UnityEngine;
 public sealed class Player : MonoBehaviour, ITarget
 {
     [SerializeField] private PlayerInputReader _inputReader;
+    [SerializeField] private QuotaTracker _quotaTracker;
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private Collector _collector;
     [SerializeField] private Inventory _inventory;
@@ -45,7 +45,7 @@ public sealed class Player : MonoBehaviour, ITarget
     {
         _collector.ItemCollected -= OnItemCollected;
     }
-    
+
     private void Update()
     {
         Vector3 moveDirection = ConvertToWorldDirection(_inputReader.MoveInput);
@@ -54,17 +54,18 @@ public sealed class Player : MonoBehaviour, ITarget
         _rotator.Rotate(moveDirection);
     }
 
-    public void Reset()
-    {
-        _health.Reset();
-        _playerMass.Reset();
-        _inventory.Clear();
-        _mover.Reset();
-    }
-
     private void OnItemCollected(Item.Item item)
     {
-        _inventory.Add(item.Definition);
+        if (_quotaTracker.IsQuotaItem(item.Definition))
+        {
+            _inventory.IncreaseQuotaCount();
+            _quotaTracker.DecreaseQuota(item.Definition);
+        }
+        else
+        {
+            _inventory.IncreaseDefaultCount();
+        }
+
         _playerMass.Add(item.Mass);
     }
 

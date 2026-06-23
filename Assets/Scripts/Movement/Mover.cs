@@ -39,10 +39,4 @@ public sealed class Mover : MonoBehaviour
         _characterController.SimpleMove(_currentVelocity);
         
     }
-
-    public void Reset()
-    {
-        _currentVelocity = Vector3.zero;
-        _velocityRef = Vector3.zero;
-    }
 }

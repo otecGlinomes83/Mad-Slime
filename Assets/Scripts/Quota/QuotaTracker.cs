@@ -2,50 +2,45 @@
 using Quota;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public sealed class QuotaTracker : MonoBehaviour
 {
     [SerializeField] private List<QuotaEntry> _quota = new List<QuotaEntry>();
-    [SerializeField] private Inventory _inventory;
-    [SerializeField] private Health.Health _playerHealth;
-
-    public IReadOnlyList<QuotaEntry> Entries => _quota;
 
     public event Action QuotaCompleted;
     public event Action<int, QuotaEntry> QuotaChanged;
 
-    private void OnEnable()
-    {
-        _inventory.ItemAdded += OnItemAdded;
-        _inventory.Cleared += ReportCurrentStates;
-    }
+    public IReadOnlyList<QuotaEntry> Entries => _quota;
 
-    private void OnDisable()
-    {
-        _inventory.ItemAdded -= OnItemAdded;
-        _inventory.Cleared -= ReportCurrentStates;
-    }
-
-    public void ReportCurrentStates()
+    private void Awake()
     {
         for (int i = 0; i < _quota.Count; i++)
         {
-            Recalculate(_quota[i]);
+            QuotaChanged?.Invoke(_quota[i].TargetCount, _quota[i]);
         }
     }
 
-    public void Initialize(List<QuotaEntry> entries)
+    public void DecreaseQuota(ItemDefinition definition)
     {
-        if (entries == null)
+        for (int i = 0; i < _quota.Count; i++)
         {
-            throw new ArgumentNullException(nameof(entries),
-                "QuotaTracker.Initialize requires entries to be non-null.");
+            QuotaEntry entry = _quota[i];
+
+            if (entry.Definition != definition)
+            {
+                continue;
+            }
+
+            _quota[i].Decrease();
+            QuotaChanged?.Invoke(_quota[i].TargetCount, _quota[i]);
         }
 
-        _quota.Clear();
-        _quota.AddRange(entries);
-        ReportCurrentStates();
+        if (_quota.All(quotaEntry => quotaEntry.TargetCount <= 0))
+        {
+            QuotaCompleted?.Invoke();
+        }
     }
 
     public bool IsQuotaItem(ItemDefinition definition)
@@ -64,61 +59,5 @@ public sealed class QuotaTracker : MonoBehaviour
         }
 
         return false;
-    }
-
-    private void OnItemAdded(ItemDefinition definition)
-    {
-        for (int i = 0; i < _quota.Count; i++)
-        {
-            QuotaEntry entry = _quota[i];
-
-            if (entry.Definition != definition)
-            {
-                continue;
-            }
-
-            Recalculate(entry);
-        }
-
-        if (IsAllQuotaComplete())
-        {
-            QuotaCompleted?.Invoke();
-        }
-    }
-
-    private void Recalculate(QuotaEntry entry)
-    {
-        int collected;
-        if (_inventory.IsContains(entry.Definition))
-        {
-            collected = _inventory.GetCount(entry.Definition);
-        }
-        else
-        {
-            collected = 0;
-        }
-
-        int remaining = Mathf.Max(0, entry.TargetCount - collected);
-        QuotaChanged?.Invoke(remaining, entry);
-    }
-
-    private bool IsAllQuotaComplete()
-    {
-        for (int i = 0; i < _quota.Count; i++)
-        {
-            QuotaEntry quotaEntry = _quota[i];
-
-            if (_inventory.IsContains(quotaEntry.Definition) == false)
-            {
-                return false;
-            }
-
-            if (_inventory.GetCount(quotaEntry.Definition) < quotaEntry.TargetCount)
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

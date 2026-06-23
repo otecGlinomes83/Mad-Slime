@@ -28,13 +28,6 @@ public class PlayerMass : MonoBehaviour, IMassHolder
         _playerHealth.Damaged -= Decrease;
     }
 
-    public void Reset()
-    {
-        int current = _mass;
-        _mass = _defaultMass;
-        Changed?.Invoke(current, _defaultMass);
-    }
-
     public void Setup(int mass)
     {
         if (mass < 0)
@@ -49,7 +42,7 @@ public class PlayerMass : MonoBehaviour, IMassHolder
     {
         if (amount < 0)
             throw new ArgumentOutOfRangeException(nameof(amount),
-                "PlayerMass.Add requires amount to be non-negative. The provided value was negative.");
+                "PlayerMass.Decrease requires amount to be non-negative. The provided value was negative.");
 
         int previous = _mass;
         _mass += amount;

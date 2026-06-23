@@ -13,11 +13,6 @@ namespace UI
 
         private readonly List<QuotaPlateUI> _plates = new List<QuotaPlateUI>();
 
-        private void OnDisable()
-        {
-            _quotaTracker.QuotaChanged -= OnQuotaChanged;
-        }
-
         private void Awake()
         {
             _quotaTracker.QuotaChanged += OnQuotaChanged;
@@ -34,8 +29,11 @@ namespace UI
 
                 _plates.Add(plate);
             }
+        }
 
-            _quotaTracker.ReportCurrentStates();
+        private void OnDisable()
+        {
+            _quotaTracker.QuotaChanged -= OnQuotaChanged;
         }
 
         private void OnQuotaChanged(int remaining, QuotaEntry entry)

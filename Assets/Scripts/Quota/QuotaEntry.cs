@@ -32,14 +32,14 @@ namespace Quota
             _targetCount = targetCount;
         }
 
-        public void Add(int value)
+        public void Decrease()
         {
-            if (value <= 0)
+            if (TargetCount <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), "QuotaEntry.Add value must be positive");
+                throw new ArgumentOutOfRangeException(nameof(TargetCount), "Target Count lower than 0");
             }
 
-            _targetCount += value;
+            _targetCount--;
         }
     }
 }
