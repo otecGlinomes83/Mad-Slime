@@ -2,7 +2,7 @@
 using Game;
 using UnityEngine;
 
-namespace Health
+namespace Assets.Scripts.HealthSystem
 {
     public sealed class Health : MonoBehaviour
     {
@@ -31,7 +31,7 @@ namespace Health
 
             if (_value < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(_value), "Health value cannot be negative");
+                throw new ArgumentOutOfRangeException(nameof(_value), "HealthSystem value cannot be negative");
             }
 
             _value = _maxValue;
@@ -98,14 +98,23 @@ namespace Health
                 return;
             }
 
-            if (_value <= 0)
-            {
-                return;
-            }
-
             _value = Mathf.Min(_maxValue, _value + amount);
 
             ValueChanged?.Invoke(_value);
+        }
+
+        public void TurnOnInvulnerabilityWindow(float time)
+        {
+            if (time <= 0f)
+            {
+                throw new ArgumentOutOfRangeException("time");
+            }
+
+            _timer.Stop();
+            _timer.Setup(time);
+
+            _isInvulnerable = true;
+            _timer.StartCount();
         }
 
         private void OnIFramesTimerFinished()

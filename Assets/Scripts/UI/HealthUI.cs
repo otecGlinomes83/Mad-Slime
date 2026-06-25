@@ -1,5 +1,5 @@
+using Assets.Scripts.HealthSystem;
 using System;
-using Health;
 using TMPro;
 using UnityEngine;
 
@@ -7,7 +7,7 @@ namespace UI
 {
     public sealed class HealthUI : MonoBehaviour
     {
-        [SerializeField] private Health.Health _health;
+        [SerializeField] private Health _health;
         [SerializeField] private TMP_Text _valueText;
 
         private void Awake()
@@ -15,7 +15,7 @@ namespace UI
             if (_health == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Health is not assigned. Drag a Health component into the _health field.");
+                    $"{name}: HealthSystem is not assigned. Drag a HealthSystem component into the _health field.");
             }
 
             if (_valueText == null)

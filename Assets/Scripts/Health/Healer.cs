@@ -2,7 +2,7 @@ using System;
 using Game;
 using UnityEngine;
 
-namespace Health
+namespace Assets.Scripts.HealthSystem
 {
     public sealed class Healer : MonoBehaviour
     {
@@ -20,7 +20,7 @@ namespace Health
             if (_health == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Health component is missing. Attach a Health component to the same GameObject.");
+                    $"{name}: HealthSystem component is missing. Attach a HealthSystem component to the same GameObject.");
             }
 
             if (_timer == null)
@@ -41,6 +41,11 @@ namespace Health
         {
             _health.InvulnerabilityEnded -= OnInvulnerabilityEnded;
             _timer.Finished -= OnTimerFinished;
+        }
+
+        public void Heal()
+        {
+            _health.Heal(_health.MaxValue);
         }
 
         private void OnDied()

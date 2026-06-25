@@ -1,64 +1,26 @@
-using System;
 using UnityEngine;
 
 namespace ShapeFill
 {
     [RequireComponent(typeof(GridBuilder))]
     [RequireComponent(typeof(ShapeFiller))]
+    [RequireComponent(typeof(FillCounter))]
     public sealed class ShapeFillOrchestrator : MonoBehaviour
     {
-        private GridBuilder _gridShape;
+        private GridBuilder _gridBuilder;
         private ShapeFiller _shapeFiller;
-
-        public int RequiredFillCount => _gridShape.FillCells.Count;
-
-        public event Action<float> ProgressUpdated;
+        private FillCounter _fillCounter;
 
         private void Awake()
         {
-            _gridShape = GetComponent<GridBuilder>();
+            _gridBuilder = GetComponent<GridBuilder>();
             _shapeFiller = GetComponent<ShapeFiller>();
+            _fillCounter = GetComponent<FillCounter>();
 
-            if (_gridShape == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: GridShape is required but not found on the same GameObject.");
-            }
-
-            if (_shapeFiller == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: ShapeFiller is required but not found on the same GameObject.");
-            }
-
-            Build();
-        }
-
-        private void OnEnable()
-        {
-            _shapeFiller.ProgressUpdated += OnFillerProgressUpdated;
-        }
-
-        private void OnDisable()
-        {
-            _shapeFiller.ProgressUpdated -= OnFillerProgressUpdated;
-        }
-
-        public void Build()
-        {
             _shapeFiller.Initialize();
-            _gridShape.Build();
+            _gridBuilder.Build();
             _shapeFiller.BuildShape();
-        }
-
-        public void StartFilling(int cubesCount)
-        {
-            _shapeFiller.Fill(cubesCount);
-        }
-
-        private void OnFillerProgressUpdated(float progress)
-        {
-            ProgressUpdated?.Invoke(progress);
+            _shapeFiller.Fill(_fillCounter.CalculateFill(_gridBuilder.FillCells.Count));
         }
     }
 }

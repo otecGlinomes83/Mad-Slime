@@ -10,9 +10,12 @@ namespace Quota
         [SerializeField] private ItemDefinition _definition;
         [SerializeField] private int _targetCount = 1;
 
-        public ItemDefinition Definition => _definition;
+        private int _collected;
 
+        public ItemDefinition Definition => _definition;
         public int TargetCount => _targetCount;
+        public int Collected => _collected;
+        public int Remaining => Mathf.Max(0, _targetCount - _collected);
 
         public QuotaEntry(ItemDefinition definition, int targetCount)
         {
@@ -32,14 +35,9 @@ namespace Quota
             _targetCount = targetCount;
         }
 
-        public void Decrease()
+        public void RegisterCollected()
         {
-            if (TargetCount <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(TargetCount), "Target Count lower than 0");
-            }
-
-            _targetCount--;
+            _collected++;
         }
     }
 }

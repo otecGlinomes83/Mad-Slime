@@ -1,4 +1,4 @@
-using Health;
+using Assets.Scripts.HealthSystem;
 using Interfaces;
 using PlayerInput;
 using System;
@@ -8,7 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(Mover))]
 [RequireComponent(typeof(Rotator))]
 [RequireComponent(typeof(PlayerMass))]
-[RequireComponent(typeof(Health.Health))]
+[RequireComponent(typeof(Health))]
 [RequireComponent(typeof(Healer))]
 public sealed class Player : MonoBehaviour, ITarget
 {
@@ -21,18 +21,18 @@ public sealed class Player : MonoBehaviour, ITarget
     private Mover _mover;
     private Rotator _rotator;
     private PlayerMass _playerMass;
-    private Health.Health _health;
+    private Health _health;
     private Healer _healer;
 
     public Transform Transform => transform;
-    public Health.Health Health => _health;
+    public Health Health => _health;
 
     private void Awake()
     {
         _mover = GetComponent<Mover>();
         _rotator = GetComponent<Rotator>();
         _playerMass = GetComponent<PlayerMass>();
-        _health = GetComponent<Health.Health>();
+        _health = GetComponent<Health>();
         _healer = GetComponent<Healer>();
     }
 
@@ -59,7 +59,7 @@ public sealed class Player : MonoBehaviour, ITarget
         if (_quotaTracker.IsQuotaItem(item.Definition))
         {
             _inventory.IncreaseQuotaCount();
-            _quotaTracker.DecreaseQuota(item.Definition);
+            _quotaTracker.RegisterCollected(item.Definition);
         }
         else
         {

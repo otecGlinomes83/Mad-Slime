@@ -100,10 +100,13 @@ namespace Game
 
                     await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
 
-                    float delta = Time.deltaTime;
-                    _remaining -= delta;
+                    if (Time.timeScale > 0f)
+                    {
+                        float delta = Time.deltaTime;
+                        _remaining -= delta;
 
-                    Ticked?.Invoke(_remaining);
+                        Ticked?.Invoke(_remaining);
+                    }
                 }
 
                 _remaining = 0f;

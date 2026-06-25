@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using YG;
 
 public sealed class QuotaTracker : MonoBehaviour
 {
@@ -12,32 +13,43 @@ public sealed class QuotaTracker : MonoBehaviour
     public event Action QuotaCompleted;
     public event Action<int, QuotaEntry> QuotaChanged;
 
-    public IReadOnlyList<QuotaEntry> Entries => _quota;
-
     private void Awake()
     {
         for (int i = 0; i < _quota.Count; i++)
         {
-            QuotaChanged?.Invoke(_quota[i].TargetCount, _quota[i]);
+            YG2.saves.TargetQuotaCount += _quota[i].TargetCount;
         }
     }
 
-    public void DecreaseQuota(ItemDefinition definition)
+    private void Start()
     {
         for (int i = 0; i < _quota.Count; i++)
         {
-            QuotaEntry entry = _quota[i];
+            QuotaChanged?.Invoke(_quota[i].Remaining, _quota[i]);
+        }
+    }
 
-            if (entry.Definition != definition)
-            {
-                continue;
-            }
-
-            _quota[i].Decrease();
-            QuotaChanged?.Invoke(_quota[i].TargetCount, _quota[i]);
+    public void RegisterCollected(ItemDefinition definition)
+    {
+        if (definition == null)
+        {
+            return;
         }
 
-        if (_quota.All(quotaEntry => quotaEntry.TargetCount <= 0))
+        int entryIndex = FindEntryIndex(definition);
+
+        if (entryIndex < 0)
+        {
+            return;
+        }
+
+        QuotaEntry entry = _quota[entryIndex];
+
+        entry.RegisterCollected();
+
+        QuotaChanged?.Invoke(entry.Remaining, entry);
+
+        if (_quota.All(entry => entry.Collected >= entry.TargetCount))
         {
             QuotaCompleted?.Invoke();
         }
@@ -50,14 +62,27 @@ public sealed class QuotaTracker : MonoBehaviour
             return false;
         }
 
+        int entryIndex = FindEntryIndex(definition);
+
+        if (entryIndex < 0)
+        {
+            return false;
+        }
+
+        QuotaEntry entry = _quota[entryIndex];
+        return entry.Collected < entry.TargetCount;
+    }
+
+    private int FindEntryIndex(ItemDefinition definition)
+    {
         for (int i = 0; i < _quota.Count; i++)
         {
             if (_quota[i].Definition == definition)
             {
-                return true;
+                return i;
             }
         }
 
-        return false;
+        return -1;
     }
 }

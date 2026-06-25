@@ -1,84 +1,80 @@
-﻿using PlayerInput;
+﻿using Assets.Scripts.HealthSystem;
+using PlayerInput;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Game
 {
     public sealed class SessionHandler : MonoBehaviour
     {
-        [SerializeField] private Health.Health _health;
+        [SerializeField] private Health _health;
+        [SerializeField] private Healer _healer;
         [SerializeField] private Timer _timer;
         [SerializeField] private float _timerDuration;
         [SerializeField] private QuotaTracker _quotaTracker;
         [SerializeField] private PlayerInputReader _inputReader;
+        [SerializeField] private Pauser _pauser;
 
         private bool _isStarted;
         private bool _isFinished;
 
+        public event Action PlayerDied;
+
         private void Awake()
         {
             _timer.Setup(_timerDuration);
-            Time.timeScale = 0f;
+            _pauser.RequestPause();
         }
 
         private void OnEnable()
         {
-            _health.Died += OnDie;
             _inputReader.MovementKeyPressed += Begin;
-            _timer.Finished += OnFinished;
+            _timer.Finished += OnTimeOut;
             _quotaTracker.QuotaCompleted += OnQuotaCompleted;
+
+            _health.Died += OnPlayerDied;
         }
 
         private void OnDisable()
         {
-            _health.Died -= OnDie;
             _inputReader.MovementKeyPressed -= Begin;
-            _timer.Finished -= OnFinished;
+            _timer.Finished -= OnTimeOut;
             _quotaTracker.QuotaCompleted -= OnQuotaCompleted;
+            _health.Died -= OnPlayerDied;
         }
 
-        public void Begin()
+        public void Revive()
+        {
+            _healer.Heal();
+            _health.TurnOnInvulnerabilityWindow(5f);
+        }
+
+        public void Restart()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        private void OnPlayerDied()
+        {
+            PlayerDied?.Invoke();
+        }
+
+        private void Begin()
         {
             if (_isStarted == true || _isFinished == true)
             {
                 return;
             }
 
-            _isStarted = true;
-            Time.timeScale = 1f;
+            _pauser.RequestResume();
 
+            _isStarted = true;
             _timer.StartCount();
         }
 
-        public void Pause()
-        {
-            if (_isStarted == false || _isFinished == true)
-            {
-                return;
-            }
 
-            _timer.Stop();
-            Time.timeScale = 0f;
-        }
-
-        public void Resume()
-        {
-            if (_isStarted == false || _isFinished == true)
-            {
-                return;
-            }
-
-            _timer.Continue();
-            Time.timeScale = 1f;
-        }
-
-        private void OnDie()
-        {
-            Pause();
-            //Покажи юай респауна и дай возможность игроку начать заново
-        }
-
-        private void OnFinished()
+        private void OnTimeOut()
         {
             if (_isFinished == true)
             {
@@ -86,7 +82,7 @@ namespace Game
             }
 
             _isFinished = true;
-            StopGame();
+            FinishGame();
         }
 
         private void OnQuotaCompleted()
@@ -97,12 +93,13 @@ namespace Game
             }
 
             _isFinished = true;
-            StopGame();
+            FinishGame();
         }
 
-        private void StopGame()
+        private void FinishGame()
         {
             _timer.Stop();
+            SceneManager.LoadScene("FillTest");
         }
     }
 }

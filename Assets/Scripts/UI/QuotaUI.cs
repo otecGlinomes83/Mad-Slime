@@ -12,23 +12,12 @@ namespace UI
         [SerializeField] private float _verticalSpacing = 60f;
 
         private readonly List<QuotaPlateUI> _plates = new List<QuotaPlateUI>();
+        private readonly Dictionary<QuotaEntry, QuotaPlateUI> _platesByEntry = new Dictionary<QuotaEntry, QuotaPlateUI>();
+        private int _nextPlateIndex;
 
-        private void Awake()
+        private void OnEnable()
         {
             _quotaTracker.QuotaChanged += OnQuotaChanged;
-
-            IReadOnlyList<QuotaEntry> entries = _quotaTracker.Entries;
-
-            for (int i = 0; i < entries.Count; i++)
-            {
-                QuotaEntry entry = entries[i];
-
-                QuotaPlateUI plate = Instantiate(_platePrefab, _container);
-                plate.transform.localPosition = new Vector3(0f, -i * _verticalSpacing, 0f);
-                plate.Setup(entry);
-
-                _plates.Add(plate);
-            }
         }
 
         private void OnDisable()
@@ -38,18 +27,31 @@ namespace UI
 
         private void OnQuotaChanged(int remaining, QuotaEntry entry)
         {
-            for (int i = 0; i < _plates.Count; i++)
+            if (TryGetPlate(entry, out QuotaPlateUI plate) == false)
             {
-                QuotaPlateUI plate = _plates[i];
-
-                if (plate.Entry != entry)
-                {
-                    continue;
-                }
-
-                plate.UpdateCount(remaining);
-                return;
+                plate = CreatePlate(entry);
             }
+
+            plate.UpdateCount(remaining);
+        }
+
+        private bool TryGetPlate(QuotaEntry entry, out QuotaPlateUI plate)
+        {
+            return _platesByEntry.TryGetValue(entry, out plate);
+        }
+
+        private QuotaPlateUI CreatePlate(QuotaEntry entry)
+        {
+            QuotaPlateUI newPlate = Instantiate(_platePrefab, _container);
+            newPlate.transform.localPosition = new Vector3(0f, -_nextPlateIndex * _verticalSpacing, 0f);
+
+            newPlate.Setup(entry);
+
+            _plates.Add(newPlate);
+            _platesByEntry[entry] = newPlate;
+            _nextPlateIndex++;
+
+            return newPlate;
         }
     }
 }

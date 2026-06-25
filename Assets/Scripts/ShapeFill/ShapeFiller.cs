@@ -32,7 +32,7 @@ namespace ShapeFill
             if (_gridShape == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: GridShape is not assigned. Drag a GridShape component into the _gridShape field in the inspector.");
+                    $"{name}: GridShape is not assigned. Drag a GridShape component into the _gridBuilder field in the inspector.");
             }
 
             if (_cubePrefab == null)

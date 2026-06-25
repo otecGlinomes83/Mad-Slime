@@ -1,17 +1,15 @@
 using UnityEngine;
+using YG;
 
 public sealed class Inventory : MonoBehaviour
 {
-    public int QuotaCount { get; private set; }
-    public int DefaultCount { get; private set; }
-
     public void IncreaseDefaultCount()
     {
-        DefaultCount++;
+        YG2.saves.DefaultCount++;
     }
 
     public void IncreaseQuotaCount()
     {
-        QuotaCount++;
+        YG2.saves.QuotaCount++;
     }
 }

@@ -1,4 +1,4 @@
-using Health;
+using Assets.Scripts.HealthSystem;
 using UnityEngine;
 
 namespace Interfaces
@@ -6,6 +6,6 @@ namespace Interfaces
     public interface ITarget
     {
         Transform Transform { get; }
-        Health.Health Health { get; }
+        Health Health { get; }
     }
 }

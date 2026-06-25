@@ -1,12 +1,12 @@
-﻿using System;
-using Health;
+﻿using Assets.Scripts.HealthSystem;
+using System;
 using UnityEngine;
 
 public class PlayerMass : MonoBehaviour, IMassHolder
 {
     [SerializeField] private int _mass;
     [SerializeField] private int _defaultMass;
-    [SerializeField] private Health.Health _playerHealth;
+    [SerializeField] private Health _playerHealth;
     [SerializeField] private int _damageAmount = 5;
 
     public int Mass => _mass;
