@@ -1,7 +1,10 @@
 ﻿using Assets.Scripts.HealthSystem;
 using Game;
+using ShapeFill;
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.UI
@@ -72,5 +75,28 @@ namespace Assets.Scripts.UI
             DeathMenu deathMenu = Instantiate(_deathMenuPrefab);
             deathMenu.Initialize(_pauser, _sessionHandler.Revive, _sessionHandler.Restart);
         }
+    }
+
+    public class FillUIFabric : MonoBehaviour
+    {
+        [SerializeField] private ShapeFillOrchestrator _fillOrchestrator;
+        [SerializeField] private Button _pauseButton;
+
+        [SerializeField] private PauseMenu _pauseMenu;
+        [SerializeField] private Pauser _pauser;
+    }
+
+    public class FinishMenu: MonoBehaviour
+    {
+        [SerializeField] private Button _nextLevelButton;
+        [SerializeField] private Button _restartButton;
+    }
+
+    public class NotFinishMenu : MonoBehaviour
+    {
+        [SerializeField] private Button _restartButton;
+        [SerializeField] private Button _nextLevelButtonForADS;//тут будет предложение пройти уровень за рекламу
+
+
     }
 }

@@ -10,6 +10,7 @@ namespace Game
     {
         [SerializeField] private Health _health;
         [SerializeField] private Healer _healer;
+        [SerializeField] private LevelTransitor _levelTransitor;
         [SerializeField] private Timer _timer;
         [SerializeField] private float _timerDuration;
         [SerializeField] private QuotaTracker _quotaTracker;
@@ -52,7 +53,7 @@ namespace Game
 
         public void Restart()
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            _levelTransitor.Restart();
         }
 
         private void OnPlayerDied()
@@ -99,7 +100,12 @@ namespace Game
         private void FinishGame()
         {
             _timer.Stop();
-            SceneManager.LoadScene("FillTest");
+            _levelTransitor.LoadNext();
         }
+    }
+
+    public class FillSessionHandler:MonoBehaviour
+    {
+
     }
 }
