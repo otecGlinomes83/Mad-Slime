@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using YG;
 
 namespace Game
 {
@@ -10,11 +11,6 @@ namespace Game
 
         public bool IsHasPrevious => string.IsNullOrEmpty(_previousScene) == false;
         public bool IsHasNext => string.IsNullOrEmpty(_nextScene) == false;
-
-        private void Awake()
-        {
-            DontDestroyOnLoad(gameObject);
-        }
 
         public void Restart()
         {

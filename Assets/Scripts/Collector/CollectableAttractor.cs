@@ -28,7 +28,7 @@ public sealed class CollectableAttractor : MonoBehaviour
         else
         {
             throw new InvalidOperationException(
-                $"SessionHandler: {_massHolderSource.name} does not implement IMassHolder.");
+                $"GameplaySessionHandler: {_massHolderSource.name} does not implement IMassHolder.");
         }
     }
 

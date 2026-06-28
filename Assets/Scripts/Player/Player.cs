@@ -14,7 +14,6 @@ public sealed class Player : MonoBehaviour, ITarget
 {
     [SerializeField] private PlayerInputReader _inputReader;
     [SerializeField] private QuotaTracker _quotaTracker;
-    [SerializeField] private Transform _cameraTransform;
     [SerializeField] private Collector _collector;
     [SerializeField] private Inventory _inventory;
 
@@ -71,12 +70,6 @@ public sealed class Player : MonoBehaviour, ITarget
 
     private Vector3 ConvertToWorldDirection(Vector2 input)
     {
-        if (_cameraTransform == null)
-        {
-            throw new InvalidOperationException(
-                "Player.ConvertToWorldDirection requires _cameraTransform to be assigned. The camera transform is null.");
-        }
-
         Vector3 forward = Vector3.forward;
         Vector3 right = Vector3.right;
 

@@ -23,7 +23,7 @@ public sealed class Collector : MonoBehaviour
         else
         {
             throw new InvalidOperationException(
-                $"SessionHandler: {_massHolderSource.name} does not implement IMassHolder.");
+                $"GameplaySessionHandler: {_massHolderSource.name} does not implement IMassHolder.");
         }
     }
 

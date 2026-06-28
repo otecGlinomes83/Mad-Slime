@@ -12,20 +12,26 @@ namespace ShapeFill
         [SerializeField] private FlyingCube _cubePrefab;
         [SerializeField] private Transform _cubesParent;
         [SerializeField] private SpriteRenderer _ghostBackground;
+
         [SerializeField] private Color _ghostColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
-        [SerializeField] private float _spawnInterval = 0.04f;
-        [SerializeField] private float _flightDuration = 0.5f;
         [SerializeField] private Vector3 _spawnPosition;
         [SerializeField] private Color _borderColor = Color.black;
 
-        private MaterialPropertyBlock _propertyBlock;
+        [SerializeField] private float _spawnInterval = 0.04f;
+        [SerializeField] private float _flightDuration = 0.5f;
+
         private readonly List<GameObject> _spawnedCubes = new List<GameObject>();
+
+        private MaterialPropertyBlock _propertyBlock;
+
         private int _fillIndex;
+        private int _arrivedCount;
+        private int _currentTarget;
         private bool _isFilling;
 
         public int RequiredFillCount => _gridShape.FillCells.Count;
 
-        public event Action<float> ProgressUpdated;
+        public event Action<float> FillCompleted;
 
         public void Initialize()
         {
@@ -66,15 +72,18 @@ namespace ShapeFill
 
         public void Fill(int cubesCount)
         {
-            if (cubesCount <= 0)
+            int target = Mathf.Clamp(cubesCount, 0, RequiredFillCount);
+
+            if (target <= 0)
             {
+                FillCompleted?.Invoke(0f);
                 return;
             }
 
-            int target = Mathf.Clamp(cubesCount, 0, RequiredFillCount);
-
             StopFill();
             _fillIndex = 0;
+            _arrivedCount = 0;
+            _currentTarget = target;
             _isFilling = true;
             FillAsync(this.GetCancellationTokenOnDestroy(), target).Forget();
         }
@@ -169,7 +178,6 @@ namespace ShapeFill
                 await UniTask.Delay((int)(_spawnInterval * 1000f), cancellationToken: cancellationToken);
             }
 
-            ProgressUpdated?.Invoke(1f);
             _isFilling = false;
         }
 
@@ -185,13 +193,17 @@ namespace ShapeFill
             fillCube.Launch(_gridShape.GridToWorld(cell.x, cell.y), _flightDuration);
 
             _spawnedCubes.Add(fillCube.gameObject);
-
-            ProgressUpdated?.Invoke((float)_fillIndex / target);
         }
 
         private void OnCubeArrived(FlyingCube cube)
         {
             cube.Arrived -= OnCubeArrived;
+            _arrivedCount++;
+
+            if (_arrivedCount >= _currentTarget)
+            {
+                FillCompleted?.Invoke((float)_currentTarget / RequiredFillCount);
+            }
         }
     }
 }

@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FillTest.unity
     guid: 2672c9bfeaa5e6e419272ffc61aceeaf
+  - enabled: 1
+    path: Assets/Scenes/GameplayTest2.unity
+    guid: 84651082bab3e05428f6b524e66221e3
+  - enabled: 1
+    path: Assets/Scenes/FillTest2.unity
+    guid: 8183b8c159c6db642a39fb3d7fdba8d7
   m_configObjects: {}

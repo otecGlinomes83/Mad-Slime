@@ -7,8 +7,7 @@ public class PlayerMass : MonoBehaviour, IMassHolder
     [SerializeField] private int _mass;
     [SerializeField] private int _defaultMass;
     [SerializeField] private Health _playerHealth;
-    [SerializeField] private int _damageAmount = 5;
-
+    [SerializeField] private int _massPickupDivisor = 4;
     public int Mass => _mass;
 
     public event Action<int, int> Changed;
@@ -16,16 +15,6 @@ public class PlayerMass : MonoBehaviour, IMassHolder
     private void Awake()
     {
         _mass = _defaultMass;
-    }
-
-    private void OnEnable()
-    {
-        _playerHealth.Damaged += Decrease;
-    }
-
-    private void OnDisable()
-    {
-        _playerHealth.Damaged -= Decrease;
     }
 
     public void Setup(int mass)
@@ -45,20 +34,11 @@ public class PlayerMass : MonoBehaviour, IMassHolder
                 "PlayerMass.Decrease requires amount to be non-negative. The provided value was negative.");
 
         int previous = _mass;
-        _mass += amount;
-        Changed?.Invoke(previous, _mass);
-    }
 
-    public void Decrease()
-    {
-        if (_damageAmount < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(_damageAmount),
-                "PlayerMass.Decrease requires _damageAmount to be non-negative. The value is negative.");
-        }
+        int scaledMass = Mathf.RoundToInt(amount / (float)_massPickupDivisor);
+        scaledMass = Mathf.Max(1, scaledMass);
 
-        int previous = _mass;
-        _mass = Mathf.Max(_mass - _damageAmount, _defaultMass);
+        _mass += scaledMass;
         Changed?.Invoke(previous, _mass);
     }
 }
