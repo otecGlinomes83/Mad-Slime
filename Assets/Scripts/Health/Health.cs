@@ -1,5 +1,6 @@
 ﻿using System;
 using Game;
+using Skills;
 using UnityEngine;
 
 namespace Assets.Scripts.HealthSystem
@@ -11,11 +12,13 @@ namespace Assets.Scripts.HealthSystem
         [SerializeField] private Timer _timer;
         [SerializeField] private float _invulnerabilityWindow = 0.5f;
         [SerializeField] private DodgeSkill _dodgeSkill;
+        [SerializeField] private SkillManager _skillManager;
 
         private bool _isInvulnerable;
 
         public event Action Died;
         public event Action Damaged;
+        public event Action DamageDodged;
         public event Action<int> ValueChanged;
         public event Action InvulnerabilityEnded;
 
@@ -72,9 +75,9 @@ namespace Assets.Scripts.HealthSystem
                 return;
             }
 
-            if (_dodgeSkill != null && _dodgeSkill.TryDodge() == true)
+            if (CanDodge() == true && _dodgeSkill.TryDodge() == true)
             {
-                Debug.Log("DODGED!!!");
+                DamageDodged?.Invoke();
                 _isInvulnerable = true;
                 _timer.Setup(_invulnerabilityWindow);
                 _timer.StartCount();
@@ -125,6 +128,21 @@ namespace Assets.Scripts.HealthSystem
 
             _isInvulnerable = true;
             _timer.StartCount();
+        }
+
+        private bool CanDodge()
+        {
+            if (_dodgeSkill == null)
+            {
+                return false;
+            }
+
+            if (_skillManager == null)
+            {
+                return false;
+            }
+
+            return _skillManager.IsUnlocked(SkillId.Dodge);
         }
 
         private void OnIFramesTimerFinished()

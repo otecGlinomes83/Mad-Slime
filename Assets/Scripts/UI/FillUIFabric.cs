@@ -1,5 +1,6 @@
 ﻿using Audio;
 using Game;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -49,7 +50,7 @@ namespace Assets.Scripts.UI
         private void OnPauseButtonClick()
         {
             PauseMenu pauseMenu = Instantiate(_pauseMenuPrefab);
-            pauseMenu.Initialize(_pauser, _mixerController);
+            pauseMenu.Initialize(_pauser, _mixerController, showRestart: false, restartAction: null);
         }
     }
 }

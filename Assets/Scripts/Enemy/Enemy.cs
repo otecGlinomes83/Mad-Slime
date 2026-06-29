@@ -1,6 +1,6 @@
 ﻿using Detectors;
 using Interfaces;
-using NPC.Prey;
+using NPC.Enemy;
 using UnityEngine;
 
 namespace NPC.Enemy

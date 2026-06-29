@@ -1,5 +1,6 @@
 ﻿using Audio;
 using Game;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,7 +47,7 @@ namespace Assets.Scripts.UI
         private void SpawnPauseMenu()
         {
             PauseMenu pauseMenu = Instantiate(_pauseMenuPrefab);
-            pauseMenu.Initialize(_pauser, _mixerController);
+            pauseMenu.Initialize(_pauser, _mixerController, showRestart: true, restartAction: _sessionHandler.Restart);
         }
 
         private void SpawnShopMenu()

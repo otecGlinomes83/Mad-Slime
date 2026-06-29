@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.HealthSystem;
+using Scriptables;
+using Skills;
 using System;
 using UnityEngine;
 
@@ -8,13 +10,17 @@ public class PlayerMass : MonoBehaviour, IMassHolder
     [SerializeField] private int _defaultMass;
     [SerializeField] private Health _playerHealth;
     [SerializeField] private int _massPickupDivisor = 4;
+    [SerializeField] private TierScalerConfig _tierConfig;
+
     public int Mass => _mass;
+    public ItemTier MaxUnlockedTier { get; private set; } = ItemTier.Small;
 
     public event Action<int, int> Changed;
 
     private void Awake()
     {
         _mass = _defaultMass;
+        RecalculateTier();
     }
 
     public void Setup(int mass)
@@ -25,6 +31,7 @@ public class PlayerMass : MonoBehaviour, IMassHolder
 
         _mass = mass;
         Changed?.Invoke(_defaultMass, _mass);
+        RecalculateTier();
     }
 
     public void Add(int amount)
@@ -40,5 +47,17 @@ public class PlayerMass : MonoBehaviour, IMassHolder
 
         _mass += scaledMass;
         Changed?.Invoke(previous, _mass);
+        RecalculateTier();
+    }
+
+    private void RecalculateTier()
+    {
+        if (_tierConfig == null)
+        {
+            MaxUnlockedTier = ItemTier.Small;
+            return;
+        }
+
+        MaxUnlockedTier = _tierConfig.GetUnlockedTier(_mass);
     }
 }

@@ -1,6 +1,7 @@
 using Assets.Scripts.HealthSystem;
 using Interfaces;
 using PlayerInput;
+using Skills;
 using System;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ public sealed class Player : MonoBehaviour, ITarget
     [SerializeField] private QuotaTracker _quotaTracker;
     [SerializeField] private Collector _collector;
     [SerializeField] private Inventory _inventory;
+    [SerializeField] private SprintSkill _sprintSkill;
 
     private Mover _mover;
     private Rotator _rotator;
@@ -57,7 +59,7 @@ public sealed class Player : MonoBehaviour, ITarget
 
     private void OnSprintPerformed()
     {
-        _mover.TryStartSprint();
+        _sprintSkill.Activate();
     }
 
     private void OnItemCollected(Item.Item item)

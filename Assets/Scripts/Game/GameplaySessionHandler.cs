@@ -3,6 +3,7 @@ using PlayerInput;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using YG;
 
 namespace Game
 {
@@ -24,8 +25,33 @@ namespace Game
 
         private void Awake()
         {
+            TrySetCurrentLevelFromScene();
             _timer.Setup(_timerDuration);
             _pauser.RequestPause();
+        }
+
+        private static void TrySetCurrentLevelFromScene()
+        {
+            string sceneName = SceneManager.GetActiveScene().name;
+
+            if (sceneName.StartsWith("Level") == false)
+            {
+                return;
+            }
+
+            string numberPart = sceneName.Substring("Level".Length);
+
+            if (int.TryParse(numberPart, out int level) == false)
+            {
+                return;
+            }
+
+            if (level <= 0)
+            {
+                return;
+            }
+
+            YG2.saves.CurrentLevel = level;
         }
 
         private void OnEnable()
@@ -73,7 +99,6 @@ namespace Game
             _isStarted = true;
             _timer.StartCount();
         }
-
 
         private void OnTimeOut()
         {

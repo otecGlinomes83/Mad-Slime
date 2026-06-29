@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
-using Item;
 using Cysharp.Threading.Tasks;
+using Interfaces;
+using Item;
 using UnityEngine;
 
 public sealed class Collector : MonoBehaviour
@@ -10,21 +11,19 @@ public sealed class Collector : MonoBehaviour
     [SerializeField] private ItemDetector _detector;
     [SerializeField] private float _absorptionDuration = 0.3f;
 
-    private IMassHolder _massHolder;
-    
+    private PlayerMass _massHolder;
+
     public event Action<Item.Item> ItemCollected;
 
     private void Awake()
     {
-        if (_massHolderSource.TryGetComponent(out IMassHolder massHolder))
-        {
-            _massHolder = massHolder;
-        }
-        else
+        if (_massHolderSource.TryGetComponent(out PlayerMass massHolder) == false)
         {
             throw new InvalidOperationException(
-                $"GameplaySessionHandler: {_massHolderSource.name} does not implement IMassHolder.");
+                $"Collector: {_massHolderSource.name} does not implement PlayerMass.");
         }
+
+        _massHolder = massHolder;
     }
 
     private void OnEnable()
@@ -39,7 +38,7 @@ public sealed class Collector : MonoBehaviour
 
     private void OnItemDetected(Item.Item item)
     {
-        if (_massHolder.Mass < item.Mass)
+        if ((int)item.Definition.Tier > (int)_massHolder.MaxUnlockedTier)
         {
             return;
         }

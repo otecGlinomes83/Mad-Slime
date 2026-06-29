@@ -1,7 +1,7 @@
 ﻿using Game;
 using UnityEngine;
 
-namespace NPC.Prey
+namespace NPC.Enemy
 {
     [RequireComponent(typeof(Timer))]
     public sealed class Wander : MonoBehaviour
