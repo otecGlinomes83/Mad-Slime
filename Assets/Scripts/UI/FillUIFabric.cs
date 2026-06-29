@@ -1,4 +1,5 @@
-﻿using Game;
+﻿using Audio;
+using Game;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,8 @@ namespace Assets.Scripts.UI
     public class FillUIFabric : MonoBehaviour
     {
         [SerializeField] private FillSessionHandler _sessionHandler;
+        [SerializeField] private AudioMixerController _mixerController;
+
         [SerializeField] private Button _pauseButton;
 
         [SerializeField] private PauseMenu _pauseMenuPrefab;
@@ -46,7 +49,7 @@ namespace Assets.Scripts.UI
         private void OnPauseButtonClick()
         {
             PauseMenu pauseMenu = Instantiate(_pauseMenuPrefab);
-            pauseMenu.Initialize(_pauser);
+            pauseMenu.Initialize(_pauser, _mixerController);
         }
     }
 }

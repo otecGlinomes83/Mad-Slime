@@ -10,6 +10,7 @@ namespace Assets.Scripts.HealthSystem
         [SerializeField] private int _value;
         [SerializeField] private Timer _timer;
         [SerializeField] private float _invulnerabilityWindow = 0.5f;
+        [SerializeField] private DodgeSkill _dodgeSkill;
 
         private bool _isInvulnerable;
 
@@ -68,6 +69,15 @@ namespace Assets.Scripts.HealthSystem
 
             if (_value <= 0)
             {
+                return;
+            }
+
+            if (_dodgeSkill != null && _dodgeSkill.TryDodge() == true)
+            {
+                Debug.Log("DODGED!!!");
+                _isInvulnerable = true;
+                _timer.Setup(_invulnerabilityWindow);
+                _timer.StartCount();
                 return;
             }
 

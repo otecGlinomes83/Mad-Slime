@@ -6,14 +6,14 @@ using UnityEngine.Audio;
 namespace Audio
 {
     [RequireComponent(typeof(AudioSource))]
-    [RequireComponent(typeof(FlyingCube))]
-    public sealed class FlyingCubeSound : MonoBehaviour
+    [RequireComponent(typeof(ShapeFiller))]
+    public sealed class FlyingCubeArrivalSound : MonoBehaviour
     {
         [SerializeField] private AudioMixerGroup _group;
         [SerializeField] private AudioClip _clip;
 
         private AudioSource _source;
-        private FlyingCube _cube;
+        private ShapeFiller _filler;
 
         private void Awake()
         {
@@ -26,21 +26,22 @@ namespace Audio
             _source = GetComponent<AudioSource>();
             _source.outputAudioMixerGroup = _group;
             _source.playOnAwake = false;
+            _source.spatialBlend = 0f;
 
-            _cube = GetComponent<FlyingCube>();
+            _filler = GetComponent<ShapeFiller>();
         }
 
         private void OnEnable()
         {
-            _cube.Arrived += OnCubeArrived;
+            _filler.CubeArrived += OnFillerCubeArrived;
         }
 
         private void OnDisable()
         {
-            _cube.Arrived -= OnCubeArrived;
+            _filler.CubeArrived -= OnFillerCubeArrived;
         }
 
-        private void OnCubeArrived(FlyingCube cube)
+        private void OnFillerCubeArrived(FlyingCube cube)
         {
             _source.PlayOneShot(_clip);
         }

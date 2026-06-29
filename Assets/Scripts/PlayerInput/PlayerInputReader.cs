@@ -10,6 +10,7 @@ namespace PlayerInput
 
         public Vector2 MoveInput { get; private set; }
         public event Action MovementKeyPressed;
+        public event Action SprintPerformed;
 
         private void Awake()
         {
@@ -20,6 +21,7 @@ namespace PlayerInput
         {
             _inputActions.Player.Move.performed += OnMovePerformed;
             _inputActions.Player.Move.canceled += OnMoveCanceled;
+            _inputActions.Player.Sprint.performed += OnSprintPerformed;
 
             _inputActions.Player.Enable();
             MoveInput = Vector2.zero;
@@ -29,9 +31,10 @@ namespace PlayerInput
         {
             _inputActions.Player.Move.performed -= OnMovePerformed;
             _inputActions.Player.Move.canceled -= OnMoveCanceled;
+            _inputActions.Player.Sprint.performed -= OnSprintPerformed;
 
             _inputActions.Player.Disable();
-            
+
             MoveInput = Vector2.zero;
         }
 
@@ -49,6 +52,11 @@ namespace PlayerInput
         private void OnMoveCanceled(InputAction.CallbackContext context)
         {
             MoveInput = Vector2.zero;
+        }
+
+        private void OnSprintPerformed(InputAction.CallbackContext context)
+        {
+            SprintPerformed?.Invoke();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Game;
+﻿using Audio;
+using Game;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ namespace Assets.Scripts.UI
     public class GameplayUIFabric : MonoBehaviour
     {
         [SerializeField] private GameplaySessionHandler _sessionHandler;
+        [SerializeField] private AudioMixerController _mixerController;
 
         [SerializeField] private Button _pauseButton;
         [SerializeField] private Button _leaderboardButton;
@@ -44,7 +46,7 @@ namespace Assets.Scripts.UI
         private void SpawnPauseMenu()
         {
             PauseMenu pauseMenu = Instantiate(_pauseMenuPrefab);
-            pauseMenu.Initialize(_pauser);
+            pauseMenu.Initialize(_pauser, _mixerController);
         }
 
         private void SpawnShopMenu()

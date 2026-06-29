@@ -38,11 +38,13 @@ public sealed class Player : MonoBehaviour, ITarget
     private void OnEnable()
     {
         _collector.ItemCollected += OnItemCollected;
+        _inputReader.SprintPerformed += OnSprintPerformed;
     }
 
     private void OnDisable()
     {
         _collector.ItemCollected -= OnItemCollected;
+        _inputReader.SprintPerformed -= OnSprintPerformed;
     }
 
     private void Update()
@@ -51,6 +53,11 @@ public sealed class Player : MonoBehaviour, ITarget
 
         _mover.Move(moveDirection);
         _rotator.Rotate(moveDirection);
+    }
+
+    private void OnSprintPerformed()
+    {
+        _mover.TryStartSprint();
     }
 
     private void OnItemCollected(Item.Item item)

@@ -33,6 +33,8 @@ namespace ShapeFill
 
         public event Action<float> FillCompleted;
 
+        public event Action<FlyingCube> CubeArrived;
+
         public void Initialize()
         {
             if (_gridShape == null)
@@ -190,6 +192,7 @@ namespace ShapeFill
             SetCubeColor(fillCube.gameObject, pixelColor);
 
             fillCube.Arrived += OnCubeArrived;
+
             fillCube.Launch(_gridShape.GridToWorld(cell.x, cell.y), _flightDuration);
 
             _spawnedCubes.Add(fillCube.gameObject);
@@ -199,6 +202,8 @@ namespace ShapeFill
         {
             cube.Arrived -= OnCubeArrived;
             _arrivedCount++;
+
+            CubeArrived?.Invoke(cube);
 
             if (_arrivedCount >= _currentTarget)
             {

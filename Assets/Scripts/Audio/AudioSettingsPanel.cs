@@ -6,14 +6,29 @@ namespace Audio
 {
     public sealed class AudioSettingsPanel : MonoBehaviour
     {
-        [SerializeField] private AudioMixerController _mixerController;
         [SerializeField] private Slider _musicSlider;
         [SerializeField] private Slider _sfxSlider;
 
+        private AudioMixerController _mixerController;
         private bool _isInitialized;
 
-        private void Awake()
+        private void OnDisable()
         {
+            if (_isInitialized == false)
+            {
+                return;
+            }
+
+            _musicSlider.onValueChanged.RemoveListener(OnMusicSliderChanged);
+            _sfxSlider.onValueChanged.RemoveListener(OnSfxSliderChanged);
+
+            _isInitialized = false;
+        }
+
+        public void Initialize(AudioMixerController mixerController)
+        {
+            _mixerController = mixerController;
+
             if (_mixerController == null)
             {
                 throw new InvalidOperationException(
@@ -36,10 +51,7 @@ namespace Audio
             _musicSlider.maxValue = 1f;
             _sfxSlider.minValue = 0f;
             _sfxSlider.maxValue = 1f;
-        }
 
-        private void OnEnable()
-        {
             _musicSlider.value = _mixerController.MusicVolume;
             _sfxSlider.value = _mixerController.SFXVolume;
 
@@ -47,19 +59,6 @@ namespace Audio
             _sfxSlider.onValueChanged.AddListener(OnSfxSliderChanged);
 
             _isInitialized = true;
-        }
-
-        private void OnDisable()
-        {
-            if (_isInitialized == false)
-            {
-                return;
-            }
-
-            _musicSlider.onValueChanged.RemoveListener(OnMusicSliderChanged);
-            _sfxSlider.onValueChanged.RemoveListener(OnSfxSliderChanged);
-
-            _isInitialized = false;
         }
 
         private void OnMusicSliderChanged(float value)

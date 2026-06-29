@@ -1,4 +1,5 @@
-﻿using Game;
+﻿using Audio;
+using Game;
 using UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,11 +9,14 @@ namespace Assets.Scripts.UI
     public sealed class PauseMenu : BaseWindow
     {
         [SerializeField] private Button _closeButton;
+        [SerializeField] private AudioSettingsPanel _settingsPanel;
 
-        public override void Initialize(Pauser pauser)
+        public void Initialize(Pauser pauser, AudioMixerController audioMixerController)
         {
-            base.Initialize(pauser);
+            Initialize(pauser);
             _closeButton.onClick.AddListener(Close);
+
+            _settingsPanel.Initialize(audioMixerController);
         }
 
         protected override void OnDisable()

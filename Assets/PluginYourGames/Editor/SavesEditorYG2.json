@@ -1,0 +1,17 @@
+{
+    "intExample": 5,
+    "strExample": "Hello!",
+    "boolExample": [
+        false,
+        false,
+        false,
+        false
+    ],
+    "idSave": 847,
+    "QuotaCount": 4,
+    "DefaultCount": 147,
+    "TargetQuotaCount": 18,
+    "Balance": 18,
+    "musicVolume": 1.0,
+    "sfxVolume": 1.0
+}
