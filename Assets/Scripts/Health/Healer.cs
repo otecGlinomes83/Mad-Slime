@@ -51,11 +51,15 @@ namespace Assets.Scripts.HealthSystem
         private void OnDied()
         {
             _timer.Stop();
-            _timer.Setup(_regenDelay);
         }
 
         private void OnInvulnerabilityEnded()
         {
+            if(_health.Value>=_health.MaxValue)
+            {
+                return;
+            }
+
             _timer.Stop();
             _timer.Setup(_regenDelay);
             _timer.StartCount();

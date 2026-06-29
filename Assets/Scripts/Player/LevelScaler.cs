@@ -17,8 +17,6 @@ namespace Skills
         private float _itemDetectorStartRadius;
         private float _attractableDetectorStartRadius;
 
-        private int _startMass;
-
         private float _currentMultiplier;
         private float _targetMultiplier;
         private float _multiplierVelocity;
@@ -60,7 +58,6 @@ namespace Skills
             _startScale = _transfromToScale.localScale.x;
             _itemDetectorStartRadius = _itemDetector.Radius;
             _attractableDetectorStartRadius = _attractableDetector.Radius;
-            _startMass = _playerMass.Mass;
 
             _currentMultiplier = 1f;
             _targetMultiplier = 1f;

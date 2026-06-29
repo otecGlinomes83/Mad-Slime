@@ -20,7 +20,7 @@ public class PlayerMass : MonoBehaviour, IMassHolder
     private void Awake()
     {
         _mass = _defaultMass;
-        RecalculateTier();
+        MaxUnlockedTier = _tierConfig.GetUnlockedTier(_mass);
     }
 
     public void Setup(int mass)
@@ -31,7 +31,7 @@ public class PlayerMass : MonoBehaviour, IMassHolder
 
         _mass = mass;
         Changed?.Invoke(_defaultMass, _mass);
-        RecalculateTier();
+        MaxUnlockedTier = _tierConfig.GetUnlockedTier(_mass);
     }
 
     public void Add(int amount)
@@ -47,17 +47,6 @@ public class PlayerMass : MonoBehaviour, IMassHolder
 
         _mass += scaledMass;
         Changed?.Invoke(previous, _mass);
-        RecalculateTier();
-    }
-
-    private void RecalculateTier()
-    {
-        if (_tierConfig == null)
-        {
-            MaxUnlockedTier = ItemTier.Small;
-            return;
-        }
-
         MaxUnlockedTier = _tierConfig.GetUnlockedTier(_mass);
     }
 }

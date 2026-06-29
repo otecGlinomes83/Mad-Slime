@@ -13,7 +13,7 @@ namespace ShapeFill
         [SerializeField] private Transform _cubesParent;
         [SerializeField] private SpriteRenderer _ghostBackground;
 
-        [SerializeField] private Color _ghostColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
+        [SerializeField] private Color _ghostColor = new Color(0.3f, 0.3f, 0.3f, 0.75f);
         [SerializeField] private Vector3 _spawnPosition;
         [SerializeField] private Color _borderColor = Color.black;
 

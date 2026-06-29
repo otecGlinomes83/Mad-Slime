@@ -60,7 +60,7 @@ public sealed class Collector : MonoBehaviour
             return;
         }
 
-        item.Release();
+        item.Shutdown();
         ItemCollected?.Invoke(item);
     }
 

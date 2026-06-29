@@ -48,8 +48,9 @@ namespace Audio
             }
 
             _musicSlider.minValue = 0f;
-            _musicSlider.maxValue = 1f;
             _sfxSlider.minValue = 0f;
+
+            _musicSlider.maxValue = 1f;
             _sfxSlider.maxValue = 1f;
 
             _musicSlider.value = _mixerController.MusicVolume;

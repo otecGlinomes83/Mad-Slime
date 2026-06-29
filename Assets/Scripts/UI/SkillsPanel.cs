@@ -6,7 +6,7 @@ namespace UI
 {
     public sealed class SkillsPanel : MonoBehaviour
     {
-        [SerializeField] private SkillManager _skillManager;
+        [SerializeField] private SkillTracker _skillManager;
         [SerializeField] private SprintSkill _sprintSkill;
         [SerializeField] private AttractSkill _attractSkill;
         [SerializeField] private Button _sprintButton;

@@ -12,7 +12,7 @@ namespace Assets.Scripts.HealthSystem
         [SerializeField] private Timer _timer;
         [SerializeField] private float _invulnerabilityWindow = 0.5f;
         [SerializeField] private DodgeSkill _dodgeSkill;
-        [SerializeField] private SkillManager _skillManager;
+        [SerializeField] private SkillTracker _skillManager;
 
         private bool _isInvulnerable;
 

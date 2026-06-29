@@ -6,7 +6,7 @@ namespace Skills
 {
     public sealed class SprintSkill : MonoBehaviour
     {
-        [SerializeField] private SkillManager _skillManager;
+        [SerializeField] private SkillTracker _skillManager;
         [SerializeField] private Mover _mover;
         [SerializeField] private Timer _timer;
         [SerializeField] private float _speedMultiplier = 2f;

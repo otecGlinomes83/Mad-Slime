@@ -9,7 +9,7 @@ namespace Skills
     {
         private const float MinDistanceSqr = 0.0001f;
 
-        [SerializeField] private SkillManager _skillManager;
+        [SerializeField] private SkillTracker _skillManager;
         [SerializeField] private AttractableDetector _detector;
         [SerializeField] private Timer _timer;
         [SerializeField] private float _attractionForce = 6f;

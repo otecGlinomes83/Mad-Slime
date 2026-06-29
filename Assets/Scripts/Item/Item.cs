@@ -14,7 +14,6 @@ namespace Item
         public int Mass => _definition.BaseMass;
         public Transform Self => transform;
 
-        public event Action<Item> ReadyToRelease;
         public event Action Collected;
 
         public void Initialize(Vector3 position)
@@ -30,9 +29,9 @@ namespace Item
             Collected?.Invoke();
         }
 
-        public void Release()
+        public void Shutdown()
         {
-            ReadyToRelease?.Invoke(this);
+            gameObject.SetActive(false);
         }
     }
 }

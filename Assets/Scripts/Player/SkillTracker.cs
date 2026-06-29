@@ -6,7 +6,7 @@ using YG;
 
 namespace Skills
 {
-    public sealed class SkillManager : MonoBehaviour
+    public sealed class SkillTracker : MonoBehaviour
     {
         [SerializeField] private SkillsConfig _config;
 
