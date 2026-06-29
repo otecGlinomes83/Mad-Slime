@@ -63,6 +63,35 @@
 - **`Game/Timer.cs`** — выкинут весь UI. Добавлено событие `Ticked(float remaining)` + свойство через событие
 - `Health` уже не имел UI-ссылок (проверено)
 
+### Звук (цепочка реактивная, без singleton)
+
+- **`Saves/SavesYG_Audio.cs`** — partial `SavesYG` + `musicVolume`, `sfxVolume` (default 0.8). Хранение через YG2.saves, не PlayerPrefs.
+- **`Audio/AudioMixerController.cs`** — мост YG2.saves ↔ AudioMixer. Группы: `Music`, `SFX`. Exposed params: `MusicVolume`, `SFXVolume`. Подписан на `YG2.onGetSDKData`, при инициализации читает сейв и применяет. Методы `SetMusicVolume/SFXVolume(float 0..1)` — clamp, запись в `YG2.saves`, `YG2.SaveProgress()`. Геттеры `MusicVolume`/`SFXVolume` для UI слайдеров.
+- **`Audio/PlayerPickupSound.cs`** — `[RequireComponent(AudioSource)]`, подписан на `Collector.ItemCollected` → PlayOneShot.
+- **`Audio/PlayerDamageSound.cs`** — подписан на `Health.Damaged`.
+- **`Audio/PlayerDeathSound.cs`** — подписан на `Health.Died`.
+- **`Audio/EnemyAttackSound.cs`** — подписан на `Attacker.AttackPerformed` (новое событие).
+- **`Audio/FlyingCubeSound.cs`** — `[RequireComponent(FlyingCube)]`, подписан на `FlyingCube.Arrived`.
+- **`Audio/TimerTickSound.cs`** — подписан на `Timer.Ticked` + `Finished`. Запускает луп при `remaining <= 20` (порог настраивается), стоп при Finished или выходе из диапазона.
+- **`Audio/LevelMusicPlayer.cs`** — Start() → loop Play(). На отдельном GameObject `[AudioMusic]`.
+- **`Audio/UIButtonSound.cs`** — `[RequireComponent(Button)]`, подписан на `Button.onClick` через AddListener/RemoveListener (UnityEvent — API Unity, не наш).
+- **`Audio/AudioSettingsPanel.cs`** — два `Slider` (0..1) → `AudioMixerController.Set*Volume`.
+- **`NPC/Enemy/Attacker.cs`** — добавлено `public event Action AttackPerformed` + инвокация после `TryApplyDamage`. Остальная логика не тронута.
+
+### Архитектурные решения по звуку
+
+- Без singleton и static. Каждый звук = отдельный компонент.
+- Без базового класса. У каждого звука своё событие, свой lifecycle.
+- Источник истины — `YG2.saves`. Микшер получает значения через `AudioMixerController`.
+- Звуковые компоненты не зависят от контроллера — только через `AudioMixerGroup` в SerializeField.
+- Каждый звуковой компонент имеет свой `AudioSource` через `[RequireComponent]`. У Player будет 3 AudioSource — это норм для Unity.
+
+### Что осталось руками в Editor
+
+- `Assets/Audio/MasterMixer.mixer` — создать, группы `Music`/`SFX`, expose params `MusicVolume`/`SFXVolume`.
+- AudioClips — закинуть в `Assets/Audio/Clips/`, прокинуть в компоненты.
+- В сцене: GameObjects `[AudioCore]`, `[AudioMusic]`, расставить компоненты на Player/Enemy/FlyingCube/Timer/Button.
+
 ---
 
 ## Текущая архитектура (ключевые файлы)
@@ -178,7 +207,6 @@ Assets/Scripts/
 - ❌ Только PC-клавиатура (нет мобильного джойстика)
 
 ### Полировка
-- ❌ Звуки
 - ❌ Партиклы (втягивание, урон, смерть)
 - ❌ Анимации
 - ❌ Камера-эффекты (тряска при уроне)

@@ -14,6 +14,8 @@ namespace NPC.Enemy
 
         private bool _isCooldown;
 
+        public event Action AttackPerformed;
+
         private void Awake()
         {
             if (_sensor == null)
@@ -61,6 +63,7 @@ namespace NPC.Enemy
             }
 
             target.Health.TryApplyDamage(_damage);
+            AttackPerformed?.Invoke();
 
             _isCooldown = true;
             _timer.Setup(_cooldown);
