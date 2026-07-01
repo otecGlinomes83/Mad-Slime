@@ -8,7 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(Mover))]
 [RequireComponent(typeof(Rotator))]
-[RequireComponent(typeof(PlayerMass))]
+[RequireComponent(typeof(PlayerTier))]
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(Healer))]
 public sealed class Player : MonoBehaviour, ITarget
@@ -21,7 +21,7 @@ public sealed class Player : MonoBehaviour, ITarget
 
     private Mover _mover;
     private Rotator _rotator;
-    private PlayerMass _playerMass;
+    private PlayerTier _playerTier;
     private Health _health;
     private Healer _healer;
 
@@ -32,7 +32,7 @@ public sealed class Player : MonoBehaviour, ITarget
     {
         _mover = GetComponent<Mover>();
         _rotator = GetComponent<Rotator>();
-        _playerMass = GetComponent<PlayerMass>();
+        _playerTier = GetComponent<PlayerTier>();
         _health = GetComponent<Health>();
         _healer = GetComponent<Healer>();
     }
@@ -74,7 +74,7 @@ public sealed class Player : MonoBehaviour, ITarget
             _inventory.IncreaseDefaultCount();
         }
 
-        _playerMass.Add(item.Mass);
+        _playerTier.Add(item.Mass);
     }
 
     private Vector3 ConvertToWorldDirection(Vector2 input)

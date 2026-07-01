@@ -5,25 +5,25 @@ namespace UI
 {
     public sealed class MassUI : MonoBehaviour
     {
-        [SerializeField] private PlayerMass _playerMass;
+        [SerializeField] private PlayerTier _playerTier;
         [SerializeField] private TMP_Text _text;
 
         private void OnEnable()
         {
-            _playerMass.Changed += OnMassChanged;
+            _playerTier.Changed += OnTierChanged;
         }
 
         private void OnDisable()
         {
-            _playerMass.Changed -= OnMassChanged;
+            _playerTier.Changed -= OnTierChanged;
         }
 
         private void Start()
         {
-            UpdateText(_playerMass.Mass);
+            UpdateText(_playerTier.Mass);
         }
 
-        private void OnMassChanged(int previous, int current)
+        private void OnTierChanged(int previous, int current)
         {
             UpdateText(current);
         }

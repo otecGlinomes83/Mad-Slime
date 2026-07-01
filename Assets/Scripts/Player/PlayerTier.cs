@@ -4,14 +4,15 @@ using Skills;
 using System;
 using UnityEngine;
 
-public class PlayerMass : MonoBehaviour, IMassHolder
+public class PlayerTier : MonoBehaviour
 {
-    [SerializeField] private int _mass;
     [SerializeField] private int _defaultMass;
     [SerializeField] private Health _playerHealth;
     [SerializeField] private int _massPickupDivisor = 4;
     [SerializeField] private TierScalerConfig _tierConfig;
 
+   private int _mass;
+   
     public int Mass => _mass;
     public ItemTier MaxUnlockedTier { get; private set; } = ItemTier.Small;
 
@@ -30,8 +31,8 @@ public class PlayerMass : MonoBehaviour, IMassHolder
                 "PlayerMass.Setup requires mass to be non-negative. The provided value was negative.");
 
         _mass = mass;
-        Changed?.Invoke(_defaultMass, _mass);
         MaxUnlockedTier = _tierConfig.GetUnlockedTier(_mass);
+        Changed?.Invoke(_defaultMass, _mass);
     }
 
     public void Add(int amount)

@@ -1,12 +1,13 @@
 using Scriptables;
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Skills
 {
     public sealed class LevelScaler : MonoBehaviour
     {
-        [SerializeField] private PlayerMass _playerMass;
+         [SerializeField] private PlayerTier _playerTier;
         [SerializeField] private Transform _transfromToScale;
         [SerializeField] private ItemDetector _itemDetector;
         [SerializeField] private AttractableDetector _attractableDetector;
@@ -25,7 +26,7 @@ namespace Skills
 
         private void Awake()
         {
-            if (_playerMass == null)
+            if (_playerTier == null)
             {
                 throw new InvalidOperationException(
                     "LevelScaler requires _playerMass to be assigned. The player mass is null.");
@@ -68,15 +69,15 @@ namespace Skills
 
         private void OnEnable()
         {
-            _playerMass.Changed += OnMassChanged;
+            _playerTier.Changed += OnTierChanged;
         }
 
         private void OnDisable()
         {
-            _playerMass.Changed -= OnMassChanged;
+            _playerTier.Changed -= OnTierChanged;
         }
 
-        private void OnMassChanged(int previous, int current)
+        private void OnTierChanged(int previous, int current)
         {
             ItemTier unlockedTier = _tierConfig.GetUnlockedTier(current);
 

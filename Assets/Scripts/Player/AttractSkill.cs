@@ -10,6 +10,7 @@ namespace Skills
         private const float MinDistanceSqr = 0.0001f;
 
         [SerializeField] private SkillTracker _skillManager;
+        [SerializeField] private PlayerTier _playerTier;
         [SerializeField] private AttractableDetector _detector;
         [SerializeField] private Timer _timer;
         [SerializeField] private float _attractionForce = 6f;
@@ -59,6 +60,11 @@ namespace Skills
         private void OnDetected(IAttractable attractable)
         {
             if (_isActive == false)
+            {
+                return;
+            }
+
+            if (attractable.Tier > _playerTier.MaxUnlockedTier)
             {
                 return;
             }

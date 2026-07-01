@@ -11,19 +11,19 @@ public sealed class Collector : MonoBehaviour
     [SerializeField] private ItemDetector _detector;
     [SerializeField] private float _absorptionDuration = 0.3f;
 
-    private PlayerMass _massHolder;
+    private PlayerTier _tierHolder;
 
     public event Action<Item.Item> ItemCollected;
 
     private void Awake()
     {
-        if (_massHolderSource.TryGetComponent(out PlayerMass massHolder) == false)
+        if (_massHolderSource.TryGetComponent(out PlayerTier massHolder) == false)
         {
             throw new InvalidOperationException(
                 $"Collector: {_massHolderSource.name} does not implement PlayerMass.");
         }
 
-        _massHolder = massHolder;
+        _tierHolder = massHolder;
     }
 
     private void OnEnable()
@@ -38,7 +38,7 @@ public sealed class Collector : MonoBehaviour
 
     private void OnItemDetected(Item.Item item)
     {
-        if ((int)item.Definition.Tier > (int)_massHolder.MaxUnlockedTier)
+        if ((int)item.Definition.Tier > (int)_tierHolder.MaxUnlockedTier)
         {
             return;
         }

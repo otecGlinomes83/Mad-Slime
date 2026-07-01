@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _displayName: Medium
   _previewModel: {fileID: 9193056806525928186, guid: 7b66697213747f44a819d022c436a145, type: 3}
-  _baseMass: 100
+  _baseMass: 500
   _tier: 1

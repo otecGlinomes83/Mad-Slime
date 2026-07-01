@@ -22,7 +22,9 @@ public sealed class CameraFollow : MonoBehaviour
 
     private void LateUpdate()
     {
-        Vector3 desiredPosition = _target.position + _offset;
+        float currentScale = _target.localScale.x;
+        Vector3 desiredPosition = _target.position + _offset * currentScale;
+        
         transform.position = Vector3.SmoothDamp(
             transform.position,
             desiredPosition,

@@ -26,6 +26,7 @@ namespace Assets.Scripts.UI
 
         private void Awake()
         {
+            _sessionHandler.GameStarted += HideButtons;
             _pauseButton.onClick.AddListener(SpawnPauseMenu);
             _shopButton.onClick.AddListener(SpawnShopMenu);
             _leaderboardButton.onClick.AddListener(SpawnLeaderboardMenu);
@@ -42,6 +43,13 @@ namespace Assets.Scripts.UI
             _skinsButton.onClick.RemoveListener(SpawnSkinsMenu);
 
             _sessionHandler.PlayerDied -= SpawnDeathMenu;
+        }
+
+        private void HideButtons()
+        {
+            _leaderboardButton.gameObject.SetActive(false);
+            _skinsButton.gameObject.SetActive(false);
+            _shopButton.gameObject.SetActive(false);
         }
 
         private void SpawnPauseMenu()

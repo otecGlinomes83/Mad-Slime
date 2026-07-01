@@ -1,4 +1,5 @@
 using System;
+using Skills;
 using UnityEngine;
 
 namespace Item
@@ -12,6 +13,7 @@ namespace Item
 
         public ItemDefinition Definition => _definition;
         public int Mass => _definition.BaseMass;
+        public ItemTier Tier =>Definition.Tier;
         public Transform Self => transform;
 
         public event Action Collected;

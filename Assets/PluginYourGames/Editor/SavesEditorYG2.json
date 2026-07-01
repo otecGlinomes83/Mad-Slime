@@ -7,12 +7,12 @@
         false,
         false
     ],
-    "idSave": 962,
-    "QuotaCount": 4,
-    "DefaultCount": 147,
-    "TargetQuotaCount": 33,
+    "idSave": 1384,
+    "QuotaCount": 50,
+    "DefaultCount": 88,
+    "TargetQuotaCount": 82,
     "Balance": 18,
-    "musicVolume": 0.0,
-    "sfxVolume": 1.0,
+    "musicVolume": 0.3846569061279297,
+    "sfxVolume": 0.1312270611524582,
     "CurrentLevel": 1
 }

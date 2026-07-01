@@ -22,6 +22,7 @@ namespace Game
         private bool _isFinished;
 
         public event Action PlayerDied;
+        public event Action GameStarted;
 
         private void Awake()
         {
@@ -98,6 +99,7 @@ namespace Game
 
             _isStarted = true;
             _timer.StartCount();
+            GameStarted?.Invoke();
         }
 
         private void OnTimeOut()

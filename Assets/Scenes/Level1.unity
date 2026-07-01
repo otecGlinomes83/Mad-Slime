@@ -2850,7 +2850,7 @@ MonoBehaviour:
   _healer: {fileID: 7592292331596077836}
   _levelTransitor: {fileID: 292377138}
   _timer: {fileID: 292377136}
-  _timerDuration: 300
+  _timerDuration: 120
   _quotaTracker: {fileID: 292377137}
   _inputReader: {fileID: 3573281502251075366}
   _pauser: {fileID: 809963750}
@@ -19182,7 +19182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc50764f81b41ed41b8c2fa5d108e342, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerMass: {fileID: 154371106753514503}
+  _playerTier: {fileID: 154371106753514503}
   _text: {fileID: 987625922}
 --- !u!1001 &1640330337
 PrefabInstance:
@@ -25719,7 +25719,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e4177fd85e9422096e0a2c11bf4b13c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mass: 0
   _defaultMass: 6
   _playerHealth: {fileID: 601890968687515531}
   _massPickupDivisor: 4
@@ -27750,6 +27749,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skillManager: {fileID: 292377141}
+  _playerTier: {fileID: 154371106753514503}
   _detector: {fileID: 7835458888631361816}
   _timer: {fileID: 7835458888631361817}
   _attractionForce: 6
@@ -27872,7 +27872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38aba709b01d2074eb1a04facbd19a2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerMass: {fileID: 154371106753514503}
+  _playerTier: {fileID: 154371106753514503}
   _transfromToScale: {fileID: 9169244212891694034}
   _itemDetector: {fileID: 8008835757392062175}
   _attractableDetector: {fileID: 7835458888631361816}
