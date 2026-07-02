@@ -2,7 +2,6 @@ using Assets.Scripts.HealthSystem;
 using Interfaces;
 using PlayerInput;
 using Skills;
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -16,7 +15,6 @@ public sealed class Player : MonoBehaviour, ITarget
     [SerializeField] private PlayerInputReader _inputReader;
     [SerializeField] private QuotaTracker _quotaTracker;
     [SerializeField] private Collector _collector;
-    [SerializeField] private Inventory _inventory;
     [SerializeField] private SprintSkill _sprintSkill;
 
     private Mover _mover;
@@ -27,6 +25,8 @@ public sealed class Player : MonoBehaviour, ITarget
 
     public Transform Transform => transform;
     public Health Health => _health;
+
+    public ItemTier Tier => _playerTier.MaxUnlockedTier;
 
     private void Awake()
     {
@@ -64,16 +64,7 @@ public sealed class Player : MonoBehaviour, ITarget
 
     private void OnItemCollected(Item.Item item)
     {
-        if (_quotaTracker.IsQuotaItem(item.Definition))
-        {
-            _inventory.IncreaseQuotaCount();
-            _quotaTracker.RegisterCollected(item.Definition);
-        }
-        else
-        {
-            _inventory.IncreaseDefaultCount();
-        }
-
+        _quotaTracker.RegisterCollected(item.Definition);
         _playerTier.Add(item.Mass);
     }
 

@@ -10,12 +10,12 @@ namespace UI
 
         private void OnEnable()
         {
-            _playerTier.Changed += OnTierChanged;
+            _playerTier.MassChanged += OnTierChanged;
         }
 
         private void OnDisable()
         {
-            _playerTier.Changed -= OnTierChanged;
+            _playerTier.MassChanged -= OnTierChanged;
         }
 
         private void Start()

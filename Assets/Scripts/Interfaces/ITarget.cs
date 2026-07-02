@@ -1,11 +1,13 @@
 using Assets.Scripts.HealthSystem;
+using Skills;
 using UnityEngine;
 
 namespace Interfaces
 {
     public interface ITarget
     {
-        Transform Transform { get; }
-        Health Health { get; }
+        public ItemTier Tier { get; }
+        public Transform Transform { get; }
+        public Health Health { get; }
     }
 }

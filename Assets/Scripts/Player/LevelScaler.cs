@@ -1,26 +1,34 @@
+using Cysharp.Threading.Tasks;
 using Scriptables;
 using System;
+using System.Threading;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Skills
 {
     public sealed class LevelScaler : MonoBehaviour
     {
-         [SerializeField] private PlayerTier _playerTier;
-        [SerializeField] private Transform _transfromToScale;
+        [SerializeField] private PlayerTier _playerTier;
+        [SerializeField] private Transform _modelTransform;
+        [SerializeField] private CharacterController _characterController;
         [SerializeField] private ItemDetector _itemDetector;
         [SerializeField] private AttractableDetector _attractableDetector;
-        [SerializeField] private TierScalerConfig _tierConfig;
+        [SerializeField] private TierResolver _tierResolver;
         [SerializeField] private float _smoothTime = 0.4f;
 
-        private float _startScale;
+        private float _baseControllerHeight;
+        private float _baseControllerRadius;
+        private float _baseControllerCenterY;
         private float _itemDetectorStartRadius;
         private float _attractableDetectorStartRadius;
 
-        private float _currentMultiplier;
-        private float _targetMultiplier;
+        private float _currentMultiplier = 1f;
+        private float _targetMultiplier = 1f;
         private float _multiplierVelocity;
+
+        private float _lastAppliedMultiplier = -1f;
+
+        private CancellationTokenSource _growCts;
 
         private ItemTier _currentTier = ItemTier.Small;
 
@@ -28,87 +36,126 @@ namespace Skills
         {
             if (_playerTier == null)
             {
-                throw new InvalidOperationException(
-                    "LevelScaler requires _playerMass to be assigned. The player mass is null.");
+                throw new InvalidOperationException("LevelScaler requires _playerTier to be assigned.");
             }
 
-            if (_transfromToScale == null)
+            if (_modelTransform == null)
             {
-                throw new InvalidOperationException(
-                    "LevelScaler requires _transfromToScale to be assigned. The transform to scale is null.");
+                throw new InvalidOperationException("LevelScaler requires _modelTransform to be assigned.");
+            }
+
+            if (_characterController == null)
+            {
+                throw new InvalidOperationException("LevelScaler requires _characterController to be assigned.");
             }
 
             if (_itemDetector == null)
             {
-                throw new InvalidOperationException(
-                    "LevelScaler requires _itemDetector to be assigned. The item detector is null.");
+                throw new InvalidOperationException("LevelScaler requires _itemDetector to be assigned.");
             }
 
             if (_attractableDetector == null)
             {
-                throw new InvalidOperationException(
-                    "LevelScaler requires _attractableDetector to be assigned. The attractable detector is null.");
+                throw new InvalidOperationException("LevelScaler requires _attractableDetector to be assigned.");
             }
 
-            if (_tierConfig == null)
+            if (_tierResolver == null)
             {
-                throw new InvalidOperationException(
-                    "LevelScaler requires _tierConfig to be assigned. The tier scaler config is null.");
+                throw new InvalidOperationException("LevelScaler requires _tierResolver to be assigned.");
             }
 
-            _startScale = _transfromToScale.localScale.x;
+            _baseControllerHeight = _characterController.height;
+            _baseControllerRadius = _characterController.radius;
+            _baseControllerCenterY = _characterController.center.y;
             _itemDetectorStartRadius = _itemDetector.Radius;
             _attractableDetectorStartRadius = _attractableDetector.Radius;
-
-            _currentMultiplier = 1f;
-            _targetMultiplier = 1f;
-            _multiplierVelocity = 0f;
 
             ApplyMultiplier();
         }
 
         private void OnEnable()
         {
-            _playerTier.Changed += OnTierChanged;
+            _playerTier.TierChanged += OnTierChanged;
         }
 
         private void OnDisable()
         {
-            _playerTier.Changed -= OnTierChanged;
+            _playerTier.TierChanged -= OnTierChanged;
+
+            if (_growCts != null)
+            {
+                _growCts.Cancel();
+                _growCts.Dispose();
+                _growCts = null;
+            }
         }
 
-        private void OnTierChanged(int previous, int current)
+        private void OnTierChanged(ItemTier previousTier, ItemTier currentTier)
         {
-            ItemTier unlockedTier = _tierConfig.GetUnlockedTier(current);
-
-            if (unlockedTier == _currentTier)
+            if (currentTier == _currentTier)
             {
                 return;
             }
 
-            _currentTier = unlockedTier;
-            _targetMultiplier = _tierConfig.GetScaleFor(_currentTier);
+            _currentTier = currentTier;
+            _targetMultiplier = _tierResolver.GetScaleFor(_currentTier);
+
+            GrowAsync().Forget();
         }
 
-        private void Update()
+        private async UniTaskVoid GrowAsync()
         {
-            if (Mathf.Approximately(_currentMultiplier, _targetMultiplier))
+            if (_growCts != null)
+            {
+                _growCts.Cancel();
+                _growCts.Dispose();
+            }
+
+            _growCts = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+            CancellationToken cancellationToken = _growCts.Token;
+
+            try
+            {
+                while (Mathf.Abs(_currentMultiplier - _targetMultiplier) > 0.001f)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    _currentMultiplier = Mathf.SmoothDamp(
+                        _currentMultiplier,
+                        _targetMultiplier,
+                        ref _multiplierVelocity,
+                        _smoothTime);
+
+                    ApplyMultiplier();
+
+                    await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+                }
+
+                _currentMultiplier = _targetMultiplier;
+                ApplyMultiplier();
+            }
+            catch (OperationCanceledException)
             {
                 return;
             }
-
-            _currentMultiplier = Mathf.SmoothDamp(
-                _currentMultiplier,
-                _targetMultiplier,
-                ref _multiplierVelocity,
-                _smoothTime);
-
-            ApplyMultiplier();
         }
 
         private void ApplyMultiplier()
         {
-            _transfromToScale.localScale = Vector3.one * (_startScale * _currentMultiplier);
+            _modelTransform.localScale = Vector3.one * _currentMultiplier;
+            _modelTransform.localPosition = new Vector3(0f, _baseControllerCenterY * _currentMultiplier, 0f);
+
+            if (Mathf.Abs(_currentMultiplier - _lastAppliedMultiplier) < 0.01f)
+            {
+                return;
+            }
+
+            _lastAppliedMultiplier = _currentMultiplier;
+
+            _characterController.height = _baseControllerHeight * _currentMultiplier;
+            _characterController.radius = _baseControllerRadius * _currentMultiplier;
+            _characterController.center = new Vector3(0f, _baseControllerCenterY * _currentMultiplier, 0f);
+
             _itemDetector.SetRadius(_itemDetectorStartRadius * _currentMultiplier);
             _attractableDetector.SetRadius(_attractableDetectorStartRadius * _currentMultiplier);
         }

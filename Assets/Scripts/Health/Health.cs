@@ -1,5 +1,4 @@
 ﻿using System;
-using Game;
 using Skills;
 using UnityEngine;
 
@@ -9,18 +8,14 @@ namespace Assets.Scripts.HealthSystem
     {
         [SerializeField] private int _maxValue;
         [SerializeField] private int _value;
-        [SerializeField] private Timer _timer;
-        [SerializeField] private float _invulnerabilityWindow = 0.5f;
+        [SerializeField] private Invulnerability _invulnerability;
         [SerializeField] private DodgeSkill _dodgeSkill;
         [SerializeField] private SkillTracker _skillManager;
-
-        private bool _isInvulnerable;
 
         public event Action Died;
         public event Action Damaged;
         public event Action DamageDodged;
         public event Action<int> ValueChanged;
-        public event Action InvulnerabilityEnded;
 
         public int Value => _value;
         public int MaxValue => _maxValue;
@@ -38,29 +33,18 @@ namespace Assets.Scripts.HealthSystem
                 throw new ArgumentOutOfRangeException(nameof(_value), "HealthSystem value cannot be negative");
             }
 
-            _value = _maxValue;
-            _isInvulnerable = false;
-
-            if (_timer == null)
+            if (_invulnerability == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Timer is not assigned. Drag a Timer component into the _timer field in the inspector.");
+                    $"{name}: Invulnerability is not assigned. Drag an Invulnerability component into the _invulnerability field.");
             }
+
+            _value = _maxValue;
         }
 
         private void Start()
         {
             ValueChanged?.Invoke(_value);
-        }
-
-        private void OnEnable()
-        {
-            _timer.Finished += OnIFramesTimerFinished;
-        }
-
-        private void OnDisable()
-        {
-            _timer.Finished -= OnIFramesTimerFinished;
         }
 
         public void TryApplyDamage(int amount)
@@ -78,20 +62,16 @@ namespace Assets.Scripts.HealthSystem
             if (CanDodge() == true && _dodgeSkill.TryDodge() == true)
             {
                 DamageDodged?.Invoke();
-                _isInvulnerable = true;
-                _timer.Setup(_invulnerabilityWindow);
-                _timer.StartCount();
+                _invulnerability.EnterWindow();
                 return;
             }
 
-            if (_isInvulnerable == true)
+            if (_invulnerability.IsInvulnerable == true)
             {
                 return;
             }
 
-            _isInvulnerable = true;
-            _timer.Setup(_invulnerabilityWindow);
-            _timer.StartCount();
+            _invulnerability.EnterWindow();
 
             _value = Mathf.Max(0, _value - amount);
 
@@ -118,16 +98,7 @@ namespace Assets.Scripts.HealthSystem
 
         public void TurnOnInvulnerabilityWindow(float time)
         {
-            if (time <= 0f)
-            {
-                throw new ArgumentOutOfRangeException("time");
-            }
-
-            _timer.Stop();
-            _timer.Setup(time);
-
-            _isInvulnerable = true;
-            _timer.StartCount();
+            _invulnerability.EnterWindow(time);
         }
 
         private bool CanDodge()
@@ -143,12 +114,6 @@ namespace Assets.Scripts.HealthSystem
             }
 
             return _skillManager.IsUnlocked(SkillId.Dodge);
-        }
-
-        private void OnIFramesTimerFinished()
-        {
-            _isInvulnerable = false;
-            InvulnerabilityEnded?.Invoke();
         }
     }
 }

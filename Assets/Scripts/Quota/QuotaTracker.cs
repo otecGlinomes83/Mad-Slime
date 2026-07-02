@@ -15,6 +15,8 @@ public sealed class QuotaTracker : MonoBehaviour
 
     private void Awake()
     {
+        YG2.saves.TargetQuotaCount = 0;
+
         for (int i = 0; i < _quota.Count; i++)
         {
             YG2.saves.TargetQuotaCount += _quota[i].TargetCount;
@@ -40,12 +42,20 @@ public sealed class QuotaTracker : MonoBehaviour
 
         if (entryIndex < 0)
         {
+            YG2.saves.DefaultCount++;
             return;
         }
 
         QuotaEntry entry = _quota[entryIndex];
 
+        if (entry.Collected >= entry.TargetCount)
+        {
+            YG2.saves.DefaultCount++;
+            return;
+        }
+
         entry.RegisterCollected();
+        YG2.saves.QuotaCount++;
 
         QuotaChanged?.Invoke(entry.Remaining, entry);
 
@@ -53,24 +63,6 @@ public sealed class QuotaTracker : MonoBehaviour
         {
             QuotaCompleted?.Invoke();
         }
-    }
-
-    public bool IsQuotaItem(ItemDefinition definition)
-    {
-        if (definition == null)
-        {
-            return false;
-        }
-
-        int entryIndex = FindEntryIndex(definition);
-
-        if (entryIndex < 0)
-        {
-            return false;
-        }
-
-        QuotaEntry entry = _quota[entryIndex];
-        return entry.Collected < entry.TargetCount;
     }
 
     private int FindEntryIndex(ItemDefinition definition)

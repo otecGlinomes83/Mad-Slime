@@ -1,13 +1,11 @@
-using System;
-using Detectors;
 using Interfaces;
+using System;
 using UnityEngine;
 
 namespace NPC.Enemy
 {
     public sealed class Attacker : MonoBehaviour
     {
-        [SerializeField] private TargetSensor _sensor;
         [SerializeField] private int _damage = 1;
         [SerializeField] private float _cooldown = 0.4f;
         [SerializeField] private Game.Timer _timer;
@@ -18,12 +16,6 @@ namespace NPC.Enemy
 
         private void Awake()
         {
-            if (_sensor == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: TargetSensor is not assigned. Drag a TargetSensor component into the _sensor field in the inspector.");
-            }
-
             if (_timer == null)
             {
                 throw new InvalidOperationException(
@@ -43,21 +35,9 @@ namespace NPC.Enemy
             _timer.Finished -= OnCooldownFinished;
         }
 
-        private void Update()
+        public void TryAttack(ITarget target)
         {
             if (_isCooldown)
-            {
-                return;
-            }
-
-            if (_sensor.IsTargetInRange == false)
-            {
-                return;
-            }
-
-            ITarget target = _sensor.DetectedTarget;
-
-            if (target == null)
             {
                 return;
             }
