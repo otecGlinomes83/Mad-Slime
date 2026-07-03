@@ -4,9 +4,10 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Chaser : MonoBehaviour
 {
-    [SerializeField] private NavMeshAgent _agent;
     [SerializeField] private float _sampleDistance = 2f;
 
+     private NavMeshAgent _agent;
+     
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();

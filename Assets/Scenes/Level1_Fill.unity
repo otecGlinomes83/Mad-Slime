@@ -1514,6 +1514,7 @@ GameObject:
   - component: {fileID: 1948289409}
   - component: {fileID: 1948289415}
   - component: {fileID: 1948289414}
+  - component: {fileID: 1948289416}
   m_Layer: 0
   m_Name: Shape
   m_TagString: Untagged
@@ -1559,9 +1560,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridShape: {fileID: 1948289412}
-  _cubePrefab: {fileID: 7822040787354298141, guid: a393423d25de4f244874dda3b2c1ca85, type: 3}
-  _cubesParent: {fileID: 940882980}
   _ghostBackground: {fileID: 408036645}
+  _spawner: {fileID: 1948289416}
   _ghostColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
   _spawnPosition: {x: 0, y: 20, z: -100}
   _borderColor: {r: 0, g: 0, b: 0, a: 1}
@@ -1709,6 +1709,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1948289416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948289408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e484562fca7cc2c4db6b100bb8e17544, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cubePrefab: {fileID: 7822040787354298141, guid: a393423d25de4f244874dda3b2c1ca85, type: 3}
+  _cubesParent: {fileID: 940882980}
 --- !u!1 &1951918883
 GameObject:
   m_ObjectHideFlags: 0

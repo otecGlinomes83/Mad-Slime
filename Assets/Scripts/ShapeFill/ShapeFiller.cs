@@ -6,12 +6,12 @@ using UnityEngine;
 
 namespace ShapeFill
 {
+    [RequireComponent(typeof(CubeSpawner))]
     public sealed class ShapeFiller : MonoBehaviour
     {
         [SerializeField] private GridBuilder _gridShape;
-        [SerializeField] private FlyingCube _cubePrefab;
-        [SerializeField] private Transform _cubesParent;
         [SerializeField] private SpriteRenderer _ghostBackground;
+        [SerializeField] private CubeSpawner _spawner;
 
         [SerializeField] private Color _ghostColor = new Color(0.3f, 0.3f, 0.3f, 1f);
         [SerializeField] private Vector3 _spawnPosition;
@@ -19,10 +19,6 @@ namespace ShapeFill
 
         [SerializeField] private float _spawnInterval = 0.04f;
         [SerializeField] private float _flightDuration = 0.5f;
-
-        private readonly List<GameObject> _spawnedCubes = new List<GameObject>();
-
-        private MaterialPropertyBlock _propertyBlock;
 
         private int _fillIndex;
         private int _arrivedCount;
@@ -35,36 +31,31 @@ namespace ShapeFill
 
         public event Action<FlyingCube> CubeArrived;
 
+        private void Awake()
+        {
+            _spawner = GetComponent<CubeSpawner>();
+        }
+
         public void Initialize()
         {
             if (_gridShape == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: GridShape is not assigned. Drag a GridShape component into the _gridBuilder field in the inspector.");
+                    $"{name}: GridShape is not assigned. Drag a GridShape component into the _gridShape field.");
             }
 
-            if (_cubePrefab == null)
+            if (_spawner == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: FlyingCube prefab is not assigned. Drag a FlyingCube prefab into the _cubePrefab field in the inspector.");
+                    $"{name}: CubeSpawner is not assigned.");
             }
 
-            if (_cubesParent == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Cubes parent is not assigned. Drag a Transform into the _cubesParent field in the inspector.");
-            }
-
-            if (_propertyBlock == null)
-            {
-                _propertyBlock = new MaterialPropertyBlock();
-            }
+            _spawner.Initialize();
         }
 
         public void BuildShape()
         {
             StopFill();
-            ClearCubes();
 
             _gridShape.Build();
             PlaceGhost();
@@ -93,16 +84,6 @@ namespace ShapeFill
         public void StopFill()
         {
             _isFilling = false;
-        }
-
-        private void ClearCubes()
-        {
-            for (int i = 0; i < _spawnedCubes.Count; i++)
-            {
-                Destroy(_spawnedCubes[i]);
-            }
-
-            _spawnedCubes.Clear();
         }
 
         private void PlaceGhost()
@@ -136,29 +117,13 @@ namespace ShapeFill
             for (int i = 0; i < borderCells.Count; i++)
             {
                 Vector2Int cell = borderCells[i];
-                FlyingCube borderCube = SpawnStationaryCube(_gridShape.GridToWorld(cell.x, cell.y));
-
-                SetCubeColor(borderCube.gameObject, _borderColor);
-                _spawnedCubes.Add(borderCube.gameObject);
+                _spawner.Spawn(
+                    _gridShape.GridToWorld(cell.x, cell.y),
+                    Quaternion.identity,
+                    _gridShape.CellSize,
+                    _borderColor
+                );
             }
-        }
-
-        private FlyingCube SpawnStationaryCube(Vector3 worldPosition)
-        {
-            FlyingCube cube = Instantiate(_cubePrefab, worldPosition, Quaternion.identity, _cubesParent);
-            cube.transform.localScale = Vector3.one * _gridShape.CellSize;
-            return cube;
-        }
-
-        private void SetCubeColor(GameObject cube, Color color)
-        {
-            if (cube.TryGetComponent(out Renderer cubeRenderer) == false)
-            {
-                return;
-            }
-
-            _propertyBlock.SetColor(Shader.PropertyToID("_Color"), color);
-            cubeRenderer.SetPropertyBlock(_propertyBlock);
         }
 
         private async UniTaskVoid FillAsync(CancellationToken cancellationToken, int target)
@@ -185,17 +150,16 @@ namespace ShapeFill
 
         private void SpawnFillCube(Vector2Int cell, int target)
         {
-            FlyingCube fillCube = Instantiate(_cubePrefab, _spawnPosition, UnityEngine.Random.rotation, _cubesParent);
-            fillCube.transform.localScale = Vector3.one * _gridShape.CellSize;
-
-            Color pixelColor = _gridShape.GetPixelColor(cell.x, cell.y);
-            SetCubeColor(fillCube.gameObject, pixelColor);
+            FlyingCube fillCube = _spawner.Spawn(
+                _spawnPosition,
+                UnityEngine.Random.rotation,
+                _gridShape.CellSize,
+                _gridShape.GetPixelColor(cell.x, cell.y)
+            );
 
             fillCube.Arrived += OnCubeArrived;
 
             fillCube.Launch(_gridShape.GridToWorld(cell.x, cell.y), _flightDuration);
-
-            _spawnedCubes.Add(fillCube.gameObject);
         }
 
         private void OnCubeArrived(FlyingCube cube)

@@ -25375,6 +25375,10 @@ PrefabInstance:
       propertyPath: _tier
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5531691507565772995, guid: 8e3f7cf56286df64c94f96e334d14d21, type: 3}
+      propertyPath: _agent
+      value: 
+      objectReference: {fileID: 1999307900}
     - target: {fileID: 7322495227066885763, guid: 8e3f7cf56286df64c94f96e334d14d21, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.52
@@ -29679,6 +29683,11 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0.023000002, y: -0.002, z: -0.017}
   m_TimeToStationary: 0.5
+--- !u!195 &1999307900 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 3472641699351344893, guid: 8e3f7cf56286df64c94f96e334d14d21, type: 3}
+  m_PrefabInstance: {fileID: 1766045372}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2000280069
 PrefabInstance:
   m_ObjectHideFlags: 0
