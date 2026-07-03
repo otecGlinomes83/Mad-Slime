@@ -1,32 +1,36 @@
 ﻿using Game;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace NPC.Enemy
 {
     [RequireComponent(typeof(Timer))]
+    [RequireComponent(typeof(NavMeshAgent))]
     public sealed class Wander : MonoBehaviour
     {
-        [SerializeField] private NPCMover _mover;
-        [SerializeField] private Rotator _rotator;
-        [SerializeField] private Vector2 _zoneSize = new Vector2(10f, 10f);
         [SerializeField] private float _idleDuration = 2f;
 
-        private const float Threshold = 0.5f;
+        [SerializeField] private float _randomPointRadius = 5f;
+        [SerializeField] private float _maxSampleDistance = 3f;
+        [SerializeField] private int _maxAttempts = 10;
 
-        private Vector3 _zoneCenter;
-        private Vector3 _targetPosition;
+        private NavMeshPath _path;
+
+        private NavMeshAgent _agent;
         private Timer _timer;
+
         private bool _isWaiting;
 
         private void Awake()
         {
             _timer = GetComponent<Timer>();
+            _agent = GetComponent<NavMeshAgent>();
+            _path = new NavMeshPath();  
         }
 
         private void OnEnable()
         {
-            _zoneCenter = transform.position;
-            _targetPosition = GetRandomTarget();
+            SetNewDestination();
             _isWaiting = false;
 
             _timer.Finished += OnTimerFinished;
@@ -39,6 +43,7 @@ namespace NPC.Enemy
 
         public void Stop()
         {
+            _agent.ResetPath();
             _isWaiting = false;
             _timer.Stop();
         }
@@ -50,26 +55,23 @@ namespace NPC.Enemy
                 return;
             }
 
-            Vector3 offset = _targetPosition - transform.position;
-            offset.y = 0f;
-
-            float sqrDistance = offset.sqrMagnitude;
-
-            if (sqrDistance < Threshold * Threshold)
+            if (_agent.pathPending)
             {
-                StartWaiting();
                 return;
             }
 
-            Vector3 direction = offset.normalized;
-            _mover.Move(direction);
-            _rotator.Rotate(direction);
+            if (_agent.remainingDistance > _agent.stoppingDistance)
+            {
+                return;
+            }
+
+            StartWaiting();
         }
 
         private void OnTimerFinished()
         {
             _isWaiting = false;
-            _targetPosition = GetRandomTarget();
+            SetNewDestination();
         }
 
         private void StartWaiting()
@@ -79,34 +81,34 @@ namespace NPC.Enemy
             _timer.StartCount();
         }
 
-        private Vector3 GetRandomTarget()
+        private void SetNewDestination()
         {
-            float halfX = _zoneSize.x * 0.5f;
-            float halfZ = _zoneSize.y * 0.5f;
+            Vector3 newDestination = GetRandomNavMeshTarget();
 
-            float x = _zoneCenter.x + Random.Range(-halfX, halfX);
-            float z = _zoneCenter.z + Random.Range(-halfZ, halfZ);
-
-            return new Vector3(x, _zoneCenter.y, z);
+            _agent.SetDestination(newDestination);
         }
 
-        private void OnDrawGizmosSelected()
+        private Vector3 GetRandomNavMeshTarget()
         {
-            Vector3 center;
-
-            if (Application.isPlaying == true)
+            for (int i = 0; i < _maxAttempts; i++)
             {
-                center = _zoneCenter;
-            }
-            else
-            {
-                center = transform.position;
+                Vector2 randomPoint = Random.insideUnitCircle;
+                Vector3 candidate = transform.position +
+                                    new Vector3(randomPoint.x, 0, randomPoint.y).normalized * _randomPointRadius;
+
+                if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, _maxSampleDistance, NavMesh.AllAreas))
+                {
+                    if (NavMesh.CalculatePath(candidate, hit.position, NavMesh.AllAreas, _path))
+                    {
+                        if (_path.status == NavMeshPathStatus.PathComplete)
+                        {
+                            return hit.position;
+                        }
+                    }
+                }
             }
 
-            Vector3 size = new Vector3(_zoneSize.x, 0.1f, _zoneSize.y);
-
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireCube(center, size);
+            return transform.position;
         }
     }
 }

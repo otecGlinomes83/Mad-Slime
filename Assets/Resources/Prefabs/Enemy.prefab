@@ -377,7 +377,6 @@ GameObject:
   - component: {fileID: 4290534093272662892}
   - component: {fileID: 5939861823466794241}
   - component: {fileID: 61927651089993541}
-  - component: {fileID: 1754523944687674928}
   - component: {fileID: 6045141944639028051}
   - component: {fileID: 6883701051041309366}
   - component: {fileID: 3472641699351344893}
@@ -479,10 +478,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05c84d89655b4718a5f3488ba861de2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mover: {fileID: 1754523944687674928}
-  _rotator: {fileID: 61927651089993541}
-  _zoneSize: {x: 10, y: 10}
   _idleDuration: 2
+  _randomPointRadius: 5
+  _maxSampleDistance: 3
+  _maxAttempts: 10
 --- !u!114 &5531691507565772995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -495,8 +494,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cc78ec1c5ba40fda1140d0b55c90325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mover: {fileID: 1754523944687674928}
-  _rotator: {fileID: 61927651089993541}
+  _agent: {fileID: 0}
+  _sampleDistance: 2
 --- !u!114 &4290534093272662892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -540,19 +539,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rotationSpeed: 420
---- !u!114 &1754523944687674928
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8726553128794765645}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abaa87ebe90f4994c8f880d391cc0f29, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _defaultSpeed: 4
 --- !u!65 &6045141944639028051
 BoxCollider:
   m_ObjectHideFlags: 0

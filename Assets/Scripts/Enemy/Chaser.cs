@@ -1,16 +1,22 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class Chaser : MonoBehaviour
 {
-    [SerializeField] private NPCMover _mover;
-    [SerializeField] private Rotator _rotator;
+    [SerializeField] private NavMeshAgent _agent;
+    [SerializeField] private float _sampleDistance = 2f;
 
+    private void Awake()
+    {
+        _agent = GetComponent<NavMeshAgent>();
+    }
+    
     public void Tick(Vector3 playerPosition)
     {
-        Vector3 offset = playerPosition - transform.position;
-        Vector3 direction = offset.normalized;
-
-        _mover.Move(direction);
-        _rotator.Rotate(direction);
+        if (NavMesh.SamplePosition(playerPosition, out NavMeshHit hit, _sampleDistance, NavMesh.AllAreas) == true)
+        {
+            _agent.SetDestination(hit.position);
+        }
     }
 }
