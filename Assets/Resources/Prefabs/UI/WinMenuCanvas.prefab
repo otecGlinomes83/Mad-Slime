@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8882906412666154440}
   - component: {fileID: 5292396833409081876}
   - component: {fileID: 8731605125071419737}
-  - component: {fileID: 4432217363477308179}
+  - component: {fileID: 5816293433388791362}
   m_Layer: 5
-  m_Name: FailMenuCanvas
+  m_Name: WinMenuCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -104,7 +104,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &4432217363477308179
+--- !u!114 &5816293433388791362
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -113,12 +113,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 167096246490500807}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21fe0715bdf498e49a1612b7e2f28a6c, type: 3}
+  m_Script: {fileID: 11500000, guid: 73cb93f4a7eb5064b93447ab1b5bb17a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _moneyCount: {fileID: 6023717713822429638}
+  _nextLevelButton: {fileID: 6758501593539251723}
   _restartButton: {fileID: 8220718711035708055}
-  _nextLevelButtonForADS: {fileID: 6758501593539251723}
   _pauser: {fileID: 0}
 --- !u!1 &530619672365579163
 GameObject:
@@ -189,7 +189,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6527f8156af9020418a827a16f5d6794, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9b41a5ca7110d2248a01c33101e4c7b7, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1002,7 +1002,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u041F\u0420\u041E\u0418\u0413\u0420\u042B\u0428"
+  m_text: "\u041F\u041E\u0411\u0415\u0414\u0410"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 616e1cb25d44481469eeb939db3d3ffa, type: 2}
   m_sharedMaterial: {fileID: -23400513667903854, guid: 616e1cb25d44481469eeb939db3d3ffa, type: 2}
@@ -1011,8 +1011,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190335
-  m_fontColor: {r: 1, g: 0, b: 0, a: 1}
+    rgba: 4278241539
+  m_fontColor: {r: 0.013430473, g: 0.78699994, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

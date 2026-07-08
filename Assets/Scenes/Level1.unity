@@ -8599,6 +8599,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 809963750}
     - target: {fileID: 6059285699258624555, guid: 15bcc4a25ffc4794b96777c571166b61, type: 3}
+      propertyPath: _wallet
+      value: 
+      objectReference: {fileID: 292377143}
+    - target: {fileID: 6059285699258624555, guid: 15bcc4a25ffc4794b96777c571166b61, type: 3}
       propertyPath: _sessionHandler
       value: 
       objectReference: {fileID: 292377134}

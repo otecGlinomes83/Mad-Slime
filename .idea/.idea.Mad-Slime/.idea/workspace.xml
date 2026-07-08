@@ -11,211 +11,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32b22157-d486-449b-b3c9-7cbcbfbd921f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Game/Wallet.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Game/Wallet.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI_RULES.md" beforeDir="false" afterPath="$PROJECT_DIR$/AI_RULES.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/China.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/China.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/chair_antique.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/chair_antique.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/cutlery.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/cutlery.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/dining_floor.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/dining_floor.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/flower.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/flower.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/glass.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/glass.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/glassjar_lp.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/glassjar_lp.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/napkin.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/napkin.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/plate.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/plate.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/plate_LP.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/plate_LP.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/table_antique.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/table_antique.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/tablecloth.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/tablecloth.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/vase2.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/vase2.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/vase_LP.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Materials/vase_LP.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery/Materials.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery/Materials/Silver.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery/Materials/Silver.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery/fork.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery/fork.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery/knife.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery/knife.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery/spoon.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery/spoon.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery/spoon_dessert.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/cutlery/spoon_dessert.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/fabric.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/fabric/Materials.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/fabric/Materials/Material.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/fabric/Materials/Material.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/fabric/napkin.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/fabric/napkin.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/fabric/tablecloth.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/fabric/tablecloth.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/furniture.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/furniture/chair_antique.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/furniture/chair_antique.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/furniture/table_antique.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/furniture/table_antique.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/plants.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/plants/Flower.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/plants/Flower.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/Materials.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/Materials/No Name.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/Materials/No Name.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/Materials/plate1.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/Materials/plate1.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/drinkingglass 1.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/drinkingglass 1.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/glassjar.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/glassjar.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/plate1_high.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/plate1_high.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/plate1_low.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/plate1_low.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/vase2_high.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/vase2_high.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/vase2_low.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Meshes/porcelain/vase2_low.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Dining Chair.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Dining Chair.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Dining Set.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Dining Set.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Dining Table.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Dining Table.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/FlowerVase.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/FlowerVase.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/GlassJar.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/GlassJar.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Plate.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Plate.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Plate_LP.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Plate_LP.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Vase_LP.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/Vase_LP.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/drinkingglass.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Prefabs/drinkingglass.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/China_diffuse.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/China_diffuse.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/China_normal.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/China_normal.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/Fabric.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/Fabric.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/Flower_AlbedoTransparency.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/Flower_AlbedoTransparency.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/Flower_Normal.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/Flower_Normal.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/Flower_SpecularSmoothness.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/Flower_SpecularSmoothness.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/chair_albedo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/chair_albedo.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/chair_normal.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/chair_normal.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/chair_specular.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/chair_specular.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/floor_albedo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/floor_albedo.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/floor_ao.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/floor_ao.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/floor_normal.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/floor_normal.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/napkin_Material_AlbedoTransparency.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/napkin_Material_AlbedoTransparency.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/napkin_Material_Normal.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/napkin_Material_Normal.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/napkin_Material_SpecularSmoothness.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/napkin_Material_SpecularSmoothness.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/table_albedo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/table_albedo.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/table_normal.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/table_normal.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/table_specular.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/Textures/table_specular.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/example.unity" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/example.unity.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/exampleSettings.lighting" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Dining Set/exampleSettings.lighting.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/ModulesListYG2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/ModulesListYG2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-SemiBold SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-SemiBold SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Buttons/empty_buttons/blue.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Buttons/empty_buttons/blue.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Icons/left icon.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Icons/left icon.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Claim reward popup.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Claim reward popup.png.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/ServerInfoYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/ServerInfoYG2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Enemy.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/Enemy.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Burger_001 Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Burger_001 Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Croissant_001 Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Croissant_001 Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Donut_002 Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Donut_002 Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Ice_cream_001 Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Ice_cream_001 Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Ice_cream_003 Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Ice_cream_003 Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Watermelon_003 Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Watermelon_003 Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie_006 (2) Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie_006 (2) Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie_011 (2) Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie_011 (2) Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie_012 (2) Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie_012 (2) Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Shrimp_002 (2) Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Shrimp_002 (2) Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Avocado_003 (1) Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Avocado_003 (1) Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Chili_002 (1) Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Chili_002 (1) Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Egg_004 (1) Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Egg_004 (1) Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Sasuage_003 (1) Variant.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Sasuage_003 (1) Variant.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/HeavyDefinition.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/HeavyDefinition.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/LightItemDefinition.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/LightItemDefinition.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/MediumDefinition.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/MediumDefinition.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/UltraHeavyDefinition.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/UltraHeavyDefinition.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FailMenu.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FailMenu.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/PauseMenu.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/PauseMenu.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/QuotaPlate.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/QuotaPlate.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/ShopMenu.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/ShopMenu.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FailMenuCanvas.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FailMenuCanvas.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/SkinsMenu.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/SkinsMenu.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/UI.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/UI.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level1.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level1/NavMesh-NavMesh Surface.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level1/NavMesh-NavMesh Surface.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/WinMenu.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/WinMenu.prefab.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level1_Fill.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level1_Fill.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/PropsTest.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/PropsTest.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/UITest.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/UITest.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/FillSessionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/FillSessionHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Scriptables/ItemDefinition.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Scriptables/ItemDefinition.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/FillCounter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/FillCounter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/Rewarder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/Rewarder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/FillUIFabric.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/FillUIFabric.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameplayUIFabric.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameplayUIFabric.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/QuotaPlateUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/QuotaPlateUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/FailMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/FailMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/SkinsMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/SkinsMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/WinMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/WinMenu.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/NavMeshAreas.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/NavMeshAreas.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.testtools.codecoverage/Settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.testtools.codecoverage/Settings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -312,6 +126,7 @@
       <workItem from="1783413352106" duration="5794000" />
       <workItem from="1783507005029" duration="962000" />
       <workItem from="1783529211597" duration="3189000" />
+      <workItem from="1783543650682" duration="1025000" />
     </task>
     <servers />
   </component>

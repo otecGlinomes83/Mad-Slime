@@ -1,5 +1,6 @@
 ﻿using Game;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,15 +8,17 @@ namespace Assets.Scripts.UI
 {
     public class FailMenu : MonoBehaviour
     {
+        [SerializeField] private TMP_Text _moneyCount;
+
         [SerializeField] private Button _restartButton;
-        [SerializeField] private Button _nextLevelButtonForADS;//тут будет предложение пройти уровень за рекламу
+        [SerializeField] private Button _nextLevelButtonForADS; //тут будет предложение пройти уровень за рекламу
 
         [SerializeField] private Pauser _pauser;
 
         private Action _requestNextLevelAction;
         private Action _restartAction;
 
-        public void Initialize(Pauser pauser, Action nextLevelAction, Action restartAction)
+        public void Initialize(int moneyCount, Pauser pauser, Action nextLevelAction, Action restartAction)
         {
             _restartButton.onClick.AddListener(RequestRestart);
             _nextLevelButtonForADS.onClick.AddListener(RequestNextLevel);
@@ -26,6 +29,8 @@ namespace Assets.Scripts.UI
             _pauser = pauser;
 
             _pauser.RequestPause();
+
+            _moneyCount.text = $"{moneyCount}";
         }
 
         private void OnDisable()

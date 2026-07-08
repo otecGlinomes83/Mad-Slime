@@ -379,6 +379,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d3e7a4cfa5c7946a5449350f9934fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _money: {fileID: 1310430033820455451}
   _closeButton: {fileID: 7251591350901264887}
 --- !u!1 &3516311523526330915
 GameObject:

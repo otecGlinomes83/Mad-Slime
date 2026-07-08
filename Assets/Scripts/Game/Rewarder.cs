@@ -12,6 +12,8 @@ namespace Game
         [SerializeField] private Wallet _wallet;
         [SerializeField] private int _baseReward = 50;
 
+        public event Action<int, bool> RewardGranted;
+
         private void Awake()
         {
             if (_wallet == null)
@@ -36,19 +38,25 @@ namespace Game
                 reward = Mathf.RoundToInt(_baseReward * percentage);
             }
 
+            RewardGranted?.Invoke(reward, true);
             _wallet.Add(reward);
         }
 
         public void RewardLose(float percentage)
         {
-            if (percentage < LoseMultiplierThreshold)
+            int reward = 0;
+
+            if (percentage >= LoseMultiplierThreshold)
             {
-                return;
+                reward = _baseReward / LoseRewardDivisor;
             }
 
-            int reward = _baseReward / LoseRewardDivisor;
+            RewardGranted?.Invoke(reward, false);
 
-            _wallet.Add(reward);
+            if (reward > 0)
+            {
+                _wallet.Add(reward);
+            }
         }
     }
 }

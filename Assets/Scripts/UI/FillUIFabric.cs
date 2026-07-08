@@ -35,16 +35,16 @@ namespace Assets.Scripts.UI
             _pauseButton.onClick.RemoveListener(OnPauseButtonClick);
         }
 
-        private void OnGameWin()
+        private void OnGameWin(int rewardAmount)
         {
             WinMenu winMenu = Instantiate(_winMenuPrefab);
-            winMenu.Initialize(_pauser, _sessionHandler.LoadNextLevel, _sessionHandler.LoadPreviousLevel);
+            winMenu.Initialize(rewardAmount, _pauser, _sessionHandler.LoadNextLevel, _sessionHandler.LoadPreviousLevel);
         }
 
-        private void OnGameFailed()
+        private void OnGameFailed(int rewardAmount)
         {
             FailMenu failMenu = Instantiate(_failMenuPrefab);
-            failMenu.Initialize(_pauser, _sessionHandler.LoadNextLevel, _sessionHandler.LoadPreviousLevel);
+            failMenu.Initialize(rewardAmount, _pauser, _sessionHandler.LoadNextLevel, _sessionHandler.LoadPreviousLevel);
         }
 
         private void OnPauseButtonClick()

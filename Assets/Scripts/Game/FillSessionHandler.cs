@@ -12,19 +12,20 @@ namespace Game
         [SerializeField] private Rewarder _rewarder;
         [SerializeField] private Pauser _pauser;
 
-        public event Action Win;
-        public event Action Failed;
-        
+        public event Action<int> Win;
+        public event Action<int> Failed;
 
         private void Start()
         {
             _fillOrchestrator.FillCompleted += OnFillCompleted;
             _fillOrchestrator.StartFill();
+            _rewarder.RewardGranted += OnRewardGranted;
         }
 
         private void OnDisable()
         {
             _fillOrchestrator.FillCompleted -= OnFillCompleted;
+            _rewarder.RewardGranted -= OnRewardGranted;
         }
 
         public void LoadNextLevel()
@@ -44,12 +45,22 @@ namespace Game
             if (percent >= 1f)
             {
                 _rewarder.RewardWin(percent);
-                Win?.Invoke();
             }
             else
             {
                 _rewarder.RewardLose(percent);
-                Failed?.Invoke();
+            }
+        }
+
+        private void OnRewardGranted(int amount, bool isWin)
+        {
+            if (isWin)
+            {
+                Win?.Invoke(amount);
+            }
+            else
+            {
+                Failed?.Invoke(amount);
             }
         }
 

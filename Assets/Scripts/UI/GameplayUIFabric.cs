@@ -11,12 +11,13 @@ namespace Assets.Scripts.UI
         [SerializeField] private GameplaySessionHandler _sessionHandler;
         [SerializeField] private AudioMixerController _mixerController;
 
+        [SerializeField] private Wallet _wallet;
+
         [SerializeField] private Button _pauseButton;
         [SerializeField] private Button _leaderboardButton;
         [SerializeField] private Button _skinsButton;
 
         [SerializeField] private PauseMenu _pauseMenuPrefab;
-        [SerializeField] private ShopMenu _shopMenuPrefab;
         [SerializeField] private SkinsMenu _skinsMenuPrefab;
         [SerializeField] private LeaderboardMenu _leaderboardMenuPrefab;
         [SerializeField] private DeathMenu _deathMenuPrefab;
@@ -63,7 +64,7 @@ namespace Assets.Scripts.UI
         private void SpawnSkinsMenu()
         {
             SkinsMenu skinsMenu = Instantiate(_skinsMenuPrefab);
-            skinsMenu.Initialize(_pauser);
+            skinsMenu.Initialize(_pauser, _wallet);
         }
 
         private void SpawnDeathMenu()

@@ -1,5 +1,6 @@
 ﻿using Game;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ namespace Assets.Scripts.UI
 {
     public class WinMenu : MonoBehaviour
     {
+        [SerializeField] private TMP_Text _moneyCount;
         [SerializeField] private Button _nextLevelButton;
         [SerializeField] private Button _restartButton;
 
@@ -15,7 +17,7 @@ namespace Assets.Scripts.UI
         private Action _requestNextLevelAction;
         private Action _restartAction;
 
-        public void Initialize(Pauser pauser, Action nextLevelAction, Action restartAction)
+        public void Initialize(int moneyCount, Pauser pauser, Action nextLevelAction, Action restartAction)
         {
             _restartButton.onClick.AddListener(RequestRestart);
             _nextLevelButton.onClick.AddListener(RequestNextLevel);
@@ -24,8 +26,10 @@ namespace Assets.Scripts.UI
             _restartAction = restartAction;
 
             _pauser = pauser;
-
+            
             _pauser.RequestPause();
+            
+            _moneyCount.text = $"{moneyCount}";
         }
 
         private void OnDisable()
