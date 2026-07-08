@@ -13,7 +13,6 @@ namespace Assets.Scripts.UI
 
         [SerializeField] private Button _pauseButton;
         [SerializeField] private Button _leaderboardButton;
-        [SerializeField] private Button _shopButton;
         [SerializeField] private Button _skinsButton;
 
         [SerializeField] private PauseMenu _pauseMenuPrefab;
@@ -28,7 +27,6 @@ namespace Assets.Scripts.UI
         {
             _sessionHandler.GameStarted += HideButtons;
             _pauseButton.onClick.AddListener(SpawnPauseMenu);
-            _shopButton.onClick.AddListener(SpawnShopMenu);
             _leaderboardButton.onClick.AddListener(SpawnLeaderboardMenu);
             _skinsButton.onClick.AddListener(SpawnSkinsMenu);
 
@@ -38,7 +36,6 @@ namespace Assets.Scripts.UI
         private void OnDisable()
         {
             _pauseButton.onClick.RemoveListener(SpawnPauseMenu);
-            _shopButton.onClick.RemoveListener(SpawnShopMenu);
             _leaderboardButton.onClick.RemoveListener(SpawnLeaderboardMenu);
             _skinsButton.onClick.RemoveListener(SpawnSkinsMenu);
 
@@ -49,19 +46,12 @@ namespace Assets.Scripts.UI
         {
             _leaderboardButton.gameObject.SetActive(false);
             _skinsButton.gameObject.SetActive(false);
-            _shopButton.gameObject.SetActive(false);
         }
 
         private void SpawnPauseMenu()
         {
             PauseMenu pauseMenu = Instantiate(_pauseMenuPrefab);
             pauseMenu.Initialize(_pauser, _mixerController, showRestart: true, restartAction: _sessionHandler.Restart);
-        }
-
-        private void SpawnShopMenu()
-        {
-            ShopMenu shopMenu = Instantiate(_shopMenuPrefab);
-            shopMenu.Initialize(_pauser);
         }
 
         private void SpawnLeaderboardMenu()

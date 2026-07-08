@@ -510,6 +510,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
+  _tierResolver: {fileID: 0}
+  _playerTier: {fileID: 0}
   _positionSmoothTime: 0.25
   _maxPositionSpeed: 50
 --- !u!81 &1279241168

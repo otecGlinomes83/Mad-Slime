@@ -9,10 +9,12 @@ namespace Game
     {
         [SerializeField] private ShapeFillOrchestrator _fillOrchestrator;
         [SerializeField] private LevelTransitor _levelTransitor;
+        [SerializeField] private Rewarder _rewarder;
         [SerializeField] private Pauser _pauser;
 
         public event Action Win;
         public event Action Failed;
+        
 
         private void Start()
         {
@@ -41,10 +43,12 @@ namespace Game
         {
             if (percent >= 1f)
             {
+                _rewarder.RewardWin(percent);
                 Win?.Invoke();
             }
             else
             {
+                _rewarder.RewardLose(percent);
                 Failed?.Invoke();
             }
         }
