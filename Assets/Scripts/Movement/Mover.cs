@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
-public sealed class Mover : MonoBehaviour
+namespace Movement
 {
+    [RequireComponent(typeof(CharacterController))]
+    public sealed class Mover : MonoBehaviour
+    {
     [SerializeField] private float _defaultSpeed = 4f;
     [SerializeField] private float _smoothTime = 0.12f;
 
@@ -59,5 +61,6 @@ public sealed class Mover : MonoBehaviour
         );
 
         _characterController.SimpleMove(_currentVelocity);
+    }
     }
 }

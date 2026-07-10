@@ -1,11 +1,12 @@
-﻿using Assets.Scripts.HealthSystem;
-using Scriptables;
+﻿using HealthSystem;
 using Skills;
 using System;
 using UnityEngine;
 
-public class PlayerTier : MonoBehaviour
+namespace Player
 {
+    public class PlayerTier : MonoBehaviour
+    {
     [SerializeField] private int _defaultMass;
     [SerializeField] private Health _playerHealth;
     [SerializeField] private int _massPickupDivisor = 4;
@@ -54,5 +55,6 @@ public class PlayerTier : MonoBehaviour
         MaxUnlockedTier = _tierResolver.GetUnlockedTier(_mass);
 
         TierChanged?.Invoke(previousTier, MaxUnlockedTier);
+    }
     }
 }

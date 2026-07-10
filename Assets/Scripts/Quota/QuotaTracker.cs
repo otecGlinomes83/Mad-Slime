@@ -1,13 +1,14 @@
 ﻿using Item;
-using Quota;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using YG;
 
-public sealed class QuotaTracker : MonoBehaviour
+namespace Quota
 {
+    public sealed class QuotaTracker : MonoBehaviour
+    {
     [SerializeField] private List<QuotaEntry> _quota = new List<QuotaEntry>();
 
     public event Action QuotaCompleted;
@@ -76,5 +77,6 @@ public sealed class QuotaTracker : MonoBehaviour
         }
 
         return -1;
+    }
     }
 }

@@ -1,7 +1,9 @@
 using UnityEngine;
 
-public sealed class Rotator : MonoBehaviour
+namespace Movement
 {
+    public sealed class Rotator : MonoBehaviour
+    {
     private const float MinDirectionSqrMagnitude = 0.0001f;
 
     [SerializeField] private float _rotationSpeed = 420f;
@@ -17,5 +19,6 @@ public sealed class Rotator : MonoBehaviour
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+    }
     }
 }

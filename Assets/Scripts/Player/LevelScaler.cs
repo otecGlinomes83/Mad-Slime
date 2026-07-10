@@ -1,5 +1,6 @@
+using Collectables;
 using Cysharp.Threading.Tasks;
-using Scriptables;
+using Player;
 using System;
 using System.Threading;
 using UnityEngine;

@@ -1,8 +1,10 @@
 using UnityEngine;
 using YG;
 
-public sealed class FillCounter : MonoBehaviour
+namespace ShapeFill
 {
+    public sealed class FillCounter : MonoBehaviour
+    {
     [SerializeField] private int _defaultCountDivisor;
 
     public int CalculateFill(int maxCubes)
@@ -22,5 +24,6 @@ public sealed class FillCounter : MonoBehaviour
         }
 
         return Mathf.Clamp(Mathf.RoundToInt(percentage * maxCubes), 0, maxCubes);
+    }
     }
 }

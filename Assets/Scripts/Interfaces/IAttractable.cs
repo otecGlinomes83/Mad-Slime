@@ -1,8 +1,11 @@
 using Skills;
 using UnityEngine;
 
-public interface IAttractable : IMassHolder
+namespace Interfaces
 {
-    ItemTier Tier { get; }
-    Transform Self { get; }
+    public interface IAttractable : IMassHolder
+    {
+        ItemTier Tier { get; }
+        Transform Self { get; }
+    }
 }

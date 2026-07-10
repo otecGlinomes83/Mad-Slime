@@ -1,0 +1,55 @@
+﻿using Audio;
+using Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace UI
+{
+    public class FillUIFabric : MonoBehaviour
+    {
+        [SerializeField] private FillSessionHandler _sessionHandler;
+        [SerializeField] private AudioMixerController _mixerController;
+
+        [SerializeField] private Button _pauseButton;
+
+        [SerializeField] private PauseMenu _pauseMenuPrefab;
+        [SerializeField] private WinMenu _winMenuPrefab;
+        [SerializeField] private FailMenu _failMenuPrefab;
+
+        [SerializeField] private Pauser _pauser;
+
+        private void OnEnable()
+        {
+            _sessionHandler.Failed += OnGameFailed;
+            _sessionHandler.Win += OnGameWin;
+
+            _pauseButton.onClick.AddListener(OnPauseButtonClick);
+        }
+
+        private void OnDisable()
+        {
+            _sessionHandler.Failed -= OnGameFailed;
+            _sessionHandler.Win -= OnGameWin;
+
+            _pauseButton.onClick.RemoveListener(OnPauseButtonClick);
+        }
+
+        private void OnGameWin(int rewardAmount)
+        {
+            WinMenu winMenu = Instantiate(_winMenuPrefab);
+            winMenu.Initialize(rewardAmount, _pauser, _sessionHandler.LoadNextLevel, _sessionHandler.LoadPreviousLevel);
+        }
+
+        private void OnGameFailed(int rewardAmount)
+        {
+            FailMenu failMenu = Instantiate(_failMenuPrefab);
+            failMenu.Initialize(rewardAmount, _pauser, _sessionHandler.LoadNextLevel, _sessionHandler.LoadPreviousLevel);
+        }
+
+        private void OnPauseButtonClick()
+        {
+            PauseMenu pauseMenu = Instantiate(_pauseMenuPrefab);
+            pauseMenu.Initialize(_pauser, _mixerController, showRestart: false, restartAction: null);
+        }
+    }
+}

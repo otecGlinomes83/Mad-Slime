@@ -2,7 +2,7 @@
 using Skills;
 using UnityEngine;
 
-namespace Assets.Scripts.HealthSystem
+namespace HealthSystem
 {
     public sealed class Health : MonoBehaviour
     {

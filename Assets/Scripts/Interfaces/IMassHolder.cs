@@ -1,4 +1,7 @@
-﻿public interface IMassHolder
+﻿namespace Interfaces
 {
-    public int Mass { get; }
+    public interface IMassHolder
+    {
+        public int Mass { get; }
+    }
 }

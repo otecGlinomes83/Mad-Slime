@@ -1,17 +1,22 @@
-using Assets.Scripts.HealthSystem;
+using Collectables;
+using HealthSystem;
 using Interfaces;
+using Movement;
 using PlayerInput;
+using Quota;
 using Skills;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
-[RequireComponent(typeof(Mover))]
-[RequireComponent(typeof(Rotator))]
-[RequireComponent(typeof(PlayerTier))]
-[RequireComponent(typeof(Health))]
-[RequireComponent(typeof(Healer))]
-public sealed class Player : MonoBehaviour, ITarget
+namespace Player
 {
+    [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(Mover))]
+    [RequireComponent(typeof(Rotator))]
+    [RequireComponent(typeof(PlayerTier))]
+    [RequireComponent(typeof(Health))]
+    [RequireComponent(typeof(Healer))]
+    public sealed class Player : MonoBehaviour, ITarget
+    {
     [SerializeField] private PlayerInputReader _inputReader;
     [SerializeField] private QuotaTracker _quotaTracker;
     [SerializeField] private Collector _collector;
@@ -80,5 +85,6 @@ public sealed class Player : MonoBehaviour, ITarget
         right.Normalize();
 
         return forward * input.y + right * input.x;
+    }
     }
 }

@@ -93,7 +93,7 @@ public static class ItemIconGenerator
         instance.transform.SetParent(renderRoot.transform);
 
         GameObject cameraGO = new GameObject("IconCamera");
-        Camera cam = cameraGO.AddComponent<Camera>();
+        UnityEngine.Camera cam = cameraGO.AddComponent<UnityEngine.Camera>();
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = new Color(0f, 0f, 0f, 0f);
         cam.orthographic = true;
@@ -128,7 +128,7 @@ public static class ItemIconGenerator
         return tex;
     }
 
-    private static void FitCameraToBounds(Camera cam, GameObject instance)
+    private static void FitCameraToBounds(UnityEngine.Camera cam, GameObject instance)
     {
         Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
 

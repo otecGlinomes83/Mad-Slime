@@ -2,7 +2,7 @@ using System;
 using Game;
 using UnityEngine;
 
-namespace Assets.Scripts.HealthSystem
+namespace HealthSystem
 {
     public sealed class Healer : MonoBehaviour
     {

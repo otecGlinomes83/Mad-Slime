@@ -1,10 +1,12 @@
-using Scriptables;
+using Player;
 using Skills;
 using System;
 using UnityEngine;
 
-public sealed class CameraFollow : MonoBehaviour
+namespace Camera
 {
+    public sealed class CameraFollow : MonoBehaviour
+    {
     [SerializeField] private Transform _target;
     [SerializeField] private TierResolver _tierResolver;
     [SerializeField] private PlayerTier _playerTier;
@@ -61,5 +63,6 @@ public sealed class CameraFollow : MonoBehaviour
         float cameraOffsetMultiplier = _tierResolver.GetCameraOffsetFor(currentTier);
 
         _currentOffset = _startOffset * cameraOffsetMultiplier;
+    }
     }
 }

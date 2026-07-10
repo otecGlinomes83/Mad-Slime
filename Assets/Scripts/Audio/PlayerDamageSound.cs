@@ -1,5 +1,5 @@
 using System;
-using Assets.Scripts.HealthSystem;
+using HealthSystem;
 using UnityEngine;
 using UnityEngine.Audio;
 

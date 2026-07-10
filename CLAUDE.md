@@ -30,7 +30,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working in this
 
 - **Engine:** Unity **2022.3.62f2 LTS**, 3D (low-poly arcade).
 - **Target:** mobile-first. Избегать GC-аллокаций, NonAlloc API, никакого LINQ в Update.
-- **IDE:** JetBrains Rider. `Assets/Editor/SetRiderAsDefaultEditor.cs` автоматически прописывает Rider как Script Editor и вычищает пакеты VS/VSCode.
+- **IDE:** JetBrains Rider.
 - **Стек:** UniTask (Cysharp) для async, New Input System, TextMeshPro. Нет DI / ECS / event bus / singleton-ов.
 
 ## Build / run
@@ -105,7 +105,7 @@ UI/             — HealthUI, TimerUI
 
 ### Editor
 
-- `Assets/Editor/SetRiderAsDefaultEditor.cs` — `[InitializeOnLoad]`, ставит Rider как default script editor на Windows (реестр + `EditorPrefs`), удаляет пакеты VS/VSCode. Жёстко прописан путь `G:\1. CodeETC\Rider` первым приоритетом.
+- `Assets/Editor/ItemIconGenerator/` — утилита для генерации иконок предметов через рендер в текстуру.
 
 ---
 
@@ -129,7 +129,6 @@ UI/             — HealthUI, TimerUI
 - Два `Attacker.cs`: один в `Combat/` (глобальный namespace, не подключён), второй в `NPC/Enemy/` (используется). Удалить лишний.
 - `PlayerMass.Setup()` дёргает `Changed?.Invoke(_defaultMass, _mass)` — странный контракт для подписчиков.
 - `Inventory` подключён к `Player`, но без UI.
-- Hard-coded путь `G:\1. CodeETC\Rider` в `SetRiderAsDefaultEditor.cs` — убрать или вынести в настройки.
 
 ---
 

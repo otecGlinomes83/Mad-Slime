@@ -1,4 +1,4 @@
-using Assets.Scripts.HealthSystem;
+using HealthSystem;
 using Skills;
 using UnityEngine;
 
