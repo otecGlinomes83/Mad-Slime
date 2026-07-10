@@ -1,6 +1,6 @@
 namespace YG
 {
-    public partial class SavesYG
+    public partial class SavesYGQuota
     {
         public int intExample = 5;
         public string strExample = "Hello!";

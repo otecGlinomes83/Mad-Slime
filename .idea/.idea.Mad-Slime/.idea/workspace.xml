@@ -3,6 +3,9 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
+  <component name="BackgroundAgentGlobalSettings">
+    <option name="selectedModelId" value="auto" />
+  </component>
   <component name="CMakeProjectFlavorService">
     <option name="flavorId" value="CMakePlainProjectFlavor" />
   </component>
@@ -11,30 +14,70 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32b22157-d486-449b-b3c9-7cbcbfbd921f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/IntValueView.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/IntValueView.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/Shop.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/Shop.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ShopContent.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ShopContent.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ShopPanel.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ShopPanel.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItem.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItem.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItemView.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItemView.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItemViewFactory.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItemViewFactory.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ValueView.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ValueView.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/indexLayout.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-SemiBold SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-SemiBold SDF.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Buttons/empty_buttons/blue.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Buttons/empty_buttons/blue.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Icons/left icon.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Icons/left icon.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Claim reward popup.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Claim reward popup.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-Regular SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-Regular SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 1.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 2.png.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FailMenuCanvas.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FailMenuCanvas.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/SkinsMenu.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/SkinsMenu.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/WinMenu.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/WinMenu.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level1_Fill.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level1_Fill.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/FillSessionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/FillSessionHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/Rewarder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/Rewarder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/FillUIFabric.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/FillUIFabric.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Example/Scripts/SavesDataExample.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Example/Scripts/SavesDataExample.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Scripts/SavesYG2.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Scripts/SavesYG2.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Scripts/Storage_yg.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Scripts/Storage_yg.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/SlimeEnemy.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/SlimeEnemy.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/materials.mtl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/materials.mtl.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/materials.mtl.bak.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/materials.mtl.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/model.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/model.obj.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FailMenuCanvas.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FailMenuCanvas.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/SkinsMenu.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/SkinsMenu.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/WinMenuCanvas.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/WinMenuCanvas.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/IconGeneration.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/IconGeneration.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level1.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/PropsTest.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/PropsTest.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/UITest.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/UITest.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYG.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYG.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYGAudio.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYGAudio.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYGLevel.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYGLevel.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameplayUIFabric.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameplayUIFabric.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/FailMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/FailMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/SkinsMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/SkinsMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/WinMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/WinMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/SkinsMenu.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/SkinsMenu.cs.meta" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_G:/code/unity/repos/Mad-Slime" value="3FzT9h7J8LZANzMeoyeZ6D86AM4" />
+    </persistenceIdMap>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -54,27 +97,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Notification.DisplayName-DoNotAsk-WindowsDefender&quot;: &quot;Microsoft Defender may affect IDE&quot;,
-    &quot;Notification.DoNotAsk-WindowsDefender&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Notification.DisplayName-DoNotAsk-WindowsDefender": "Microsoft Defender may affect IDE",
+    "Notification.DoNotAsk-WindowsDefender": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "cidr.known.project.marker": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "copilot.chat.legacySessionMetadata.migrated": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="G:\code\unity\editor\2022.3.62f2\Editor\Unity.exe" />
@@ -126,7 +171,11 @@
       <workItem from="1783413352106" duration="5794000" />
       <workItem from="1783507005029" duration="962000" />
       <workItem from="1783529211597" duration="3189000" />
-      <workItem from="1783543650682" duration="1025000" />
+      <workItem from="1783543650682" duration="1740000" />
+      <workItem from="1783632474969" duration="1483000" />
+      <workItem from="1783668259503" duration="2388000" />
+      <workItem from="1783670675565" duration="111000" />
+      <workItem from="1783670952560" duration="10967000" />
     </task>
     <servers />
   </component>
@@ -171,5 +220,9 @@
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

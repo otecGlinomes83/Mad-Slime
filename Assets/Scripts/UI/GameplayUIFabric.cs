@@ -18,7 +18,7 @@ namespace Assets.Scripts.UI
         [SerializeField] private Button _skinsButton;
 
         [SerializeField] private PauseMenu _pauseMenuPrefab;
-        [SerializeField] private SkinsMenu _skinsMenuPrefab;
+        [SerializeField] private Shop _shopPrefab;
         [SerializeField] private LeaderboardMenu _leaderboardMenuPrefab;
         [SerializeField] private DeathMenu _deathMenuPrefab;
 
@@ -29,7 +29,7 @@ namespace Assets.Scripts.UI
             _sessionHandler.GameStarted += HideButtons;
             _pauseButton.onClick.AddListener(SpawnPauseMenu);
             _leaderboardButton.onClick.AddListener(SpawnLeaderboardMenu);
-            _skinsButton.onClick.AddListener(SpawnSkinsMenu);
+            _skinsButton.onClick.AddListener(SpawnShop);
 
             _sessionHandler.PlayerDied += SpawnDeathMenu;
         }
@@ -38,7 +38,7 @@ namespace Assets.Scripts.UI
         {
             _pauseButton.onClick.RemoveListener(SpawnPauseMenu);
             _leaderboardButton.onClick.RemoveListener(SpawnLeaderboardMenu);
-            _skinsButton.onClick.RemoveListener(SpawnSkinsMenu);
+            _skinsButton.onClick.RemoveListener(SpawnShop);
 
             _sessionHandler.PlayerDied -= SpawnDeathMenu;
         }
@@ -61,10 +61,10 @@ namespace Assets.Scripts.UI
             leaderboardMenu.Initialize(_pauser);
         }
 
-        private void SpawnSkinsMenu()
+private void SpawnShop()
         {
-            SkinsMenu skinsMenu = Instantiate(_skinsMenuPrefab);
-            skinsMenu.Initialize(_pauser, _wallet);
+            Shop shop = Instantiate(_shopPrefab);
+            shop.Initialize(_pauser, _wallet);
         }
 
         private void SpawnDeathMenu()

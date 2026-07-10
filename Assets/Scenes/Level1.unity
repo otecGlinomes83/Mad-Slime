@@ -8603,6 +8603,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 292377143}
     - target: {fileID: 6059285699258624555, guid: 15bcc4a25ffc4794b96777c571166b61, type: 3}
+      propertyPath: _shopPrefab
+      value: 
+      objectReference: {fileID: 4059509220765194126, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
+    - target: {fileID: 6059285699258624555, guid: 15bcc4a25ffc4794b96777c571166b61, type: 3}
       propertyPath: _sessionHandler
       value: 
       objectReference: {fileID: 292377134}

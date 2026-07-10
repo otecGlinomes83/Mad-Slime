@@ -2,7 +2,7 @@
 namespace YG
 {
     [System.Serializable]
-    public partial class SavesYG
+    public partial class SavesYGQuota
     {
         public int idSave;
     }
