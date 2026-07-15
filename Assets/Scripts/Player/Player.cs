@@ -20,8 +20,8 @@ namespace Player
     [SerializeField] private PlayerInputReader _inputReader;
     [SerializeField] private QuotaTracker _quotaTracker;
     [SerializeField] private Collector _collector;
-    [SerializeField] private SprintSkill _sprintSkill;
-
+    [SerializeField] private SkillHandler _skillHandler;
+    
     private Mover _mover;
     private Rotator _rotator;
     private PlayerTier _playerTier;
@@ -46,12 +46,15 @@ namespace Player
     {
         _collector.ItemCollected += OnItemCollected;
         _inputReader.SprintPerformed += OnSprintPerformed;
+        _inputReader.AttractPerformed += OnAttractPerformed;
     }
 
     private void OnDisable()
     {
         _collector.ItemCollected -= OnItemCollected;
         _inputReader.SprintPerformed -= OnSprintPerformed;
+        _inputReader.AttractPerformed -= OnAttractPerformed;
+        
     }
 
     private void Update()
@@ -64,9 +67,14 @@ namespace Player
 
     private void OnSprintPerformed()
     {
-        _sprintSkill.Activate();
+        _skillHandler.TryActivate(SkillType.Sprint);
     }
 
+    private void OnAttractPerformed()
+    {
+        _skillHandler.TryActivate(SkillType.Attract);
+    } 
+    
     private void OnItemCollected(Item.Item item)
     {
         _quotaTracker.RegisterCollected(item.Definition);

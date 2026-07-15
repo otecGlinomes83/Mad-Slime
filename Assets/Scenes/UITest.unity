@@ -871,6 +871,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c26503d78635074194ccd210ae4e1d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _skillsConfig: {fileID: 11400000, guid: 875c13b1b4adde94894377dbf1ff2264, type: 2}
   _panel: {fileID: 293756257}
   _rewardPopupPrefab: {fileID: 808406898679370736, guid: 7d8e9d9e814e50445a83b1b52c76f8ae, type: 3}
   _closeButton: {fileID: 2123228166}

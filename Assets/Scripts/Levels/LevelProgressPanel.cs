@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Scriptables;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,8 @@ namespace Levels
         
         private readonly List<LevelNodeView> _nodes = new List<LevelNodeView>();
 
+        private SkillsConfig _skillsConfig;
+        
         public event Action<int> LevelClicked;
 
         public void Populate(int totalLevels, int currentLevel)

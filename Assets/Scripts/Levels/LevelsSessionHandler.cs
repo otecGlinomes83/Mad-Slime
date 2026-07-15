@@ -1,5 +1,7 @@
 using Game;
 using Levels.Levels;
+using Scriptables;
+using Skills;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;
@@ -9,6 +11,7 @@ namespace Levels
     [RequireComponent(typeof(LevelTransitor))]
     public class LevelsSessionHandler : MonoBehaviour
     {
+        [SerializeField] private SkillsConfig _skillsConfig;
         [SerializeField] private LevelProgressPanel _panel;
         [SerializeField] private LevelRewardPopup _rewardPopupPrefab;
         [SerializeField] private Button _closeButton;
@@ -64,7 +67,18 @@ namespace Levels
         private void OnLevelClicked(int level)
         {
             LevelRewardPopup popup = Instantiate(_rewardPopupPrefab);
-            popup.Show(level);
+
+            foreach (SkillConfig config in _skillsConfig.Skills)
+            {
+                if (config.RequiredLevel == level)
+                {
+                    popup.Initialize(level, config);
+                    return;
+                }
+            }
+
+
+            popup.SimpleInitialize(level);
         }
 
         private void Close()
@@ -73,5 +87,4 @@ namespace Levels
             _levelTransitor.LoadScene(previousScene);
         }
     }
-    
 }

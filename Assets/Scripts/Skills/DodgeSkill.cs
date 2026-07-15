@@ -1,14 +1,33 @@
+using System;
 using UnityEngine;
 
 namespace Skills
 {
-    public sealed class DodgeSkill : MonoBehaviour
+    public sealed class DodgeSkill : BaseSkill
     {
-        [SerializeField, Range(0f, 1f)] private float _dodgeChance = 0.15f;
+        [SerializeField] private DodgeConfig _config;
 
-        public bool TryDodge()
+        public event Action Dodged;
+
+        private void Awake()
         {
-            return UnityEngine.Random.value < _dodgeChance;
+            if (_config == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: DodgeConfig is not assigned. Drag a DodgeConfig asset into the _config field.");
+            }
+        }
+
+        public override bool TryActivate()
+        {
+            bool dodged = UnityEngine.Random.value < _config.DodgeChance;
+
+            if (dodged == true)
+            {
+                Dodged?.Invoke();
+            }
+
+            return dodged;
         }
     }
 }

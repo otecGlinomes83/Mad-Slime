@@ -1232,7 +1232,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d91306417e7e7c4c91862ad600b03e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dodgeChance: 0.15
+  _type: 0
+  _config: {fileID: 11400000, guid: 0c64651cf9e9fef4ea54bd364deda3a7, type: 2}
 --- !u!1 &24358977 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9182725261186297502, guid: daa6bc6fd5f907c44b2d1016d376086b, type: 3}
@@ -8501,7 +8502,7 @@ PrefabInstance:
     - target: {fileID: 2965074544589727304, guid: 15bcc4a25ffc4794b96777c571166b61, type: 3}
       propertyPath: _skillManager
       value: 
-      objectReference: {fileID: 292377141}
+      objectReference: {fileID: 0}
     - target: {fileID: 3260158277397835145, guid: 15bcc4a25ffc4794b96777c571166b61, type: 3}
       propertyPath: _platePrefab
       value: 
@@ -8682,7 +8683,8 @@ PrefabInstance:
       propertyPath: _health
       value: 
       objectReference: {fileID: 601890968687515531}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2965074544589727304, guid: 15bcc4a25ffc4794b96777c571166b61, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -9684,7 +9686,6 @@ GameObject:
   - component: {fileID: 292377136}
   - component: {fileID: 292377138}
   - component: {fileID: 292377139}
-  - component: {fileID: 292377141}
   - component: {fileID: 292377140}
   - component: {fileID: 292377142}
   - component: {fileID: 292377143}
@@ -9872,19 +9873,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &292377141
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 292377132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bbc4fc79be4c3d4aa5e7bfbead8f6b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _config: {fileID: 11400000, guid: b00972996e78f46479d35d6c555c1cc9, type: 2}
 --- !u!114 &292377142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55604,12 +55592,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81ca71d93e379ca4db7aa346c758e844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skillManager: {fileID: 292377141}
+  _type: 1
+  _config: {fileID: 11400000, guid: 1900ca262289e6f4dbce0654eec00996, type: 2}
   _mover: {fileID: 3519261387119298566}
   _timer: {fileID: 1816863587}
-  _speedMultiplier: 2
-  _activeDuration: 5
-  _cooldown: 8
 --- !u!1001 &1817025090
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -64935,8 +64921,7 @@ MonoBehaviour:
   _maxValue: 2
   _value: 0
   _invulnerability: {fileID: 9169244212891694035}
-  _dodgeSkill: {fileID: 24077454}
-  _skillManager: {fileID: 292377141}
+  _skillHandler: {fileID: 9169244212891694038}
 --- !u!114 &1708795484979099651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64964,7 +64949,7 @@ MonoBehaviour:
   _inputReader: {fileID: 3573281502251075366}
   _quotaTracker: {fileID: 9169244212891694036}
   _collector: {fileID: 8377527666427508013}
-  _sprintSkill: {fileID: 1816863588}
+  _skillHandler: {fileID: 9169244212891694038}
 --- !u!1 &2331489780493035087
 GameObject:
   m_ObjectHideFlags: 0
@@ -65084,7 +65069,7 @@ GameObject:
   - component: {fileID: 7835458888631361819}
   - component: {fileID: 7835458888631361818}
   m_Layer: 6
-  m_Name: Attractor
+  m_Name: AttractSkill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65122,6 +65107,7 @@ GameObject:
   - component: {fileID: 9169244212891694035}
   - component: {fileID: 9169244212891694036}
   - component: {fileID: 9169244212891694037}
+  - component: {fileID: 9169244212891694038}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -65244,13 +65230,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbdb3ce3d09c13c45a168029c191b5d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skillManager: {fileID: 292377141}
+  _type: 2
+  _config: {fileID: 11400000, guid: bccf9e52416c15042abae3d768cec313, type: 2}
   _playerTier: {fileID: 154371106753514503}
   _detector: {fileID: 7835458888631361816}
   _timer: {fileID: 7835458888631361818}
-  _attractionForce: 10
-  _activeDuration: 3
-  _cooldown: 5
 --- !u!4 &7981583857353407378
 Transform:
   m_ObjectHideFlags: 0
@@ -65478,6 +65462,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _shopContent: {fileID: 11400000, guid: 3e9b0436cf221244fb683430095afbcf, type: 2}
   _skinsContainer: {fileID: 2334369111724266719}
+--- !u!114 &9169244212891694038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5552793102222662066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 574bec1a865440c493963e74bf2257f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skills:
+  - {fileID: 7835458888631361819}
+  - {fileID: 24077454}
+  - {fileID: 1816863588}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

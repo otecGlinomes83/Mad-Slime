@@ -7,17 +7,14 @@ using UnityEngine;
 
 namespace Skills
 {
-    public sealed class AttractSkill : MonoBehaviour
+    public sealed class AttractSkill : BaseSkill
     {
         private const float MinDistanceSqr = 0.0001f;
 
-        [SerializeField] private SkillTracker _skillManager;
+        [SerializeField] private AttractConfig _config;
         [SerializeField] private PlayerTier _playerTier;
         [SerializeField] private AttractableDetector _detector;
         [SerializeField] private Timer _timer;
-        [SerializeField] private float _attractionForce = 6f;
-        [SerializeField] private float _activeDuration = 3f;
-        [SerializeField] private float _cooldown = 8f;
 
         private bool _isActive;
         private bool _isOnCooldown;
@@ -28,6 +25,15 @@ namespace Skills
 
         public bool IsActive => _isActive;
         public bool IsOnCooldown => _isOnCooldown;
+
+        private void Awake()
+        {
+            if (_config == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AttractConfig is not assigned. Drag an AttractConfig asset into the _config field.");
+            }
+        }
 
         private void OnEnable()
         {
@@ -41,22 +47,19 @@ namespace Skills
             _timer.Finished -= OnTimerFinished;
         }
 
-        public void Activate()
+        public override bool TryActivate()
         {
             if (_isActive == true || _isOnCooldown == true)
             {
-                return;
-            }
-
-            if (_skillManager.IsUnlocked(SkillId.Attract) == false)
-            {
-                return;
+                return false;
             }
 
             _isActive = true;
-            _timer.Setup(_activeDuration);
+            _timer.Setup(_config.ActiveDuration);
             _timer.StartCount();
             Started?.Invoke();
+
+            return true;
         }
 
         private void OnDetected(IAttractable attractable)
@@ -80,7 +83,7 @@ namespace Skills
                 return;
             }
 
-            target.position += toTarget.normalized * (_attractionForce * Time.deltaTime);
+            target.position += toTarget.normalized * (_config.AttractionForce * Time.deltaTime);
         }
 
         private void OnTimerFinished()
@@ -89,7 +92,7 @@ namespace Skills
             {
                 _isActive = false;
                 _isOnCooldown = true;
-                _timer.Setup(_cooldown);
+                _timer.Setup(_config.Cooldown);
                 _timer.StartCount();
                 Ended?.Invoke();
             }

@@ -5,14 +5,11 @@ using UnityEngine;
 
 namespace Skills
 {
-    public sealed class SprintSkill : MonoBehaviour
+    public sealed class SprintSkill : BaseSkill
     {
-        [SerializeField] private SkillTracker _skillManager;
+        [SerializeField] private SprintConfig _config;
         [SerializeField] private Mover _mover;
         [SerializeField] private Timer _timer;
-        [SerializeField] private float _speedMultiplier = 2f;
-        [SerializeField] private float _activeDuration = 5f;
-        [SerializeField] private float _cooldown = 10f;
 
         private bool _isActive;
         private bool _isOnCooldown;
@@ -24,6 +21,15 @@ namespace Skills
         public bool IsActive => _isActive;
         public bool IsOnCooldown => _isOnCooldown;
 
+        private void Awake()
+        {
+            if (_config == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SprintConfig is not assigned. Drag a SprintConfig asset into the _config field.");
+            }
+        }
+
         private void OnEnable()
         {
             _timer.Finished += OnTimerFinished;
@@ -34,23 +40,20 @@ namespace Skills
             _timer.Finished -= OnTimerFinished;
         }
 
-        public void Activate()
+        public override bool TryActivate()
         {
             if (_isActive == true || _isOnCooldown == true)
             {
-                return;
-            }
-
-            if (_skillManager.IsUnlocked(SkillId.Sprint) == false)
-            {
-                return;
+                return false;
             }
 
             _isActive = true;
-            _mover.SetSpeedMultiplier(_speedMultiplier);
-            _timer.Setup(_activeDuration);
+            _mover.SetSpeedMultiplier(_config.SpeedMultiplier);
+            _timer.Setup(_config.Duration);
             _timer.StartCount();
             Started?.Invoke();
+
+            return true;
         }
 
         private void OnTimerFinished()
@@ -60,7 +63,7 @@ namespace Skills
                 _isActive = false;
                 _mover.ResetSpeed();
                 _isOnCooldown = true;
-                _timer.Setup(_cooldown);
+                _timer.Setup(_config.Cooldown);
                 _timer.StartCount();
                 Ended?.Invoke();
             }

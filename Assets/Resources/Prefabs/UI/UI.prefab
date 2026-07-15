@@ -181,7 +181,6 @@ GameObject:
   - component: {fileID: 8263951193045704731}
   - component: {fileID: 2980671793594125177}
   - component: {fileID: 3462307584477777669}
-  - component: {fileID: 2965074544589727304}
   m_Layer: 0
   m_Name: Skills
   m_TagString: Untagged
@@ -273,23 +272,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &2965074544589727304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 482045932114157916}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01a9e6211b5e8444fb98b46e0173efba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _skillManager: {fileID: 0}
-  _sprintSkill: {fileID: 0}
-  _attractSkill: {fileID: 0}
-  _sprintButton: {fileID: 807226528252948463}
-  _attractButton: {fileID: 4981175072167500494}
 --- !u!1 &522761898917962315
 GameObject:
   m_ObjectHideFlags: 0

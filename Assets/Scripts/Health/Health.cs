@@ -9,8 +9,7 @@ namespace HealthSystem
         [SerializeField] private int _maxValue;
         [SerializeField] private int _value;
         [SerializeField] private Invulnerability _invulnerability;
-        [SerializeField] private DodgeSkill _dodgeSkill;
-        [SerializeField] private SkillTracker _skillManager;
+        [SerializeField] private SkillHandler _skillHandler;
 
         public event Action Died;
         public event Action Damaged;
@@ -59,7 +58,7 @@ namespace HealthSystem
                 return;
             }
 
-            if (CanDodge() == true && _dodgeSkill.TryDodge() == true)
+            if (_skillHandler.TryActivate(SkillType.Dodge))
             {
                 DamageDodged?.Invoke();
                 _invulnerability.EnterWindow();
@@ -99,21 +98,6 @@ namespace HealthSystem
         public void TurnOnInvulnerabilityWindow(float time)
         {
             _invulnerability.EnterWindow(time);
-        }
-
-        private bool CanDodge()
-        {
-            if (_dodgeSkill == null)
-            {
-                return false;
-            }
-
-            if (_skillManager == null)
-            {
-                return false;
-            }
-
-            return _skillManager.IsUnlocked(SkillId.Dodge);
         }
     }
 }

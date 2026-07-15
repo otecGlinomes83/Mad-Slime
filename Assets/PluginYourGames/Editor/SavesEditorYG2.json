@@ -7,9 +7,9 @@
         false,
         false
     ],
-    "idSave": 2323,
+    "idSave": 2324,
     "QuotaCount": 73,
-    "DefaultCount": 383,
+    "DefaultCount": 590,
     "TargetQuotaCount": 82,
     "CurrentLevel": 1,
     "musicVolume": 0.4398566782474518,
@@ -21,5 +21,5 @@
         1
     ],
     "PreviousScene": "Level1",
-    "NextScene": "Level1_Fill"
+    "NextScene": "Level1"
 }
