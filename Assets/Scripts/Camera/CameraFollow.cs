@@ -3,7 +3,7 @@ using Skills;
 using System;
 using UnityEngine;
 
-namespace Camera
+namespace CameraSystem
 {
     public sealed class CameraFollow : MonoBehaviour
     {

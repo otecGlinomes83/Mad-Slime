@@ -11,25 +11,24 @@ namespace UI
         [SerializeField] private GameplaySessionHandler _sessionHandler;
         [SerializeField] private AudioMixerController _mixerController;
 
-        [SerializeField] private Wallet _wallet;
-
         [SerializeField] private Button _pauseButton;
         [SerializeField] private Button _leaderboardButton;
-        [SerializeField] private Button _skinsButton;
+        [SerializeField] private Button _shopButton;
 
         [SerializeField] private PauseMenu _pauseMenuPrefab;
-        [SerializeField] private Shop _shopPrefab;
         [SerializeField] private LeaderboardMenu _leaderboardMenuPrefab;
         [SerializeField] private DeathMenu _deathMenuPrefab;
 
         [SerializeField] private Pauser _pauser;
+
+        [SerializeField] private LevelTransitor _levelTransitor;
 
         private void Awake()
         {
             _sessionHandler.GameStarted += HideButtons;
             _pauseButton.onClick.AddListener(SpawnPauseMenu);
             _leaderboardButton.onClick.AddListener(SpawnLeaderboardMenu);
-            _skinsButton.onClick.AddListener(SpawnShop);
+            _shopButton.onClick.AddListener(SpawnShop);
 
             _sessionHandler.PlayerDied += SpawnDeathMenu;
         }
@@ -38,7 +37,7 @@ namespace UI
         {
             _pauseButton.onClick.RemoveListener(SpawnPauseMenu);
             _leaderboardButton.onClick.RemoveListener(SpawnLeaderboardMenu);
-            _skinsButton.onClick.RemoveListener(SpawnShop);
+            _shopButton.onClick.RemoveListener(SpawnShop);
 
             _sessionHandler.PlayerDied -= SpawnDeathMenu;
         }
@@ -46,7 +45,7 @@ namespace UI
         private void HideButtons()
         {
             _leaderboardButton.gameObject.SetActive(false);
-            _skinsButton.gameObject.SetActive(false);
+            _shopButton.gameObject.SetActive(false);
         }
 
         private void SpawnPauseMenu()
@@ -61,10 +60,9 @@ namespace UI
             leaderboardMenu.Initialize(_pauser);
         }
 
-private void SpawnShop()
+        private void SpawnShop()
         {
-            Shop shop = Instantiate(_shopPrefab);
-            shop.Initialize(_pauser, _wallet);
+            _levelTransitor.LoadShop();
         }
 
         private void SpawnDeathMenu()

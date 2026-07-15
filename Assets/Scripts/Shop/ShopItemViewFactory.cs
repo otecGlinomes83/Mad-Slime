@@ -2,8 +2,7 @@ using UnityEngine;
 
 namespace Skins
 {
-    [CreateAssetMenu(menuName = "Mad Slime/Skin Item View Factory", fileName = "NewFactory")]
-    public class SkinItemViewFactory : ScriptableObject
+    public sealed class SkinItemViewFactory : MonoBehaviour
     {
         [SerializeField] private SkinItemView _skinItemViewPrefab;
 

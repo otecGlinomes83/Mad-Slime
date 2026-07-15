@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Game;
 using UnityEngine;
-using YG;
 
 namespace Skins
 {
@@ -14,21 +13,33 @@ namespace Skins
 
         private readonly List<SkinItemView> _shopItems = new List<SkinItemView>();
         private Wallet _wallet;
+
+        private SelectedChecker _selectedChecker;
+        private AvailableChecker _availableChecker;
+        private SkinUnlocker _skinUnlocker;
+        private SkinSelector _skinSelector;
+
         private SkinItemView _selectedView;
 
         public event Action<SkinItemView> ViewSelected;
+
+        public SkinItemView SelectedView => _selectedView;
 
         public void Initialize(Wallet wallet)
         {
             if (wallet == null)
             {
-                throw new System.ArgumentNullException(nameof(wallet));
+                throw new ArgumentNullException(nameof(wallet));
             }
 
             _wallet = wallet;
-
             _wallet.BalanceChanged += OnBalanceChanged;
-            UpdateMoneyText(_wallet.Balance);
+            OnBalanceChanged(_wallet.Balance, _wallet.Balance);
+
+            _selectedChecker = new SelectedChecker();
+            _availableChecker = new AvailableChecker();
+            _skinUnlocker = new SkinUnlocker(wallet);
+            _skinSelector = new SkinSelector();
         }
 
         public void Show(IEnumerable<SkinItem> skinItems)
@@ -37,24 +48,20 @@ namespace Skins
 
             foreach (SkinItem item in skinItems)
             {
-                if (item == null)
-                {
-                    continue;
-                }
-
                 SkinItemView view = _factory.Get(item, _itemsParent);
                 view.Click += OnItemClick;
 
-                bool isOwned = YG2.saves._openSkins.Contains(item.SkinType);
+                _availableChecker.Visit(item);
 
-                if (isOwned)
+                if (_availableChecker.Result)
                 {
                     view.Unlock();
 
-                    if (YG2.saves._selectedSkin == item.SkinType)
+                    _selectedChecker.Visit(item);
+
+                    if (_selectedChecker.Result)
                     {
-                        view.Select();
-                        _selectedView = view;
+                        ApplySelection(view);
                     }
                     else
                     {
@@ -67,7 +74,6 @@ namespace Skins
                     view.UnSelect();
                 }
 
-                view.UnHighlight();
                 _shopItems.Add(view);
             }
         }
@@ -76,49 +82,41 @@ namespace Skins
         {
             ViewSelected?.Invoke(view);
 
-            if (view.IsLock)
-            {
-                if (_wallet.Balance < view.Price)
-                {
-                    return;
-                }
-
-                _wallet.Spend(view.Price);
-
-                YG2.saves._openSkins.Add(view.SkinItem.SkinType);
-                YG2.SaveProgress();
-
-                view.Unlock();
-                ApplySelection(view);
-            }
-            else
+            if (view.IsLock == false)
             {
                 ApplySelection(view);
+                return;
             }
+
+            _skinUnlocker.Visit(view.SkinItem);
+
+            if (_skinUnlocker.Result == false)
+            {
+                return;
+            }
+
+            ApplySelection(view);
+            view.Unlock();
         }
 
         private void ApplySelection(SkinItemView view)
         {
             if (_selectedView != null && _selectedView != view)
             {
+                _selectedView.UnHighlight();
                 _selectedView.UnSelect();
             }
 
+            view.Highlight();
             view.Select();
             _selectedView = view;
 
-            YG2.saves._selectedSkin = view.SkinItem.SkinType;
-            YG2.SaveProgress();
+            _skinSelector.Visit(view.SkinItem);
         }
 
         private void OnBalanceChanged(int previousBalance, int currentBalance)
         {
-            UpdateMoneyText(currentBalance);
-        }
-
-        private void UpdateMoneyText(int balance)
-        {
-            _moneyText.text = balance.ToString();
+            _moneyText.text = currentBalance.ToString();
         }
 
         private void OnDisable()

@@ -14,60 +14,62 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32b22157-d486-449b-b3c9-7cbcbfbd921f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/IntValueView.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/IntValueView.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/Shop.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/Shop.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ShopContent.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ShopContent.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ShopPanel.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ShopPanel.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItem.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItem.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItemView.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItemView.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItemViewFactory.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/SkinItemViewFactory.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ValueView.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Skins/ValueView.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/indexLayout.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Levels/LevelRewardPopup.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Levels/LevelRewardPopup.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Player/SkinApplier.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Player/SkinApplier.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Shop/ModelPlacer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Shop/ModelPlacer.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-Regular SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-Regular SDF.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 1.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 2.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI_RULES.md" beforeDir="false" afterPath="$PROJECT_DIR$/AI_RULES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Buttons/empty_buttons/Green empty.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Buttons/empty_buttons/Green empty.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 2.png" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 2.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Example/Scripts/SavesDataExample.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Example/Scripts/SavesDataExample.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Scripts/SavesYG2.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Scripts/SavesYG2.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Scripts/Storage_yg.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Modules/Storage/Scripts/Storage_yg.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/SlimeEnemy.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/SlimeEnemy.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/materials.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/materials.mtl.bak" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/materials.mtl.bak.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/materials.mtl.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/model.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Slime/green/model.obj.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FailMenuCanvas.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FailMenuCanvas.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/SkinsMenu.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/SkinsMenu.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/WinMenuCanvas.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/WinMenuCanvas.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/IconGeneration.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/IconGeneration.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Pacman/Pacman.mtl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Pacman/Pacman.mtl.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Pacman/Pacman.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Pacman/Pacman.obj.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Pacman/Pacman.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Pacman/Pacman.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Sahur/Tung.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Sahur/Tung.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Sahur/Tung.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Models/Player/Sahur/Tung.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Sahur/Tung.prefab.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Models/Player/Sahur/Tung.prefab.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Slime/Slime.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Slime/Slime.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Slime/SlimeEnemy.fbx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Slime/SlimeEnemy.fbx.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Slime/body_primary.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Slime/body_primary.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Slime/body_secondary.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Slime/body_secondary.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Slime/eye_color.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Models/Player/Slime/eye_color.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/HeavyItem.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/HeavyItem.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/LightItem.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/LightItem.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Player.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Player.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/Skins/Pacman.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/Skins/Pacman.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/Skins/Slime.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/Skins/Slime.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/Skins/Tung.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/ScriptableObjects/Skins/Tung.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Skins/Shop.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Skins/Shop.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level1.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/PropsTest.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/PropsTest.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/UITest.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/UITest.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYG.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYG.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYGAudio.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYGAudio.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYGLevel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/SavesYGLevel.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameplayUIFabric.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameplayUIFabric.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/SkinsMenu.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Menu/SkinsMenu.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Camera/CameraFollow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Camera/CameraFollow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/LevelTransitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/LevelTransitor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Saves/Saves.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Saves/Saves.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Shop/Shop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Shop/Shop.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Shop/ShopItemViewFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Shop/ShopItemViewFactory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Shop/ShopPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Shop/ShopPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Spawners/GameplayUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Spawners/GameplayUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,29 +99,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Notification.DisplayName-DoNotAsk-WindowsDefender": "Microsoft Defender may affect IDE",
-    "Notification.DoNotAsk-WindowsDefender": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "cidr.known.project.marker": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "copilot.chat.legacySessionMetadata.migrated": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-WindowsDefender&quot;: &quot;Microsoft Defender may affect IDE&quot;,
+    &quot;Notification.DoNotAsk-WindowsDefender&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="G:\code\unity\editor\2022.3.62f2\Editor\Unity.exe" />
@@ -176,6 +178,12 @@
       <workItem from="1783668259503" duration="2388000" />
       <workItem from="1783670675565" duration="111000" />
       <workItem from="1783670952560" duration="10967000" />
+      <workItem from="1783714845249" duration="1458000" />
+      <workItem from="1783764178188" duration="3937000" />
+      <workItem from="1783798113410" duration="1191000" />
+      <workItem from="1783934571989" duration="5118000" />
+      <workItem from="1784015547620" duration="7600000" />
+      <workItem from="1784100784065" duration="1415000" />
     </task>
     <servers />
   </component>

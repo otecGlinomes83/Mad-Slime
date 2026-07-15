@@ -8,33 +8,64 @@ namespace Game
     {
         [SerializeField] private string _previousScene;
         [SerializeField] private string _nextScene;
+        [SerializeField] private string _shopScene;
 
         public bool IsHasPrevious => string.IsNullOrEmpty(_previousScene) == false;
         public bool IsHasNext => string.IsNullOrEmpty(_nextScene) == false;
+        public bool IsHasShop => string.IsNullOrEmpty(_shopScene) == false;
 
         public void Restart()
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            Load(currentSceneName);
         }
 
         public void LoadPrevious()
         {
-            if (string.IsNullOrEmpty(_previousScene))
+            if (IsHasPrevious == false)
             {
                 return;
             }
 
-            SceneManager.LoadScene(_previousScene);
+            Load(_previousScene);
         }
 
         public void LoadNext()
         {
-            if (string.IsNullOrEmpty(_nextScene))
+            if (IsHasNext == false)
             {
                 return;
             }
 
-            SceneManager.LoadScene(_nextScene);
+            Load(_nextScene);
+        }
+
+        public void LoadShop()
+        {
+            if (IsHasShop == false)
+            {
+                return;
+            }
+
+            Load(_shopScene);
+        }
+
+        public void LoadScene(string sceneName)
+        {
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                return;
+            }
+
+            Load(sceneName);
+        }
+
+        private void Load(string targetScene)
+        {
+            YG2.saves.PreviousScene = SceneManager.GetActiveScene().name;
+            YG2.saves.NextScene = targetScene;
+            YG2.SaveProgress();
+            SceneManager.LoadScene(targetScene);
         }
     }
 }

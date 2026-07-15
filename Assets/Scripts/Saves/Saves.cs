@@ -1,9 +1,10 @@
 using Player;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace YG
 {
-    public partial class SavesYGQuota
+    public partial class SavesYG
     {
         public int QuotaCount;
         public int DefaultCount;
@@ -16,7 +17,10 @@ namespace YG
 
         public int Balance= 250;
 
-        public PlayerSkins _selectedSkin = PlayerSkins.Slime;
+        public PlayerSkins SelectedSkinType = PlayerSkins.Slime;
         public List<PlayerSkins> _openSkins = new List<PlayerSkins>() { PlayerSkins.Slime };
+
+        public string PreviousScene;
+        public string NextScene;
     }
 }
