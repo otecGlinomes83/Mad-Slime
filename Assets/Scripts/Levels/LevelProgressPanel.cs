@@ -18,18 +18,20 @@ namespace Levels
         
         public event Action<int> LevelClicked;
 
-        public void Populate(int totalLevels, int currentLevel)
+        public void Populate(IReadOnlyList<int> levels, int currentLevel)
         {
             Clear();
 
-            for (int level = 1; level <= totalLevels; level++)
+            for (int i = 0; i < levels.Count; i++)
             {
+                int level = levels[i];
                 LevelNodeView node = _factory.Get(level, _content);
                 node.Click += OnNodeClicked;
 
                 if (level < currentLevel)
                 {
                     node.Unlock();
+                    node.Complete();
                 }
                 else if (level == currentLevel)
                 {
@@ -43,9 +45,9 @@ namespace Levels
 
                 _nodes.Add(node);
             }
-            
+
             _scrollRect.verticalNormalizedPosition = 0f;
-            
+
         }
 
         private void OnDisable()

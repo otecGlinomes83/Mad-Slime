@@ -7,19 +7,19 @@
         false,
         false
     ],
-    "idSave": 2324,
-    "QuotaCount": 73,
-    "DefaultCount": 590,
-    "TargetQuotaCount": 82,
-    "CurrentLevel": 1,
-    "musicVolume": 0.4398566782474518,
-    "sfxVolume": 0.49028488993644717,
-    "Balance": 154,
-    "SelectedSkinType": 1,
+    "idSave": 3009,
+    "QuotaCount": 870,
+    "DefaultCount": 2018,
+    "TargetQuotaCount": 445,
+    "CurrentLevel": 2,
+    "musicVolume": 1.0,
+    "sfxVolume": 1.0,
+    "Balance": 854,
+    "SelectedSkinType": 0,
     "_openSkins": [
         0,
         1
     ],
-    "PreviousScene": "Level1",
+    "PreviousScene": "Level3_Fill",
     "NextScene": "Level1"
 }

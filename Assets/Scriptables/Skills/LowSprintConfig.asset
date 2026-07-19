@@ -19,4 +19,4 @@ MonoBehaviour:
   _description: "\u0441\u043B\u0430\u0431\u043E\u0435 \u0443\u0441\u043A\u043E\u0440\u0435\u043D\u0438\u0435"
   _duration: 3
   _speedMultiplier: 1.3
-  _cooldown: 10
+  _cooldown: 5

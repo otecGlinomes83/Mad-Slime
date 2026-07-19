@@ -14,7 +14,6 @@ namespace Player
 
     private int _mass;
 
-
     public int Mass => _mass;
     public ItemTier MaxUnlockedTier { get; private set; } = ItemTier.Small;
 

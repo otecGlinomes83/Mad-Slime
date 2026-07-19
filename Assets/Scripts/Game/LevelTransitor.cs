@@ -9,10 +9,12 @@ namespace Game
         [SerializeField] private string _previousScene;
         [SerializeField] private string _nextScene;
         [SerializeField] private string _shopScene;
+        [SerializeField] private string _levelsScene;
 
         public bool IsHasPrevious => string.IsNullOrEmpty(_previousScene) == false;
         public bool IsHasNext => string.IsNullOrEmpty(_nextScene) == false;
         public bool IsHasShop => string.IsNullOrEmpty(_shopScene) == false;
+        public bool IsHasLevels => string.IsNullOrEmpty(_levelsScene) == false;
 
         public void Restart()
         {
@@ -50,6 +52,16 @@ namespace Game
             Load(_shopScene);
         }
 
+        public void LoadLevels()
+        {
+            if (IsHasLevels == false)
+            {
+                return;
+            }
+
+            Load(_levelsScene);
+        }
+        
         public void LoadScene(string sceneName)
         {
             if (string.IsNullOrEmpty(sceneName))

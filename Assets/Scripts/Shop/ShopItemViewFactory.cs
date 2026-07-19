@@ -4,11 +4,11 @@ namespace Skins
 {
     public sealed class SkinItemViewFactory : MonoBehaviour
     {
-        [SerializeField] private SkinItemView _skinItemViewPrefab;
+        [SerializeField] private ShopItemView shopItemViewPrefab;
 
-        public SkinItemView Get(SkinItem skinItem, Transform parent)
+        public ShopItemView Get(SkinItem skinItem, Transform parent)
         {
-            SkinItemView instance = Instantiate(_skinItemViewPrefab, parent);
+            ShopItemView instance = Instantiate(shopItemViewPrefab, parent);
             instance.Initialize(skinItem);
 
             return instance;

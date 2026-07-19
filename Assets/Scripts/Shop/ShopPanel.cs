@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Audio;
 using Game;
 using UnityEngine;
 
@@ -10,8 +11,8 @@ namespace Skins
         [SerializeField] private Transform _itemsParent;
         [SerializeField] private SkinItemViewFactory _factory;
         [SerializeField] private TMPro.TMP_Text _moneyText;
-
-        private readonly List<SkinItemView> _shopItems = new List<SkinItemView>();
+        
+        private readonly List<ShopItemView> _shopItems = new List<ShopItemView>();
         private Wallet _wallet;
 
         private SelectedChecker _selectedChecker;
@@ -19,11 +20,11 @@ namespace Skins
         private SkinUnlocker _skinUnlocker;
         private SkinSelector _skinSelector;
 
-        private SkinItemView _selectedView;
+        private ShopItemView _selectedView;
 
-        public event Action<SkinItemView> ViewSelected;
+        public event Action<ShopItemView> ViewSelected;
 
-        public SkinItemView SelectedView => _selectedView;
+        public ShopItemView SelectedView => _selectedView;
 
         public void Initialize(Wallet wallet)
         {
@@ -48,7 +49,7 @@ namespace Skins
 
             foreach (SkinItem item in skinItems)
             {
-                SkinItemView view = _factory.Get(item, _itemsParent);
+                ShopItemView view = _factory.Get(item, _itemsParent);
                 view.Click += OnItemClick;
 
                 _availableChecker.Visit(item);
@@ -78,7 +79,7 @@ namespace Skins
             }
         }
 
-        private void OnItemClick(SkinItemView view)
+        private void OnItemClick(ShopItemView view)
         {
             ViewSelected?.Invoke(view);
 
@@ -99,7 +100,7 @@ namespace Skins
             view.Unlock();
         }
 
-        private void ApplySelection(SkinItemView view)
+        private void ApplySelection(ShopItemView view)
         {
             if (_selectedView != null && _selectedView != view)
             {
@@ -134,7 +135,7 @@ namespace Skins
 
         private void Clear()
         {
-            foreach (SkinItemView view in _shopItems)
+            foreach (ShopItemView view in _shopItems)
             {
                 view.Click -= OnItemClick;
                 Destroy(view.gameObject);

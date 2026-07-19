@@ -183,7 +183,8 @@ PrefabInstance:
       value: RatEnemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5136968250238537044, guid: 8e3f7cf56286df64c94f96e334d14d21, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 9095092726966535002, guid: 8e3f7cf56286df64c94f96e334d14d21, type: 3}
       insertIndex: -1

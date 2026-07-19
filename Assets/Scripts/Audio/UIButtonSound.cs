@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -10,7 +11,7 @@ namespace Audio
     {
         [SerializeField] private AudioMixerGroup _group;
         [SerializeField] private AudioClip _clip;
-        [SerializeField]private Button[] _buttons;
+        [SerializeField]private  List<Button> _buttons;
 
         private AudioSource _source;
 
@@ -22,7 +23,7 @@ namespace Audio
                     $"{name}: AudioClip is not assigned.");
             }
 
-            if (_buttons.Length <= 0)
+            if (_buttons.Count <= 0)
             {
                 throw new InvalidOperationException(
                     $"{name}: buttons is empty");
@@ -49,6 +50,12 @@ namespace Audio
             }
         }
 
+        public void AddButton(Button button)
+        {
+            _buttons.Add(button);
+            button.onClick.AddListener(PlayClick);
+        }
+        
         private void PlayClick()
         {
             _source.PlayOneShot(_clip);

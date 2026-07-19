@@ -1,13 +1,13 @@
 using System;
 using UI;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Skins
 {
     [RequireComponent(typeof(Image))]
-    public class SkinItemView : MonoBehaviour, IPointerClickHandler
+    [RequireComponent(typeof(Button))]
+    public class ShopItemView : MonoBehaviour
     {
         [SerializeField] private Sprite _standardBackground;
         [SerializeField] private Sprite _highlightBackground;
@@ -19,9 +19,10 @@ namespace Skins
 
         [SerializeField] private Image _selectionText;
 
+        private Button _button;
         private Image _backgroundImage;
 
-        public event Action<SkinItemView> Click;
+        public event Action<ShopItemView> Click;
 
         public SkinItem SkinItem { get; private set; }
 
@@ -31,9 +32,18 @@ namespace Skins
 
         public GameObject Model => SkinItem.Model;
 
+        private void OnDisable()
+        {
+            _button.onClick.RemoveListener(OnClick);
+        }
+        
         public void Initialize(SkinItem skinItem)
         {
             _backgroundImage = GetComponent<Image>();
+            _button = GetComponent<Button>();
+
+            _button.onClick.AddListener(OnClick);
+
             _backgroundImage.sprite = _standardBackground;
 
             SkinItem = skinItem;
@@ -43,7 +53,7 @@ namespace Skins
             _priceView.Show(Price);
         }
 
-        public void OnPointerClick(PointerEventData eventData)
+        public void OnClick()
         {
             Click?.Invoke(this);
         }

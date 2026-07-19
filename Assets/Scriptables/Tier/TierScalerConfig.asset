@@ -18,11 +18,11 @@ MonoBehaviour:
     _scaleMultiplier: 1.4
     _cameraOffsetMultiplier: 1
   - _tier: 1
-    _requiredMass: 100
+    _requiredMass: 50
     _scaleMultiplier: 3
     _cameraOffsetMultiplier: 1.5
   - _tier: 2
-    _requiredMass: 1000
+    _requiredMass: 500
     _scaleMultiplier: 6
     _cameraOffsetMultiplier: 2
   - _tier: 3

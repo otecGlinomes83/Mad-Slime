@@ -73,7 +73,7 @@ namespace Skins
             _levelTransitor.LoadScene(previousScene);
         }
 
-        private void OnViewSelected(SkinItemView view)
+        private void OnViewSelected(ShopItemView view)
         {
             if (_placer == null)
             {

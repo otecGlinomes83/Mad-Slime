@@ -12,10 +12,10 @@ namespace Levels
     public class LevelsSessionHandler : MonoBehaviour
     {
         [SerializeField] private SkillsConfig _skillsConfig;
+        [SerializeField] private LevelCounter _counter;
         [SerializeField] private LevelProgressPanel _panel;
         [SerializeField] private LevelRewardPopup _rewardPopupPrefab;
         [SerializeField] private Button _closeButton;
-        [SerializeField] private int _totalLevels = 10;
 
         private LevelTransitor _levelTransitor;
         private bool _isInitialized;
@@ -59,7 +59,7 @@ namespace Levels
             _panel.LevelClicked += OnLevelClicked;
 
             int currentLevel = YG2.saves.CurrentLevel;
-            _panel.Populate(_totalLevels, currentLevel);
+            _panel.Populate(_counter.AvailableLevels, currentLevel);
 
             _isInitialized = true;
         }

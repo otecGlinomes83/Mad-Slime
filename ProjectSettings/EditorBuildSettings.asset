@@ -11,13 +11,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level1_Fill.unity
     guid: 2672c9bfeaa5e6e419272ffc61aceeaf
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Level2.unity
-    guid: 84651082bab3e05428f6b524e66221e3
-  - enabled: 0
-    path: Assets/Scenes/FillTest2.unity
-    guid: 8183b8c159c6db642a39fb3d7fdba8d7
+    guid: 3496f31f6ab067f4ca185043096942b5
   - enabled: 1
     path: Assets/Scenes/Shop.unity
     guid: 532fb55328b50974eab5a5b933f108e6
+  - enabled: 1
+    path: Assets/Scenes/Levels.unity
+    guid: 23694c36de9039e4298ba52e2aa94591
+  - enabled: 1
+    path: Assets/Scenes/Level2_Fill.unity
+    guid: 5b4d54dd817f0f544a41fb3309c54220
+  - enabled: 1
+    path: Assets/Scenes/Level3.unity
+    guid: d1a2faf78eb146f4184e754871cca896
+  - enabled: 1
+    path: Assets/Scenes/Level3_Fill.unity
+    guid: 4c4c9fd5227d3e742b13265122590a82
   m_configObjects: {}
