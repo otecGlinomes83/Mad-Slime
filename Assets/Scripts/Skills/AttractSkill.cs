@@ -69,7 +69,7 @@ namespace Skills
                 return;
             }
 
-            if (attractable.Tier > _playerTier.MaxUnlockedTier)
+            if (attractable.Tier > _playerTier.CurrentTier)
             {
                 return;
             }

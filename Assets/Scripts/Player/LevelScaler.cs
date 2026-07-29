@@ -11,15 +11,16 @@ namespace Skills
     {
         [SerializeField] private PlayerTier _playerTier;
         [SerializeField] private Transform _modelTransform;
-        [SerializeField] private CharacterController _characterController;
+        [SerializeField] private Transform _rootTransform;
+        [SerializeField] private CapsuleCollider _playerCollider;
         [SerializeField] private ItemDetector _itemDetector;
         [SerializeField] private AttractableDetector _attractableDetector;
         [SerializeField] private TierResolver _tierResolver;
         [SerializeField] private float _smoothTime = 0.4f;
-
-        private float _baseControllerHeight;
+        
         private float _baseControllerRadius;
         private float _baseControllerCenterY;
+        private float _baseControllerHeight;
         private float _itemDetectorStartRadius;
         private float _attractableDetectorStartRadius;
 
@@ -45,7 +46,7 @@ namespace Skills
                 throw new InvalidOperationException("LevelScaler requires _modelTransform to be assigned.");
             }
 
-            if (_characterController == null)
+            if (_playerCollider == null)
             {
                 throw new InvalidOperationException("LevelScaler requires _characterController to be assigned.");
             }
@@ -65,9 +66,9 @@ namespace Skills
                 throw new InvalidOperationException("LevelScaler requires _tierResolver to be assigned.");
             }
 
-            _baseControllerHeight = _characterController.height;
-            _baseControllerRadius = _characterController.radius;
-            _baseControllerCenterY = _characterController.center.y;
+            _baseControllerHeight = _playerCollider.height;
+            _baseControllerRadius = _playerCollider.radius;
+            _baseControllerCenterY = _playerCollider.center.y;
             _itemDetectorStartRadius = _itemDetector.Radius;
             _attractableDetectorStartRadius = _attractableDetector.Radius;
 
@@ -153,10 +154,12 @@ namespace Skills
 
             _lastAppliedMultiplier = _currentMultiplier;
 
-            _characterController.height = _baseControllerHeight * _currentMultiplier;
-            _characterController.radius = _baseControllerRadius * _currentMultiplier;
-            _characterController.center = new Vector3(0f, _baseControllerCenterY * _currentMultiplier, 0f);
+            _playerCollider.height = _baseControllerHeight * _currentMultiplier;
+            _playerCollider.radius = _baseControllerRadius * _currentMultiplier;
+            _playerCollider.center = new Vector3(0f, _baseControllerCenterY * _currentMultiplier, 0f);
 
+            _rootTransform.position =new Vector3(_rootTransform.position.x, _playerCollider.radius, _rootTransform.position.z);
+            
             _itemDetector.SetRadius(_itemDetectorStartRadius * _currentMultiplier);
             _attractableDetector.SetRadius(_attractableDetectorStartRadius * _currentMultiplier);
         }

@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace Player
 {
-    [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(Mover))]
     [RequireComponent(typeof(Rotator))]
     [RequireComponent(typeof(PlayerTier))]
@@ -31,7 +30,7 @@ namespace Player
     public Transform Transform => transform;
     public Health Health => _health;
 
-    public ItemTier Tier => _playerTier.MaxUnlockedTier;
+    public ItemTier Tier => _playerTier.CurrentTier;
 
     private void Awake()
     {

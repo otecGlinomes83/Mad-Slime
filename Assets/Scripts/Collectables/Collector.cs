@@ -40,7 +40,7 @@ namespace Collectables
 
     private async void OnItemDetected(Item.Item item)
     {
-        if (item.Definition.Tier > _tierHolder.MaxUnlockedTier)
+        if (item.Definition.Tier > _tierHolder.CurrentTier)
         {
             return;
         }
