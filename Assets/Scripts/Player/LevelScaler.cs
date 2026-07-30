@@ -17,7 +17,7 @@ namespace Skills
         [SerializeField] private AttractableDetector _attractableDetector;
         [SerializeField] private TierResolver _tierResolver;
         [SerializeField] private float _smoothTime = 0.4f;
-        
+
         private float _baseControllerRadius;
         private float _baseControllerCenterY;
         private float _baseControllerHeight;
@@ -58,7 +58,7 @@ namespace Skills
 
             if (_attractableDetector == null)
             {
-                throw new InvalidOperationException("LevelScaler requires _attractableDetector to be assigned.");
+                //throw new InvalidOperationException("LevelScaler requires _attractableDetector to be assigned.");
             }
 
             if (_tierResolver == null)
@@ -70,7 +70,11 @@ namespace Skills
             _baseControllerRadius = _playerCollider.radius;
             _baseControllerCenterY = _playerCollider.center.y;
             _itemDetectorStartRadius = _itemDetector.Radius;
-            _attractableDetectorStartRadius = _attractableDetector.Radius;
+
+            if (_attractableDetector != null)
+            {
+                _attractableDetectorStartRadius = _attractableDetector.Radius;
+            }
 
             ApplyMultiplier();
         }
@@ -158,10 +162,15 @@ namespace Skills
             _playerCollider.radius = _baseControllerRadius * _currentMultiplier;
             _playerCollider.center = new Vector3(0f, _baseControllerCenterY * _currentMultiplier, 0f);
 
-            _rootTransform.position =new Vector3(_rootTransform.position.x, _playerCollider.radius, _rootTransform.position.z);
-            
+            _rootTransform.position =
+                new Vector3(_rootTransform.position.x, _playerCollider.radius, _rootTransform.position.z);
+
             _itemDetector.SetRadius(_itemDetectorStartRadius * _currentMultiplier);
-            _attractableDetector.SetRadius(_attractableDetectorStartRadius * _currentMultiplier);
+            
+            if (_attractableDetector != null)
+            {
+                _attractableDetector.SetRadius(_attractableDetectorStartRadius * _currentMultiplier);
+            }
         }
     }
 }

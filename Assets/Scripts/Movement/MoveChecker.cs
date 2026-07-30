@@ -7,7 +7,6 @@ public class MoveChecker : MonoBehaviour
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private PlayerTier _playerTier;
     [SerializeField] private CapsuleCollider _playerCollider;
-    [SerializeField] private float _drawThreshold = 0.01f;
 
     private Vector3 _lastPosition;
     private Vector3 _lastVelocity;
