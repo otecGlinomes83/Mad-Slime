@@ -1,7 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Interfaces;
-using Item;
+using Items;
 using Player;
 using UnityEngine;
 
@@ -15,7 +15,7 @@ namespace Collectables
 
     private PlayerTier _tierHolder;
 
-    public event Action<Item.Item> ItemCollected;
+    public event Action<Items.Item> ItemCollected;
 
     private void Awake()
     {
@@ -38,7 +38,7 @@ namespace Collectables
         _detector.Detected -= OnItemDetected;
     }
 
-    private async void OnItemDetected(Item.Item item)
+    private async void OnItemDetected(Items.Item item)
     {
         if (item.Definition.Tier > _tierHolder.CurrentTier)
         {

@@ -1,5 +1,5 @@
 using System;
-using Item;
+using Items;
 using UnityEngine;
 
 namespace Quota

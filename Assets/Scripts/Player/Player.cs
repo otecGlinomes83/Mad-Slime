@@ -74,7 +74,7 @@ namespace Player
         _skillHandler.TryActivate(SkillType.Attract);
     } 
     
-    private void OnItemCollected(Item.Item item)
+    private void OnItemCollected(Items.Item item)
     {
         _quotaTracker.RegisterCollected(item.Definition);
         _playerTier.Add(item.Mass);

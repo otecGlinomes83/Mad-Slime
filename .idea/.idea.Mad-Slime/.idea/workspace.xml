@@ -14,15 +14,69 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32b22157-d486-449b-b3c9-7cbcbfbd921f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Movement/MoveChecker.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Movement/MoveChecker.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Item/CircleItemSpawner.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Item/CircleItemSpawner.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Item/ItemGridSpawner.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Item/ItemGridSpawner.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Item/ItemSpawner.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Item/ItemSpawner.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Croissant.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Croissant.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Donut.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Donut.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Icecream1.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Icecream1.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Icecream2.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Icecream2.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Watermelon.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/HeavyItems/Watermelon.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie1.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie1.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie2.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie2.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie3.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Cookie3.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Shrimp.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/LightItems/Shrimp.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Avocado.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Avocado.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Chili.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Chili.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Egg.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Egg.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Sasuage.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/MediumItems/Sasuage.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/UltraHeavyItems.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/UltraHeavyItems/Burger.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/Items/UltraHeavyItems/Burger.prefab.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level1.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level2.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level2.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level2.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level2.unity.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level2.unity.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level2/NavMesh-NavMesh Surface.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level2/NavMesh-NavMesh Surface.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level2/NavMesh-NavMesh Surface.asset.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level2/NavMesh-NavMesh Surface.asset.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level3.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level3.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level3.unity.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Level3.unity.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/PropsTest.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/PropsTest.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scriptables/Tier/TierScalerConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scriptables/Tier/TierScalerConfig.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Audio/PlayerPickupSound.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Audio/PlayerPickupSound.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Collectables/Collector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Collectables/Collector.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Collectables/ItemDetector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Collectables/ItemDetector.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Item/Item.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Item/Item.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Movement/Mover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Movement/Mover.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Player/LevelScaler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Player/LevelScaler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Player/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Player/Player.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Player/PlayerTier.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Player/PlayerTier.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Skills/AttractSkill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Skills/AttractSkill.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Player/TierResolver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Player/TierResolver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Quota/QuotaEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Quota/QuotaEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Quota/QuotaTracker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Quota/QuotaTracker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Scriptables/Items/ItemDefinition.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Scriptables/Items/ItemDefinition.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Scriptables/Tier/TierThreshold.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Scriptables/Tier/TierThreshold.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,6 +198,8 @@
       <workItem from="1784535720646" duration="26000" />
       <workItem from="1784627543856" duration="3017000" />
       <workItem from="1785306159882" duration="12711000" />
+      <workItem from="1785397981603" duration="2187000" />
+      <workItem from="1785482379708" duration="13725000" />
     </task>
     <servers />
   </component>

@@ -227,7 +227,6 @@ GameObject:
   - component: {fileID: 1279241170}
   - component: {fileID: 1279241169}
   - component: {fileID: 1279241168}
-  - component: {fileID: 1279241167}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -235,23 +234,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1279241167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1279241166}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80bbb7af53c985044a550054cb003584, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _target: {fileID: 0}
-  _tierResolver: {fileID: 0}
-  _playerTier: {fileID: 0}
-  _positionSmoothTime: 0.25
-  _maxPositionSpeed: 50
 --- !u!81 &1279241168
 AudioListener:
   m_ObjectHideFlags: 0

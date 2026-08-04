@@ -1,5 +1,5 @@
 using Collectables;
-using Item;
+using Items;
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -44,7 +44,7 @@ namespace Audio
             _collector.ItemCollected -= OnItemCollected;
         }
 
-        private void OnItemCollected(Item.Item item)
+        private void OnItemCollected(Items.Item item)
         {
             _source.PlayOneShot(_clip);
         }

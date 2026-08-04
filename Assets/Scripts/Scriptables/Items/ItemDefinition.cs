@@ -1,7 +1,7 @@
 using Skills;
 using UnityEngine;
 
-namespace Item
+namespace Items
 {
     [CreateAssetMenu(menuName = "Mad Slime/Item Definition", fileName = "NewItemDefinition")]
     public sealed class ItemDefinition : ScriptableObject

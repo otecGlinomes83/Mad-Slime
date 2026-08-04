@@ -3,7 +3,7 @@ using Interfaces;
 using Skills;
 using UnityEngine;
 
-namespace Item
+namespace Items
 {
     public sealed class Item : MonoBehaviour, IAttractable
     {

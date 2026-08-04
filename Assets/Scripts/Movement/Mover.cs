@@ -27,6 +27,16 @@ namespace Movement
             _currentSpeed = _defaultSpeed;
         }
 
+        public void SetDefaultSpeed(float speed)
+        {
+            if (speed <= 0f)
+            {
+                throw new Exception("Speed must be greater than 0");
+            }
+            
+            _defaultSpeed = speed;
+        }
+        
         public void SetSpeedMultiplier(float multiplier)
         {
             if (multiplier <= 0f)

@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Player;
 using System;
 using System.Threading;
+using Movement;
 using UnityEngine;
 
 namespace Skills
@@ -10,12 +11,16 @@ namespace Skills
     public sealed class LevelScaler : MonoBehaviour
     {
         [SerializeField] private PlayerTier _playerTier;
+        [SerializeField] private TierResolver _tierResolver;
+        [Space]
         [SerializeField] private Transform _modelTransform;
         [SerializeField] private Transform _rootTransform;
+        [Space]
         [SerializeField] private CapsuleCollider _playerCollider;
         [SerializeField] private ItemDetector _itemDetector;
         [SerializeField] private AttractableDetector _attractableDetector;
-        [SerializeField] private TierResolver _tierResolver;
+        [SerializeField] private Mover _mover;
+        [Space]
         [SerializeField] private float _smoothTime = 0.4f;
 
         private float _baseControllerRadius;
@@ -54,11 +59,6 @@ namespace Skills
             if (_itemDetector == null)
             {
                 throw new InvalidOperationException("LevelScaler requires _itemDetector to be assigned.");
-            }
-
-            if (_attractableDetector == null)
-            {
-                //throw new InvalidOperationException("LevelScaler requires _attractableDetector to be assigned.");
             }
 
             if (_tierResolver == null)
@@ -105,7 +105,8 @@ namespace Skills
 
             _currentTier = currentTier;
             _targetMultiplier = _tierResolver.GetScaleFor(_currentTier);
-
+            _mover.SetDefaultSpeed(_tierResolver.GetSpeedFor(_currentTier));
+            
             GrowAsync().Forget();
         }
 

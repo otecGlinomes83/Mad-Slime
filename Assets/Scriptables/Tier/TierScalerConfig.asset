@@ -16,16 +16,20 @@ MonoBehaviour:
   - _tier: 0
     _requiredMass: 0
     _scaleMultiplier: 1.4
+    _speed: 4
     _cameraOffsetMultiplier: 1
   - _tier: 1
     _requiredMass: 50
     _scaleMultiplier: 3
+    _speed: 8
     _cameraOffsetMultiplier: 1.5
   - _tier: 2
     _requiredMass: 500
     _scaleMultiplier: 6
+    _speed: 16
     _cameraOffsetMultiplier: 2
   - _tier: 3
     _requiredMass: 10000
     _scaleMultiplier: 15
+    _speed: 25
     _cameraOffsetMultiplier: 3

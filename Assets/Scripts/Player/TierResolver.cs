@@ -43,6 +43,19 @@ namespace Player
             return unlocked;
         }
 
+        public float GetSpeedFor(ItemTier tier)
+        {
+            for (int i = 0; i < _sortedByMass.Count; i++)
+            {
+                if (_sortedByMass[i].Tier == tier)
+                {
+                    return _sortedByMass[i].Speed;
+                }
+            }
+
+            return 1f;
+        }
+        
         public float GetScaleFor(ItemTier tier)
         {
             for (int i = 0; i < _sortedByMass.Count; i++)
