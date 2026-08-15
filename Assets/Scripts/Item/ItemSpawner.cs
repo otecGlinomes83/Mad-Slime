@@ -13,11 +13,13 @@ namespace UI
     {
         [SerializeField] private Item _prefab;
 
+        public Item Prefab => _prefab;
+
         private List<Item> _items = new List<Item>();
 
         private void OnDestroy()
         {
-            for (int i = _items.Count-1; i >= 0; i--)
+            for (int i = _items.Count - 1; i >= 0; i--)
             {
                 Destroy(_items[i].gameObject);
             }
@@ -28,7 +30,7 @@ namespace UI
         public Item Spawn()
         {
             Item item = Instantiate(_prefab);
-            
+
 #if UNITY_EDITOR
             Undo.RegisterCreatedObjectUndo(item.gameObject, "Spawn Item");
 #endif

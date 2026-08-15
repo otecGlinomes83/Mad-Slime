@@ -43,6 +43,19 @@ namespace UI
             }
         }
 
+        private float GetGizmoRadius()
+        {
+            BoxCollider boxCollider = _itemSpawner.Prefab.GetComponent<BoxCollider>();
+            Vector3 scale = _itemSpawner.Prefab.transform.localScale;
+
+            Vector3 size = new Vector3(
+                boxCollider.size.x * scale.x,
+                boxCollider.size.y * scale.y,
+                boxCollider.size.z * scale.z);
+
+            return size.magnitude * 0.5f;
+        }
+        
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
@@ -56,7 +69,7 @@ namespace UI
                     Vector3 worldPos = transform.TransformPoint(
                         new Vector3(x * _spacing - offsetX, 0f, z * _spacing - offsetZ));
 
-                    Gizmos.DrawSphere(worldPos, 0.25f);
+                    Gizmos.DrawSphere(worldPos, GetGizmoRadius());
                 }
             }
         }

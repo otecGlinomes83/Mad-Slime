@@ -1,51 +1,52 @@
 ﻿using System;
+using Interfaces;
 using UnityEngine;
 
 namespace Detection
 {
     public abstract class GenericOverlapDetector<T> : MonoBehaviour where T : class
     {
-    private const int BufferSize = 32;
+        private const int BufferSize = 256;
 
-    [SerializeField] private float _radius = 1.5f;
-    [SerializeField] private LayerMask _layerMask;
-    [SerializeField] private Color _gizmoColor = Color.cyan;
+        [SerializeField] private float _radius = 1.5f;
+        [SerializeField] private LayerMask _layerMask;
+        [SerializeField] private Color _gizmoColor = Color.cyan;
 
-    private readonly Collider[] _buffer = new Collider[BufferSize];
+        private readonly Collider[] _buffer = new Collider[BufferSize];
 
-    public event Action<T> Detected;
+        public event Action<T> Detected;
 
-    public float Radius => _radius;
+        public float Radius => _radius;
 
-    protected virtual void Update()
-    {
-        int hitsCount = Physics.OverlapSphereNonAlloc(transform.position, _radius, _buffer, _layerMask);
-
-        for (int i = 0; i < hitsCount; i++)
+        protected virtual void Update()
         {
-            if (_buffer[i].TryGetComponent(out T target) == false)
+            int hitsCount = Physics.OverlapSphereNonAlloc(transform.position, _radius, _buffer, _layerMask);
+
+            for (int i = 0; i < hitsCount; i++)
             {
-                continue;
+                if (_buffer[i].TryGetComponent(out T target) == false)
+                {
+                    continue;
+                }
+
+                Detected?.Invoke(target);
+            }
+        }
+
+        public void SetRadius(float newRadius)
+        {
+            if (newRadius < 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(newRadius), $"new radius cannot be negative");
             }
 
-            Detected?.Invoke(target);
+            _radius = newRadius;
         }
-    }
 
-    public void SetRadius(float newRadius)
-    {
-        if (newRadius < 0f)
+        private void OnDrawGizmosSelected()
         {
-            throw new ArgumentOutOfRangeException(nameof(newRadius), $"new radius cannot be negative");
+            Gizmos.color = _gizmoColor;
+            Gizmos.DrawWireSphere(transform.position, _radius);
         }
-        
-        _radius = newRadius;
-    }
-    
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = _gizmoColor;
-        Gizmos.DrawWireSphere(transform.position, _radius);
-    }
     }
 }

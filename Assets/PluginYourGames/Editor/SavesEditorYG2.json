@@ -7,19 +7,19 @@
         false,
         false
     ],
-    "idSave": 3051,
-    "QuotaCount": 2532,
-    "DefaultCount": 5069,
-    "TargetQuotaCount": 428,
-    "CurrentLevel": 2,
-    "musicVolume": 0.0,
+    "idSave": 3119,
+    "QuotaCount": 4014,
+    "DefaultCount": 10658,
+    "TargetQuotaCount": 429,
+    "CurrentLevel": 3,
+    "musicVolume": 0.40437018871307375,
     "sfxVolume": 1.0,
-    "Balance": 1154,
+    "Balance": 1304,
     "SelectedSkinType": 0,
     "_openSkins": [
         0,
         1
     ],
     "PreviousScene": "Level3_Fill",
-    "NextScene": "Level2"
+    "NextScene": "Level4"
 }

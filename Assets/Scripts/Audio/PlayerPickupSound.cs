@@ -3,6 +3,7 @@ using Items;
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
+using Random = UnityEngine.Random;
 
 namespace Audio
 {
@@ -12,9 +13,12 @@ namespace Audio
         [SerializeField] private Collector _collector;
         [SerializeField] private AudioMixerGroup _group;
         [SerializeField] private AudioClip _clip;
-
+        [SerializeField] private float _minInterval = 0.1f;
+        
         private AudioSource _source;
 
+        private float _lastPlayedTime;
+        
         private void Awake()
         {
             if (_collector == null)
@@ -46,6 +50,13 @@ namespace Audio
 
         private void OnItemCollected(Items.Item item)
         {
+            if (Time.time - _lastPlayedTime < _minInterval)
+            {
+                return;
+            }
+            
+            _lastPlayedTime = Time.time;
+            _source.pitch = Random.Range(0.96f, 1.1f);
             _source.PlayOneShot(_clip);
         }
     }

@@ -910,8 +910,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbe2f95f40e399642b470c187c468bdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _previousScene: Level3
-  _nextScene: Level4
+  _previousScene: Level4
+  _nextScene: Level1
   _shopScene: 
   _levelsScene: 
 --- !u!114 &1495407471
