@@ -1,97 +1,89 @@
 using Collectables;
-using HealthSystem;
-using Interfaces;
+using Game;
 using Movement;
 using PlayerInput;
-using Quota;
-using Skills;
+using Scriptables;
 using UnityEngine;
+using VContainer;
 
 namespace Player
 {
     [RequireComponent(typeof(Mover))]
     [RequireComponent(typeof(Rotator))]
     [RequireComponent(typeof(PlayerTier))]
-    [RequireComponent(typeof(Health))]
-    [RequireComponent(typeof(Healer))]
-    public sealed class Player : MonoBehaviour, ITarget
+    public sealed class Player : MonoBehaviour
     {
-    [SerializeField] private PlayerInputReader _inputReader;
-    [SerializeField] private QuotaTracker _quotaTracker;
-    [SerializeField] private Collector _collector;
-    [SerializeField] private SkillHandler _skillHandler;
-    
-    private Mover _mover;
-    private Rotator _rotator;
-    private PlayerTier _playerTier;
-    private Health _health;
-    private Healer _healer;
+        [SerializeField] private PlayerInputReader _inputReader;
+        [SerializeField] private Collector _collector;
 
-    public Transform Transform => transform;
-    public Health Health => _health;
+        private Mover _mover;
+        private Rotator _rotator;
+        private PlayerTier _playerTier;
+        private LevelProgress _levelProgress;
+        private PlayerConfig _playerConfig;
 
-    public ItemTier Tier => _playerTier.CurrentTier;
+        [Inject]
+        public void Construct(LevelProgress levelProgress, PlayerConfig playerConfig)
+        {
+            _levelProgress = levelProgress;
+            _playerConfig = playerConfig;
+        }
 
-    private void Awake()
-    {
-        _mover = GetComponent<Mover>();
-        _rotator = GetComponent<Rotator>();
-        _playerTier = GetComponent<PlayerTier>();
-        _health = GetComponent<Health>();
-        _healer = GetComponent<Healer>();
-    }
+        private void Awake()
+        {
+            _mover = GetComponent<Mover>();
+            _rotator = GetComponent<Rotator>();
+            _playerTier = GetComponent<PlayerTier>();
+        }
 
-    private void OnEnable()
-    {
-        _collector.ItemCollected += OnItemCollected;
-        _inputReader.SprintPerformed += OnSprintPerformed;
-        _inputReader.AttractPerformed += OnAttractPerformed;
-    }
+        private void Start()
+        {
+            if (_playerConfig == null)
+            {
+                return;
+            }
 
-    private void OnDisable()
-    {
-        _collector.ItemCollected -= OnItemCollected;
-        _inputReader.SprintPerformed -= OnSprintPerformed;
-        _inputReader.AttractPerformed -= OnAttractPerformed;
-        
-    }
+            _mover.SetDefaultSpeed(_playerConfig.BaseMoveSpeed);
+            _mover.SetSmoothTime(_playerConfig.MoveSmoothTime);
+            _rotator.SetSpeed(_playerConfig.RotationSpeed);
+        }
 
-    private void Update()
-    {
-        Vector3 moveDirection = ConvertToWorldDirection(_inputReader.MoveInput);
+        private void OnEnable()
+        {
+            _collector.ItemCollected += OnItemCollected;
+        }
 
-        _mover.Move(moveDirection);
-        _rotator.Rotate(moveDirection);
-    }
+        private void OnDisable()
+        {
+            _collector.ItemCollected -= OnItemCollected;
+        }
 
-    private void OnSprintPerformed()
-    {
-        _skillHandler.TryActivate(SkillType.Sprint);
-    }
+        private void Update()
+        {
+            Vector3 moveDirection = ConvertToWorldDirection(_inputReader.MoveInput);
 
-    private void OnAttractPerformed()
-    {
-        _skillHandler.TryActivate(SkillType.Attract);
-    } 
-    
-    private void OnItemCollected(Items.Item item)
-    {
-        _quotaTracker.RegisterCollected(item.Definition);
-        _playerTier.Add(item.Mass);
-    }
+            _mover.Move(moveDirection);
+            _rotator.Rotate(moveDirection);
+        }
 
-    private Vector3 ConvertToWorldDirection(Vector2 input)
-    {
-        Vector3 forward = Vector3.forward;
-        Vector3 right = Vector3.right;
+        private void OnItemCollected(Items.Item item)
+        {
+            _levelProgress.RegisterCollected(item.Definition);
+            _playerTier.Add(item.Mass);
+        }
 
-        forward.y = 0f;
-        right.y = 0f;
+        private Vector3 ConvertToWorldDirection(Vector2 input)
+        {
+            Vector3 forward = Vector3.forward;
+            Vector3 right = Vector3.right;
 
-        forward.Normalize();
-        right.Normalize();
+            forward.y = 0f;
+            right.y = 0f;
 
-        return forward * input.y + right * input.x;
-    }
+            forward.Normalize();
+            right.Normalize();
+
+            return forward * input.y + right * input.x;
+        }
     }
 }

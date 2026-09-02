@@ -1,92 +1,102 @@
-﻿using HealthSystem;
-using PlayerInput;
-using Quota;
+﻿using PlayerInput;
+using Scriptables;
 using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using VContainer;
 using YG;
 
 namespace Game
 {
     public sealed class GameplaySessionHandler : MonoBehaviour
     {
-        [SerializeField] private Health _health;
-        [SerializeField] private Healer _healer;
         [SerializeField] private LevelTransitor _levelTransitor;
         [SerializeField] private Timer _timer;
-        [SerializeField] private float _timerDuration;
-        [SerializeField] private QuotaTracker _quotaTracker;
         [SerializeField] private PlayerInputReader _inputReader;
         [SerializeField] private Pauser _pauser;
 
+        private LevelConfigResolver _configResolver;
+        private PlayerProgress _progress;
+        private LevelProgress _levelProgress;
+
         private bool _isStarted;
         private bool _isFinished;
+        private bool _isSubscribed;
 
-        public event Action PlayerDied;
         public event Action GameStarted;
+
+        [Inject]
+        public void Construct(LevelConfigResolver configResolver, PlayerProgress progress, LevelProgress levelProgress)
+        {
+            _configResolver = configResolver;
+            _progress = progress;
+            _levelProgress = levelProgress;
+        }
 
         private void Awake()
         {
-            TrySetCurrentLevelFromScene();
-            _timer.Setup(_timerDuration);
+            if (_configResolver == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: dependencies were not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
+            }
+
+            LevelConfig config = _configResolver.GetConfigFor(_progress.CurrentLevel);
+
+            _timer.Setup(config.TimerDuration);
             _pauser.RequestPause();
-        }
-
-        private static void TrySetCurrentLevelFromScene()
-        {
-            string sceneName = SceneManager.GetActiveScene().name;
-
-            if (sceneName.StartsWith("Level") == false)
-            {
-                return;
-            }
-
-            string numberPart = sceneName.Substring("Level".Length);
-
-            if (int.TryParse(numberPart, out int level) == false)
-            {
-                return;
-            }
-
-            if (level <= 0)
-            {
-                return;
-            }
-
-            YG2.saves.CurrentLevel = level;
         }
 
         private void OnEnable()
         {
-            _inputReader.MovementKeyPressed += Begin;
-            _timer.Finished += OnTimeOut;
-            _quotaTracker.QuotaCompleted += OnQuotaCompleted;
+            if (_levelProgress == null)
+            {
+                return;
+            }
 
-            _health.Died += OnPlayerDied;
+            SubscribeSession();
+        }
+
+        private void Start()
+        {
+            if (_levelProgress == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: LevelProgress was not injected. Check that GameLifetimeScope is configured and Player is registered.");
+            }
+
+            SubscribeSession();
         }
 
         private void OnDisable()
         {
+            _isSubscribed = false;
+
             _inputReader.MovementKeyPressed -= Begin;
             _timer.Finished -= OnTimeOut;
-            _quotaTracker.QuotaCompleted -= OnQuotaCompleted;
-            _health.Died -= OnPlayerDied;
+
+            if (_levelProgress != null)
+            {
+                _levelProgress.QuotaCompleted -= OnQuotaCompleted;
+            }
         }
 
-        public void Revive()
+        private void SubscribeSession()
         {
-            _healer.Heal();
-            _health.TurnOnInvulnerabilityWindow(5f);
+            if (_isSubscribed == true)
+            {
+                return;
+            }
+
+            _isSubscribed = true;
+
+            _inputReader.MovementKeyPressed += Begin;
+            _timer.Finished += OnTimeOut;
+            _levelProgress.QuotaCompleted += OnQuotaCompleted;
         }
 
         public void Restart()
         {
             _levelTransitor.Restart();
-        }
-
-        private void OnPlayerDied()
-        {
-            PlayerDied?.Invoke();
         }
 
         private void Begin()
@@ -96,10 +106,12 @@ namespace Game
                 return;
             }
 
-            _pauser.RequestResume();
-
             _isStarted = true;
+
+            _pauser.RequestResume();
             _timer.StartCount();
+            YG2.GameplayStart();
+
             GameStarted?.Invoke();
         }
 
@@ -111,7 +123,7 @@ namespace Game
             }
 
             _isFinished = true;
-            FinishGame();
+            FinishGame("timeout");
         }
 
         private void OnQuotaCompleted()
@@ -122,13 +134,18 @@ namespace Game
             }
 
             _isFinished = true;
-            FinishGame();
+            FinishGame("quota completed");
         }
 
-        private void FinishGame()
+        private void FinishGame(string reason)
         {
+            Debug.Log(
+                $"[Game] finished: {reason} | Level={_progress.CurrentLevel} Quota {_levelProgress.CollectedQuotaCount}/{_levelProgress.TotalQuotaTarget} Fill={_levelProgress.FillPercent:0.00}");
+
             _timer.Stop();
-            _levelTransitor.LoadNext();
+            YG2.GameplayStop();
+
+            _levelTransitor.LoadFill();
         }
     }
 }

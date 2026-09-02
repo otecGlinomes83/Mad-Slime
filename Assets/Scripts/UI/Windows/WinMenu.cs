@@ -6,36 +6,47 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class WinMenu : MonoBehaviour
+    public sealed class WinMenu : MonoBehaviour
     {
         [SerializeField] private TMP_Text _moneyCount;
         [SerializeField] private Button _nextLevelButton;
-        [SerializeField] private Button _restartButton;
+        [SerializeField] private Button _doubleRewardButton;
 
         [SerializeField] private Pauser _pauser;
 
         private Action _requestNextLevelAction;
-        private Action _restartAction;
+        private Action _doubleRewardAction;
 
-        public void Initialize(int moneyCount, Pauser pauser, Action nextLevelAction, Action restartAction)
+        public void Initialize(int moneyCount, Pauser pauser, Action nextLevelAction, Action doubleRewardAction)
         {
-            _restartButton.onClick.AddListener(RequestRestart);
+            _requestNextLevelAction = nextLevelAction;
+            _doubleRewardAction = doubleRewardAction;
+            _pauser = pauser;
+
             _nextLevelButton.onClick.AddListener(RequestNextLevel);
 
-            _requestNextLevelAction = nextLevelAction;
-            _restartAction = restartAction;
+            if (_doubleRewardButton != null && doubleRewardAction != null)
+            {
+                _doubleRewardButton.onClick.AddListener(RequestDoubleReward);
+            }
+            else if (_doubleRewardButton != null)
+            {
+                _doubleRewardButton.gameObject.SetActive(false);
+            }
 
-            _pauser = pauser;
-            
             _pauser.RequestPause();
-            
+
             _moneyCount.text = $"{moneyCount}";
         }
 
         private void OnDisable()
         {
-            _restartButton.onClick.RemoveListener(RequestRestart);
             _nextLevelButton.onClick.RemoveListener(RequestNextLevel);
+
+            if (_doubleRewardButton != null)
+            {
+                _doubleRewardButton.onClick.RemoveListener(RequestDoubleReward);
+            }
 
             _pauser.RequestResume();
         }
@@ -46,10 +57,10 @@ namespace UI
             Close();
         }
 
-        private void RequestRestart()
+        private void RequestDoubleReward()
         {
-            _restartAction?.Invoke();
-            Close();
+            _doubleRewardAction?.Invoke();
+            _doubleRewardButton.gameObject.SetActive(false);
         }
 
         private void Close()

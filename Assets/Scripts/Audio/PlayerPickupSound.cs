@@ -11,20 +11,27 @@ namespace Audio
     public sealed class PlayerPickupSound : MonoBehaviour
     {
         [SerializeField] private Collector _collector;
+        [SerializeField] private SoundLimiter _soundLimiter;
         [SerializeField] private AudioMixerGroup _group;
         [SerializeField] private AudioClip _clip;
         [SerializeField] private float _minInterval = 0.1f;
-        
+
         private AudioSource _source;
 
         private float _lastPlayedTime;
-        
+
         private void Awake()
         {
             if (_collector == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: Collector is not assigned. Drag a Collector component into the _collector field.");
+            }
+
+            if (_soundLimiter == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SoundLimiter is not assigned. Drag a SoundLimiter component into the _soundLimiter field.");
             }
 
             if (_clip == null)
@@ -54,7 +61,12 @@ namespace Audio
             {
                 return;
             }
-            
+
+            if (_soundLimiter.TryPlay(_clip.length) == false)
+            {
+                return;
+            }
+
             _lastPlayedTime = Time.time;
             _source.pitch = Random.Range(0.96f, 1.1f);
             _source.PlayOneShot(_clip);

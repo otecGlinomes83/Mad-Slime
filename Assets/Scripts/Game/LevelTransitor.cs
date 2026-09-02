@@ -6,40 +6,26 @@ namespace Game
 {
     public sealed class LevelTransitor : MonoBehaviour
     {
-        [SerializeField] private string _previousScene;
-        [SerializeField] private string _nextScene;
+        [SerializeField] private string _gameScene;
+        [SerializeField] private string _fillScene;
         [SerializeField] private string _shopScene;
-        [SerializeField] private string _levelsScene;
 
-        public bool IsHasPrevious => string.IsNullOrEmpty(_previousScene) == false;
-        public bool IsHasNext => string.IsNullOrEmpty(_nextScene) == false;
         public bool IsHasShop => string.IsNullOrEmpty(_shopScene) == false;
-        public bool IsHasLevels => string.IsNullOrEmpty(_levelsScene) == false;
 
         public void Restart()
         {
             string currentSceneName = SceneManager.GetActiveScene().name;
-            Load(currentSceneName);
+            Load(currentSceneName, false);
         }
 
-        public void LoadPrevious()
+        public void LoadGame()
         {
-            if (IsHasPrevious == false)
-            {
-                return;
-            }
-
-            Load(_previousScene);
+            Load(_gameScene, false);
         }
 
-        public void LoadNext()
+        public void LoadFill()
         {
-            if (IsHasNext == false)
-            {
-                return;
-            }
-
-            Load(_nextScene);
+            Load(_fillScene, false);
         }
 
         public void LoadShop()
@@ -49,19 +35,9 @@ namespace Game
                 return;
             }
 
-            Load(_shopScene);
+            Load(_shopScene, true);
         }
 
-        public void LoadLevels()
-        {
-            if (IsHasLevels == false)
-            {
-                return;
-            }
-
-            Load(_levelsScene);
-        }
-        
         public void LoadScene(string sceneName)
         {
             if (string.IsNullOrEmpty(sceneName))
@@ -69,14 +45,30 @@ namespace Game
                 return;
             }
 
-            Load(sceneName);
+            Load(sceneName, false);
         }
 
-        private void Load(string targetScene)
+        private void Load(string targetScene, bool savePreviousScene)
         {
-            YG2.saves.PreviousScene = SceneManager.GetActiveScene().name;
-            YG2.saves.NextScene = targetScene;
-            YG2.SaveProgress();
+            if (string.IsNullOrEmpty(targetScene))
+            {
+                Debug.LogError(
+                    $"[Scene] {SceneManager.GetActiveScene().name} tried to load EMPTY scene name. Fill the scene name fields on the LevelTransitor component.");
+                return;
+            }
+
+            Debug.Log($"[Scene] {SceneManager.GetActiveScene().name} -> {targetScene}");
+
+            if (savePreviousScene == true)
+            {
+                YG2.saves.PreviousScene = SceneManager.GetActiveScene().name;
+
+                if (YG2.isSDKEnabled == true)
+                {
+                    YG2.SaveProgress();
+                }
+            }
+
             SceneManager.LoadScene(targetScene);
         }
     }

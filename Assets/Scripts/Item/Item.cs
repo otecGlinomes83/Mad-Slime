@@ -10,7 +10,7 @@ namespace Items
         [SerializeField] private ItemDefinition _definition;
         [SerializeField] private Collider _collider;
 
-        private Vector3 _defaultScale = Vector3.one;
+        private Vector3 _defaultScale;
 
         public ItemDefinition Definition => _definition;
         public int Mass => _definition.BaseMass;
@@ -18,6 +18,11 @@ namespace Items
         public Transform Self => transform;
 
         public event Action Collected;
+
+        private void Awake()
+        {
+            _defaultScale = transform.localScale;
+        }
 
         public void Initialize(Vector3 position)
         {

@@ -7,30 +7,14 @@ namespace Skills
     {
         [SerializeField] private List<BaseSkill> _skills;
 
-        public bool IsUnlocked(SkillType type)
+        public bool TryActivate(SkillConfig config)
         {
             for (int i = 0; i < _skills.Count; i++)
             {
-                if (_skills[i].Type == type)
+                if (_skills[i].Config == config)
                 {
-                    return true;
+                    return _skills[i].TryActivate();
                 }
-            }
-
-            return false;
-        }
-
-        public bool TryActivate(SkillType type)
-        {
-            for (int i = 0; i < _skills.Count; i++)
-            {
-                BaseSkill skill = _skills[i];
-                if (skill.Type != type)
-                {
-                    continue;
-                }
-
-                return skill.TryActivate();
             }
 
             return false;

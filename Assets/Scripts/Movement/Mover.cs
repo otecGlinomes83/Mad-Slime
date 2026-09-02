@@ -33,8 +33,19 @@ namespace Movement
             {
                 throw new Exception("Speed must be greater than 0");
             }
-            
+
             _defaultSpeed = speed;
+        }
+
+        public void SetSmoothTime(float smoothTime)
+        {
+            if (smoothTime <= 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(smoothTime),
+                    "Mover.SetSmoothTime requires a positive smooth time.");
+            }
+
+            _smoothTime = smoothTime;
         }
         
         public void SetSpeedMultiplier(float multiplier)

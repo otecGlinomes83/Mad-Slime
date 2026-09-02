@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +25,17 @@ namespace ShapeFill
         public int Height => _gridHeight;
         public Texture2D ShapeTexture => _shapeTexture;
         public float CellSize => _cellSize;
+
+        public void SetShapeTexture(Texture2D shapeTexture)
+        {
+            if (shapeTexture == null)
+            {
+                throw new ArgumentNullException(nameof(shapeTexture),
+                    "GridBuilder.SetShapeTexture requires a non-null texture.");
+            }
+
+            _shapeTexture = shapeTexture;
+        }
 
         public void Build()
         {

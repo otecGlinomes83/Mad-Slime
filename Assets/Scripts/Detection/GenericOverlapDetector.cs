@@ -1,5 +1,6 @@
 ﻿using System;
-using Interfaces;
+using Player;
+using Skills;
 using UnityEngine;
 
 namespace Detection
@@ -11,8 +12,12 @@ namespace Detection
         [SerializeField] private float _radius = 1.5f;
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] private Color _gizmoColor = Color.cyan;
+        [SerializeField] private PlayerTier _tierSource;
+        [SerializeField] private TierResolver _tierResolver;
 
         private readonly Collider[] _buffer = new Collider[BufferSize];
+
+        private float _baseRadius;
 
         public event Action<T> Detected;
 
@@ -33,6 +38,29 @@ namespace Detection
             }
         }
 
+        protected virtual void OnEnable()
+        {
+            _baseRadius = _radius;
+
+            if (_tierSource == null || _tierResolver == null)
+            {
+                return;
+            }
+
+            _tierSource.TierChanged += OnTierSourceChanged;
+            SetRadius(_baseRadius * _tierResolver.GetScaleFor(_tierSource.CurrentTier));
+        }
+
+        protected virtual void OnDisable()
+        {
+            if (_tierSource == null || _tierResolver == null)
+            {
+                return;
+            }
+
+            _tierSource.TierChanged -= OnTierSourceChanged;
+        }
+
         public void SetRadius(float newRadius)
         {
             if (newRadius < 0f)
@@ -41,6 +69,11 @@ namespace Detection
             }
 
             _radius = newRadius;
+        }
+
+        private void OnTierSourceChanged(ItemTier previousTier, ItemTier currentTier)
+        {
+            SetRadius(_baseRadius * _tierResolver.GetScaleFor(currentTier));
         }
 
         private void OnDrawGizmosSelected()

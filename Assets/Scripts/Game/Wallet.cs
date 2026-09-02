@@ -1,14 +1,22 @@
 using System;
 using UnityEngine;
-using YG;
+using VContainer;
 
 namespace Game
 {
     public sealed class Wallet : MonoBehaviour
     {
+        private PlayerProgress _progress;
+
         public event Action<int, int> BalanceChanged;
 
-        public int Balance => YG2.saves.Balance;
+        public int Balance => _progress.Balance;
+
+        [Inject]
+        public void Construct(PlayerProgress progress)
+        {
+            _progress = progress;
+        }
 
         public void Add(int amount)
         {
@@ -18,11 +26,11 @@ namespace Game
                     "Wallet.Add requires a positive amount.");
             }
 
-            int previousBalance = YG2.saves.Balance;
-            YG2.saves.Balance = previousBalance + amount;
-            YG2.SaveProgress();
+            int previousBalance = _progress.Balance;
+            _progress.Balance = previousBalance + amount;
+            _progress.Save();
 
-            BalanceChanged?.Invoke(previousBalance, YG2.saves.Balance);
+            BalanceChanged?.Invoke(previousBalance, _progress.Balance);
         }
 
         public void Spend(int amount)
@@ -33,17 +41,17 @@ namespace Game
                     "Wallet.Spend requires a positive amount.");
             }
 
-            if (YG2.saves.Balance < amount)
+            if (_progress.Balance < amount)
             {
                 throw new InvalidOperationException(
-                    $"Wallet.Spend failed: balance {YG2.saves.Balance} is less than required {amount}.");
+                    $"Wallet.Spend failed: balance {_progress.Balance} is less than required {amount}.");
             }
 
-            int previousBalance = YG2.saves.Balance;
-            YG2.saves.Balance = previousBalance - amount;
-            YG2.SaveProgress();
+            int previousBalance = _progress.Balance;
+            _progress.Balance = previousBalance - amount;
+            _progress.Save();
 
-            BalanceChanged?.Invoke(previousBalance, YG2.saves.Balance);
+            BalanceChanged?.Invoke(previousBalance, _progress.Balance);
         }
     }
 }

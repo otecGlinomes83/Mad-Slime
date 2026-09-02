@@ -1,6 +1,4 @@
-using System;
 using Collectables;
-using Game;
 using Interfaces;
 using Player;
 using UnityEngine;
@@ -14,57 +12,36 @@ namespace Skills
         [SerializeField] private AttractConfig _config;
         [SerializeField] private PlayerTier _playerTier;
         [SerializeField] private AttractableDetector _detector;
-        [SerializeField] private Timer _timer;
 
-        private bool _isActive;
-        private bool _isOnCooldown;
+        public override SkillConfig Config => _config;
 
-        public event Action Started;
-        public event Action Ended;
-        public event Action CooldownEnded;
-
-        public bool IsActive => _isActive;
-        public bool IsOnCooldown => _isOnCooldown;
-
-        private void Awake()
+        protected override void OnEnable()
         {
-            if (_config == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: AttractConfig is not assigned. Drag an AttractConfig asset into the _config field.");
-            }
+            base.OnEnable();
+            _detector.Detected += OnAttractableDetected;
         }
 
-        private void OnEnable()
+        protected override void OnDisable()
         {
-            _detector.Detected += OnDetected;
-            _timer.Finished += OnTimerFinished;
+            base.OnDisable();
+            _detector.Detected -= OnAttractableDetected;
         }
 
-        private void OnDisable()
+        protected override void OnActivated()
         {
-            _detector.Detected -= OnDetected;
-            _timer.Finished -= OnTimerFinished;
         }
 
-        public override bool TryActivate()
+        protected override void OnTick()
         {
-            if (_isActive == true || _isOnCooldown == true)
-            {
-                return false;
-            }
-
-            _isActive = true;
-            _timer.Setup(_config.ActiveDuration);
-            _timer.StartCount();
-            Started?.Invoke();
-
-            return true;
         }
 
-        private void OnDetected(IAttractable attractable)
+        protected override void OnDeactivated()
         {
-            if (_isActive == false)
+        }
+
+        private void OnAttractableDetected(IAttractable attractable)
+        {
+            if (IsActive == false)
             {
                 return;
             }
@@ -75,32 +52,15 @@ namespace Skills
             }
 
             Transform target = attractable.Self;
-            Vector3 toTarget = transform.position - target.position;
-            toTarget.y = 0f;
+            Vector3 toPlayer = transform.position - target.position;
+            toPlayer.y = 0f;
 
-            if (toTarget.sqrMagnitude < MinDistanceSqr)
+            if (toPlayer.sqrMagnitude < MinDistanceSqr)
             {
                 return;
             }
 
-            target.position += toTarget.normalized * (_config.AttractionForce * Time.deltaTime);
-        }
-
-        private void OnTimerFinished()
-        {
-            if (_isActive == true)
-            {
-                _isActive = false;
-                _isOnCooldown = true;
-                _timer.Setup(_config.Cooldown);
-                _timer.StartCount();
-                Ended?.Invoke();
-            }
-            else if (_isOnCooldown == true)
-            {
-                _isOnCooldown = false;
-                CooldownEnded?.Invoke();
-            }
+            target.position += toPlayer.normalized * (_config.AttractionForce * Time.deltaTime);
         }
     }
 }

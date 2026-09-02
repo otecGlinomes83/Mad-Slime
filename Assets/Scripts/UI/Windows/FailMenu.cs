@@ -11,7 +11,7 @@ namespace UI
         [SerializeField] private TMP_Text _moneyCount;
 
         [SerializeField] private Button _restartButton;
-        [SerializeField] private Button _nextLevelButtonForADS; //тут будет предложение пройти уровень за рекламу
+        [SerializeField] private Button _nextLevelButtonForADS;
 
         [SerializeField] private Pauser _pauser;
 

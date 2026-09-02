@@ -1,11 +1,9 @@
-using Collectables;
 using Cysharp.Threading.Tasks;
+using Movement;
 using Player;
 using System;
-using System.Collections.Generic;
 using System.Threading;
-using Interfaces;
-using Movement;
+using Skills;
 using UnityEngine;
 
 namespace Skills
@@ -19,8 +17,6 @@ namespace Skills
         [SerializeField] private Transform _rootTransform;
         [Space]
         [SerializeField] private CapsuleCollider _playerCollider;
-        [SerializeField] private ItemDetector _itemDetector;
-        [SerializeField] private AttractableDetector _attractableDetector;
         [SerializeField] private Mover _mover;
         [Space]
         [SerializeField] private float _smoothTime = 0.4f;
@@ -28,8 +24,6 @@ namespace Skills
         private float _baseControllerRadius;
         private float _baseControllerCenterY;
         private float _baseControllerHeight;
-        private float _itemDetectorStartRadius;
-        private float _attractableDetectorStartRadius;
 
         private float _currentMultiplier = 1f;
         private float _targetMultiplier = 1f;
@@ -55,12 +49,7 @@ namespace Skills
 
             if (_playerCollider == null)
             {
-                throw new InvalidOperationException("LevelScaler requires _characterController to be assigned.");
-            }
-
-            if (_itemDetector == null)
-            {
-                throw new InvalidOperationException("LevelScaler requires _itemDetector to be assigned.");
+                throw new InvalidOperationException("LevelScaler requires _playerCollider to be assigned.");
             }
 
             if (_tierResolver == null)
@@ -71,12 +60,6 @@ namespace Skills
             _baseControllerHeight = _playerCollider.height;
             _baseControllerRadius = _playerCollider.radius;
             _baseControllerCenterY = _playerCollider.center.y;
-            _itemDetectorStartRadius = _itemDetector.Radius;
-
-            if (_attractableDetector != null)
-            {
-                _attractableDetectorStartRadius = _attractableDetector.Radius;
-            }
 
             ApplyMultiplier();
         }
@@ -108,7 +91,7 @@ namespace Skills
             _currentTier = currentTier;
             _targetMultiplier = _tierResolver.GetScaleFor(_currentTier);
             _mover.SetDefaultSpeed(_tierResolver.GetSpeedFor(_currentTier));
-            
+
             GrowAsync().Forget();
         }
 
@@ -167,13 +150,6 @@ namespace Skills
 
             _rootTransform.position =
                 new Vector3(_rootTransform.position.x, _playerCollider.radius, _rootTransform.position.z);
-
-            _itemDetector.SetRadius(_itemDetectorStartRadius * _currentMultiplier);
-            
-            if (_attractableDetector != null)
-            {
-                _attractableDetector.SetRadius(_attractableDetectorStartRadius * _currentMultiplier);
-            }
         }
     }
 }

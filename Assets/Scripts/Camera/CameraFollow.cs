@@ -10,6 +10,7 @@ namespace CameraSystem
     [SerializeField] private Transform _target;
     [SerializeField] private TierResolver _tierResolver;
     [SerializeField] private PlayerTier _playerTier;
+    [SerializeField] private CameraImpulse _impulse;
     [SerializeField] private float _positionSmoothTime = 0.25f;
     [SerializeField] private float _maxPositionSpeed = 50f;
 
@@ -32,6 +33,12 @@ namespace CameraSystem
                 $"{name}: TierResolver is not assigned. Drag a TierResolver component into the _tierResolver field in the inspector.");
         }
 
+        if (_impulse == null)
+        {
+            throw new InvalidOperationException(
+                $"{name}: CameraImpulse is not assigned. Drag a CameraImpulse component into the _impulse field in the inspector.");
+        }
+
         _currentOffset = transform.position - _target.position;
         _startOffset = _currentOffset;
     }
@@ -48,7 +55,8 @@ namespace CameraSystem
 
     private void LateUpdate()
     {
-        Vector3 desiredPosition = _target.position + _currentOffset;
+        float offsetLength = Mathf.Max(1f, _currentOffset.magnitude - _impulse.Pull);
+        Vector3 desiredPosition = _target.position + _currentOffset.normalized * offsetLength;
 
         transform.position = Vector3.SmoothDamp(
             transform.position,

@@ -1,14 +1,12 @@
-﻿using HealthSystem;
-using Skills;
+﻿using Skills;
 using System;
 using UnityEngine;
 
 namespace Player
 {
-    public class PlayerTier : MonoBehaviour
+    public sealed class PlayerTier : MonoBehaviour
     {
         [SerializeField] private int _defaultMass;
-        [SerializeField] private Health _playerHealth;
         [SerializeField] private int _massPickupDivisor = 4;
         [SerializeField] private TierResolver _tierResolver;
 
@@ -39,7 +37,7 @@ namespace Player
             if (amount < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(amount),
-                    "PlayerMass.Decrease requires amount to be non-negative. The provided value was negative.");
+                    "PlayerTier.Add requires amount to be non-negative. The provided value was negative.");
             }
 
             int previous = _mass;

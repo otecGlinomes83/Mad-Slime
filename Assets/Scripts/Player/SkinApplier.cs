@@ -1,69 +1,87 @@
 using System;
-using Player;
+using Game;
 using Skins;
 using UnityEngine;
-using YG;
+using VContainer;
 
-public class SkinApplier : MonoBehaviour
+namespace Player
 {
-    [SerializeField] private ShopContent _shopContent;
-    [SerializeField] private Transform _skinsContainer;
-
-    private GameObject _currentModel;
-
-    private void Awake()
+    public sealed class SkinApplier : MonoBehaviour
     {
-        if (_shopContent == null)
+        [SerializeField] private ShopContent _shopContent;
+        [SerializeField] private Transform _skinsContainer;
+
+        private PlayerProgress _progress;
+        private GameObject _currentModel;
+
+        [Inject]
+        public void Construct(PlayerProgress progress)
         {
-            throw new InvalidOperationException(
-                $"{name}: SkinApplier requires _shopContent to be assigned in the inspector.");
+            _progress = progress;
         }
 
-        if (_skinsContainer == null)
+        private void Awake()
         {
-            throw new InvalidOperationException(
-                $"{name}: SkinApplier requires _skinsContainer to be assigned in the inspector.");
-        }
-
-        ApplySelectedSkin();
-    }
-
-    private void OnDestroy()
-    {
-        if (_currentModel != null)
-        {
-            Destroy(_currentModel);
-        }
-    }
-
-    private void ApplySelectedSkin()
-    {
-        PlayerSkins selectedType = YG2.saves.SelectedSkinType;
-        SkinItem matchingItem = FindItem(selectedType);
-
-        if (matchingItem == null)
-        {
-            return;
-        }
-
-        _currentModel = Instantiate(matchingItem.Model, _skinsContainer);
-    }
-
-    private SkinItem FindItem(PlayerSkins skinType)
-    {
-        foreach (SkinItem item in _shopContent.SkinItems)
-        {
-            if (item == null)
+            if (_shopContent == null)
             {
-                continue;
+                throw new InvalidOperationException(
+                    $"{name}: SkinApplier requires _shopContent to be assigned in the inspector.");
             }
 
-            if (item.SkinType == skinType)
+            if (_skinsContainer == null)
             {
-                return item;
+                throw new InvalidOperationException(
+                    $"{name}: SkinApplier requires _skinsContainer to be assigned in the inspector.");
             }
         }
 
-        return null;
+        private void Start()
+        {
+            ApplySelectedSkin();
+        }
+
+        private void OnDestroy()
+        {
+            if (_currentModel != null)
+            {
+                Destroy(_currentModel);
+            }
+        }
+
+        private void ApplySelectedSkin()
+        {
+            if (_progress == null)
+            {
+                return;
+            }
+
+            PlayerSkins selectedType = _progress.SelectedSkin;
+            SkinItem matchingItem = FindItem(selectedType);
+
+            if (matchingItem == null)
+            {
+                return;
+            }
+
+            _currentModel = Instantiate(matchingItem.Model, _skinsContainer);
+        }
+
+        private SkinItem FindItem(PlayerSkins skinType)
+        {
+            foreach (SkinItem item in _shopContent.SkinItems)
+            {
+                if (item == null)
+                {
+                    continue;
+                }
+
+                if (item.SkinType == skinType)
+                {
+                    return item;
+                }
+            }
+
+            return null;
+        }
     }
 }

@@ -81,6 +81,7 @@ namespace Skins
             }
 
             _placer.SetModel(view.Model);
+            _placer.PlayWalk();
         }
     }
 }

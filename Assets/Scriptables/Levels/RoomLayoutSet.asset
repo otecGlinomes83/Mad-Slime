@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cabfd7a58666dd469a0eeed6f3ec8e0, type: 3}
+  m_Name: RoomLayoutSet
+  m_EditorClassIdentifier: 
+  _zones:
+  - _shape: 0
+    _center: {x: -58.957962, y: 60.07895}
+    _radius: 0
+    _count: 361
+    _spacing: 3
+    _minTier: 0
+    _maxTier: 0
+  - _shape: 0
+    _center: {x: -56.68949, y: -57.441116}
+    _radius: 0
+    _count: 210
+    _spacing: 5.21
+    _minTier: 1
+    _maxTier: 1
+  - _shape: 0
+    _center: {x: 53.58772, y: -19.096794}
+    _radius: 0
+    _count: 8
+    _spacing: 29.9
+    _minTier: 1
+    _maxTier: 2
+  - _shape: 0
+    _center: {x: 72.38124, y: 67.11694}
+    _radius: 0
+    _count: 1
+    _spacing: 29.9
+    _minTier: 3
+    _maxTier: 3
+  - _shape: 0
+    _center: {x: 0.8190117, y: 51.4169}
+    _radius: 0
+    _count: 1
+    _spacing: 29.9
+    _minTier: 3
+    _maxTier: 3
+  - _shape: 0
+    _center: {x: -4.6923676, y: -77.54291}
+    _radius: 0
+    _count: 1
+    _spacing: 29.9
+    _minTier: 3
+    _maxTier: 3
+  - _shape: 0
+    _center: {x: -54.428883, y: 1.2267303}
+    _radius: 0
+    _count: 1
+    _spacing: 29.9
+    _minTier: 3
+    _maxTier: 3
+  - _shape: 0
+    _center: {x: 63.78319, y: -80.15363}
+    _radius: 0
+    _count: 1
+    _spacing: 29.9
+    _minTier: 3
+    _maxTier: 3
+  _allowMirroring: 1

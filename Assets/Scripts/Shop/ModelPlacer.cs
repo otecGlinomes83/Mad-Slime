@@ -10,6 +10,7 @@ public class ModelPlacer : MonoBehaviour
     [SerializeField] private Camera _camera;
 
     private GameObject _currentModel;
+    private Animator _currentAnimator;
     private Vector3 _rotationAnchor;
 
     private void Awake()
@@ -54,7 +55,18 @@ public class ModelPlacer : MonoBehaviour
         }
 
         _currentModel = Instantiate(model, _modelsParent);
+        _currentModel.TryGetComponent(out _currentAnimator);
         FitToCamera(_currentModel);
+    }
+
+    public void PlayWalk()
+    {
+        if (_currentAnimator == null)
+        {
+            return;
+        }
+
+        _currentAnimator.SetTrigger("Walk");
     }
 
     private void FitToCamera(GameObject instance)

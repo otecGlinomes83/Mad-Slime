@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using YG;
 
 namespace Game
 {
@@ -29,7 +30,7 @@ namespace Game
 
             _pauseRequestCount--;
 
-            if (_pauseRequestCount <= 0)
+            if (_pauseRequestCount <= 0 && YG2.isPauseGame == false)
             {
                 Time.timeScale = 1f;
             }

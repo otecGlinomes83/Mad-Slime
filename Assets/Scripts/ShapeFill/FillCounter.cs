@@ -1,29 +1,23 @@
 using UnityEngine;
-using YG;
+using VContainer;
 
 namespace ShapeFill
 {
     public sealed class FillCounter : MonoBehaviour
     {
-    [SerializeField] private int _defaultCountDivisor;
+        private Game.LevelProgress _levelProgress;
 
-    public int CalculateFill(int maxCubes)
-    {
-        int quotaCount = YG2.saves.QuotaCount;
-        int defaultCount = YG2.saves.DefaultCount;
-        int totalTarget = YG2.saves.TargetQuotaCount;
-        
-        float percentage = 0f;
-
-        defaultCount /= _defaultCountDivisor;
-        quotaCount += defaultCount;
-
-        if (totalTarget > 0)
+        [Inject]
+        public void Construct(Game.LevelProgress levelProgress)
         {
-            percentage = (float)quotaCount / totalTarget;
+            _levelProgress = levelProgress;
         }
 
-        return Mathf.Clamp(Mathf.RoundToInt(percentage * maxCubes), 0, maxCubes);
-    }
+        public int CalculateFill(int maxCubes)
+        {
+            float percent = _levelProgress.FillPercent;
+
+            return Mathf.Clamp(Mathf.RoundToInt(percent * maxCubes), 0, maxCubes);
+        }
     }
 }
