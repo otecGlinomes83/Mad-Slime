@@ -16,11 +16,6 @@ namespace Movement
         private Vector3 _velocityRef;
         private float _currentSpeed;
 
-        public Vector3 Velocity => _currentVelocity;
-        public float ActualSpeed => _currentVelocity.magnitude;
-
-        public event Action SpeedChanged;
-
         private void Awake()
         {
             _moveChecker = GetComponent<MoveChecker>();
@@ -31,10 +26,12 @@ namespace Movement
         {
             if (speed <= 0f)
             {
-                throw new Exception("Speed must be greater than 0");
+                throw new ArgumentOutOfRangeException(nameof(speed),
+                    "Mover.SetDefaultSpeed requires a positive speed.");
             }
 
             _defaultSpeed = speed;
+            _currentSpeed = speed;
         }
 
         public void SetSmoothTime(float smoothTime)
@@ -46,23 +43,6 @@ namespace Movement
             }
 
             _smoothTime = smoothTime;
-        }
-        
-        public void SetSpeedMultiplier(float multiplier)
-        {
-            if (multiplier <= 0f)
-            {
-                return;
-            }
-
-            _currentSpeed = _defaultSpeed * multiplier;
-            SpeedChanged?.Invoke();
-        }
-
-        public void ResetSpeed()
-        {
-            _currentSpeed = _defaultSpeed;
-            SpeedChanged?.Invoke();
         }
 
         public void Move(Vector3 direction)
@@ -89,7 +69,7 @@ namespace Movement
                 _velocityRef = Vector3.zero;
                 return;
             }
-            
+
             _currentVelocity = nextVelocity;
             transform.position += _currentVelocity * Time.deltaTime;
         }

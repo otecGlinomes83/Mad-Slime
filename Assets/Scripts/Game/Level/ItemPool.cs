@@ -58,19 +58,5 @@ namespace Game
             item.transform.SetParent(_root, false);
             pooled.Add(item);
         }
-
-        public float GetPrefabRadius(Item prefab)
-        {
-            MeshFilter meshFilter = prefab.GetComponentInChildren<MeshFilter>();
-
-            if (meshFilter == null || meshFilter.sharedMesh == null)
-            {
-                return 1f;
-            }
-
-            Vector3 scaledSize = Vector3.Scale(meshFilter.sharedMesh.bounds.size, prefab.transform.localScale);
-
-            return scaledSize.magnitude * 0.5f;
-        }
     }
 }

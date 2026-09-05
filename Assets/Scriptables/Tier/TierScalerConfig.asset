@@ -18,18 +18,22 @@ MonoBehaviour:
     _scaleMultiplier: 1.4
     _speed: 4
     _cameraOffsetMultiplier: 1
+    _label: "\u041C\u0430\u043B\u044B\u0439"
   - _tier: 1
     _requiredMass: 50
     _scaleMultiplier: 3
     _speed: 8
     _cameraOffsetMultiplier: 1.5
+    _label: "\u0421\u0440\u0435\u0434\u043D\u0438\u0439"
   - _tier: 2
     _requiredMass: 500
     _scaleMultiplier: 6
     _speed: 16
     _cameraOffsetMultiplier: 2
+    _label: 
   - _tier: 3
     _requiredMass: 10000
     _scaleMultiplier: 15
     _speed: 25
     _cameraOffsetMultiplier: 3
+    _label: 

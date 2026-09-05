@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c47ef906deb27a94fa1033fe633fe3cd, type: 3}
+  m_Name: TableTheme
+  m_EditorClassIdentifier: 
+  _floorMaterial: {fileID: 2100000, guid: fda2ff67ceeaf404aaef07f846dbc8d0, type: 2}
+  _itemPool:
+  - {fileID: 5469724564737473572, guid: 8cd9fe7b1b9e5ef49842c0a56c99bba4, type: 3}
+  - {fileID: 894220425468229854, guid: d737090eafbe5be4880091cdefb8bc0a, type: 3}
+  - {fileID: 3350904057782042202, guid: ab2b37210e1e3dd4eabc0bb06fdffd06, type: 3}
+  - {fileID: 8808964563651472320, guid: 6f934e5f29796dc468259b739cde6236, type: 3}
+  - {fileID: 2917692482144386215, guid: 6a968018ad910214ebac65f06770e14e, type: 3}
+  - {fileID: 6729436015644027539, guid: daa6bc6fd5f907c44b2d1016d376086b, type: 3}
+  - {fileID: 4304499010235688638, guid: f609e1afcf2aa37448fb1682e213c631, type: 3}
+  - {fileID: 9125869566841626767, guid: c284b350ff0ed68489c8cf7f37fd6791, type: 3}
+  - {fileID: 8022487158605846659, guid: 3c34efb90cc36674cbd1ce177052bbee, type: 3}
+  - {fileID: 24947962748573806, guid: 5fed50e5f1149a544afbcb454192d793, type: 3}
+  - {fileID: 1384271644214102332, guid: 1807159ec89ebce49b7e618e03e6d277, type: 3}
+  - {fileID: 4126128758073215177, guid: 91886e26378d5c8459647771afc74426, type: 3}
+  - {fileID: 9060928424700008761, guid: dd8562fc3f51816498552e52c7035ee8, type: 3}
+  - {fileID: 9023252196822773935, guid: 2ccb83b25da2ca24db60dd938961f4f4, type: 3}
+  _fillShapeTexture: {fileID: 2800000, guid: 3b231483b4881ac40bf16d5f097cbe3d, type: 3}
+  _music: {fileID: 8300000, guid: 16da009790821ab468d790a51a05367e, type: 3}

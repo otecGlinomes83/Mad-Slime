@@ -1,14 +1,30 @@
+using Scriptables;
 using System;
 using UnityEngine;
-using VContainer;
+using YG;
 
 namespace Game
 {
     public sealed class AdScheduler : MonoBehaviour
     {
-        [SerializeField] private int _interstitialEveryLevels = 2;
+        [SerializeField] private AdsConfig _config;
 
         private Action _pendingRewardAction;
+
+        private void Awake()
+        {
+            if (_config == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AdsConfig is not assigned. Create an AdsConfig asset and drag it into the _config field.");
+            }
+
+            if (_config.InterstitialEveryLevels <= 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AdsConfig Interstitial Every Levels must be greater than zero.");
+            }
+        }
 
 #if RewardedAdv_yg
         private void OnEnable()
@@ -32,7 +48,7 @@ namespace Game
 
         public void ShowInterstitialIfNeeded(int levelNumber)
         {
-            if (levelNumber % _interstitialEveryLevels != 0)
+            if (levelNumber % _config.InterstitialEveryLevels != 0)
             {
                 return;
             }
@@ -45,6 +61,11 @@ namespace Game
 
             YG2.InterstitialAdvShow();
 #endif
+        }
+
+        public void ShowDoubleReward(Action onGranted)
+        {
+            ShowRewarded(_config.DoubleRewardId, onGranted);
         }
 
         public void ShowRewarded(string rewardId, Action onGranted)

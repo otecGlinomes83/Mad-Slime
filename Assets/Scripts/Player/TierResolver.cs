@@ -53,7 +53,67 @@ namespace Player
                 }
             }
 
-            return 1f;
+            if (_sortedByMass.Count > 0)
+            {
+                return _sortedByMass[0].Speed;
+            }
+
+            return 4f;
+        }
+
+        public string GetTierLabelFor(ItemTier tier)
+        {
+            for (int i = 0; i < _sortedByMass.Count; i++)
+            {
+                if (_sortedByMass[i].Tier == tier)
+                {
+                    string label = _sortedByMass[i].Label;
+
+                    if (string.IsNullOrEmpty(label) == false)
+                    {
+                        return label;
+                    }
+
+                    return tier.ToString();
+                }
+            }
+
+            return tier.ToString();
+        }
+
+        public float GetTierProgress(int mass)
+        {
+            float previousThresholdMass = 0f;
+            float nextThresholdMass = -1f;
+
+            for (int i = 0; i < _sortedByMass.Count; i++)
+            {
+                int thresholdMass = _sortedByMass[i].RequiredMass;
+
+                if (thresholdMass <= mass)
+                {
+                    previousThresholdMass = thresholdMass;
+                }
+                else
+                {
+                    nextThresholdMass = thresholdMass;
+                    break;
+                }
+            }
+
+            if (nextThresholdMass < 0f)
+            {
+                return 1f;
+            }
+
+            float segment = nextThresholdMass - previousThresholdMass;
+
+            if (segment <= 0f)
+            {
+                return 1f;
+            }
+
+            return Mathf.Clamp01((mass - previousThresholdMass) / segment);
         }
         
         public float GetScaleFor(ItemTier tier)

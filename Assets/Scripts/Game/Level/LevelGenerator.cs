@@ -117,10 +117,11 @@ namespace Game
 
         private void SpawnItems(LevelConfig config)
         {
-            bool mirrorX = config.Layout.AllowMirroring == true && Random.value > 0.5f;
-            bool mirrorZ = config.Layout.AllowMirroring == true && Random.value > 0.5f;
+            LayoutSet layout = config.Layout;
+            bool mirrorX = layout.AllowMirroring == true && Random.value > 0.5f;
+            bool mirrorZ = layout.AllowMirroring == true && Random.value > 0.5f;
 
-            IReadOnlyList<SpawnZone> zones = config.Layout.Zones;
+            IReadOnlyList<SpawnZone> zones = layout.Zones;
 
             for (int i = 0; i < zones.Count; i++)
             {
@@ -135,8 +136,8 @@ namespace Game
                     continue;
                 }
 
-                float spacing = ResolveSpacing(zone);
-                CollectPositions(zone, spacing, mirrorX, mirrorZ);
+                float spacing = ResolveSpacing(zone, layout);
+                CollectPositions(zone, spacing, mirrorX, mirrorZ, layout);
 
                 for (int j = 0; j < _positions.Count; j++)
                 {
@@ -184,9 +185,9 @@ namespace Game
             }
         }
 
-        private float ResolveSpacing(SpawnZone zone)
+        private float ResolveSpacing(SpawnZone zone, LayoutSet layout)
         {
-            if (zone.Spacing > 0f)
+            if (zone.AutoSpacing == false && zone.Spacing > 0f)
             {
                 return zone.Spacing;
             }
@@ -195,14 +196,14 @@ namespace Game
 
             for (int i = 0; i < _zonePool.Count; i++)
             {
-                float radius = _itemPool.GetPrefabRadius(_zonePool[i]);
+                float radius = ItemSize.GetRadiusXZ(_zonePool[i]);
                 maxRadius = Mathf.Max(maxRadius, radius);
             }
 
-            return Mathf.Max(0.5f, maxRadius * 2.2f);
+            return Mathf.Max(0.5f, maxRadius * layout.AutoSpacingFactor);
         }
 
-        private void CollectPositions(SpawnZone zone, float spacing, bool mirrorX, bool mirrorZ)
+        private void CollectPositions(SpawnZone zone, float spacing, bool mirrorX, bool mirrorZ, LayoutSet layout)
         {
             _positions.Clear();
 
@@ -232,7 +233,7 @@ namespace Game
             }
             else
             {
-                CollectScatterPositions(center, zone.Radius, zone.Count, spacing);
+                CollectScatterPositions(center, zone.Radius, zone.Count, spacing, layout);
             }
         }
 
@@ -319,9 +320,11 @@ namespace Game
             }
         }
 
-        private void CollectScatterPositions(Vector2 center, float radius, int count, float spacing)
+        private void CollectScatterPositions(Vector2 center, float radius, int count, float spacing,
+            LayoutSet layout)
         {
-            float minDistanceSqr = spacing * spacing * 0.49f;
+            float minDistance = spacing * layout.ScatterDistanceFactor;
+            float minDistanceSqr = minDistance * minDistance;
             int attemptsLimit = count * 10;
             int attempts = 0;
 

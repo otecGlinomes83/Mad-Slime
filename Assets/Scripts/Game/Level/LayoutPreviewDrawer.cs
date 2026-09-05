@@ -104,7 +104,8 @@ namespace Game
 
         private void DrawZones(LevelConfig config)
         {
-            IReadOnlyList<SpawnZone> zones = config.Layout.Zones;
+            LayoutSet layout = config.Layout;
+            IReadOnlyList<SpawnZone> zones = layout.Zones;
 
             for (int i = 0; i < zones.Count; i++)
             {
@@ -123,8 +124,8 @@ namespace Game
                     center.y = -center.y;
                 }
 
-                float spacing = ResolveSpacing(zone, config);
-                CollectPositions(zone, center, spacing, i);
+                float spacing = ResolveSpacing(zone, layout, config.Theme.ItemPool);
+                CollectPositions(zone, center, spacing, i, layout);
 
                 if (zone.Shape == SpawnShape.Grid)
                 {
@@ -201,15 +202,14 @@ namespace Game
             Handles.Label(labelPosition, labelText, GetZoneLabelStyle());
         }
 
-        private float ResolveSpacing(SpawnZone zone, LevelConfig config)
+        private float ResolveSpacing(SpawnZone zone, LayoutSet layout, IReadOnlyList<Items.Item> pool)
         {
-            if (zone.Spacing > 0f)
+            if (zone.AutoSpacing == false && zone.Spacing > 0f)
             {
                 return zone.Spacing;
             }
 
             float maxRadius = 0f;
-            IReadOnlyList<Items.Item> pool = config.Theme.ItemPool;
 
             for (int i = 0; i < pool.Count; i++)
             {
@@ -227,27 +227,14 @@ namespace Game
                     continue;
                 }
 
-                maxRadius = Mathf.Max(maxRadius, GetPrefabRadius(prefab));
+                maxRadius = Mathf.Max(maxRadius, ItemSize.GetRadiusXZ(prefab));
             }
 
-            return Mathf.Max(0.5f, maxRadius * 2.2f);
+            return Mathf.Max(0.5f, maxRadius * layout.AutoSpacingFactor);
         }
 
-        private float GetPrefabRadius(Items.Item prefab)
-        {
-            MeshFilter meshFilter = prefab.GetComponentInChildren<MeshFilter>();
-
-            if (meshFilter == null || meshFilter.sharedMesh == null)
-            {
-                return 1f;
-            }
-
-            Vector3 scaledSize = Vector3.Scale(meshFilter.sharedMesh.bounds.size, prefab.transform.localScale);
-
-            return scaledSize.magnitude * 0.5f;
-        }
-
-        private void CollectPositions(SpawnZone zone, Vector2 center, float spacing, int zoneIndex)
+        private void CollectPositions(SpawnZone zone, Vector2 center, float spacing, int zoneIndex,
+            LayoutSet layout)
         {
             _previewPositions.Clear();
 
@@ -265,7 +252,7 @@ namespace Game
             }
             else
             {
-                CollectScatterPositions(center, zone.Radius, zone.Count, spacing, zoneIndex);
+                CollectScatterPositions(center, zone.Radius, zone.Count, spacing, zoneIndex, layout);
             }
         }
 
@@ -362,10 +349,12 @@ namespace Game
             }
         }
 
-        private void CollectScatterPositions(Vector2 center, float radius, int count, float spacing, int zoneIndex)
+        private void CollectScatterPositions(Vector2 center, float radius, int count, float spacing, int zoneIndex,
+            LayoutSet layout)
         {
             System.Random zoneRandom = new System.Random(zoneIndex * 7919 + 17);
-            float minDistanceSqr = spacing * spacing * 0.49f;
+            float minDistance = spacing * layout.ScatterDistanceFactor;
+            float minDistanceSqr = minDistance * minDistance;
             int attemptsLimit = count * 10;
             int attempts = 0;
 

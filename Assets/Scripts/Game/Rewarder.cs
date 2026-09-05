@@ -1,3 +1,4 @@
+using Scriptables;
 using System;
 using UnityEngine;
 
@@ -5,17 +6,19 @@ namespace Game
 {
     public sealed class Rewarder : MonoBehaviour
     {
-        private const float WinFullMultiplierThreshold = 1.25f;
-        private const float LoseMultiplierThreshold = 0.25f;
-        private const int LoseRewardDivisor = 4;
-
+        [SerializeField] private RewardConfig _config;
         [SerializeField] private Wallet _wallet;
-        [SerializeField] private int _baseReward = 50;
 
         public event Action<int, bool> RewardGranted;
 
         private void Awake()
         {
+            if (_config == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RewardConfig is not assigned. Create a RewardConfig asset and drag it into the _config field.");
+            }
+
             if (_wallet == null)
             {
                 throw new InvalidOperationException(
@@ -31,11 +34,11 @@ namespace Game
                     "RewardWin requires percentage >= 1.0 (Win means quota was completed).");
             }
 
-            int reward = _baseReward;
+            int reward = _config.BaseReward;
 
-            if (percentage > WinFullMultiplierThreshold)
+            if (percentage > _config.WinFullMultiplierThreshold)
             {
-                reward = Mathf.RoundToInt(_baseReward * percentage);
+                reward = Mathf.RoundToInt(_config.BaseReward * percentage);
             }
 
             RewardGranted?.Invoke(reward, true);
@@ -46,9 +49,9 @@ namespace Game
         {
             int reward = 0;
 
-            if (percentage >= LoseMultiplierThreshold)
+            if (percentage >= _config.LoseMultiplierThreshold)
             {
-                reward = _baseReward / LoseRewardDivisor;
+                reward = _config.BaseReward / _config.LoseRewardDivisor;
             }
 
             RewardGranted?.Invoke(reward, false);

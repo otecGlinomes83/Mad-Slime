@@ -77,7 +77,7 @@ namespace UI
 
         private void RequestDoubleReward()
         {
-            _adScheduler.ShowRewarded("DoubleReward", OnDoubleRewardGranted);
+            _adScheduler.ShowDoubleReward(OnDoubleRewardGranted);
         }
 
         private void OnDoubleRewardGranted()
@@ -94,8 +94,22 @@ namespace UI
                 return;
             }
 
+            if (_levelRewardPopupPrefab == null)
+            {
+                Debug.LogWarning(
+                    "[Fill] FillUIFabric: Level Reward Popup prefab is not assigned. Popup is skipped. Drag PopupCanvas.prefab into the Level Reward Popup Prefab field.");
+                return;
+            }
+
             foreach (SkillConfig config in _skillsConfig.Skills)
             {
+                if (config == null)
+                {
+                    Debug.LogWarning(
+                        "[Fill] SkillsConfig contains a missing entry. Open the asset and remove the empty list items.");
+                    continue;
+                }
+
                 if (config.RequiredLevel == levelNumber)
                 {
                     LevelRewardPopup popup = Instantiate(_levelRewardPopupPrefab);

@@ -16,3 +16,6 @@ MonoBehaviour:
   - _fromLevel: 0
     _toLevel: 4
     _config: {fileID: 11400000, guid: bc5effaf033203d4f93a47ab45f7ebe4, type: 2}
+  - _fromLevel: 5
+    _toLevel: 6
+    _config: {fileID: 11400000, guid: bc5effaf033203d4f93a47ab45f7ebe4, type: 2}

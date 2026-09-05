@@ -34,10 +34,7 @@ namespace Player
             _mover = GetComponent<Mover>();
             _rotator = GetComponent<Rotator>();
             _playerTier = GetComponent<PlayerTier>();
-        }
 
-        private void Start()
-        {
             if (_playerConfig == null)
             {
                 return;

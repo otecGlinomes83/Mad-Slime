@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Items;
 using Quota;
 using Scriptables;
+using Skills;
 using UnityEngine;
 
 namespace Game
@@ -9,6 +10,7 @@ namespace Game
     public sealed class QuotaGenerator
     {
         private readonly List<ItemDefinition> _candidates = new List<ItemDefinition>();
+        private readonly Dictionary<ItemTier, int> _tierEntryCounts = new Dictionary<ItemTier, int>();
 
         public List<QuotaEntry> Generate(Dictionary<ItemDefinition, int> spawnedCounts, LevelConfig config)
         {
@@ -20,14 +22,31 @@ namespace Game
             ShuffleCandidates();
 
             List<QuotaEntry> entries = new List<QuotaEntry>(typesTarget);
+            _tierEntryCounts.Clear();
 
-            for (int i = 0; i < typesTarget; i++)
+            for (int i = 0; i < _candidates.Count && entries.Count < typesTarget; i++)
             {
                 ItemDefinition definition = _candidates[i];
+                ItemTier tier = definition.Tier;
+
+                _tierEntryCounts.TryGetValue(tier, out int tierCount);
+
+                if (tierCount >= config.QuotaMaxSameTier)
+                {
+                    continue;
+                }
+
                 int target = Random.Range(config.QuotaTargetMin, config.QuotaTargetMax + 1);
-                target = Mathf.Min(target, spawnedCounts[definition]);
+                int spawned = spawnedCounts[definition];
+
+                if (target > spawned)
+                {
+                    Debug.LogWarning($"[Quota] {definition.name}: quota reduced from {target} to {spawned} — not enough items spawned.");
+                    target = spawned;
+                }
 
                 entries.Add(new QuotaEntry(definition, target));
+                _tierEntryCounts[tier] = tierCount + 1;
             }
 
             _candidates.Clear();

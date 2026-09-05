@@ -8,6 +8,7 @@ namespace UI
     public sealed class LevelLabelUI : MonoBehaviour
     {
         [SerializeField] private TMP_Text _labelText;
+        [SerializeField] private string _labelFormat = "Уровень {0}";
 
         private PlayerProgress _progress;
 
@@ -34,7 +35,7 @@ namespace UI
                 return;
             }
 
-            _labelText.text = $"Уровень {_progress.CurrentLevel}";
+            _labelText.text = string.Format(_labelFormat, _progress.CurrentLevel);
         }
     }
 }

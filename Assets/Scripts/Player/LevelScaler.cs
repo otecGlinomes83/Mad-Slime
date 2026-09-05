@@ -67,6 +67,7 @@ namespace Skills
         private void OnEnable()
         {
             _playerTier.TierChanged += OnTierChanged;
+            _mover.SetDefaultSpeed(_tierResolver.GetSpeedFor(_playerTier.CurrentTier));
         }
 
         private void OnDisable()
