@@ -30,10 +30,10 @@ MonoBehaviour:
     _scaleMultiplier: 6
     _speed: 16
     _cameraOffsetMultiplier: 2
-    _label: 
+    _label: "\u0411\u043E\u043B\u044C\u0448\u043E\u0439"
   - _tier: 3
     _requiredMass: 10000
     _scaleMultiplier: 15
     _speed: 25
     _cameraOffsetMultiplier: 3
-    _label: 
+    _label: "\u0411\u041E\u0421\u0421"

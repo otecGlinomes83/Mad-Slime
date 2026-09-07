@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cabfd7a58666dd469a0eeed6f3ec8e0, type: 3}
-  m_Name: RoomLayoutSet
+  m_Script: {fileID: 11500000, guid: 42771658eb777ca4a894bf3508de1425, type: 3}
+  m_Name: AdsConfig
   m_EditorClassIdentifier: 
-  _zones: []
-  _allowMirroring: 0
-  _autoSpacingFactor: 2.2
-  _scatterDistanceFactor: 0.7
+  _interstitialEveryLevels: 2
+  _doubleRewardId: DoubleReward

@@ -13,28 +13,110 @@ MonoBehaviour:
   m_Name: TableLayoutSet
   m_EditorClassIdentifier: 
   _zones:
-  - _shape: 0
-    _center: {x: -1.4450054, y: 27.460342}
-    _radius: 0
-    _count: 9
+  - _shape: 2
+    _center: {x: 0, y: 0}
+    _radius: 100
+    _count: 1000
     _autoSpacing: 1
-    _spacing: 2.15
+    _spacing: 1.51
+    _minTier: 0
+    _maxTier: 0
+  - _shape: 2
+    _center: {x: 0, y: 0}
+    _radius: 100
+    _count: 150
+    _autoSpacing: 1
+    _spacing: 16.33
     _minTier: 1
     _maxTier: 1
   - _shape: 0
-    _center: {x: 19.901953, y: 28.792635}
-    _radius: 0
-    _count: 1
+    _center: {x: 0, y: 26.871567}
+    _radius: 100
+    _count: 150
     _autoSpacing: 1
-    _spacing: 4.71
-    _minTier: 3
-    _maxTier: 3
-  - _shape: 2
-    _center: {x: 0.57569885, y: -0.45234942}
-    _radius: 95
-    _count: 500
-    _autoSpacing: 1
-    _spacing: 9.27
+    _spacing: 16.33
     _minTier: 0
     _maxTier: 0
+  - _shape: 0
+    _center: {x: 81.77337, y: 82.91491}
+    _radius: 100
+    _count: 300
+    _autoSpacing: 1
+    _spacing: 16.33
+    _minTier: 0
+    _maxTier: 0
+  - _shape: 0
+    _center: {x: 42.575523, y: 11.021526}
+    _radius: 100
+    _count: 300
+    _autoSpacing: 1
+    _spacing: 16.33
+    _minTier: 0
+    _maxTier: 0
+  - _shape: 0
+    _center: {x: -9.155535, y: -54.196014}
+    _radius: 100
+    _count: 300
+    _autoSpacing: 1
+    _spacing: 16.33
+    _minTier: 0
+    _maxTier: 0
+  - _shape: 0
+    _center: {x: -41.746002, y: -10.158497}
+    _radius: 100
+    _count: 300
+    _autoSpacing: 1
+    _spacing: 16.33
+    _minTier: 0
+    _maxTier: 0
+  - _shape: 0
+    _center: {x: -79.011246, y: 79.1462}
+    _radius: 100
+    _count: 300
+    _autoSpacing: 1
+    _spacing: 16.33
+    _minTier: 0
+    _maxTier: 0
+  - _shape: 0
+    _center: {x: 43.04279, y: -31.37731}
+    _radius: 100
+    _count: 9
+    _autoSpacing: 0
+    _spacing: 13.3
+    _minTier: 2
+    _maxTier: 2
+  - _shape: 0
+    _center: {x: -65.43152, y: -72.54765}
+    _radius: 100
+    _count: 9
+    _autoSpacing: 0
+    _spacing: 13.3
+    _minTier: 2
+    _maxTier: 2
+  - _shape: 0
+    _center: {x: -61.091133, y: 30.351845}
+    _radius: 100
+    _count: 9
+    _autoSpacing: 0
+    _spacing: 13.3
+    _minTier: 2
+    _maxTier: 2
+  - _shape: 0
+    _center: {x: 38.39596, y: 62.28248}
+    _radius: 100
+    _count: 9
+    _autoSpacing: 0
+    _spacing: 13.3
+    _minTier: 2
+    _maxTier: 2
+  - _shape: 2
+    _center: {x: 0, y: 0}
+    _radius: 100
+    _count: 9
+    _autoSpacing: 0
+    _spacing: 13.3
+    _minTier: 3
+    _maxTier: 3
   _allowMirroring: 0
+  _autoSpacingFactor: 2.2
+  _scatterDistanceFactor: 0.7

@@ -801,7 +801,6 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  _levelsCatalog: {fileID: 0}
   _fillSessionHandler: {fileID: 1495407471}
   _fillCounter: {fileID: 1948289410}
   _fillUIFabric: {fileID: 6339976280050129451}
@@ -928,8 +927,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded7ad1648589f34aac5fed63f7d8a2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _config: {fileID: 11400000, guid: b59c6a2894f8674e08f7c3251741fb73, type: 2}
   _wallet: {fileID: 1495407474}
-  _baseReward: 50
 --- !u!114 &1495407476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -942,7 +941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e31232953d3fd73429da48f45960f40e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interstitialEveryLevels: 2
+  _config: {fileID: 11400000, guid: 8523d7049496a3ee69d341d0a78ea84c, type: 2}
 --- !u!1 &1640394169
 GameObject:
   m_ObjectHideFlags: 0
@@ -1335,7 +1334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e484562fca7cc2c4db6b100bb8e17544, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubePrefab: {fileID: 7822040787354298141, guid: a393423d25de4f244874dda3b2c1ca85, type: 3}
+  _cubePrefab: {fileID: -5780755931039187120, guid: c691f22b1d8a404d3a97f1316be9be48, type: 3}
   _cubesParent: {fileID: 940882980}
 --- !u!1001 &6339976280050129450
 PrefabInstance:

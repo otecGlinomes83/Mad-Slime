@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cabfd7a58666dd469a0eeed6f3ec8e0, type: 3}
-  m_Name: RoomLayoutSet
+  m_Script: {fileID: 11500000, guid: 646746c265ddc914eb0bd476220de830, type: 3}
+  m_Name: RewardConfig
   m_EditorClassIdentifier: 
-  _zones: []
-  _allowMirroring: 0
-  _autoSpacingFactor: 2.2
-  _scatterDistanceFactor: 0.7
+  _baseReward: 50
+  _winFullMultiplierThreshold: 1.25
+  _loseMultiplierThreshold: 0.25
+  _loseRewardDivisor: 4
