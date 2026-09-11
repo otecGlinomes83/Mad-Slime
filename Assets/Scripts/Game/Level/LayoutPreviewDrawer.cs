@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Items;
 using Scriptables;
 using Skills;
 using UnityEngine;
@@ -18,8 +19,11 @@ namespace Game
         [SerializeField] private bool _mirrorX;
         [SerializeField] private bool _mirrorZ;
         [SerializeField] private Color _boundsColor = Color.gray;
+        [Space]
+        [SerializeField] private LayoutSet _customLayout;
+        [SerializeField] private LevelTheme _customTheme;
 
-        private readonly List<Vector3> _previewPositions = new List<Vector3>(64);
+        private readonly List<Item> _zonePool = new List<Item>(16);
 
         private LevelConfigResolver _resolver;
 
@@ -28,6 +32,8 @@ namespace Game
         public int PreviewLevel => _previewLevel;
         public bool MirrorX => _mirrorX;
         public bool MirrorZ => _mirrorZ;
+        public LayoutSet CustomLayout => _customLayout;
+        public LevelTheme CustomTheme => _customTheme;
 
         public LevelConfigResolver Resolver
         {
@@ -44,9 +50,6 @@ namespace Game
 
 #if UNITY_EDITOR
         private static GUIStyle _zoneLabelStyle;
-        private float _lastGridHalfX;
-        private float _lastGridHalfZ;
-        private float _lastOuterRadius;
 
         private static GUIStyle GetZoneLabelStyle()
         {
@@ -61,21 +64,69 @@ namespace Game
 
         private void OnDrawGizmos()
         {
-            if (_catalog == null || _levelGenerator == null)
+            if (_levelGenerator == null)
             {
                 return;
             }
-
-            if (_catalog.Ranges.Count == 0)
-            {
-                return;
-            }
-
-            LevelConfig config = Resolver.GetConfigFor(_previewLevel);
 
             DrawMapBounds();
             DrawOrigin();
-            DrawZones(config);
+
+            if (_customLayout != null)
+            {
+                LevelConfig config = ResolveConfig();
+                IReadOnlyList<Item> themePool = ResolveThemePool(config);
+
+                DrawLayoutZones(_customLayout, themePool, 0);
+                return;
+            }
+
+            if (_catalog == null || _catalog.Ranges.Count == 0)
+            {
+                return;
+            }
+
+            LevelConfig resolvedConfig = ResolveConfig();
+
+            if (resolvedConfig == null)
+            {
+                return;
+            }
+
+            IReadOnlyList<LayoutSet> layouts = resolvedConfig.Layouts;
+
+            for (int layoutIndex = 0; layoutIndex < layouts.Count; layoutIndex++)
+            {
+                if (layouts[layoutIndex] != null)
+                {
+                    DrawLayoutZones(layouts[layoutIndex], resolvedConfig.Theme.ItemPool, layoutIndex);
+                }
+            }
+        }
+
+        private IReadOnlyList<Item> ResolveThemePool(LevelConfig config)
+        {
+            if (_customTheme != null)
+            {
+                return _customTheme.ItemPool;
+            }
+
+            if (config != null && config.Theme != null)
+            {
+                return config.Theme.ItemPool;
+            }
+
+            return Array.Empty<Item>();
+        }
+
+        private LevelConfig ResolveConfig()
+        {
+            if (_catalog == null || _catalog.Ranges.Count == 0)
+            {
+                return null;
+            }
+
+            return Resolver.GetConfigFor(_previewLevel);
         }
 
         private void DrawMapBounds()
@@ -102,9 +153,8 @@ namespace Game
             Gizmos.DrawWireSphere(transform.position, 0.4f);
         }
 
-        private void DrawZones(LevelConfig config)
+        private void DrawLayoutZones(LayoutSet layout, IReadOnlyList<Item> themePool, int layoutIndex)
         {
-            LayoutSet layout = config.Layout;
             IReadOnlyList<SpawnZone> zones = layout.Zones;
 
             for (int i = 0; i < zones.Count; i++)
@@ -124,25 +174,66 @@ namespace Game
                     center.y = -center.y;
                 }
 
-                float spacing = ResolveSpacing(zone, layout, config.Theme.ItemPool);
-                CollectPositions(zone, center, spacing, i, layout);
+                float spacing = ZoneLayoutPlanner.ResolveSpacing(zone, layout, FilteredPool(themePool, zone));
+                ZoneLayoutPlanner planner = new ZoneLayoutPlanner(new System.Random(layoutIndex * 7919 + i * 17 + 3));
+                planner.Collect(zone, center, spacing, layout);
 
                 if (zone.Shape == SpawnShape.Grid)
                 {
-                    DrawRectOutline(center, _lastGridHalfX, _lastGridHalfZ, tierColor);
+                    Vector2 halfExtents = GetPositionHalfExtents(planner.Positions);
+                    DrawRectOutline(center, halfExtents.x, halfExtents.y, tierColor);
                 }
                 else if (zone.Shape == SpawnShape.CircleGrid)
                 {
-                    DrawZoneOutline(center, _lastOuterRadius, tierColor);
+                    float outerRadius = GetMaxRadialDistance(planner.Positions, center);
+                    DrawZoneOutline(center, outerRadius, tierColor);
                 }
                 else
                 {
                     DrawZoneOutline(center, zone.Radius, tierColor);
                 }
 
-                DrawZoneDots(tierColor, spacing);
-                DrawZoneLabel(center, zone, i);
+                DrawZoneDots(planner.Positions, tierColor, spacing);
+                DrawZoneLabel(center, zone, layoutIndex, i, planner.Positions.Count);
             }
+        }
+
+        private IReadOnlyList<Item> FilteredPool(IReadOnlyList<Item> themePool, SpawnZone zone)
+        {
+            ZoneLayoutPlanner.FilterPool(themePool, zone, _zonePool);
+            return _zonePool;
+        }
+
+        private static Vector2 GetPositionHalfExtents(IReadOnlyList<Vector3> positions)
+        {
+            float minX = float.MaxValue;
+            float maxX = float.MinValue;
+            float minZ = float.MaxValue;
+            float maxZ = float.MinValue;
+
+            for (int i = 0; i < positions.Count; i++)
+            {
+                minX = Mathf.Min(minX, positions[i].x);
+                maxX = Mathf.Max(maxX, positions[i].x);
+                minZ = Mathf.Min(minZ, positions[i].z);
+                maxZ = Mathf.Max(maxZ, positions[i].z);
+            }
+
+            return new Vector2((maxX - minX) * 0.5f + 0.3f, (maxZ - minZ) * 0.5f + 0.3f);
+        }
+
+        private static float GetMaxRadialDistance(IReadOnlyList<Vector3> positions, Vector2 center)
+        {
+            float maxDistance = 0f;
+
+            for (int i = 0; i < positions.Count; i++)
+            {
+                float deltaX = positions[i].x - center.x;
+                float deltaZ = positions[i].z - center.y;
+                maxDistance = Mathf.Max(maxDistance, Mathf.Sqrt(deltaX * deltaX + deltaZ * deltaZ));
+            }
+
+            return maxDistance;
         }
 
         private void DrawRectOutline(Vector2 center, float halfX, float halfZ, Color color)
@@ -180,217 +271,26 @@ namespace Game
             }
         }
 
-        private void DrawZoneDots(Color tierColor, float spacing)
+        private void DrawZoneDots(IReadOnlyList<Vector3> positions, Color tierColor, float spacing)
         {
             float dotRadius = Mathf.Clamp(spacing * 0.2f, 0.1f, 0.5f);
 
             Gizmos.color = tierColor;
 
-            for (int i = 0; i < _previewPositions.Count; i++)
+            for (int i = 0; i < positions.Count; i++)
             {
-                Gizmos.DrawSphere(transform.TransformPoint(_previewPositions[i]), dotRadius);
+                Gizmos.DrawSphere(transform.TransformPoint(positions[i]), dotRadius);
             }
         }
 
-        private void DrawZoneLabel(Vector2 center, SpawnZone zone, int zoneIndex)
+        private void DrawZoneLabel(Vector2 center, SpawnZone zone, int layoutIndex, int zoneIndex, int positionsCount)
         {
             string tierRange = $"{zone.MinTier}-{zone.MaxTier}";
-            string labelText = $"Zone {zoneIndex}: {zone.Shape} x{_previewPositions.Count} {tierRange}";
+            string labelText = $"L{layoutIndex} / Zone {zoneIndex}: {zone.Shape} x{positionsCount} {tierRange}";
 
             Vector3 labelPosition = transform.TransformPoint(new Vector3(center.x, 0f, center.y)) + Vector3.up;
 
             Handles.Label(labelPosition, labelText, GetZoneLabelStyle());
-        }
-
-        private float ResolveSpacing(SpawnZone zone, LayoutSet layout, IReadOnlyList<Items.Item> pool)
-        {
-            if (zone.AutoSpacing == false && zone.Spacing > 0f)
-            {
-                return zone.Spacing;
-            }
-
-            float maxRadius = 0f;
-
-            for (int i = 0; i < pool.Count; i++)
-            {
-                Items.Item prefab = pool[i];
-
-                if (prefab == null || prefab.Definition == null)
-                {
-                    continue;
-                }
-
-                ItemTier prefabTier = prefab.Definition.Tier;
-
-                if (prefabTier < zone.MinTier || prefabTier > zone.MaxTier)
-                {
-                    continue;
-                }
-
-                maxRadius = Mathf.Max(maxRadius, ItemSize.GetRadiusXZ(prefab));
-            }
-
-            return Mathf.Max(0.5f, maxRadius * layout.AutoSpacingFactor);
-        }
-
-        private void CollectPositions(SpawnZone zone, Vector2 center, float spacing, int zoneIndex,
-            LayoutSet layout)
-        {
-            _previewPositions.Clear();
-
-            if (zone.Shape == SpawnShape.Grid)
-            {
-                CollectGridPositions(center, zone.Count, spacing);
-            }
-            else if (zone.Shape == SpawnShape.CircleGrid)
-            {
-                CollectCircleGridPositions(center, zone.Count, spacing);
-            }
-            else if (zone.Shape == SpawnShape.Circle)
-            {
-                CollectCirclePositions(center, zone.Radius, zone.Count);
-            }
-            else
-            {
-                CollectScatterPositions(center, zone.Radius, zone.Count, spacing, zoneIndex, layout);
-            }
-        }
-
-        private void CollectGridPositions(Vector2 center, int count, float spacing)
-        {
-            _lastGridHalfX = spacing * 0.5f;
-            _lastGridHalfZ = spacing * 0.5f;
-
-            if (count <= 0)
-            {
-                return;
-            }
-
-            int rows = Mathf.Max(1, Mathf.RoundToInt(Mathf.Sqrt(count)));
-            int columns = Mathf.CeilToInt(count / (float)rows);
-            float halfWidth = (columns - 1) * spacing * 0.5f;
-            float halfDepth = (rows - 1) * spacing * 0.5f;
-
-            _lastGridHalfX = halfWidth + spacing * 0.5f;
-            _lastGridHalfZ = halfDepth + spacing * 0.5f;
-
-            int placedCount = 0;
-
-            for (int row = 0; row < rows; row++)
-            {
-                for (int column = 0; column < columns; column++)
-                {
-                    if (placedCount >= count)
-                    {
-                        break;
-                    }
-
-                    Vector3 offset = new Vector3(column * spacing - halfWidth, 0f, row * spacing - halfDepth);
-
-                    _previewPositions.Add(new Vector3(center.x, 0f, center.y) + offset);
-                    placedCount++;
-                }
-            }
-        }
-
-        private void CollectCircleGridPositions(Vector2 center, int count, float spacing)
-        {
-            _lastOuterRadius = spacing * 0.5f;
-
-            if (count <= 0)
-            {
-                return;
-            }
-
-            _previewPositions.Add(new Vector3(center.x, 0f, center.y));
-
-            int placedCount = 1;
-            int ringIndex = 1;
-
-            while (placedCount < count)
-            {
-                float ringRadius = ringIndex * spacing;
-                _lastOuterRadius = ringRadius + spacing * 0.5f;
-
-                int ringCapacity = Mathf.Max(1, Mathf.FloorToInt(2f * Mathf.PI * ringRadius / spacing));
-                int pointsOnRing = Mathf.Min(ringCapacity, count - placedCount);
-                float angleStep = 2f * Mathf.PI / pointsOnRing;
-
-                for (int i = 0; i < pointsOnRing; i++)
-                {
-                    float angle = angleStep * i;
-                    float x = center.x + Mathf.Cos(angle) * ringRadius;
-                    float z = center.y + Mathf.Sin(angle) * ringRadius;
-
-                    _previewPositions.Add(new Vector3(x, 0f, z));
-                    placedCount++;
-                }
-
-                ringIndex++;
-            }
-        }
-
-        private void CollectCirclePositions(Vector2 center, float radius, int count)
-        {
-            if (count <= 0)
-            {
-                return;
-            }
-
-            float angleStep = 2f * Mathf.PI / count;
-
-            for (int i = 0; i < count; i++)
-            {
-                float angle = angleStep * i;
-                float x = center.x + Mathf.Cos(angle) * radius;
-                float z = center.y + Mathf.Sin(angle) * radius;
-
-                _previewPositions.Add(new Vector3(x, 0f, z));
-            }
-        }
-
-        private void CollectScatterPositions(Vector2 center, float radius, int count, float spacing, int zoneIndex,
-            LayoutSet layout)
-        {
-            System.Random zoneRandom = new System.Random(zoneIndex * 7919 + 17);
-            float minDistance = spacing * layout.ScatterDistanceFactor;
-            float minDistanceSqr = minDistance * minDistance;
-            int attemptsLimit = count * 10;
-            int attempts = 0;
-
-            while (_previewPositions.Count < count && attempts < attemptsLimit)
-            {
-                attempts++;
-
-                double angle = zoneRandom.NextDouble() * 2.0 * Math.PI;
-                double distance = radius * Math.Sqrt(zoneRandom.NextDouble());
-
-                float x = center.x + Mathf.Cos((float)angle) * (float)distance;
-                float z = center.y + Mathf.Sin((float)angle) * (float)distance;
-
-                Vector3 candidate = new Vector3(x, 0f, z);
-
-                if (IsFarEnough(candidate, minDistanceSqr) == true)
-                {
-                    _previewPositions.Add(candidate);
-                }
-            }
-        }
-
-        private bool IsFarEnough(Vector3 candidate, float minDistanceSqr)
-        {
-            for (int i = 0; i < _previewPositions.Count; i++)
-            {
-                Vector3 delta = candidate - _previewPositions[i];
-                delta.y = 0f;
-
-                if (delta.sqrMagnitude < minDistanceSqr)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         private static Color GetTierColor(ItemTier tier)

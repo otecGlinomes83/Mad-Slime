@@ -6,17 +6,17 @@ namespace UI
 {
     public class ValueView<T> : MonoBehaviour where T : IConvertible
     {
-    [SerializeField] private TMP_Text _text;
+        [SerializeField] private TMP_Text _text;
 
-    public void Show(T value)
-    {
-        gameObject.SetActive(true);
-        _text.text = value.ToString();
-    }
+        public void Show(T value)
+        {
+            gameObject.SetActive(true);
+            _text.text = value.ToString();
+        }
 
-    public void Hide()
-    {
-        gameObject.SetActive(false);
-    }
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

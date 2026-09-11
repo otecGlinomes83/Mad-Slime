@@ -20,6 +20,15 @@ namespace Skills
         public bool IsActive => _isActive;
         public bool IsOnCooldown => _isOnCooldown;
 
+        protected virtual void Awake()
+        {
+            if (_timer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Timer is not assigned. Drag a Timer component into the _timer field.");
+            }
+        }
+
         protected virtual void OnEnable()
         {
             _timer.Finished += OnTimerFinished;

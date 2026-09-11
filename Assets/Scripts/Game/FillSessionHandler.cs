@@ -14,10 +14,7 @@ namespace Game
         [SerializeField] private Rewarder _rewarder;
         [SerializeField] private Pauser _pauser;
         [SerializeField] private AdScheduler _adScheduler;
-
-#if Leaderboard_yg
         [SerializeField] private LeaderboardReporter _leaderboardReporter;
-#endif
 
         private PlayerProgress _progress;
         private LevelConfigResolver _configResolver;
@@ -32,13 +29,35 @@ namespace Game
             _configResolver = configResolver;
         }
 
+        private void Awake()
+        {
+            if (_adScheduler == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AdScheduler is not assigned. Drag an AdScheduler component into the _adScheduler field.");
+            }
+
+            if (_leaderboardReporter == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: LeaderboardReporter is not assigned. Drag a LeaderboardReporter component into the _leaderboardReporter field.");
+            }
+
+            YandexAdsBridge bridge = YandexAdsBridge.Create();
+            _adScheduler.Setup(bridge);
+            _leaderboardReporter.Setup(bridge);
+        }
+
+        private void OnEnable()
+        {
+            _fillOrchestrator.FillCompleted += OnFillCompleted;
+            _rewarder.RewardGranted += OnRewardGranted;
+        }
+
         private void Start()
         {
             ApplyTheme();
-
-            _fillOrchestrator.FillCompleted += OnFillCompleted;
             _fillOrchestrator.StartFill();
-            _rewarder.RewardGranted += OnRewardGranted;
         }
 
         private void OnDisable()
@@ -78,14 +97,14 @@ namespace Game
         public void LoadNextLevel()
         {
             _progress.CurrentLevel++;
-            _progress.Save();
 
-#if Leaderboard_yg
-            if (_leaderboardReporter != null)
+            if (_progress.CurrentLevel > _progress.MaxLevel)
             {
-                _leaderboardReporter.Report(_progress.CurrentLevel);
+                _progress.MaxLevel = _progress.CurrentLevel;
             }
-#endif
+
+            _progress.Save();
+            _leaderboardReporter.Report(_progress.MaxLevel, _progress.PlayerId);
 
             _adScheduler.ShowInterstitialIfNeeded(_progress.CurrentLevel);
             _levelTransitor.LoadGame();

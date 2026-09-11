@@ -11,6 +11,7 @@ namespace DI
     {
         [SerializeField] private PlayerProgress _playerProgress;
         [SerializeField] private LevelsCatalog _levelsCatalog;
+        [SerializeField] private LocalizationService _localizationService;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -26,7 +27,14 @@ namespace DI
                     "ProjectLifetimeScope: LevelsCatalog is not assigned. Open the ProjectScope prefab and drag the LevelsCatalog asset into the Levels Catalog field.");
             }
 
+            if (_localizationService == null)
+            {
+                throw new InvalidOperationException(
+                    "ProjectLifetimeScope: LocalizationService is not assigned. Open the ProjectScope prefab and drag the LocalizationService component into the Localization Service field.");
+            }
+
             builder.RegisterComponent(_playerProgress);
+            builder.RegisterComponent(_localizationService);
             builder.RegisterInstance(_levelsCatalog);
             builder.Register<LevelProgress>(Lifetime.Singleton);
             builder.Register<LevelConfigResolver>(Lifetime.Singleton);

@@ -1,4 +1,6 @@
 namespace UI
 {
-    public class IntValueView : ValueView<int> { }
+    public sealed class IntValueView : ValueView<int>
+    {
+    }
 }

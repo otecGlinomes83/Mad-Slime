@@ -1242,7 +1242,7 @@ GameObject:
   - component: {fileID: 1527018658}
   - component: {fileID: 1527018657}
   - component: {fileID: 1527018656}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2204,9 +2204,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95118445c64d57f4a91eafb1a6b8a8de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _massHolderSource: {fileID: 688403098498416583}
+  _tierHolder: {fileID: 7992803093969525695}
   _detector: {fileID: 3196850747484158986}
   _absorber: {fileID: 6460579104252903941}
+  _absorptionFx: {fileID: 900000000000000031}
+  _weightPopup: {fileID: 900000000000000032}
 --- !u!224 &1278592298309326954
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3166,6 +3168,8 @@ GameObject:
   - component: {fileID: 1178948977339683769}
   - component: {fileID: 3196850747484158986}
   - component: {fileID: 6460579104252903941}
+  - component: {fileID: 900000000000000031}
+  - component: {fileID: 900000000000000032}
   m_Layer: 6
   m_Name: Collector
   m_TagString: Untagged
@@ -3229,6 +3233,7 @@ GameObject:
   - component: {fileID: 3849648291218264020}
   - component: {fileID: 9169244212891694046}
   - component: {fileID: 9169244212891694045}
+  - component: {fileID: 900000000000000030}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -3559,6 +3564,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _absorptionDuration: 0.25
+  _config: {fileID: 11400000, guid: 5870f75c6661e1248a87e3447b467372, type: 2}
 --- !u!4 &6520030606848923992
 Transform:
   m_ObjectHideFlags: 0
@@ -3995,7 +4001,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 264
   _playerTier: {fileID: 7992803093969525695}
   _playerCollider: {fileID: 3849648291218264020}
 --- !u!222 &8421853294063640360
@@ -4224,3 +4230,50 @@ SceneRoots:
   - {fileID: 292377135}
   - {fileID: 5850846105485772491}
   - {fileID: 1784792494}
+--- !u!114 &900000000000000030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5039445881644358114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48c2e6a0d9b34f17a5c83e9d1f7b2a45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerTier: {fileID: 7992803093969525695}
+  _group: {fileID: 0}
+  _clip: {fileID: 0}
+  _volume: 1
+--- !u!114 &900000000000000031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4801891008915828649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19a5d7c2f8b4a36b0d47c8e2a6f9b31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _template: {fileID: 0}
+  _particleColor: {r: 0.55, g: 1, b: 0.45, a: 1}
+  _burstCount: 12
+  _burstSpeed: 3
+  _lifetime: 0.4
+--- !u!114 &900000000000000032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4801891008915828649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f8b0d4a9c15e2783b6d0f4a8c2e79d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _color: {r: 0.55, g: 1, b: 0.45, a: 1}
+  _fontSize: 3

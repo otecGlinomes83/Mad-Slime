@@ -1,9 +1,9 @@
-﻿using Detection;
+using Detection;
 using Interfaces;
 
 namespace Collectables
 {
-    public class AttractableDetector : GenericOverlapDetector<IAttractable>
+    public sealed class AttractableDetector : GenericOverlapDetector<IAttractable>
     {
     }
 }

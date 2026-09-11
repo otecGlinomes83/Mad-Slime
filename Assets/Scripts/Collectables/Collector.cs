@@ -1,6 +1,5 @@
 using System;
 using Cysharp.Threading.Tasks;
-using Interfaces;
 using Items;
 using Player;
 using UnityEngine;
@@ -9,55 +8,83 @@ namespace Collectables
 {
     public sealed class Collector : MonoBehaviour
     {
-    [SerializeField] private MonoBehaviour _massHolderSource;
-    [SerializeField] private ItemDetector _detector;
-    [SerializeField] private Absorber _absorber;
+        [SerializeField] private PlayerTier _tierHolder;
+        [SerializeField] private ItemDetector _detector;
+        [SerializeField] private Absorber _absorber;
+        [SerializeField] private AbsorptionFx _absorptionFx;
+        [SerializeField] private WeightPopup _weightPopup;
 
-    private PlayerTier _tierHolder;
+        public event Action<Items.Item> ItemCollected;
 
-    public event Action<Items.Item> ItemCollected;
-
-    private void Awake()
-    {
-        if (_massHolderSource.TryGetComponent(out PlayerTier massHolder) == false)
+        private void Awake()
         {
-            throw new InvalidOperationException(
-                $"Collector: {_massHolderSource.name} does not implement PlayerMass.");
+            if (_tierHolder == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: TierHolder is not assigned. Drag a PlayerTier component into the _tierHolder field.");
+            }
+
+            if (_detector == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Detector is not assigned. Drag an ItemDetector component into the _detector field.");
+            }
+
+            if (_absorber == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Absorber is not assigned. Drag an Absorber component into the _absorber field.");
+            }
         }
 
-        _tierHolder = massHolder;
-    }
-
-    private void OnEnable()
-    {
-        _detector.Detected += OnItemDetected;
-    }
-
-    private void OnDisable()
-    {
-        _detector.Detected -= OnItemDetected;
-    }
-
-    private async void OnItemDetected(Items.Item item)
-    {
-        if (item.Definition.Tier > _tierHolder.CurrentTier)
+        private void OnEnable()
         {
-            return;
+            _detector.Detected += OnItemDetected;
         }
 
-        item.Collect();
-
-        try
+        private void OnDisable()
         {
-            await _absorber.AbsorbAsync(item.transform, this.GetCancellationTokenOnDestroy());
-        }
-        catch (OperationCanceledException)
-        {
-            return;
+            _detector.Detected -= OnItemDetected;
         }
 
-        item.Shutdown();
-        ItemCollected?.Invoke(item);
-    }
+        private void OnItemDetected(Items.Item item)
+        {
+            if (item.Definition.Tier > _tierHolder.CurrentTier)
+            {
+                return;
+            }
+
+            CollectAsync(item).Forget();
+        }
+
+        private async UniTaskVoid CollectAsync(Items.Item item)
+        {
+            Vector3 itemPosition = item.transform.position;
+            int itemMass = item.Mass;
+
+            if (_absorptionFx != null)
+            {
+                _absorptionFx.Play(itemPosition);
+            }
+
+            if (_weightPopup != null)
+            {
+                _weightPopup.Show(itemPosition, itemMass);
+            }
+
+            item.Collect();
+
+            try
+            {
+                await _absorber.AbsorbAsync(item.transform, this.GetCancellationTokenOnDestroy());
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+            item.Shutdown();
+            ItemCollected?.Invoke(item);
+        }
     }
 }

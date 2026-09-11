@@ -61,26 +61,6 @@ namespace Player
             return 4f;
         }
 
-        public string GetTierLabelFor(ItemTier tier)
-        {
-            for (int i = 0; i < _sortedByMass.Count; i++)
-            {
-                if (_sortedByMass[i].Tier == tier)
-                {
-                    string label = _sortedByMass[i].Label;
-
-                    if (string.IsNullOrEmpty(label) == false)
-                    {
-                        return label;
-                    }
-
-                    return tier.ToString();
-                }
-            }
-
-            return tier.ToString();
-        }
-
         public float GetTierProgress(int mass)
         {
             float previousThresholdMass = 0f;

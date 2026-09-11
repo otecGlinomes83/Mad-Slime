@@ -38,6 +38,11 @@ namespace PlayerInput
             MoveInput = Vector2.zero;
         }
 
+        private void OnDestroy()
+        {
+            _inputActions.Dispose();
+        }
+
         private void OnAttractPerformed(InputAction.CallbackContext context)
         {
             AttractPerformed?.Invoke();

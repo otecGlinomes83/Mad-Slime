@@ -1,6 +1,7 @@
 using Collectables;
 using Interfaces;
 using Player;
+using System;
 using UnityEngine;
 
 namespace Skills
@@ -14,6 +15,29 @@ namespace Skills
         [SerializeField] private AttractableDetector _detector;
 
         public override SkillConfig Config => _config;
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            if (_config == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AttractConfig is not assigned. Drag an AttractConfig asset into the _config field.");
+            }
+
+            if (_playerTier == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PlayerTier is not assigned. Drag a PlayerTier component into the _playerTier field.");
+            }
+
+            if (_detector == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AttractableDetector is not assigned. Drag an AttractableDetector component into the _detector field.");
+            }
+        }
 
         protected override void OnEnable()
         {

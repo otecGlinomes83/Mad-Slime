@@ -1,24 +1,20 @@
 using System;
 using System.Collections.Generic;
-using Audio;
 using Game;
+using TMPro;
 using UnityEngine;
+using YG;
 
 namespace Skins
 {
-    public class ShopPanel : MonoBehaviour
+    public sealed class ShopPanel : MonoBehaviour
     {
         [SerializeField] private Transform _itemsParent;
-        [SerializeField] private SkinItemViewFactory _factory;
-        [SerializeField] private TMPro.TMP_Text _moneyText;
-        
+        [SerializeField] private ShopItemViewFactory _factory;
+        [SerializeField] private TMP_Text _moneyText;
+
         private readonly List<ShopItemView> _shopItems = new List<ShopItemView>();
         private Wallet _wallet;
-
-        private SelectedChecker _selectedChecker;
-        private AvailableChecker _availableChecker;
-        private SkinUnlocker _skinUnlocker;
-        private SkinSelector _skinSelector;
 
         private ShopItemView _selectedView;
 
@@ -33,14 +29,32 @@ namespace Skins
                 throw new ArgumentNullException(nameof(wallet));
             }
 
+            if (_itemsParent == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: ItemsParent is not assigned. Drag a Transform into the _itemsParent field.");
+            }
+
+            if (_factory == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Factory is not assigned. Drag a ShopItemViewFactory component into the _factory field.");
+            }
+
+            if (_moneyText == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: MoneyText is not assigned. Drag a TMP_Text into the _moneyText field.");
+            }
+
+            if (_wallet != null)
+            {
+                _wallet.BalanceChanged -= OnBalanceChanged;
+            }
+
             _wallet = wallet;
             _wallet.BalanceChanged += OnBalanceChanged;
             OnBalanceChanged(_wallet.Balance, _wallet.Balance);
-
-            _selectedChecker = new SelectedChecker();
-            _availableChecker = new AvailableChecker();
-            _skinUnlocker = new SkinUnlocker(wallet);
-            _skinSelector = new SkinSelector();
         }
 
         public void Show(IEnumerable<SkinItem> skinItems)
@@ -52,15 +66,11 @@ namespace Skins
                 ShopItemView view = _factory.Get(item, _itemsParent);
                 view.Click += OnItemClick;
 
-                _availableChecker.Visit(item);
-
-                if (_availableChecker.Result)
+                if (IsOpen(item) == true)
                 {
                     view.Unlock();
 
-                    _selectedChecker.Visit(item);
-
-                    if (_selectedChecker.Result)
+                    if (IsSelected(item) == true)
                     {
                         ApplySelection(view);
                     }
@@ -86,18 +96,18 @@ namespace Skins
             if (view.IsLock == false)
             {
                 ApplySelection(view);
+                SelectPersist(view.SkinItem);
                 return;
             }
 
-            _skinUnlocker.Visit(view.SkinItem);
-
-            if (_skinUnlocker.Result == false)
+            if (TryUnlock(view.SkinItem) == false)
             {
                 return;
             }
 
             ApplySelection(view);
             view.Unlock();
+            SelectPersist(view.SkinItem);
         }
 
         private void ApplySelection(ShopItemView view)
@@ -111,8 +121,53 @@ namespace Skins
             view.Highlight();
             view.Select();
             _selectedView = view;
+        }
 
-            _skinSelector.Visit(view.SkinItem);
+        private static bool IsOpen(SkinItem item)
+        {
+            return YG2.saves._openSkins.Contains(item.SkinType);
+        }
+
+        private static bool IsSelected(SkinItem item)
+        {
+            return YG2.saves.SelectedSkinType == item.SkinType;
+        }
+
+        private void SelectPersist(SkinItem item)
+        {
+            YG2.saves.SelectedSkinType = item.SkinType;
+
+            if (YG2.isSDKEnabled == true)
+            {
+                YG2.SaveProgress();
+            }
+        }
+
+        private bool TryUnlock(SkinItem item)
+        {
+            if (IsOpen(item) == true)
+            {
+                return true;
+            }
+
+            if (_wallet.Balance < item.Price)
+            {
+                return false;
+            }
+
+            if (item.Price > 0)
+            {
+                _wallet.Spend(item.Price);
+            }
+
+            YG2.saves._openSkins.Add(item.SkinType);
+
+            if (YG2.isSDKEnabled == true)
+            {
+                YG2.SaveProgress();
+            }
+
+            return true;
         }
 
         private void OnBalanceChanged(int previousBalance, int currentBalance)

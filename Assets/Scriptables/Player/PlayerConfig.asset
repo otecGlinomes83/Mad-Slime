@@ -15,3 +15,5 @@ MonoBehaviour:
   _baseMoveSpeed: 4
   _rotationSpeed: 420
   _moveSmoothTime: 0.12
+  _massPickupDivisor: 4
+  _absorptionDuration: 0.3

@@ -21,6 +21,11 @@ namespace ShapeFill
             _fillCounter = GetComponent<FillCounter>();
         }
 
+        private void OnEnable()
+        {
+            _shapeFiller.FillCompleted += OnFillCompleted;
+        }
+
         private void OnDisable()
         {
             _shapeFiller.FillCompleted -= OnFillCompleted;
@@ -28,8 +33,6 @@ namespace ShapeFill
 
         public void StartFill()
         {
-            _shapeFiller.FillCompleted += OnFillCompleted;
-
             _shapeFiller.Initialize();
             _gridBuilder.Build();
             _shapeFiller.BuildShape();

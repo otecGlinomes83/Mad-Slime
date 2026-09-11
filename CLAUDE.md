@@ -6,138 +6,97 @@ This file provides guidance to Claude Code (claude.ai/code) when working in this
 
 ## ⚠️ ПЕРЕД КАЖДЫМ ОТВЕТОМ — ПЕРЕЧИТАЙ ОБЯЗАТЕЛЬНО
 
-Перед **каждым** сообщением пользователя (каждым своим ответом) ты **обязан** перечитать:
-
 1. **`AI_RULES.md`** — канон стиля, нейминг, форматирование, запреты, UniTask-паттерны, чек-лист перед отдачей кода.
-2. **`AI_CONTEXT.md`** — текущее состояние проекта: что сделано в сессии, что готово, что не готово, тех. долг, GDD.
-
-Это не опционально. Свежий контекст сессии — в `AI_CONTEXT.md`. Глобальные правила — в `AI_RULES.md`. Без перечитывания ты работаешь вслепую.
-
-Если файла нет или он пустой — скажи об этом явно, не выдумывай правила.
+2. **`AI_CONTEXT.md`** — текущее состояние проекта, GDD.
+3. **`AI_NOTES.md`** — рабочий журнал AI-сессий: решения, открытые вопросы, статус. Дополняй его по ходу работы.
 
 ---
 
 ## Companion files (источники правды)
 
-- **`AI_RULES.md`** — стиль кода, нейминг, форматирование, запреты (`var`, комментарии, лямбды в `+=`, `!`, и т.д.), UniTask-паттерны, чек-лист перед отдачей кода.
-- **`AI_CONTEXT.md`** — состояние проекта, прогресс сессии, что сделано / не сделано, тех. долг, GDD.
+- **`AI_RULES.md`** — стиль кода, нейминг, форматирование, запреты (`var`, комментарии, лямбды в `+=`, `!`, и т.д.), UniTask-паттерны, чек-лист.
+- **`AI_CONTEXT.md`** — фактическое состояние кода, слабые места, GDD.
+- **`AI_NOTES.md`** — журнал сессий для следующего агента. Обновляй после значимых шагов.
 
-Не дублируй их содержимое в этом файле — ссылайся и перечитывай.
+Не дублируй их содержимое здесь.
 
 ---
 
 ## Project
 
 - **Engine:** Unity **2022.3.62f2 LTS**, 3D (low-poly arcade).
-- **Target:** mobile-first. Избегать GC-аллокаций, NonAlloc API, никакого LINQ в Update.
+- **Цель:** WebGL / Яндекс.Игры (YG2). В билде 3 сцены: `Game`, `Fill`, `Shop`.
+- **Стек:** VContainer (DI — норма проекта, см. `Assets/Scripts/DI/`), UniTask, New Input System, TextMeshPro, uGUI, YG2 (сейвы/реклама/лидерборд). Нет ECS/event bus/singleton'ов.
+- **Валидация — fail-fast:** класс получил невалид (null-зависимость, плохой аргумент) — сразу исключение (`InvalidOperationException` в `Awake` с подсказкой «Drag … into the _field field», `ArgumentOutOfRangeException` на аргументы). Молчаливых early-return на невалиде не писать.
 - **IDE:** JetBrains Rider.
-- **Стек:** UniTask (Cysharp) для async, New Input System, TextMeshPro. Нет DI / ECS / event bus / singleton-ов.
 
 ## Build / run
 
-- Нет CLI-скриптов сборки — Unity Editor делает build (File → Build Settings, Android/iOS).
-- Открывать проект строго через Unity 2022.3.62f2 (см. `ProjectSettings/ProjectVersion.txt`).
-- Тестовой инфраструктуры нет: ни `*.asmdef` с тестами, ни EditMode/PlayMode папок. `Test Framework` пакет в кэше, но не настроен.
-- `.csproj` / `.sln` генерятся Unity — не редактировать руками. `Mad-Slime.sln` лежит в корне (см. git tracking).
-
----
+- Сборка через Unity Editor (File → Build Settings, WebGL/Яндекс).
+- Открывать проект строго через Unity 2022.3.62f2 (`ProjectSettings/ProjectVersion.txt`).
+- Локальная проверка компиляции без редактора (если проект не открыт в Editor):
+  `~/Unity/Hub/Editor/2022.3.62f2/Editor/Unity -batchmode -quit -nographics -projectPath <корень> -logFile <лог>`
+- Тестовой инфраструктуры нет. `.csproj`/`.sln` генерятся Unity — не редактировать.
 
 ## Архитектура (big picture)
 
-### Принципы
-- **SRP жёсткий.** Один класс — одна ответственность — один файл. `Mover` не знает про `Rotator`, `Health` не знает про `Healer`, `Chaser` не знает про `Attacker`.
-- **Композиция через `[RequireComponent]` + `GetComponent` в `Awake`.** Не наследование, не сервис-локатор, не singleton.
-- **Зависимости явно.** Дизайнерские значения: `[SerializeField] private`. Рантайм-зависимости: либо `[RequireComponent]`, либо Setup-метод.
-- **События — только `event Action<T>`.** Никаких `UnityEvent`. `OnEnable` / `OnDisable` пара, никаких анонимных лямбд в `+=`.
-- **Источник истины в одном месте.** UI читает через события, не дёргает состояние компонентов напрямую.
-
-### Ключевые абстракции
-
-| Абстракция | Файл | Роль |
-|---|---|---|
-| `Health` | `Assets/Scripts/Health/Health.cs` | HP + i-frames. События: `Damaged`, `Died`, `ValueChanged`, `InvulnerabilityEnded`. |
-| `Healer` | `Assets/Scripts/Health/Healer.cs` | Реген **после** окончания i-frames. Подписан на `InvulnerabilityEnded`, не на `Damaged`. |
-| `Timer` | `Assets/Scripts/Game/Timer.cs` | Универсальный таймер. `Setup(duration)` → `StartCount()` / `Stop()` / `Continue()`. События: `Ticked(float)`, `Finished`. UniTask-цикл с `GetCancellationTokenOnDestroy()`. |
-| `ITarget` | `Assets/Scripts/Interfaces/ITarget.cs` | Маркер цели: `{ Transform, Health }`. Реализует `Player`. |
-| `TargetSensor` | `Assets/Scripts/Detectors/TargetSensor.cs` | OverlapSphereNonAlloc по `LayerMask` → ищет `ITarget` → события `TargetEntered` / `TargetExited`. |
-| `GenericOverlapDetector<T>` | `Assets/Scripts/Detectors/GenericOverlapDetector.cs` | Базовый детектор по `T`, кэшированный `Collider[32]`. Наследники: `ItemDetector`, `AttractableDetector`. |
-| `Mover` | `Assets/Scripts/Movement/Mover.cs` | Движение через `CharacterController.SimpleMove` + `Vector3.SmoothDamp`. Принимает 3D-вектор произвольной длины, нормализует сам. |
-| `Rotator` | `Assets/Scripts/Movement/Rotator.cs` | Поворот **только по Y** (обнуляет `direction.y` перед `LookRotation`). Mover получает полный 3D-вектор как раньше. |
-| `Player` | `Assets/Scripts/Player/Player.cs` | Оркестратор: `[RequireComponent]` на Mover/Rotator/PlayerMass/Health/Healer. Читает input, конвертит в world-space через камеру. |
-
-### Цепочки (порядок исполнения)
-
-**Сбор предмета:**
-`ItemDetector` (GenericOverlap) → `Collector.ItemCollected` → `Player.OnItemCollected` → `Inventory.Add` + `PlayerMass.Add` → `PlayerScaler` визуально растёт.
-
-**Получение урона + реген:**
-`Attacker` (враг, `TargetSensor` + `Timer` cooldown) → `target.Health.TakeDamage(1)` → `i-frames 0.5s` → `Timer.Finished` → `Health.InvulnerabilityEnded` → `Healer.StartRegen` (5s) → `Health.Heal(toMax)`.
-
-**Движение игрока:**
-`PlayerInputReader.MoveInput (Vector2)` → `Player.ConvertToWorldDirection` (через камеру) → `_mover.Move(direction)` + `_rotator.Rotate(direction)`.
-
-**Поведение врага:**
-`Enemy` (Wander) → при `TargetEntered` → `Chaser.Tick(playerPos)` → при дистанции атаки → `Attacker.TryAttack` (cooldown через `Timer`).
-
-**Добыча (Prey):** симметрично врагу, но `Fleer` (убегает по `-direction`).
+### DI (VContainer)
+- `ProjectLifetimeScope` — корневой (RootLifetimeScope в `Assets/Scriptables/DI/VContainerSettings.asset`, грузится из preloadedAssets, DontDestroyOnLoad). Владеет `PlayerProgress` (шов над `YG2.saves`) и `LevelsCatalog`.
+- `GameLifetimeScope` (сцена Game), `FillLifetimeScope` (сцена Fill), `ShopLifetimeScope` (компонент в `Shop.prefab`). Скоупы без явного родителя автоматически цепляются к RootLifetimeScope.
+- Сценовые компоненты получают зависимости через `[Inject] Construct(...)` + `builder.RegisterComponent(...)`; обязательные ссылки скоупа валидируются в `Configure`.
 
 ### Структура `Assets/Scripts/`
 
 ```
-Camera/         — CameraFollow
-Collectables/   — Item, ItemDefinition (SO)
-Collector/      — Collector, CollectableAttractor, ItemDetector
-Combat/         — Attacker.cs (⚠ namespace: NPC.Enemy, см. тех. долг)
-Detectors/      — GenericOverlapDetector, TargetSensor, AttractableDetector
-Game/           — SessionHandler, Timer
-Health/         — Health, Healer
-Interfaces/     — ITarget, IAttractable, IMassHolder, ISpawner, IState (unused)
-Inventory/      — Inventory
-Movement/       — Mover, Rotator
-NPC/Enemy/      — Enemy, Chaser, Attacker
-NPC/Prey/       — Prey, Fleer
-Player/         — Player, PlayerMass, PlayerScaler, PlayerInputReader
-PlayerInput/    — inputActions, PlayerInputActions, PlayerInputReader
-Quota/          — QuotaEntry, QuotaTreker, PropsBank
-Spawners/       — GenericSpawner, EnemySpawner, ItemSpawner
-UI/             — HealthUI, TimerUI
+Audio/          — AudioMixerController, AudioSettingsPanel, SoundLimiter, one-shot плееры
+Camera/         — CameraFollow, CameraImpulse (namespace CameraSystem)
+Collectables/   — Collector, Absorber, ItemDetector, AttractableDetector
+Detection/      — GenericOverlapDetector<T> (радиус растёт с тиром игрока)
+DI/             — 4 LifetimeScope
+Game/           — GameplaySessionHandler, FillSessionHandler, PlayerProgress, Wallet, Rewarder,
+                  Pauser, LevelTransitor, AdScheduler, LeaderboardReporter, SessionStateLogger
+Game/Level/     — LevelGenerator, QuotaGenerator, LevelProgress, ItemPool, ItemSize,
+                  LevelConfigResolver, LayoutPreviewDrawer
+Health/         — (пусто в v2: система урона вырезана)
+Interfaces/     — IAttractable, IMassHolder
+Item/           — Item (пул: Initialize/Collect/Shutdown)
+Levels/         — (пусто: карта уровней вырезана)
+Movement/       — Mover (transform-движение + MoveChecker), Rotator
+Player/         — Player, PlayerTier, LevelScaler, TierResolver, SkinApplier
+PlayerInput/    — PlayerInputReader + PlayerInputActions (автоген, не править руками)
+Quota/          — QuotaEntry (остаток квоты — в Game/Level/LevelProgress)
+Saves/          — SavesYG partial (YG-конвенция; имена полей = JSON-ключи, не переименовывать)
+Scriptables/    — Levels/ (LevelsCatalog, LevelConfig, LayoutSet, SpawnZone...), Skills/, Tier/,
+                  Items/, Player/, Skins/, Shop/, Ads/, Rewards/, Camera/, DI/VContainerSettings
+ShapeFill/      — ShapeFillOrchestrator, ShapeFiller, GridBuilder, CubeSpawner, FlyingCube, FillCounter
+Shop/           — Shop, ShopPanel, ShopItemView, ShopItemViewFactory, ModelPlacer
+Skills/         — BaseSkill (FSM active/cooldown), AttractSkill, SkillHandler, SkillInputBinder, SkillUnlocker
+UI/             — HUD/ (QuotaUI, GrowthBarView, MassUI, TimerUI, LevelLabelUI), Windows/ (BaseWindow,
+                  PauseMenu, WinMenu, FailMenu, LeaderboardMenu, LevelRewardPopup), Spawners/
+                  (GameplayUIFabric, FillUIFabric), Common/ (ValueView<T>, IntValueView), LookAtCamera
 ```
 
-### Editor
+### Ключевые цепочки
 
-- `Assets/Editor/ItemIconGenerator/` — утилита для генерации иконок предметов через рендер в текстуру.
+**Уровень:** `GameLifetimeScope` → `GameplaySessionHandler` (пауза на старте, старт по первому вводу, `YG2.GameplayStart`) → `LevelGenerator` генерит предметы по `LevelConfig` (тиры, зоны, quota) → сбор: `ItemDetector` → `Collector` (анимация `Absorber`) → `Player.OnItemCollected` → `LevelProgress.RegisterCollected` + `PlayerTier.Add` → `LevelScaler` растит модель/коллайдер, `GenericOverlapDetector` растит радиус → квота → `LoadFill`.
 
----
+**Fill-сессия:** `FillSessionHandler` → `ShapeFillOrchestrator` (кубы по текстуре) → `FillCounter` (процент от `LevelProgress.FillPercent`) → `Rewarder` → `Wallet` (+`PlayerProgress.Save()`) → Win/Fail меню → `LoadGame` (level++) → `AdScheduler` (интерстишл) / `LeaderboardReporter`.
 
-## Известные разрывы (НЕ реализовано, подробности в `AI_CONTEXT.md`)
+**Магазин:** `Shop.prefab` инстансится в сцене Shop; `ShopLifetimeScope` инжектит `Wallet`; `Shop.OnEnable` (или `YG2.onGetSDKData`) → `ShopPanel.Initialize/Show` → выбор/покупка скина → `SkinApplier` применяет выбранный в Game-сцене.
 
-Эти места — источник следующих задач. Если доделываешь, начни с них.
+## Известные факты / открытые вопросы (2026-09-10)
 
-- **Квота не подключена.** `QuotaTreker` есть, `ItemDefinition` (SO) есть, но `Collector.ItemCollected` не дёргает квоту.
-- **Нет Game Over / смерти.** `Health.Died` ни на что не подписан, экран проигрыша отсутствует.
-- **Враги бессмертны.** Нет урона по врагам, нет `DeathZone`.
-- **Нет префабов и ассетов.** Пустые `Prefabs/`, `Materials/`, `Meshes/`. ScriptableObject-ассеты `ItemDefinition` отсутствуют. Только `Test.unity` сцена.
-- **UI минимален.** Только `HealthUI` + `TimerUI`. Нет Win/Lose, паузы, меню, HUD квоты/уровня, мобильного джойстика.
-- **Метапрогрессия отсутствует** целиком: валюта, навыки (3 ветки по GDD), ребитх, сохранения, скины.
-
----
-
-## Тех. долг (см. `AI_CONTEXT.md`)
-
-- `IState` определён, но не используется (заготовка под FSM).
-- `Wander` / `Chaser` / `Fleer` в разных неймспейсах: `Chaser` в глобальном, `Wander` / `Fleer` в `NPC.Prey`. Унифицировать.
-- Два `Attacker.cs`: один в `Combat/` (глобальный namespace, не подключён), второй в `NPC/Enemy/` (используется). Удалить лишний.
-- `PlayerMass.Setup()` дёргает `Changed?.Invoke(_defaultMass, _mass)` — странный контракт для подписчиков.
-- `Inventory` подключён к `Player`, но без UI.
-
----
+- **Стены:** MoveChecker-маска = только слой «Collectable»; борта уровня на Default, и Mover двигает transform в обход физики — игрок проходит сквозь них. Это осознанно НЕ менялось — решение за владельцем (нужны слой в маске + блок не-attractable хитов в `IsAbleToMove`).
+- **Реклама/лидерборд:** defines `RewardedAdv_yg`/`InterstitialAdv_yg`/`Leaderboard_yg` не объявлены → в сборке `AdScheduler`/`LeaderboardReporter` — no-op. Проверить настройки YG2-hub.
+- **Локализации нет** (платформа мультиязычная).
+- `UniTask` в manifest.json без пина коммита — риск плавающего API.
+- Тех. долг/вопросы — в `AI_CONTEXT.md` и `AI_NOTES.md`.
 
 ## Чего не делать
 
-- **Не создавай `Manager` / `Handler` / `Utility` / `Helper`** без явной причины — см. `AI_RULES.md`.
-- **Не дёргай абстракции раньше времени.** YAGNI: нет квоты — нет `IQuotaService`, нет метапрогрессии — нет `IMetaProgressionProvider`.
-- **Не смешивай NPC-неймспейсы.** Новый NPC — клади в `NPC/<Role>/` и используй namespace, как у соседей.
-- **Не используй `static` состояние** (кроме Editor-инициализаторов).
-- **Не подписывайся анонимной лямбдой** на событие — только именованный метод + `OnEnable` / `OnDisable` пара.
-- **Не выдумывай Unity API** — ищи в актуальной доке или `Library/PackageCache/`. Несуществующих оверрайдов / методов не бывает.
-- **Не лезь в `Library/`, `obj/`, `UserSettings/`, `Logs/`** — это не наш код, и оно в `.gitignore`.
+- **Не создавать `Manager` / `Handler` / `Utility` / `Helper`** без явной причины — см. `AI_RULES.md`.
+- **Не смешивать стили DI и ручных ссылок без причины:** домен — через `[Inject]`, периферия — `[SerializeField]`.
+- **Не переименовывать поля `SavesYG`** (JSON-ключи живых сейвов) и автоген `PlayerInputActions.cs`.
+- **Не подписываться анонимной лямбдой** на событие — только именованный метод + `OnEnable`/`OnDisable`.
+- **Не выдумывать Unity/VContainer API** — проверяй по доке или `Library/PackageCache/`.
+- **Не лезь в `Library/`, `obj/`, `UserSettings/`, `Logs/`, `Temp/`.**

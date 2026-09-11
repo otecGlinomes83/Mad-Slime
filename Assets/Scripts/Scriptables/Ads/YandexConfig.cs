@@ -2,13 +2,20 @@ using UnityEngine;
 
 namespace Scriptables
 {
-    [CreateAssetMenu(menuName = "Mad Slime/Ads Config", fileName = "NewAdsConfig")]
-    public sealed class AdsConfig : ScriptableObject
+    [CreateAssetMenu(menuName = "Mad Slime/Yandex Config", fileName = "NewYandexConfig")]
+    public sealed class YandexConfig : ScriptableObject
     {
-        [SerializeField] private int _interstitialEveryLevels = 2;
+        [Header("Ads")]
+        [SerializeField, Min(1)] private int _interstitialEveryLevels = 2;
         [SerializeField] private string _doubleRewardId = "DoubleReward";
+        [SerializeField] private string _nextLevelRewardId = "NextLevel";
 
-        public int InterstitialEveryLevels => _interstitialEveryLevels;
+        [Header("Leaderboard")]
+        [SerializeField] private string _leaderboardName = "max_level";
+
+        public int InterstitialEveryLevels => Mathf.Max(1, _interstitialEveryLevels);
         public string DoubleRewardId => _doubleRewardId;
+        public string NextLevelRewardId => _nextLevelRewardId;
+        public string LeaderboardName => _leaderboardName;
     }
 }

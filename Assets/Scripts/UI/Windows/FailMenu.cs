@@ -1,4 +1,4 @@
-﻿using Game;
+using Game;
 using System;
 using TMPro;
 using UnityEngine;
@@ -6,44 +6,59 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class FailMenu : MonoBehaviour
+    public sealed class FailMenu : BaseWindow
     {
         [SerializeField] private TMP_Text _moneyCount;
-
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _nextLevelButtonForADS;
 
-        [SerializeField] private Pauser _pauser;
-
-        private Action _requestNextLevelAction;
+        private Action _nextLevelAction;
         private Action _restartAction;
 
         public void Initialize(int moneyCount, Pauser pauser, Action nextLevelAction, Action restartAction)
         {
+            if (_restartButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RestartButton is not assigned. Drag a Button into the _restartButton field.");
+            }
+
+            if (_nextLevelButtonForADS == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: NextLevelButtonForADS is not assigned. Drag a Button into the _nextLevelButtonForADS field.");
+            }
+
+            if (_moneyCount == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: MoneyCount is not assigned. Drag a TMP_Text into the _moneyCount field.");
+            }
+
+            _nextLevelAction = nextLevelAction;
+            _restartAction = restartAction;
+
+            _restartButton.onClick.RemoveListener(RequestRestart);
+            _nextLevelButtonForADS.onClick.RemoveListener(RequestNextLevel);
             _restartButton.onClick.AddListener(RequestRestart);
             _nextLevelButtonForADS.onClick.AddListener(RequestNextLevel);
 
-            _requestNextLevelAction = nextLevelAction;
-            _restartAction = restartAction;
-
-            _pauser = pauser;
-
-            _pauser.RequestPause();
-
             _moneyCount.text = $"{moneyCount}";
+
+            Initialize(pauser);
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
-            _restartButton.onClick.RemoveListener(RequestRestart);
-            _nextLevelButtonForADS.onClick.RemoveListener(RequestNextLevel);
+            _restartButton?.onClick.RemoveListener(RequestRestart);
+            _nextLevelButtonForADS?.onClick.RemoveListener(RequestNextLevel);
 
-            _pauser.RequestResume();
+            base.OnDisable();
         }
 
         private void RequestNextLevel()
         {
-            _requestNextLevelAction?.Invoke();
+            _nextLevelAction?.Invoke();
             Close();
         }
 

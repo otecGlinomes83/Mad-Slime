@@ -1,4 +1,4 @@
-﻿using Game;
+using Game;
 using System;
 using TMPro;
 using UnityEngine;
@@ -6,54 +6,66 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public sealed class WinMenu : MonoBehaviour
+    public sealed class WinMenu : BaseWindow
     {
         [SerializeField] private TMP_Text _moneyCount;
         [SerializeField] private Button _nextLevelButton;
         [SerializeField] private Button _doubleRewardButton;
 
-        [SerializeField] private Pauser _pauser;
-
-        private Action _requestNextLevelAction;
+        private Action _nextLevelAction;
         private Action _doubleRewardAction;
 
         public void Initialize(int moneyCount, Pauser pauser, Action nextLevelAction, Action doubleRewardAction)
         {
-            _requestNextLevelAction = nextLevelAction;
+            if (_nextLevelButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: NextLevelButton is not assigned. Drag a Button into the _nextLevelButton field.");
+            }
+
+            if (_moneyCount == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: MoneyCount is not assigned. Drag a TMP_Text into the _moneyCount field.");
+            }
+
+            _nextLevelAction = nextLevelAction;
             _doubleRewardAction = doubleRewardAction;
-            _pauser = pauser;
 
-            _nextLevelButton.onClick.AddListener(RequestNextLevel);
-
-            if (_doubleRewardButton != null && doubleRewardAction != null)
-            {
-                _doubleRewardButton.onClick.AddListener(RequestDoubleReward);
-            }
-            else if (_doubleRewardButton != null)
-            {
-                _doubleRewardButton.gameObject.SetActive(false);
-            }
-
-            _pauser.RequestPause();
-
-            _moneyCount.text = $"{moneyCount}";
-        }
-
-        private void OnDisable()
-        {
             _nextLevelButton.onClick.RemoveListener(RequestNextLevel);
+            _nextLevelButton.onClick.AddListener(RequestNextLevel);
 
             if (_doubleRewardButton != null)
             {
                 _doubleRewardButton.onClick.RemoveListener(RequestDoubleReward);
+
+                if (doubleRewardAction != null)
+                {
+                    _doubleRewardButton.onClick.AddListener(RequestDoubleReward);
+                    _doubleRewardButton.gameObject.SetActive(true);
+                }
+                else
+                {
+                    _doubleRewardButton.gameObject.SetActive(false);
+                }
             }
 
-            _pauser.RequestResume();
+            _moneyCount.text = $"{moneyCount}";
+
+            Initialize(pauser);
+        }
+
+        protected override void OnDisable()
+        {
+            _nextLevelButton?.onClick.RemoveListener(RequestNextLevel);
+            _doubleRewardButton?.onClick.RemoveListener(RequestDoubleReward);
+
+            base.OnDisable();
         }
 
         private void RequestNextLevel()
         {
-            _requestNextLevelAction?.Invoke();
+            _nextLevelAction?.Invoke();
             Close();
         }
 

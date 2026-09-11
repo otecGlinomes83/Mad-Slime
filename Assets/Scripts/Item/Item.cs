@@ -1,4 +1,3 @@
-using System;
 using Interfaces;
 using Skills;
 using UnityEngine;
@@ -14,10 +13,8 @@ namespace Items
 
         public ItemDefinition Definition => _definition;
         public int Mass => _definition.BaseMass;
-        public ItemTier Tier =>Definition.Tier;
+        public ItemTier Tier => Definition.Tier;
         public Transform Self => transform;
-
-        public event Action Collected;
 
         private void Awake()
         {
@@ -34,7 +31,6 @@ namespace Items
         public void Collect()
         {
             _collider.enabled = false;
-            Collected?.Invoke();
         }
 
         public void Shutdown()

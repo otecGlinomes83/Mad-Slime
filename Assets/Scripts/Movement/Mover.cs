@@ -63,7 +63,7 @@ namespace Movement
                 _smoothTime
             );
 
-            if (_moveChecker.IsAbleToMove(transform.position, nextVelocity)==false)
+            if (_moveChecker.IsAbleToMove(transform.position, nextVelocity) == false)
             {
                 _currentVelocity = Vector3.zero;
                 _velocityRef = Vector3.zero;

@@ -835,6 +835,7 @@ GameObject:
   - component: {fileID: 1495407475}
   - component: {fileID: 1495407474}
   - component: {fileID: 1495407476}
+  - component: {fileID: 1495407499}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -875,6 +876,7 @@ MonoBehaviour:
   _rewarder: {fileID: 1495407475}
   _pauser: {fileID: 1495407473}
   _adScheduler: {fileID: 1495407476}
+  _leaderboardReporter: {fileID: 1495407499}
 --- !u!4 &1495407472
 Transform:
   m_ObjectHideFlags: 0
@@ -1483,3 +1485,17 @@ SceneRoots:
   - {fileID: 1495407472}
   - {fileID: 6339976280050129450}
   - {fileID: 279298516}
+
+--- !u!114 &1495407499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1495407469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c966f3bb1184cc54fb8104b3fffda38e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _config: {fileID: 11400000, guid: b59c6a2894f8674e08f7c3251741fb73, type: 2}

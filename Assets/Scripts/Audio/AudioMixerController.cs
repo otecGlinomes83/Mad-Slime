@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
 using YG;
@@ -10,6 +12,7 @@ namespace Audio
         private const string MusicVolumeParam = "MusicVolume";
         private const string SfxVolumeParam = "SFXVolume";
         private const float MinLinearGuard = 0.0001f;
+        private const int SaveDelayMilliseconds = 500;
 
         [SerializeField] private AudioMixer _mixer;
         [SerializeField] private AudioMixerGroup _musicGroup;
@@ -17,7 +20,7 @@ namespace Audio
 
         private float _musicVolume01;
         private float _sfxVolume01;
-        private bool _isReady;
+        private CancellationTokenSource _saveCancellationTokenSource;
 
         public float MusicVolume => _musicVolume01;
         public float SFXVolume => _sfxVolume01;
@@ -33,13 +36,13 @@ namespace Audio
             if (_musicGroup == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Music AudioMixerGroup is not assigned.");
+                    $"{name}: Music AudioMixerGroup is not assigned. Drag a group into the _musicGroup field.");
             }
 
             if (_sfxGroup == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SFX AudioMixerGroup is not assigned.");
+                    $"{name}: SFX AudioMixerGroup is not assigned. Drag a group into the _sfxGroup field.");
             }
 
             _musicVolume01 = YG2.saves.musicVolume;
@@ -49,7 +52,7 @@ namespace Audio
         private void OnEnable()
         {
             YG2.onGetSDKData += OnSavesLoaded;
-            TryApplyFromSaves();
+            ApplyFromSaves();
         }
 
         private void OnDisable()
@@ -57,55 +60,83 @@ namespace Audio
             YG2.onGetSDKData -= OnSavesLoaded;
         }
 
-        private void OnSavesLoaded()
+        private void OnDestroy()
         {
-            TryApplyFromSaves();
+            CancelDelayedSave();
         }
 
-        private void TryApplyFromSaves()
+        private void OnSavesLoaded()
         {
-            if (YG2.isSDKEnabled == false)
-            {
-                return;
-            }
+            ApplyFromSaves();
+        }
 
+        private void ApplyFromSaves()
+        {
             _musicVolume01 = YG2.saves.musicVolume;
             _sfxVolume01 = YG2.saves.sfxVolume;
 
             ApplyMusic();
             ApplySFX();
-
-            _isReady = true;
         }
 
         public void SetMusicVolume(float volume01)
         {
-            if (_isReady == false)
-            {
-                return;
-            }
-
             float clamped = Mathf.Clamp01(volume01);
             _musicVolume01 = clamped;
             YG2.saves.musicVolume = clamped;
 
             ApplyMusic();
-            YG2.SaveProgress();
+            ScheduleSave();
         }
 
         public void SetSFXVolume(float volume01)
         {
-            if (_isReady == false)
-            {
-                return;
-            }
-
             float clamped = Mathf.Clamp01(volume01);
             _sfxVolume01 = clamped;
             YG2.saves.sfxVolume = clamped;
 
             ApplySFX();
-            YG2.SaveProgress();
+            ScheduleSave();
+        }
+
+        private void ScheduleSave()
+        {
+            CancelDelayedSave();
+
+            _saveCancellationTokenSource = new CancellationTokenSource();
+            SaveDelayedAsync(_saveCancellationTokenSource.Token).Forget();
+        }
+
+        private async UniTaskVoid SaveDelayedAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                await UniTask.Delay(SaveDelayMilliseconds, cancellationToken: cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+            _saveCancellationTokenSource?.Dispose();
+            _saveCancellationTokenSource = null;
+
+            if (YG2.isSDKEnabled == true)
+            {
+                YG2.SaveProgress();
+            }
+        }
+
+        private void CancelDelayedSave()
+        {
+            if (_saveCancellationTokenSource == null)
+            {
+                return;
+            }
+
+            _saveCancellationTokenSource.Cancel();
+            _saveCancellationTokenSource.Dispose();
+            _saveCancellationTokenSource = null;
         }
 
         private void ApplyMusic()

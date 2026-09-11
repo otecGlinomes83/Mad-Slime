@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3765916075264634475}
   - component: {fileID: 8151827054766893247}
   - component: {fileID: 5258739084797939441}
+  - component: {fileID: 7389000000000000001}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -108,7 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec73ee6d56624db0bd5cff816fb1911d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shopItemViewPrefab: {fileID: 2164479651705539539, guid: c4494d4242e1f8543a3c14c902ea7517, type: 3}
+  _shopItemViewPrefab: {fileID: 2164479651705539539, guid: c4494d4242e1f8543a3c14c902ea7517, type: 3}
 --- !u!1 &594390965558361133
 GameObject:
   m_ObjectHideFlags: 0
@@ -1260,3 +1261,20 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1468984895069793039, guid: 180c2a16271d0ac49949744470fb7287, type: 3}
   m_PrefabInstance: {fileID: 3035194872005125860}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7389000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292216850913975643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 738b9e553ff52cd488cfc10cd7b58702, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: 
+  autoRun: 1
+  autoInjectGameObjects: []
+  _wallet: {fileID: 2209933226809809697}

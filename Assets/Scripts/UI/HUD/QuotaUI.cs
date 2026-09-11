@@ -25,6 +25,21 @@ namespace UI
             _levelProgress = levelProgress;
         }
 
+        private void Awake()
+        {
+            if (_platePrefab == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PlatePrefab is not assigned. Drag a QuotaPlateUI prefab into the _platePrefab field.");
+            }
+
+            if (_container == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Container is not assigned. Drag a RectTransform into the _container field.");
+            }
+        }
+
         private void OnEnable()
         {
             SubscribeIfNeeded();

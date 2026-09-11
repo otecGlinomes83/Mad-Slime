@@ -7,28 +7,84 @@ namespace Game
     [CustomEditor(typeof(LayoutPreviewDrawer))]
     public sealed class LayoutPreviewDrawerEditor : Editor
     {
-        private void OnSceneGUI()
+        private int _handleLayoutIndex;
+
+        public override void OnInspectorGUI()
         {
+            DrawDefaultInspector();
+
             LayoutPreviewDrawer drawer = (LayoutPreviewDrawer)target;
 
-            if (drawer.Catalog == null || drawer.LevelGenerator == null)
+            if (drawer.CustomLayout != null)
             {
+                EditorGUILayout.HelpBox(
+                    $"Scene handles edit Custom Layout ('{drawer.CustomLayout.name}'). Clear the Custom Layout field to edit catalog layouts by index.",
+                    MessageType.Info);
                 return;
             }
 
-            if (drawer.Catalog.Ranges.Count == 0)
+            if (drawer.Catalog == null || drawer.Resolver == null)
             {
                 return;
             }
 
             LevelConfig config = drawer.Resolver.GetConfigFor(drawer.PreviewLevel);
 
-            if (config == null || config.Layout == null)
+            if (config == null || config.Layouts.Count == 0)
             {
                 return;
             }
 
-            SerializedObject layoutSetObject = new SerializedObject(config.Layout);
+            _handleLayoutIndex = Mathf.Clamp(
+                EditorGUILayout.IntField("Handle Layout Index", _handleLayoutIndex),
+                0,
+                config.Layouts.Count - 1);
+
+            LayoutSet selected = config.Layouts[_handleLayoutIndex];
+
+            if (selected != null)
+            {
+                EditorGUILayout.HelpBox(
+                    $"Scene handles edit layout #{_handleLayoutIndex} ('{selected.name}'). Assign a Custom Layout to edit it directly.",
+                    MessageType.Info);
+            }
+        }
+
+        private void OnSceneGUI()
+        {
+            LayoutPreviewDrawer drawer = (LayoutPreviewDrawer)target;
+
+            if (drawer.LevelGenerator == null)
+            {
+                return;
+            }
+
+            LayoutSet layout = drawer.CustomLayout;
+
+            if (layout == null)
+            {
+                if (drawer.Catalog == null || drawer.Catalog.Ranges.Count == 0)
+                {
+                    return;
+                }
+
+                LevelConfig config = drawer.Resolver.GetConfigFor(drawer.PreviewLevel);
+
+                if (config == null || config.Layouts.Count == 0)
+                {
+                    return;
+                }
+
+                int layoutIndex = Mathf.Clamp(_handleLayoutIndex, 0, config.Layouts.Count - 1);
+                layout = config.Layouts[layoutIndex];
+
+                if (layout == null)
+                {
+                    return;
+                }
+            }
+
+            SerializedObject layoutSetObject = new SerializedObject(layout);
             SerializedProperty zonesProperty = layoutSetObject.FindProperty("_zones");
 
             if (zonesProperty == null)
@@ -61,7 +117,7 @@ namespace Game
 
             EditorGUI.BeginChangeCheck();
 
-            var fmh_66_17_639239626260191676 = Quaternion.identity; Vector3 newWorldCenter = Handles.FreeMoveHandle(
+            Vector3 newWorldCenter = Handles.FreeMoveHandle(
                 worldCenter,
                 handleSize,
                 Vector3.one * 0.5f,

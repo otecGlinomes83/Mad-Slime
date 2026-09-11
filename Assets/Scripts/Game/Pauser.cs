@@ -14,11 +14,7 @@ namespace Game
         public void RequestPause()
         {
             _pauseRequestCount++;
-
-            if (_pauseRequestCount >= 1)
-            {
-                Time.timeScale = 0f;
-            }
+            Time.timeScale = 0f;
         }
 
         public void RequestResume()

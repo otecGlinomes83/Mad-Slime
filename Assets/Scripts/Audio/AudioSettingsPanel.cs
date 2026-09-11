@@ -53,6 +53,9 @@ namespace Audio
             _musicSlider.maxValue = 1f;
             _sfxSlider.maxValue = 1f;
 
+            _musicSlider.onValueChanged.RemoveListener(OnMusicSliderChanged);
+            _sfxSlider.onValueChanged.RemoveListener(OnSfxSliderChanged);
+
             _musicSlider.value = _mixerController.MusicVolume;
             _sfxSlider.value = _mixerController.SFXVolume;
 

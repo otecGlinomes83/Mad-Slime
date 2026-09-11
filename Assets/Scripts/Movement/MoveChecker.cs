@@ -1,48 +1,66 @@
 using Interfaces;
 using Player;
+using System;
 using UnityEngine;
 
-public class MoveChecker : MonoBehaviour
+namespace Movement
 {
-    [SerializeField] private LayerMask _layerMask;
-    [SerializeField] private PlayerTier _playerTier;
-    [SerializeField] private CapsuleCollider _playerCollider;
-
-    private Vector3 _lastPosition;
-    private Vector3 _lastVelocity;
-
-    public bool IsAbleToMove(Vector3 currentPosition, Vector3 velocity)
+    public sealed class MoveChecker : MonoBehaviour
     {
-        _lastPosition = currentPosition;
-        _lastVelocity = velocity;
+        [SerializeField] private LayerMask _layerMask;
+        [SerializeField] private PlayerTier _playerTier;
+        [SerializeField] private CapsuleCollider _playerCollider;
 
-        Vector3 direction = velocity.normalized;
-        float distance = velocity.magnitude * Time.deltaTime;
+        private Vector3 _lastPosition;
+        private Vector3 _lastVelocity;
 
-        if (Physics.SphereCast(currentPosition, _playerCollider.radius, direction, out RaycastHit hitInfo, distance, _layerMask))
+        private void Awake()
         {
-            if (hitInfo.collider.gameObject.TryGetComponent(out IAttractable attractable))
+            if (_playerTier == null)
             {
-                if (attractable.Tier > _playerTier.CurrentTier)
-                {
-                    return false;
-                }
+                throw new InvalidOperationException(
+                    $"{name}: PlayerTier is not assigned. Drag a PlayerTier component into the _playerTier field.");
+            }
+
+            if (_playerCollider == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PlayerCollider is not assigned. Drag a CapsuleCollider into the _playerCollider field.");
             }
         }
 
-        return true;
-    }
+        public bool IsAbleToMove(Vector3 currentPosition, Vector3 velocity)
+        {
+            _lastPosition = currentPosition;
+            _lastVelocity = velocity;
 
-    private void OnDrawGizmos()
-    {
-        Vector3 endPosition = _lastPosition + _lastVelocity;
+            Vector3 direction = velocity.normalized;
+            float distance = velocity.magnitude * Time.deltaTime;
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(endPosition,  _playerCollider.radius);
+            if (Physics.SphereCast(currentPosition, _playerCollider.radius, direction, out RaycastHit hitInfo, distance, _layerMask) == false)
+            {
+                return true;
+            }
 
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(_lastPosition,  _playerCollider.radius);
+            if (hitInfo.collider.gameObject.TryGetComponent(out IAttractable attractable) == false)
+            {
+                return false;
+            }
 
-        Gizmos.DrawLine(_lastPosition, endPosition);
+            return attractable.Tier <= _playerTier.CurrentTier;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Vector3 endPosition = _lastPosition + _lastVelocity;
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(endPosition, _playerCollider.radius);
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(_lastPosition, _playerCollider.radius);
+
+            Gizmos.DrawLine(_lastPosition, endPosition);
+        }
     }
 }

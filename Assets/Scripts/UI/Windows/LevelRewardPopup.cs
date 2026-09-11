@@ -1,4 +1,5 @@
 using Skills;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ namespace UI
         [SerializeField] private IntValueView _levelNumberViewer;
         [SerializeField] private Button _closeButton;
         [SerializeField] private Image _skillIcon;
-        [SerializeField] private TMPro.TMP_Text _skillDescription;
+        [SerializeField] private TMP_Text _skillDescription;
 
         private void OnEnable()
         {

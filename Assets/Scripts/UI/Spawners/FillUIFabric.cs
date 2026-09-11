@@ -2,13 +2,14 @@
 using Game;
 using Scriptables;
 using Skills;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
 namespace UI
 {
-    public class FillUIFabric : MonoBehaviour
+    public sealed class FillUIFabric : MonoBehaviour
     {
         [SerializeField] private FillSessionHandler _sessionHandler;
         [SerializeField] private AudioMixerController _mixerController;
@@ -23,6 +24,7 @@ namespace UI
         [SerializeField] private SkillsConfig _skillsConfig;
         [SerializeField] private Wallet _wallet;
         [SerializeField] private AdScheduler _adScheduler;
+        [SerializeField] private YandexConfig _yandexConfig;
 
         [SerializeField] private Pauser _pauser;
 
@@ -33,6 +35,21 @@ namespace UI
         public void Construct(PlayerProgress progress)
         {
             _progress = progress;
+        }
+
+        private void Awake()
+        {
+            if (_sessionHandler == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: FillSessionHandler is not assigned. Drag a FillSessionHandler into the _sessionHandler field.");
+            }
+
+            if (_pauseButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PauseButton is not assigned. Drag a Button into the _pauseButton field.");
+            }
         }
 
         private void OnEnable()
@@ -71,8 +88,21 @@ namespace UI
             failMenu.Initialize(
                 rewardAmount,
                 _pauser,
-                _sessionHandler.LoadNextLevel,
-                _sessionHandler.RestartLevel);
+                RequestNextLevelForRewarded,
+                OnRestartFromFail);
+        }
+
+        private void RequestNextLevelForRewarded()
+        {
+            _adScheduler.ShowRewarded(
+                _yandexConfig.NextLevelRewardId,
+                _sessionHandler.LoadNextLevel);
+        }
+
+        private void OnRestartFromFail()
+        {
+            _adScheduler.TryShowInterstitial();
+            _sessionHandler.RestartLevel();
         }
 
         private void RequestDoubleReward()

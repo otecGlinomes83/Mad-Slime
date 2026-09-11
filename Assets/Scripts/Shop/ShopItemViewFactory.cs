@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace Skins
 {
-    public sealed class SkinItemViewFactory : MonoBehaviour
+    public sealed class ShopItemViewFactory : MonoBehaviour
     {
-        [SerializeField] private ShopItemView shopItemViewPrefab;
+        [SerializeField] private ShopItemView _shopItemViewPrefab;
 
         public ShopItemView Get(SkinItem skinItem, Transform parent)
         {
-            ShopItemView instance = Instantiate(shopItemViewPrefab, parent);
+            ShopItemView instance = Instantiate(_shopItemViewPrefab, parent);
             instance.Initialize(skinItem);
 
             return instance;

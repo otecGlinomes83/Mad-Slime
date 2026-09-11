@@ -1,11 +1,12 @@
 ﻿using Audio;
 using Game;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI
 {
-    public class GameplayUIFabric : MonoBehaviour
+    public sealed class GameplayUIFabric : MonoBehaviour
     {
         [SerializeField] private GameplaySessionHandler _sessionHandler;
         [SerializeField] private AudioMixerController _mixerController;
@@ -24,6 +25,33 @@ namespace UI
         [SerializeField] private LevelTransitor _levelTransitor;
 
         private void Awake()
+        {
+            if (_sessionHandler == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: GameplaySessionHandler is not assigned. Drag a GameplaySessionHandler into the _sessionHandler field.");
+            }
+
+            if (_pauseButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PauseButton is not assigned. Drag a Button into the _pauseButton field.");
+            }
+
+            if (_leaderboardButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: LeaderboardButton is not assigned. Drag a Button into the _leaderboardButton field.");
+            }
+
+            if (_shopButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: ShopButton is not assigned. Drag a Button into the _shopButton field.");
+            }
+        }
+
+        private void OnEnable()
         {
             _sessionHandler.GameStarted += HideButtons;
 

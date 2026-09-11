@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: RoomLevelConfig
   m_EditorClassIdentifier: 
   _theme: {fileID: 11400000, guid: 49822d7c5f452ed46b3f8bbdaf7ac2c9, type: 2}
-  _layout: {fileID: 11400000, guid: 79f850a49727d7f4baf2325c2abd9ba5, type: 2}
+  _layouts:
+  - {fileID: 11400000, guid: 79f850a49727d7f4baf2325c2abd9ba5, type: 2}
   _timerDuration: 120
   _quotaTypesMin: 2
   _quotaTypesMax: 4

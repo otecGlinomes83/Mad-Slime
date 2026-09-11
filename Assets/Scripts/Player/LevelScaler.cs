@@ -1,12 +1,11 @@
 using Cysharp.Threading.Tasks;
 using Movement;
-using Player;
 using System;
 using System.Threading;
 using Skills;
 using UnityEngine;
 
-namespace Skills
+namespace Player
 {
     public sealed class LevelScaler : MonoBehaviour
     {
@@ -55,6 +54,21 @@ namespace Skills
             if (_tierResolver == null)
             {
                 throw new InvalidOperationException("LevelScaler requires _tierResolver to be assigned.");
+            }
+
+            if (_rootTransform == null)
+            {
+                throw new InvalidOperationException("LevelScaler requires _rootTransform to be assigned.");
+            }
+
+            if (_mover == null)
+            {
+                throw new InvalidOperationException("LevelScaler requires _mover to be assigned.");
+            }
+
+            if (_smoothTime <= 0f)
+            {
+                throw new InvalidOperationException("LevelScaler requires a positive _smoothTime.");
             }
 
             _baseControllerHeight = _playerCollider.height;

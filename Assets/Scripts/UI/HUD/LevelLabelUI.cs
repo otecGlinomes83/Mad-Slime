@@ -20,7 +20,13 @@ namespace UI
 
         private void OnEnable()
         {
+            Localization.LanguageChanged += UpdateLabel;
             UpdateLabel();
+        }
+
+        private void OnDisable()
+        {
+            Localization.LanguageChanged -= UpdateLabel;
         }
 
         private void Start()
@@ -35,7 +41,7 @@ namespace UI
                 return;
             }
 
-            _labelText.text = string.Format(_labelFormat, _progress.CurrentLevel);
+            _labelText.text = string.Format(Localization.Get("level_label"), _progress.CurrentLevel);
         }
     }
 }

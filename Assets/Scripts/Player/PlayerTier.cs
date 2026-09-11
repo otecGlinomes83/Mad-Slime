@@ -1,22 +1,30 @@
-﻿using Skills;
+using Scriptables;
+using Skills;
 using System;
 using UnityEngine;
+using VContainer;
 
 namespace Player
 {
     public sealed class PlayerTier : MonoBehaviour
     {
         [SerializeField] private int _defaultMass;
-        [SerializeField] private int _massPickupDivisor = 4;
         [SerializeField] private TierResolver _tierResolver;
 
         private int _mass;
+        private PlayerConfig _config;
 
         public event Action<ItemTier, ItemTier> TierChanged;
         public event Action<int, int> MassChanged;
 
         public int Mass => _mass;
         public ItemTier CurrentTier { get; private set; } = ItemTier.Small;
+
+        [Inject]
+        public void Construct(PlayerConfig config)
+        {
+            _config = config;
+        }
 
         private void Awake()
         {
@@ -26,10 +34,14 @@ namespace Player
                     $"{name}: TierResolver is not assigned. Drag a TierResolver component into the _tierResolver field.");
             }
 
+            if (_config == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PlayerConfig was not injected. Check that GameLifetimeScope is configured and PlayerTier is registered.");
+            }
+
             _mass = _defaultMass;
             CurrentTier = _tierResolver.GetUnlockedTier(_mass);
-            TierChanged?.Invoke(CurrentTier, CurrentTier);
-            MassChanged?.Invoke(_defaultMass, _mass);
         }
 
         public void Add(int amount)
@@ -42,7 +54,7 @@ namespace Player
 
             int previous = _mass;
 
-            int scaledMass = Mathf.RoundToInt(amount / (float)_massPickupDivisor);
+            int scaledMass = Mathf.RoundToInt(amount / (float)_config.MassPickupDivisor);
             scaledMass = Mathf.Max(1, scaledMass);
 
             _mass += scaledMass;
