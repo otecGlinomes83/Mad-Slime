@@ -1,0 +1,238 @@
+# UI Test Helper — Quick Reference
+
+Package: `com.nowsprinting.test-helper.ui`  
+Add `TestHelper.UI` to Assembly Definition References.
+
+---
+
+## Find a GameObject
+
+Use `GameObjectFinder` instead of `UnityEngine.GameObject.Find`. `GameObjectFinder` polls until the object appears (no timing issues), verifies user reachability and interactability, and fails with `TimeoutException` when the object is not found — making test failures actionable. `GameObject.Find` returns `null` silently and cannot check reachability.
+
+```csharp
+var finder = new GameObjectFinder();                    // 1 second timeout (default)
+var finder = new GameObjectFinder(timeoutSeconds: 5d);  // custom timeout
+```
+
+| Goal                                           | Method                                                                            |
+|------------------------------------------------|-----------------------------------------------------------------------------------|
+| Find by name                                   | `await finder.FindByNameAsync("ButtonName")`                                      |
+| Find by hierarchy path                         | `await finder.FindByPathAsync("/**/Dialog/**/OK")` — supports `*`, `**`, `?` glob |
+| Find by component type, text, or texture       | `await finder.FindByMatcherAsync(matcher)`                                        |
+| Find inside a scrollable or pageable component | `await finder.FindByMatcherAsync(matcher, paginator: paginator)`                  |
+
+Common options: `reachable: true` (default), `interactable: false` (default).  
+Result: use `.GameObject` on the returned value.
+
+**UI blocking**: `reachable: true` is also useful for verifying that elements behind a modal dialog or overlay are blocked from interaction — or conversely, that they become reachable once the overlay is dismissed.
+
+### Matchers
+
+Matcher is an implementation class of `TestHelper.UI.GameObjectMatchers.IGameObjectMatcher`. Use to determine whether a `GameObject` matches a specific condition.
+
+**Built-in matchers**: `ComponentMatcher`, `ButtonMatcher` (by name/path/text/texture), `ToggleMatcher` (by name/path/text)
+
+**ButtonMatcher examples** — use when `FindByNameAsync` is not specific enough (e.g. multiple buttons exist, or you want to match by label text):
+
+```csharp
+// Find by label text (child Text/TMP_Text content)
+var matcher = new ButtonMatcher(text: "攻略開始");
+var btn = await finder.FindByMatcherAsync(matcher, interactable: true);
+await new UguiClickOperator().OperateAsync(btn.GameObject);
+
+// Find by GameObject name
+var btn = await finder.FindByMatcherAsync(new ButtonMatcher(name: "SubmitButton"));
+
+// Find by hierarchy path (glob)
+var btn = await finder.FindByMatcherAsync(new ButtonMatcher(path: "**/Dialog/**/OK"));
+
+// Find by sprite name on the Button's Image
+var btn = await finder.FindByMatcherAsync(new ButtonMatcher(texture: "icon_close"));
+```
+
+**Tip**: When the target `GameObject` has no unique `name` or hierarchy path (e.g., multiple objects share the same name in the scene), use the following approaches in order:
+
+1. **Use a built-in matcher with distinguishing properties**: For example, if the target is a button, use `TestHelper.UI.GameObjectMatchers.ButtonMatcher` with a `text` or `texture` argument to identify it by its visible label or icon.
+2. **Implement a custom matcher**: If no built-in matcher covers the distinguishing property, implement `IGameObjectMatcher` to match on any component value or hierarchy condition.
+3. **Modify production code** (last resort): Modify production code to add a distinguishing index or suffix to the `name` property of the `GameObject`.
+
+### Paginators
+
+Paginator is an implementation class of `TestHelper.UI.Paginators.IPaginator`. Use to find `GameObject` on pageable or scrollable UI components (e.g., `ScrollRect`, Carousel, Paged dialog).
+
+**Built-in paginators**: `UguiScrollbarPaginator(scrollbar)`, `UguiScrollRectPaginator(scrollRect)`
+
+**UguiScrollRectPaginator example** — pass a paginator when the target is inside a `ScrollRect`; the finder scrolls to reveal the target before the reachability check:
+
+```csharp
+var scrollView = await finder.FindByNameAsync("ScrollView");
+var paginator = new UguiScrollRectPaginator(scrollView.GameObject.GetComponent<ScrollRect>());
+var item = await finder.FindByNameAsync("ItemName", interactable: true, paginator: paginator);
+await new UguiClickOperator().OperateAsync(item.GameObject);
+```
+
+`UguiScrollRectPaginator.ResetAsync` resets the scroll position to the top-left before searching so the scan always starts from the beginning.
+
+---
+
+## Operate a GameObject
+
+Use an implementation class of `TestHelper.UI.Operators.IOperator` instead of directly calling button events or setting field values.
+
+```csharp
+var result = await finder.FindByNameAsync("SubmitButton", interactable: true);
+await new UguiClickOperator().OperateAsync(result.GameObject);
+```
+
+| Goal                      | Operator                                                                                       |
+|---------------------------|------------------------------------------------------------------------------------------------|
+| Click                     | `UguiClickOperator`                                                                            |
+| Click and hold            | `UguiClickAndHoldOperator`                                                                     |
+| Double click              | `UguiDoubleClickOperator`                                                                      |
+| Drag and drop             | `UguiDragAndDropOperator`                                                                      |
+| Scroll wheel              | `UguiScrollWheelOperator`                                                                      |
+| Swipe or flick            | `UguiSwipeOperator` — for flick: `new UguiSwipeOperator(swipeSpeed: 2000, swipeDistance: 80f)` |
+| Type text into InputField | `UguiTextInputOperator`                                                                        |
+| Toggle a Toggle component | `UguiToggleOperator`                                                                           |
+
+**Usage examples**
+
+```csharp
+// Click
+var btn = await finder.FindByNameAsync("SubmitButton", interactable: true);
+await new UguiClickOperator().OperateAsync(btn.GameObject);
+
+// Click and hold (default 1000 ms; override with holdMillis)
+var btn = await finder.FindByNameAsync("HoldButton", interactable: true);
+await new UguiClickAndHoldOperator(holdMillis: 500).OperateAsync(btn.GameObject);
+
+// Double click (default 100 ms interval between clicks)
+var btn = await finder.FindByNameAsync("DoubleClickButton", interactable: true);
+await new UguiDoubleClickOperator().OperateAsync(btn.GameObject);
+
+// Drag and drop — pass source and target GameObjects directly
+await new UguiDragAndDropOperator().OperateAsync(cardView.gameObject, enemyView.gameObject);
+
+// Scroll wheel (default scrollSpeed: 1200 px/s)
+var list = await finder.FindByNameAsync("ScrollView", interactable: true);
+await new UguiScrollWheelOperator().OperateAsync(list.GameObject);
+
+// Swipe (default swipeSpeed: 1200 px/s, swipeDistance: 200 px)
+var panel = await finder.FindByNameAsync("SwipePanel", interactable: true);
+await new UguiSwipeOperator().OperateAsync(panel.GameObject);
+
+// Flick — high speed, short distance
+await new UguiSwipeOperator(swipeSpeed: 2000, swipeDistance: 80f).OperateAsync(panel.GameObject);
+
+// Type text into InputField — activate the panel first so the field is interactable
+var field = await finder.FindByNameAsync("MyInputField", interactable: true);
+await new UguiTextInputOperator().OperateAsync(field.GameObject, "Hello");
+
+// Toggle
+var toggle = await finder.FindByNameAsync("MyToggle", interactable: true);
+await new UguiToggleOperator().OperateAsync(toggle.GameObject);
+```
+
+**Tip**: Encapsulate find + operate in a private helper
+
+When operating a `GameObject` (clicking, typing, etc.), write a private helper method that combines the `GameObjectFinder` lookup and the operator call:
+
+```csharp
+private async UniTask Click(string name)
+{
+    var finder = new GameObjectFinder();
+    var result = await finder.FindByNameAsync(name, interactable: true);
+    await new UguiClickOperator().OperateAsync(result.GameObject);
+}
+```
+
+Grouping the search and operation together keeps test methods concise and avoids repeating the finder/operator pair across every test in the class.
+
+---
+
+## Monkey Testing
+
+Randomly operates all interactable GameObjects for a duration. Throws `TimeoutException` if no interactable objects appear, or `InfiniteLoopException` if a repeating operation pattern is detected.
+
+```csharp
+var config = new MonkeyConfig
+{
+    Lifetime = TimeSpan.FromMinutes(2),
+    DelayMillis = 200,
+    SecondsToErrorForNoInteractiveComponent = 5,
+};
+await Monkey.Run(config);
+```
+
+Register additional operators via `config.OperatorPool.Register<T>()`.  
+Enable verbose logging with `config.Verbose = true`.
+
+---
+
+## Annotation Components
+
+Attach to GameObjects in scenes to control test behavior without code changes.  
+Assembly reference: `TestHelper.UI.Annotations`
+
+| Goal | Component |
+|------|-----------|
+| Exclude from monkey testing | `IgnoreAnnotation` — children are also excluded |
+| Mark as preferred drag-drop target | `DropAnnotation` |
+| Configure character kind/length for text input | `InputFieldAnnotation` |
+| Exclude from blocking reachability raycasts | `NonBlockingAnnotation` |
+| Offset the raycast point from pivot (screen space) | `ScreenOffsetAnnotation` |
+| Offset the raycast point from pivot (world space) | `WorldOffsetAnnotation` |
+| Override the raycast point (screen space) | `ScreenPositionAnnotation` |
+| Override the raycast point (world space) | `WorldPositionAnnotation` |
+
+---
+
+## Customization
+
+Use these extension points when the game uses a custom UI framework or requires special behavior.
+
+### Strategy functions / interfaces
+
+| Extension point | Purpose | When to replace |
+|-----------------|---------|-----------------|
+| `IsInteractable` function | Returns whether a `Component` is interactable. Default: true for uGUI components whose `interactable` property is true. | When you have non-uGUI components that need interactability checks |
+| `IIgnoreStrategy` | `IsIgnored` returns whether a `GameObject` should be skipped by Monkey. Default: true if `IgnoreAnnotation` is attached. | When you need name/path-based exclusion rules |
+| `IReachableStrategy` | `IsReachable` returns whether a `GameObject` is reachable from the user. Default: raycast from `Camera.main` to pivot. | When you need a different camera or randomized raycast point |
+
+Pass custom strategies to the `GameObjectFinder` or `MonkeyConfig` constructors:
+
+```csharp
+var reachableStrategy = new DefaultReachableStrategy(verboseLogger: Debug.unityLogger);
+var finder = new GameObjectFinder(reachableStrategy: reachableStrategy);
+```
+
+### IGameObjectMatcher interface
+
+Implement `IGameObjectMatcher` to match GameObjects by custom conditions. Pass the instance to `FindByMatcherAsync`.
+
+### IPaginator interface
+
+Implement `IPaginator` to support custom scrollable or pageable components. Required methods:
+- `ResetAsync` — navigate to the first page
+- `NextPageAsync` — navigate to the next page
+- `HasNextPage` — returns whether a next page exists
+
+Constructor requirements: first parameter must be a `MonoBehaviour` subclass (the pageable component to control).
+
+### IOperator interface
+
+Implement `IOperator` (or a sub-interface like `IClickOperator`) to support non-uGUI interactions. Implement:
+- `CanOperate(GameObject)` — whether the operation applies to this object
+- `OperateAsync(GameObject, RaycastResult, CancellationToken)` — execute the operation
+
+Register custom operators via `MonkeyConfig.Operators` or `OperatorPool.Register<T>()`.
+
+---
+
+## Debugging
+
+| Goal | Solution |
+|------|----------|
+| Visualize "not reachable" / "not interactable" on screen | Pass `new DefaultDebugVisualizer()` to `GameObjectFinder` constructor |
+| Visualize operator tap/swipe points | Pass `new DefaultDebugVisualizer()` to operator constructor or `OperatorPool` constructor |
+| Visualize during monkey testing | Set both `MonkeyConfig.Visualizer` and `MonkeyConfig.OperatorPool` with the same `DefaultDebugVisualizer` instance |

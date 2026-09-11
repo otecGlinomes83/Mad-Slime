@@ -1,0 +1,550 @@
+# Unity Test Framework Guidelines
+
+## Structure
+
+- Tests targeting `Editor/` code → `Tests/Editor/` (Edit Mode tests)
+- Tests targeting `Runtime/` code → `Tests/Runtime/` (Play Mode tests)
+- Mirror the production code's directory structure within the test directory
+- Test doubles (stub, spy, mock, fake, and dummy) → `Tests/Runtime/TestDoubles/` (also usable from Edit Mode tests)
+- Test assistance utilities (creation method, custom assertion, etc.) → `Tests/Runtime/TestUtils/` (also usable from Edit Mode tests)
+- Test scenes → `Tests/Scenes/`
+
+### Creating a Test Assembly
+
+When `Tests/Runtime/` or `Tests/Editor/` does not exist yet, run `scripts/create-test-asmdef.sh <ProductionAsmdefPath>` to generate `<ProductionAssembly>.Tests.asmdef`.
+
+Examples:
+- `${CLAUDE_SKILL_DIR}/scripts/create-test-asmdef.sh Assets/MyGame/Scripts/Runtime/MyGame.asmdef` → `Assets/MyGame/Tests/Runtime/MyGame.Tests.asmdef`
+- `${CLAUDE_SKILL_DIR}/scripts/create-test-asmdef.sh Assets/MyGame/Scripts/Editor/MyGame.Editor.asmdef` → `Assets/MyGame/Tests/Editor/MyGame.Editor.Tests.asmdef`
+
+## Naming
+
+| Target               | Convention                                                                                                                     |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| Test assembly        | `<ProductionAssembly>.Tests`                                                                                                   |
+| Test namespace       | Same as the production class under test                                                                                        |
+| Test class           | `<ClassName>Test` — e.g., `CharacterControllerTest`                                                                            |
+| Test method          | `<MethodName>_<Condition>_<Expected>` — e.g., `TakeDamage_WhenHealthIsZero_ReturnsZero` or `TakeDamage_HPが0のとき_ゼロを返す` |
+| System under test    | `sut`                                                                                                                          |
+| Measured value       | `actual`                                                                                                                       |
+| Expected value       | `expected`                                                                                                                     |
+| Test double variable | Prefix with role: `stub`, `spy`, `mock`, `fake`, `dummy`                                                                       |
+
+- `<MethodName>` must always match the production method name exactly — never translate it. When the test target is not a single method — integration tests, visual verification tests, and Editor tests whose target is not a method (asset file validation, cross-asset consistency checks) — `<MethodName>` is omitted and the convention becomes `<Condition>_<Expected>`.
+- `<Condition>` and `<Expected>` follow the project language specified in `CLAUDE.md`. If no language is specified, default to English.
+- Write `<Expected>` in active voice: `ReturnsTrue`, `ThrowsArgumentException`, `ReducesHpBy3`, etc. For exceptions, include the exception type: `ThrowsArgumentException`, not just `ThrowsException`.
+
+## Modernize Test Code
+
+Old Unity Test Framework patterns are common in training data. The table below maps outdated patterns to their modern equivalents. **Do not use the old forms.**
+
+| Old (outdated)                          | Modern                                      |
+|-----------------------------------------|---------------------------------------------|
+| `[UnityTest] IEnumerator` for async     | `[Test] async Task`                         |
+| `Assert.AreEqual(expected, actual)`     | `Assert.That(actual, Is.EqualTo(expected))` |
+| `Assert.IsTrue(condition)`              | `Assert.That(condition, Is.True)`           |
+| `Assert.IsNull(obj)`                    | `Assert.That(obj, Is.Null)`                 |
+
+### Play Mode is determined by path, not by attributes
+
+`[UnityTest]` is **not** Play Mode exclusive — it runs in both Edit Mode and Play Mode.  
+Mode is determined by the **test file's path**, not by test attributes:
+
+- `Tests/Editor/` → **Edit Mode**
+- `Tests/Runtime/` → **Play Mode**
+
+`[Test]`, `[UnityTest]`, `[CreateScene]`, and `[LoadScene]` do **not** affect which mode the test runs in.
+
+### Async tests: use `[Test]` + `async Task`
+
+```csharp
+// Do NOT write this
+[UnityTest]
+public IEnumerator MyTest()
+{
+    yield return null;
+    Assert.AreEqual(42, sut.Value);
+}
+
+// Write this instead
+[Test]
+public async Task MyTest()
+{
+    await Awaitable.NextFrameAsync();
+    Assert.That(sut.Value, Is.EqualTo(42));
+}
+```
+
+`[TestCase]` and `[TestCaseSource]` work with `async Task`. They **cannot** be combined with `[UnityTest]`.
+
+### Assertions: use the constraint model
+
+```csharp
+// Do NOT use the classic model
+Assert.AreEqual(expected, actual);
+Assert.IsTrue(condition);
+Assert.IsNull(obj);
+
+// Use the constraint model
+Assert.That(actual, Is.EqualTo(expected));
+Assert.That(condition, Is.True);
+Assert.That(obj, Is.Null);
+```
+
+---
+
+## Writing Tests
+
+- `[TestFixture]` is required on every test class
+- Separate Arrange / Act / Assert sections with blank lines; no AAA comments
+- Prefer one `Assert.That` per test method. **Exception**: when verifying that the state resulting from a transition has multiple properties with the correct values simultaneously, multiple `Assert.That` calls are permitted in a single test. In that case, pass a short `message` string as the third argument to **each** `Assert.That` to identify which property is being verified.
+- Use the **constraint model only**: `Assert.That(actual, constraint)` — never use the classic model (`Assert.AreEqual`, etc.)
+- Do NOT pass the `message` argument to `Assert.That` in single-assertion tests; the test name and constraint must be self-explanatory. When a test contains multiple `Assert.That` calls (see exception above), a `message` argument is **required** on every call.
+
+```csharp
+// Single assertion — no message needed
+Assert.That(sut.IsActive, Is.True);
+
+// Multiple assertions — verifying several properties of the state resulting from a transition
+sut.SetDefeat();
+await Awaitable.NextFrameAsync();
+Assert.That(battleScene.DefeatScoreText.text, Is.EqualTo("0"), "score text");
+Assert.That(battleScene.DefeatScoreText.alignment, Is.EqualTo(TextAnchor.MiddleCenter), "score alignment");
+Assert.That(battleScene.DefeatScoreText.color, Is.EqualTo(Color.white), "score color");
+```
+
+### Constraint Tips
+
+- For predicate assertions over a collection, prefer NUnit's strongly typed predicate constraint over LINQ:
+  - Good: `Assert.That(items, Has.Some.Matches<Tool>(t => t.Name == "expected"))`
+  - Avoid: `Assert.That(items.Any(t => t.Name == "expected"), Is.True)`
+- Negation uses `Has.None.Matches<T>(...)`.
+
+### Constraint Reference
+
+**Numeric**
+
+| Goal                          | Constraint                                            |
+|-------------------------------|-------------------------------------------------------|
+| Exact equality with tolerance | `Is.EqualTo(44.0f).Within(2)` or `.Within(5).Percent` |
+| Greater than                  | `Is.GreaterThan(n)`                                   |
+| Greater than or equal         | `Is.GreaterThanOrEqualTo(n)`                          |
+| Less than                     | `Is.LessThan(n)`                                      |
+| Less than or equal            | `Is.LessThanOrEqualTo(n)`                             |
+| Within range                  | `Is.InRange(low, high)`                               |
+
+`Within` also works on `DateTime`: `Is.EqualTo(expected).Within(2).Days`.
+
+**String**
+
+| Goal                           | Constraint                                    |
+|--------------------------------|-----------------------------------------------|
+| Starts with                    | `Does.StartWith("Se")`                        |
+| Ends with                      | `Does.EndWith("!")`                           |
+| Contains substring             | `Does.Contain("foo")`                         |
+| Matches regex                  | `Does.Match(@"\d+")`                          |
+| Case-insensitive               | Append `.IgnoreCase` to any string constraint |
+| No clipping in failure message | Append `.NoClip` to `Is.EqualTo`              |
+
+**Collection**
+
+| Goal                           | Constraint                                                |
+|--------------------------------|-----------------------------------------------------------|
+| Contains element               | `Does.Contain(4)` / `Has.Member(4)`                       |
+| Order-independent equality     | `Is.EquivalentTo(expected)`                               |
+| Sorted                         | `Is.Ordered`                                              |
+| Subset                         | `Is.SubsetOf(superset)`                                   |
+| Superset                       | `Is.SupersetOf(subset)`                                   |
+| All elements match predicate   | `Has.All.Matches<T>(t => ...)`                            |
+| Some element matches predicate | `Has.Some.Matches<T>(t => ...)` (prefer over LINQ `.Any`) |
+| No element matches predicate   | `Has.None.Matches<T>(t => ...)`                           |
+| Dictionary key exists          | `Contains.Key("k")`                                       |
+| Dictionary value exists        | `Contains.Value(42)`                                      |
+
+**Type**
+
+| Goal                                                           | Constraint                           |
+|----------------------------------------------------------------|--------------------------------------|
+| Is instance of T or subclass                                   | `Is.InstanceOf<T>()`                 |
+| Is exactly T                                                   | `Is.TypeOf<T>()`                     |
+| actual is T or a superclass of T (T can be assigned to actual) | `Is.AssignableFrom<T>()`             |
+| Has attribute                                                  | `Has.Attribute<T>()`                 |
+| Has property with value                                        | `Has.Property("Foo").EqualTo("Bar")` |
+
+**File / Path**
+
+| Goal                           | Constraint                        |
+|--------------------------------|-----------------------------------|
+| File or directory exists       | `Does.Exist`                      |
+| File only (ignore directories) | `Does.Exist.IgnoreDirectories`    |
+| Normalized path equality       | `Is.SamePath("/folder1/folder2")` |
+
+**Operators**
+
+```csharp
+Assert.That(actual, Is.GreaterThan(40).Or.LessThan(30));
+Assert.That(actual, Is.GreaterThan(0).And.LessThan(100));
+Assert.That(actual, Is.Not.Null);
+```
+
+**Exceptions (synchronous methods only)**
+
+```csharp
+Assert.That(() => Foo.Bar(-1), Throws.TypeOf<ArgumentException>());
+Assert.That(() => Foo.Bar(-1), Throws.TypeOf<ArgumentException>()
+    .And.Message.EqualTo("Expected message"));
+```
+
+Do NOT use `Assert.ThrowsAsync<T>`, `Assert.CatchAsync<T>`, or `Assert.That(async () => ..., Throws...)` — passing an `async` delegate to these freezes the Unity Editor. Use the try-catch pattern instead — see [Async Tests](#async-tests).
+
+**Delayed / Polling**
+
+Do NOT use `DelayedConstraint` (`Is.<constraint>().After(ms)`, e.g. `Assert.That(actual, Is.GreaterThan(2.0f).After(500))`) — for the same reason as above: it polls via `Thread.Sleep` on the calling thread with no yield point, freezing the Unity Editor for the delay duration. Poll explicitly through an awaited helper instead — see **Unknown duration** in [Anti-pattern: Fixed-time Waits](#anti-pattern-fixed-time-waits).
+
+## GC Allocation Constraint
+
+Assert that no GC heap allocation occurs during a delegate:
+
+```csharp
+using Is = UnityEngine.TestTools.Constraints.Is;
+
+Assert.That(() => sut.Foo(), Is.Not.AllocatingGCMemory());
+```
+
+- **Must alias `UnityEngine.TestTools.Constraints.Is`** — it conflicts with `NUnit.Framework.Is`, so add the `using` alias.
+- Not usable on `async` methods — passing an `async` delegate freezes the Unity Editor (see [Async Tests](#async-tests)), and no alternative exists. Do not attempt to work around this; measure allocations only in a synchronous path, or not at all.
+- `Debug.Log` inside the delegate triggers a GC allocation and causes the assertion to fail.
+
+## Comparers
+
+Use `Is.EqualTo(...).Using(comparer)` for tolerance-based or custom equality:
+
+```csharp
+Assert.That(actual, Is.EqualTo(expected).Using(new FloatEqualityComparer(0.1f)));
+```
+
+Unity Test Framework built-in comparers (all use relative error):
+
+| Type         | Comparer                     |
+|--------------|------------------------------|
+| `float`      | `FloatEqualityComparer`      |
+| `Vector2`    | `Vector2EqualityComparer`    |
+| `Vector3`    | `Vector3EqualityComparer`    |
+| `Vector4`    | `Vector4EqualityComparer`    |
+| `Quaternion` | `QuaternionEqualityComparer` |
+| `Color`      | `ColorEqualityComparer`      |
+
+For project-specific comparers (`FlipTexture2dEqualityComparer`, `XmlComparer`), see `test-helper.md`.
+
+## No Control Flow in Tests
+
+Never use `if`, `switch`, `for`, `foreach`, `while`, or the ternary operator in test code. Tests must be straight-line single-pass code — control flow makes the expected outcome ambiguous and reduces trust in the test itself; a bug in a branch can hide behind a path that was never taken.
+
+## Parameterized Tests
+
+Use `[TestCase]`, `[TestCaseSource]`, `[Values]`, `[ValueSource]` when Arrange differs but Act and Assert are the same.  
+Use `[ParametrizedIgnore]` to exclude specific combinations.
+
+### TestCase / TestCaseSource
+
+Use `[TestCase]` when the design specifies `({defence: Fire, attack: Water}, {defence: Water, attack: Wood})` — limited to specific combinations. Each tuple becomes one `[TestCase]` attribute:
+
+```csharp
+[TestCase(Element.Fire, Element.Water)]
+[TestCase(Element.Water, Element.Wood)]
+public void GetDamageFactor_WeaknessAttribute_Returns2x(Element defence, Element attack) { ... }
+```
+
+Use `TestCaseData` with `.SetName(...)` to give test cases readable names when using `[TestCaseSource]`:
+
+```csharp
+private static TestCaseData[] s_cases =
+{
+    new TestCaseData(Element.Fire, Element.Water).SetName("火←水"),
+    new TestCaseData(Element.Water, Element.Wood).SetName("水←木"),
+};
+
+[TestCaseSource(nameof(s_cases))]
+public void Damage_WeaknessAttribute_Returns2x(Element defence, Element attack) { ... }
+```
+
+### Values / ValueSource
+
+The following maps the test-designing-guide notation to NUnit attributes:
+
+| Design notation                                            | NUnit                                                      |
+|------------------------------------------------------------|------------------------------------------------------------|
+| `(flag: (bool))` — bool param, all values                  | `[Values] bool flag`                                       |
+| `(direction: (Direction))` — enum param, all values        | `[Values] Direction direction`                             |
+| `(n: 3, 6, 9)` — explicit values, single param             | `[Values(3, 6, 9)] int n`                                  |
+| `(a: {0, 1, -1}, b: {0, 1})` — multiple params, exhaustive | `[Values(0, 1, -1)] int a, [Values(0, 1)] int b`           |
+| `(flag: (bool), count: {0, 1, 5})` — mixed                 | `[Values] bool flag, [Values(0, 1, 5)] int count`          |
+| `(use pairwise)`                                           | `[Pairwise]` on the method + `[Values(...)]` on each param |
+
+- `[Values]` with no argument on a `bool` parameter generates `true` and `false`; on an enum parameter, it generates all defined values
+- Multiple `[Values]` parameters produce the **full Cartesian product** by default
+- `[Pairwise]` on the method → pairwise coverage instead of full Cartesian; use when the test cases specify `(use pairwise)`
+- `[Sequential]` on the method → match parameters by index (not combinatorial); do NOT use in principle — use `[TestCase]` / `[TestCaseSource]` instead to make each combination explicit
+
+### Restrictions
+
+`[TestCase]`, `[TestCaseSource]`, `[Pairwise]`, `[Sequential]` **cannot** be combined with `[UnityTest]`; they **can** be combined with `async [Test]`.
+
+## Object Creation Pattern
+
+Use a creation method for objects needed in tests:
+
+```csharp
+private SomeClass CreateSystemUnderTest() { ... }
+```
+
+Even when holding the instance in a private field for `TearDown` cleanup, always use the return value of the creation method inside test methods.
+
+When multiple test methods in a class share the same scene setup, create a test scene file and load it with `[LoadScene]` instead of repeating the setup in each test. Scene files are typically 1:1 with the test class, so name the file after the test class (e.g., `CharacterControllerTest.unity`). Place it under `Tests/Scenes/`. Use the `edit-scene` skill to create the scene file.
+
+### Default Parameter Values
+
+Give a creation-method parameter a default so that tests state only the values their outcome depends on. A default therefore declares "this value does not matter here" — pick one that actually reads that way.
+
+- Use a **neutral** value: `0`, `null`, `false`, empty string/collection. A domain-plausible default (e.g. `hp = 79`) breaks the declaration — it silently feeds a meaningful value into every test that omits the argument, and no reader can tell it apart from a deliberate Arrange choice. Same reason [Lifecycle Hooks](#lifecycle-hooks) keeps assertion-relevant values out of `[SetUp]`.
+- If no neutral value works — `0`/`null` breaks the object graph or crashes something downstream — then nothing can mean "does not matter", so **give no default at all**. Make the parameter required so every call site states its own value. Substituting a different "safe" value just hides the same problem behind a less obvious number.
+
+A parameter no assertion can depend on (e.g. a display name used only for logging) genuinely does not matter, so a descriptive placeholder such as `"TestEnemy"` is fine in place of `null` — but default to neutral, and deviate only when you can state why the value is provably inert.
+
+```csharp
+// Do NOT do this — 79/80 reads as an intentional Arrange choice; 2 silently hides that 0 throws
+private RunState CreateRunState(int hp = 79, int maxHp = 80) { ... }
+private static Catalog CreateCatalog(int midCount = 2) { ... }
+
+// Do this — neutral where a "does not matter" value exists; required where none does
+private RunState CreateRunState(int hp = 0, int maxHp = 0) { ... }
+private static Catalog CreateCatalog(int midCount) { ... }
+```
+
+## Lifecycle Hooks
+
+| Attribute                                        | Timing                               | Notes                                                   |
+|--------------------------------------------------|--------------------------------------|---------------------------------------------------------|
+| `[SetUp]` / `[TearDown]`                         | Before / after each test method      | `async Task` supported (UTF v1.3+)                      |
+| `[UnitySetUp]` / `[UnityTearDown]`               | Before / after each test (coroutine) | Runs before `[SetUp]` / after `[TearDown]` respectively |
+| `[OneTimeSetUp]` / `[OneTimeTearDown]`           | Once per class                       | `async` NOT supported (causes editor freeze)            |
+| `[UnityOneTimeSetUp]` / `[UnityOneTimeTearDown]` | Once per class (coroutine)           | UTF v1.5+                                               |
+
+Guidelines:
+- `[SetUp]` owns initialization; cleanup of leftover state belongs in `[SetUp]`, not `[TearDown]`.
+- `[TearDown]` owns resource release (e.g., `Object.DontDestroyOnLoad` objects that can't be cleaned by scene reload).
+- In nested classes, only the `[SetUp]` / `[TearDown]` defined in the **same class** as the test method runs — the outer class's hooks do not run.
+- Avoid over-centralizing setup; values that affect assertion validity should stay visible inside the test method itself — a reader must understand the test without scrolling to `[SetUp]`; burying assertion-relevant values there makes correctness harder to judge.
+- `[LoadScene]` and `[CreateScene]` (Test Helper) run after `[OneTimeSetUp]` and before `[SetUp]`.
+
+## Test Selection Attributes
+
+| Attribute                                                          | Purpose                                                                       |
+|--------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| `[Category("IgnoreCI")]`                                           | Tag for filtering at run time; CI uses `-testCategory "!IgnoreCI"` to exclude |
+| `[UnityPlatform(RuntimePlatform.WindowsPlayer)]`                   | Run only on specified platforms                                               |
+| `[UnityPlatform(exclude = new[] { RuntimePlatform.WebGLPlayer })]` | Exclude specific platforms                                                    |
+| `[Ignore("reason")]`                                               | Temporarily skip; reason shown in runner UI                                   |
+| `[Explicit("reason")]`                                             | Run only when explicitly selected in the runner                               |
+
+Attributes can be placed on assembly (`[assembly: Category("...")]`), class, or method.
+
+Assembly-level attributes go in an `AssemblyInfo.cs` file placed at the root directory of the assembly (the same directory as the `.asmdef` file):
+
+```csharp
+using NUnit.Framework;
+
+[assembly: UnityPlatform(exclude = new[] { RuntimePlatform.WebGLPlayer })]
+```
+
+## Timing, Repeat, Retry
+
+| Attribute       | Purpose                               | Notes                                                                                     |
+|-----------------|---------------------------------------|-------------------------------------------------------------------------------------------|
+| `[Timeout(ms)]` | Override default 3-minute timeout     | Covers **total** time including repeats / retries                                         |
+| `[MaxTime(ms)]` | Fail if execution exceeded the limit  | Does not interrupt mid-test                                                               |
+| `[Repeat(n)]`   | Run n times; stop on first failure    | `[SetUp]`/`[TearDown]` run each iteration; `[UnitySetUp]`/`[UnityTearDown]` run only once |
+| `[Retry(n)]`    | Re-run on failure up to n times total | Exception-caused failures are **not** retried; overuse is an anti-pattern                 |
+
+## Async Tests
+
+- Use `[Test]` attribute with `async` keyword instead of `[UnityTest]` attribute
+- `[TestCase]` and `[TestCaseSource]` work with async test methods
+- Do not use `Task.Delay` or arbitrary wait; use `await Awaitable.NextFrameAsync()` when only one frame is needed
+- For tests that await a state transition or other condition where a timeout may occur, add `[Timeout(milliseconds)]` so the test fails within a few seconds — this applies even in the RED phase
+- To assert that an async method throws, use try-catch — see the warning below for why:
+
+```csharp
+try
+{
+    await Foo.Bar(-1);
+    Assert.Fail("Expected exception was not thrown");
+}
+catch (ArgumentException expectedException)
+{
+    Assert.That(expectedException.Message, Is.EqualTo("Expected message"));
+}
+```
+
+`try`/`catch` is the one sanctioned exception to [No Control Flow in Tests](#no-control-flow-in-tests) — it is not in that section's prohibited list, and this is the only place this guide requires it.
+
+> [!WARNING]\
+> Passing an `async` delegate to any NUnit assertion overload that accepts one deadlocks the Unity Editor: the assertion blocks the main thread waiting for the `Task`, but the `Task`'s continuation needs that same, now-blocked, main thread to run. `[Timeout(milliseconds)]` does **not** rescue this — the test run never returns, and the Editor process must be killed.
+
+| Prohibited                                                  | Use instead                                                                       |
+|-------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| `Assert.ThrowsAsync<T>` / `Assert.ThrowsAsync`              | try-catch (above)                                                                 |
+| `Assert.CatchAsync<T>` / `Assert.CatchAsync`                | try-catch (above)                                                                 |
+| `Assert.That(async () => ..., Throws...)`                   | try-catch (above)                                                                 |
+| `Assert.That(async () => ..., Is.Not.AllocatingGCMemory())` | no alternative exists — see [GC Allocation Constraint](#gc-allocation-constraint) |
+
+This does not affect the mandated forms below — only delegate-taking assertion overloads are affected, and only when the delegate itself is `async`:
+
+- The `async Task` test method itself is unaffected — it is the required shape for async tests.
+- `Assert.That(actualValue, constraint)` inside an async test is unaffected — the value is already materialized before the assertion runs.
+- `Assert.That(() => sut.Foo(), Throws.TypeOf<T>())` with a **synchronous** lambda remains correct — see **Exceptions (synchronous methods only)** above.
+
+### Anti-pattern: Fixed-time Waits
+
+Async tests often need to wait a little — e.g., after `SceneManager.LoadScene` to let `Start` / `Update` run, or one frame after placing a `GameObject` before using a `Raycaster`.
+
+`Task.Delay` (or any other fixed-duration sleep) is the wrong tool. No fixed duration is "just right" — too short produces flaky tests, too long inflates total test run time, and OS timer resolution makes precise tuning impossible regardless.
+
+Pick the wait that matches the situation:
+
+- **Known frame count** — `await Awaitable.NextFrameAsync()` on Unity 2023+. On older Unity, use `UniTask.NextFrame` / `UniTask.DelayFrame`, or write the test with `[UnityTest]` and `yield return null`.
+- **Waiting for a state transition** (e.g., "next turn") — Drive the wait off the game's state machine with `UniTask.WaitUntil` or `UnityEngine.WaitUntil` instead of guessing a duration. Extract the wait into a named helper method (e.g., `async Awaitable WaitForPlayerTurn()`) to make intent clear and allow reuse across tests. Always pair with `[Timeout(milliseconds)]` — a bug in the SUT can cause the condition to never become true, hanging the test indefinitely.
+- **Unknown duration** (UI interactions, asset loads, backend calls) — Poll state at a short interval through a helper. The UI Test Helper package (`test-helper.ui`) ships `GameObjectFinder`, which already does this.
+
+## Preconditions: Assume
+
+When a test depends on external state (scene hierarchy, assets), use `Assume.That(...)` to verify preconditions instead of `Assert.That(...)`:
+
+```csharp
+var cube = GameObject.Find("Cube");
+Assume.That(cube, Is.Not.Null);     // inconclusive (orange) if missing, not failed (red)
+sut.AttackTo(cube);
+Assert.That((bool)cube, Is.False);
+```
+
+A failed `Assume` marks the test **inconclusive** in the runner, making it easy to distinguish environment problems from real failures.
+
+## Destroyed GameObject
+
+In the editor, `Destroy()` does not immediately null the reference. `UnityEngine.Object` overrides `==` and `bool` cast to expose destroyed state:
+
+```csharp
+Assert.That((bool)cube, Is.False);   // passes when destroyed
+```
+
+**Prefer `Is.Destroyed` from Test Helper** — it expresses intent more clearly. See `test-helper.md`.
+
+## Log Handling
+
+By default, `Debug.LogError`, `LogException`, and `LogAssertion` cause a test failure. When production code is expected to emit these, use the following APIs to prevent unintended test failures:
+
+```csharp
+// Allow specific log output (string or Regex)
+LogAssert.Expect(LogType.Error, "error message");
+LogAssert.Expect(LogType.Error, new Regex(@"Se.+? Paratus"));
+
+// Assert no unexpected logs occurred — place at the very end of the test
+LogAssert.NoUnexpectedReceived();
+
+// Suppress all failing logs for a single test (resets automatically per test, cannot be set in [SetUp])
+LogAssert.ignoreFailingMessages = true;
+```
+
+`[TestMustExpectAllLogs]` on a class or method is equivalent to calling `LogAssert.NoUnexpectedReceived()` at the end of each test.
+
+**Async caveat**: in async tests, log failure is evaluated at each `yield` point — call `LogAssert.Expect` before yielding.
+
+- Do NOT use `LogAssert` to verify log messages emitted by the production code under test; create a Spy logger that the production code writes through. This keeps tests independent of Unity's global log handler.
+- `LogAssert` is acceptable only when a Spy cannot be injected — i.e., the log is emitted by `UnityEngine` itself or a third-party library outside our control. Typical uses: asserting an expected `Debug.LogError` / `LogException` from such a source, or `LogAssert.NoUnexpectedReceived()` to ensure no unexpected engine/library errors during a test.
+
+## Spy MonoBehaviour Conventions
+
+When creating a Spy `MonoBehaviour` (placed under `Tests/Runtime/TestDoubles/`) to capture events such as `IPointerClickHandler.OnPointerClick`:
+
+- Add `[AddComponentMenu("/")]` (Unity 2021+) or `[AddComponentMenu("")]` (older Unity) so it does not appear in the editor's **Add Component** picker.
+- Record invocations into public properties (call count, last arguments, etc.) and let the test read them directly. Do NOT log to `Debug.Log` and assert with `LogAssert` — that couples the test to Unity's global log handler and is harder to inspect than typed state.
+
+```csharp
+[AddComponentMenu("/")]
+public class SpyOnPointerClickHandler : MonoBehaviour, IPointerClickHandler
+{
+    public int ClickCount { get; private set; }
+    public PointerEventData LastEventData { get; private set; }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        ClickCount++;
+        LastEventData = eventData;
+    }
+}
+```
+
+- Assert against the public properties in the test:
+
+```csharp
+Assert.That(spy.ClickCount, Is.EqualTo(1));
+Assert.That(spy.LastEventData.button, Is.EqualTo(PointerEventData.InputButton.Left));
+```
+
+## MonoBehaviour Lifecycle Testing
+
+**Avoid this pattern whenever possible.** First try to extract testable logic out of the `MonoBehaviour` using the Humble Object pattern and test it directly. Only use `MonoBehaviourTest<T>` when the lifecycle progression itself (`Awake` → `Start` → `Update`) must be observed from inside.
+
+When necessary, create a Spy subclass implementing `IMonoBehaviourTest` and yield from a `[UnityTest]`:
+
+```csharp
+private class SpyMyMonoBehaviour : MyMonoBehaviour, IMonoBehaviourTest
+{
+    public bool WasStart => base._wasStart;
+    public bool IsTestFinished => WasStart;   // runner polls this until true
+}
+
+[UnityTest]
+public IEnumerator Start_SomeCondition_SetsWasStart()
+{
+    yield return new MonoBehaviourTest<SpyMyMonoBehaviour>();
+    var spy = GameObject.FindObjectOfType<SpyMyMonoBehaviour>();
+    Assert.That(spy.WasStart, Is.True);
+    GameObject.DestroyImmediate(spy.gameObject);
+}
+```
+
+Follow the Spy naming convention from [Spy MonoBehaviour Conventions](#spy-monobehaviour-conventions).
+
+## Testing Non-Public Members
+
+- **Do not test `private` members** — doing so tests implementation, not specification. Private members have no guaranteed contract and tests break on valid refactors.
+- To test `internal` members, add to the production assembly side:
+
+```csharp
+[assembly: InternalsVisibleTo("MyAssembly.Tests")]
+```
+
+- Do not use reflection to access `private` members — reflection-based access tests implementation structure, not observable behaviour; any internal rename or refactor breaks the test without changing the contract (fragile test).
+
+## Comments
+
+Do NOT write XML documentation comments in test code.
+
+## Troubleshooting
+
+### `[Test]` on an `async` method fails to compile or run
+
+If a test written as `[Test]` + `async` method (per the Async Tests section above) errors out — compile error, `async void` rejection, or the runner refusing to execute the test — the `com.unity.test-framework` package is too old. Upgrade to **v1.4.6** in `Packages/manifest.json`.
+
+### `[ParametrizedIgnore]` is not recognized
+
+If `[ParametrizedIgnore]` on a parameterized test errors as an unknown attribute, the `com.unity.test-framework` package is too old. Upgrade to **v1.4.6** in `Packages/manifest.json`.
+
+### `[Repeat]` or `[Retry]` test times out unexpectedly
+
+`[Timeout(ms)]` covers the **total** execution time across all iterations, not per iteration. When using `[Repeat(n)]`, set `[Timeout]` to at least `n × per-iteration-budget`.
+
+### `LogAssert.ignoreFailingMessages` set in `[SetUp]` has no effect
+
+`LogAssert.ignoreFailingMessages` resets to `false` before each test. Set it explicitly inside the test method where it is needed — it cannot be applied globally via `[SetUp]`.

@@ -1,0 +1,32 @@
+---
+name: code-writing-guide
+description: >-
+  Provides coding guidelines for Unity projects.
+  Make sure to use this skill whenever writing, creating, editing, or modifying code files.
+  This includes implementing new features, fixing bugs, refactoring, adding tests, or any task that results in code changes.
+  Even for small edits or one-line fixes, load this skill to ensure project conventions are followed.
+user-invocable: false
+license: Unlicense
+metadata:
+  author: Koji Hasegawa
+---
+
+Guide for writing code in Unity projects.
+
+## Rules
+
+- Before modifying any code file, check if the editor is in Play Mode. If it is, stop it using the `unity_play_control` tool first — Play Mode may skip recompilation, leaving stale code active.
+- When a change is a structural refactoring — renaming a symbol, extracting a method/interface/base class, changing a method signature, moving a type to another namespace, or deleting a symbol — use the Rider MCP refactoring tools (`rename_refactoring`, `extract_method`, `extract_interface`, `extract_base_class`, `change_api_signature`, `move_type_to_namespace`, `reorganize_namespaces`, `safe_delete`) instead of text edits. They update all references and call sites across the solution.
+- Never create `.meta` files. Unity editor creates them automatically.
+- When editing (creating or modifying) scene (`.unity`) or prefab (`.prefab`) files, use the `edit-scene` skill.
+- When instantiating a prefab multiple times, give each instance a unique `GameObject.name`; otherwise, automated tests cannot identify a specific instance. Use a concrete name (e.g., `"<PrefabName>(Hero)"`) or append an index (e.g., `"<PrefabName>(0)"`).
+
+## Resources
+
+Read the appropriate resource file based on the situation:
+
+- Before writing or modifying any code file: Read `${CLAUDE_SKILL_DIR}/resources/coding-guideline.md`
+- Before writing or modifying any code file: Read `${CLAUDE_SKILL_DIR}/resources/unity-modern-guidelines.md`
+- Before writing or modifying MonoBehaviour lifecycle or event-handling methods (Awake, Start, OnEnable, OnDisable, OnDestroy, Update, FixedUpdate, LateUpdate, OnCollision*, OnTrigger*, OnGUI, OnMouse*, OnBecame*, OnPreCull, OnPreRender, OnPostRender, OnRenderImage, OnRenderObject, OnWillRenderObject, OnAnimatorMove, OnAnimatorIK, OnDrawGizmos): Read `${CLAUDE_SKILL_DIR}/resources/unity-event-functions.md`
+- Before referencing an API, verifying a package behavior, or looking up documentation: Read `${CLAUDE_SKILL_DIR}/resources/unity-references.md`
+- When resolving diagnostics or handling code review feedback: Read `${CLAUDE_SKILL_DIR}/resources/diagnostics-review-feedback.md`

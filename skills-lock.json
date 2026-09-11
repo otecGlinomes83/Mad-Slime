@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "skills": {
+    "code-writing-guide": {
+      "source": "nowsprinting/unity-coding-skills",
+      "sourceType": "github",
+      "skillPath": "skills/code-writing-guide/SKILL.md",
+      "computedHash": "ab568ad10864ef099e91a557e9b62e5dff83ebc3385b13cf7db1004bd804a622"
+    },
+    "edit-scene": {
+      "source": "nowsprinting/unity-coding-skills",
+      "sourceType": "github",
+      "skillPath": "skills/edit-scene/SKILL.md",
+      "computedHash": "497a15553ad6cda3bbbf61d6ae6c2ab0fd94c63e1ac12a1d6881b46c89372a25"
+    },
+    "fix-bug": {
+      "source": "nowsprinting/unity-coding-skills",
+      "sourceType": "github",
+      "skillPath": "skills/fix-bug/SKILL.md",
+      "computedHash": "67cbb30af497be0765e2e82e2bb528fb2a1b6d0c1c54836716ee54d571fedbe4"
+    },
+    "plan-feature": {
+      "source": "nowsprinting/unity-coding-skills",
+      "sourceType": "github",
+      "skillPath": "skills/plan-feature/SKILL.md",
+      "computedHash": "39c024ba04308ac7e006176f7b6e574f2c900a6fe890a8b798e96f9d23ac3e96"
+    },
+    "refine-tests": {
+      "source": "nowsprinting/unity-coding-skills",
+      "sourceType": "github",
+      "skillPath": "skills/refine-tests/SKILL.md",
+      "computedHash": "f8e325898d927090c38dc513ece149988f7ad6356d332361a9f07f1712a7a70c"
+    },
+    "resolve-diagnostics": {
+      "source": "nowsprinting/unity-coding-skills",
+      "sourceType": "github",
+      "skillPath": "skills/resolve-diagnostics/SKILL.md",
+      "computedHash": "a18de84464f5e2e20fb7031ac91f1edf3f9b6dd8958cc95cbe02bced0d802ff5"
+    },
+    "run-tests": {
+      "source": "nowsprinting/unity-coding-skills",
+      "sourceType": "github",
+      "skillPath": "skills/run-tests/SKILL.md",
+      "computedHash": "2c100fe6112da15423524b62520c6d477f29ab57ee5debd6cc41a8c145cfdedb"
+    },
+    "test-designing-guide": {
+      "source": "nowsprinting/unity-coding-skills",
+      "sourceType": "github",
+      "skillPath": "skills/test-designing-guide/SKILL.md",
+      "computedHash": "80549a93c673e255492d3db2829579efb4161a212694ef59d5407fb5656b4c6a"
+    },
+    "test-writing-guide": {
+      "source": "nowsprinting/unity-coding-skills",
+      "sourceType": "github",
+      "skillPath": "skills/test-writing-guide/SKILL.md",
+      "computedHash": "c2c4584cc1f1f29797edda090243508a67cb2cce06971a1ab4caf701d9b8f36c"
+    },
+    "unity-yaml-editing-guide": {
+      "source": "nowsprinting/unity-coding-skills",
+      "sourceType": "github",
+      "skillPath": "skills/unity-yaml-editing-guide/SKILL.md",
+      "computedHash": "aade0d183d626d6a5c09a39e16f08c39607d4846b007da8a189539e816dec437"
+    }
+  }
+}
