@@ -13,40 +13,24 @@ namespace Game
 {
     public sealed class LayoutPreviewDrawer : MonoBehaviour
     {
-        [SerializeField] private LevelsCatalog _catalog;
         [SerializeField] private LevelGenerator _levelGenerator;
-        [SerializeField] private int _previewLevel = 1;
+        [SerializeField] private LayoutsLibrary _library;
+        [SerializeField] private TierTable _tierTable;
+        [SerializeField] private PropSet _propSet;
         [SerializeField] private bool _mirrorX;
         [SerializeField] private bool _mirrorZ;
         [SerializeField] private Color _boundsColor = Color.gray;
         [Space]
         [SerializeField] private LayoutSet _customLayout;
-        [SerializeField] private LevelTheme _customTheme;
 
-        private readonly List<Item> _zonePool = new List<Item>(16);
+        private readonly List<float> _zoneRadii = new List<float>(16);
 
-        private LevelConfigResolver _resolver;
-
-        public LevelsCatalog Catalog => _catalog;
         public LevelGenerator LevelGenerator => _levelGenerator;
-        public int PreviewLevel => _previewLevel;
+        public LayoutsLibrary Library => _library;
+        public PropSet PropSet => _propSet;
         public bool MirrorX => _mirrorX;
         public bool MirrorZ => _mirrorZ;
         public LayoutSet CustomLayout => _customLayout;
-        public LevelTheme CustomTheme => _customTheme;
-
-        public LevelConfigResolver Resolver
-        {
-            get
-            {
-                if (_resolver == null && _catalog != null)
-                {
-                    _resolver = new LevelConfigResolver(_catalog);
-                }
-
-                return _resolver;
-            }
-        }
 
 #if UNITY_EDITOR
         private static GUIStyle _zoneLabelStyle;
@@ -64,7 +48,7 @@ namespace Game
 
         private void OnDrawGizmos()
         {
-            if (_levelGenerator == null)
+            if (_levelGenerator == null || _tierTable == null || _library == null)
             {
                 return;
             }
@@ -74,59 +58,97 @@ namespace Game
 
             if (_customLayout != null)
             {
-                LevelConfig config = ResolveConfig();
-                IReadOnlyList<Item> themePool = ResolveThemePool(config);
-
-                DrawLayoutZones(_customLayout, themePool, 0);
+                DrawLayoutZones(_customLayout, 0);
                 return;
             }
 
-            if (_catalog == null || _catalog.Ranges.Count == 0)
+            for (int layoutIndex = 0; layoutIndex < _library.Layouts.Count; layoutIndex++)
             {
-                return;
-            }
+                LayoutSet layout = _library.Layouts[layoutIndex];
 
-            LevelConfig resolvedConfig = ResolveConfig();
-
-            if (resolvedConfig == null)
-            {
-                return;
-            }
-
-            IReadOnlyList<LayoutSet> layouts = resolvedConfig.Layouts;
-
-            for (int layoutIndex = 0; layoutIndex < layouts.Count; layoutIndex++)
-            {
-                if (layouts[layoutIndex] != null)
+                if (layout != null)
                 {
-                    DrawLayoutZones(layouts[layoutIndex], resolvedConfig.Theme.ItemPool, layoutIndex);
+                    DrawLayoutZones(layout, layoutIndex);
                 }
             }
         }
 
-        private IReadOnlyList<Item> ResolveThemePool(LevelConfig config)
+        private float MaxTierScale(SpawnZone zone)
         {
-            if (_customTheme != null)
+            float maxScale = 1f;
+
+            for (int i = 0; i < _tierTable.Entries.Count; i++)
             {
-                return _customTheme.ItemPool;
+                TierEntry entry = _tierTable.Entries[i];
+
+                if (entry.Tier >= zone.MinTier && entry.Tier <= zone.MaxTier)
+                {
+                    maxScale = Mathf.Max(maxScale, entry.Scale);
+                }
             }
 
-            if (config != null && config.Theme != null)
-            {
-                return config.Theme.ItemPool;
-            }
-
-            return Array.Empty<Item>();
+            return maxScale;
         }
 
-        private LevelConfig ResolveConfig()
+        private void DrawLayoutZones(LayoutSet layout, int layoutIndex)
         {
-            if (_catalog == null || _catalog.Ranges.Count == 0)
-            {
-                return null;
-            }
+            IReadOnlyList<SpawnZone> zones = layout.Zones;
 
-            return Resolver.GetConfigFor(_previewLevel);
+            for (int i = 0; i < zones.Count; i++)
+            {
+                SpawnZone zone = zones[i];
+                Color tierColor = GetTierColor(zone.MinTier);
+
+                Vector2 center = zone.Center;
+
+                if (_mirrorX == true)
+                {
+                    center.x = -center.x;
+                }
+
+                if (_mirrorZ == true)
+                {
+                    center.y = -center.y;
+                }
+
+                float maxScale = MaxTierScale(zone);
+                _zoneRadii.Clear();
+
+                for (int p = 0; p < _propSet.Props.Count; p++)
+                {
+                    if (_propSet.Props[p] != null)
+                    {
+                        _zoneRadii.Add(ItemSize.GetRadiusXZ(_propSet.Props[p]) * maxScale);
+                    }
+                }
+
+                if (_zoneRadii.Count == 0)
+                {
+                    _zoneRadii.Add(maxScale);
+                }
+
+                float spacing = ZoneLayoutPlanner.ResolveSpacing(zone, layout, _zoneRadii);
+                ZoneLayoutPlanner planner = new ZoneLayoutPlanner(new System.Random(layoutIndex * 7919 + i * 17 + 3));
+                planner.Collect(zone, center, spacing, layout);
+
+                if (zone.Shape == SpawnShape.Grid)
+                {
+                    Vector2 halfExtents = GetPositionHalfExtents(planner.Positions);
+                    DrawRectOutline(center, halfExtents.x, halfExtents.y, tierColor);
+                }
+                else if (zone.Shape == SpawnShape.CircleGrid)
+                {
+                    float outerRadius = GetMaxRadialDistance(planner.Positions, center);
+                    DrawZoneOutline(center, outerRadius, tierColor);
+                }
+                else
+                {
+                    DrawZoneOutline(center, zone.Radius, tierColor);
+                }
+
+                DrawZoneDots(planner.Positions, tierColor, spacing);
+                DrawZoneLabel(center, zone, layoutIndex, i, planner.Positions.Count);
+            }
         }
 
         private void DrawMapBounds()
@@ -151,57 +173,6 @@ namespace Game
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(transform.position, 0.4f);
-        }
-
-        private void DrawLayoutZones(LayoutSet layout, IReadOnlyList<Item> themePool, int layoutIndex)
-        {
-            IReadOnlyList<SpawnZone> zones = layout.Zones;
-
-            for (int i = 0; i < zones.Count; i++)
-            {
-                SpawnZone zone = zones[i];
-                Color tierColor = GetTierColor(zone.MinTier);
-
-                Vector2 center = zone.Center;
-
-                if (_mirrorX == true)
-                {
-                    center.x = -center.x;
-                }
-
-                if (_mirrorZ == true)
-                {
-                    center.y = -center.y;
-                }
-
-                float spacing = ZoneLayoutPlanner.ResolveSpacing(zone, layout, FilteredPool(themePool, zone));
-                ZoneLayoutPlanner planner = new ZoneLayoutPlanner(new System.Random(layoutIndex * 7919 + i * 17 + 3));
-                planner.Collect(zone, center, spacing, layout);
-
-                if (zone.Shape == SpawnShape.Grid)
-                {
-                    Vector2 halfExtents = GetPositionHalfExtents(planner.Positions);
-                    DrawRectOutline(center, halfExtents.x, halfExtents.y, tierColor);
-                }
-                else if (zone.Shape == SpawnShape.CircleGrid)
-                {
-                    float outerRadius = GetMaxRadialDistance(planner.Positions, center);
-                    DrawZoneOutline(center, outerRadius, tierColor);
-                }
-                else
-                {
-                    DrawZoneOutline(center, zone.Radius, tierColor);
-                }
-
-                DrawZoneDots(planner.Positions, tierColor, spacing);
-                DrawZoneLabel(center, zone, layoutIndex, i, planner.Positions.Count);
-            }
-        }
-
-        private IReadOnlyList<Item> FilteredPool(IReadOnlyList<Item> themePool, SpawnZone zone)
-        {
-            ZoneLayoutPlanner.FilterPool(themePool, zone, _zonePool);
-            return _zonePool;
         }
 
         private static Vector2 GetPositionHalfExtents(IReadOnlyList<Vector3> positions)

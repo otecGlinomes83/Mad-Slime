@@ -53,6 +53,8 @@ MonoBehaviour:
   _playerProgress: {fileID: 7674206806047798816}
   _levelsCatalog: {fileID: 11400000, guid: 3436c97a2491bd446b1f16ee9fde7fc8, type: 2}
   _localizationService: {fileID: 900000000000000020}
+  _tierTable: {fileID: 11400000, guid: 2b8d4f6a9c1e4d7b8f0a3c5e7d9b1f24, type: 2}
+  _layoutsLibrary: {fileID: 11400000, guid: 6d4a8c2e7f1b493a8c0d5e7f9a1b3c64, type: 2}
 --- !u!114 &7674206806047798816
 MonoBehaviour:
   m_ObjectHideFlags: 0

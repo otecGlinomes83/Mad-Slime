@@ -1,3 +1,4 @@
+using Skills;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,9 @@ namespace Scriptables
     public sealed class LevelConfig : ScriptableObject
     {
         [SerializeField] private LevelTheme _theme;
-        [SerializeField] private List<LayoutSet> _layouts = new List<LayoutSet>();
+        [SerializeField] private PropSet _propSet;
+        [SerializeField, Min(0)] private int _minTier;
+        [SerializeField, Min(0)] private int _maxTier = 3;
         [SerializeField] private float _timerDuration = 90f;
 
         [Header("Quota Generation")]
@@ -19,7 +22,9 @@ namespace Scriptables
         [SerializeField] private int _defaultCountDivisor = 4;
 
         public LevelTheme Theme => _theme;
-        public IReadOnlyList<LayoutSet> Layouts => _layouts;
+        public PropSet PropSet => _propSet;
+        public ItemTier MinTier => (ItemTier)Mathf.Clamp(_minTier, 0, (int)ItemTier.Boss);
+        public ItemTier MaxTier => (ItemTier)Mathf.Clamp(_maxTier, _minTier, (int)ItemTier.Boss);
         public float TimerDuration => _timerDuration;
         public int QuotaTypesMin => _quotaTypesMin;
         public int QuotaTypesMax => _quotaTypesMax;

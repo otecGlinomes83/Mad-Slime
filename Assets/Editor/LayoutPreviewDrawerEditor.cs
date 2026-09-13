@@ -18,19 +18,12 @@ namespace Game
             if (drawer.CustomLayout != null)
             {
                 EditorGUILayout.HelpBox(
-                    $"Scene handles edit Custom Layout ('{drawer.CustomLayout.name}'). Clear the Custom Layout field to edit catalog layouts by index.",
+                    $"Scene handles edit Custom Layout ('{drawer.CustomLayout.name}'). Clear the Custom Layout field to edit library layouts by index.",
                     MessageType.Info);
                 return;
             }
 
-            if (drawer.Catalog == null || drawer.Resolver == null)
-            {
-                return;
-            }
-
-            LevelConfig config = drawer.Resolver.GetConfigFor(drawer.PreviewLevel);
-
-            if (config == null || config.Layouts.Count == 0)
+            if (drawer.Library == null || drawer.Library.Layouts.Count == 0)
             {
                 return;
             }
@@ -38,9 +31,9 @@ namespace Game
             _handleLayoutIndex = Mathf.Clamp(
                 EditorGUILayout.IntField("Handle Layout Index", _handleLayoutIndex),
                 0,
-                config.Layouts.Count - 1);
+                drawer.Library.Layouts.Count - 1);
 
-            LayoutSet selected = config.Layouts[_handleLayoutIndex];
+            LayoutSet selected = drawer.Library.Layouts[_handleLayoutIndex];
 
             if (selected != null)
             {
@@ -63,20 +56,13 @@ namespace Game
 
             if (layout == null)
             {
-                if (drawer.Catalog == null || drawer.Catalog.Ranges.Count == 0)
+                if (drawer.Library == null || drawer.Library.Layouts.Count == 0)
                 {
                     return;
                 }
 
-                LevelConfig config = drawer.Resolver.GetConfigFor(drawer.PreviewLevel);
-
-                if (config == null || config.Layouts.Count == 0)
-                {
-                    return;
-                }
-
-                int layoutIndex = Mathf.Clamp(_handleLayoutIndex, 0, config.Layouts.Count - 1);
-                layout = config.Layouts[layoutIndex];
+                int layoutIndex = Mathf.Clamp(_handleLayoutIndex, 0, drawer.Library.Layouts.Count - 1);
+                layout = drawer.Library.Layouts[layoutIndex];
 
                 if (layout == null)
                 {

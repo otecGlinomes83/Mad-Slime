@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Items;
 using Scriptables;
-using Skills;
 using UnityEngine;
 
 namespace Game
@@ -21,31 +19,7 @@ namespace Game
 
         public IReadOnlyList<Vector3> Positions => _positions;
 
-        public static void FilterPool(IReadOnlyList<Item> themePool, SpawnZone zone, List<Item> result)
-        {
-            result.Clear();
-
-            for (int i = 0; i < themePool.Count; i++)
-            {
-                Item prefab = themePool[i];
-
-                if (prefab == null || prefab.Definition == null)
-                {
-                    continue;
-                }
-
-                ItemTier prefabTier = prefab.Definition.Tier;
-
-                if (prefabTier < zone.MinTier || prefabTier > zone.MaxTier)
-                {
-                    continue;
-                }
-
-                result.Add(prefab);
-            }
-        }
-
-        public static float ResolveSpacing(SpawnZone zone, LayoutSet layout, IReadOnlyList<Item> zonePool)
+        public static float ResolveSpacing(SpawnZone zone, LayoutSet layout, IReadOnlyList<float> zoneRadii)
         {
             if (zone.AutoSpacing == false && zone.Spacing > 0f)
             {
@@ -54,9 +28,9 @@ namespace Game
 
             float maxRadius = 0f;
 
-            for (int i = 0; i < zonePool.Count; i++)
+            for (int i = 0; i < zoneRadii.Count; i++)
             {
-                maxRadius = Mathf.Max(maxRadius, ItemSize.GetRadiusXZ(zonePool[i]));
+                maxRadius = Mathf.Max(maxRadius, zoneRadii[i]);
             }
 
             return Mathf.Max(0.5f, maxRadius * layout.AutoSpacingFactor);

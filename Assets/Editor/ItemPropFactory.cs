@@ -1,7 +1,5 @@
 using System.IO;
 using Items;
-using Scriptables;
-using Skills;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,10 +10,6 @@ namespace EditorTools
         private DefaultAsset _modelsFolder;
         private DefaultAsset _definitionsFolder;
         private DefaultAsset _prefabsFolder;
-        private LevelTheme _theme;
-        private ItemTier _tier = ItemTier.Small;
-        private int _baseMass = 1;
-        private int _massStep = 1;
         private float _colliderPadding = 1.15f;
 
         [MenuItem("Mad Slime/Prop Factory")]
@@ -29,18 +23,12 @@ namespace EditorTools
             EditorGUILayout.HelpBox(
                 "Point the fields at folders and press Generate. For every model prefab in the Models Folder " +
                 "an ItemDefinition asset and an Item prefab (model + BoxCollider + Item) are created. " +
-                "If a LevelTheme is assigned, the new item is appended to its item pool.",
+                "Tiers and masses are assigned per level at bake/generation time, so no per-prop tier here.",
                 MessageType.Info);
 
             _modelsFolder = (DefaultAsset)EditorGUILayout.ObjectField("Models Folder", _modelsFolder, typeof(DefaultAsset), false);
             _definitionsFolder = (DefaultAsset)EditorGUILayout.ObjectField("Definitions Folder", _definitionsFolder, typeof(DefaultAsset), false);
             _prefabsFolder = (DefaultAsset)EditorGUILayout.ObjectField("Prefabs Folder", _prefabsFolder, typeof(DefaultAsset), false);
-            _theme = (LevelTheme)EditorGUILayout.ObjectField("Level Theme (optional)", _theme, typeof(LevelTheme), false);
-
-            EditorGUILayout.Space();
-            _tier = (ItemTier)EditorGUILayout.EnumPopup("Tier", _tier);
-            _baseMass = EditorGUILayout.IntField("Base Mass", _baseMass);
-            _massStep = EditorGUILayout.IntField("Mass Step Per Item", _massStep);
             _colliderPadding = EditorGUILayout.Slider("Collider Padding", _colliderPadding, 1f, 2f);
 
             EditorGUILayout.Space();
@@ -72,8 +60,6 @@ namespace EditorTools
                 return;
             }
 
-            int mass = _baseMass;
-
             foreach (string modelGuid in modelGuids)
             {
                 string modelPath = AssetDatabase.GUIDToAssetPath(modelGuid);
@@ -84,11 +70,8 @@ namespace EditorTools
                     continue;
                 }
 
-                ItemDefinition definition = CreateDefinition(model.name, mass, definitionsPath);
-                Item item = CreateItemPrefab(model, definition, prefabsPath);
-                AppendToTheme(item);
-
-                mass += _massStep;
+                ItemDefinition definition = CreateDefinition(model.name, definitionsPath);
+                CreateItemPrefab(model, definition, prefabsPath);
             }
 
             AssetDatabase.SaveAssets();
@@ -96,12 +79,12 @@ namespace EditorTools
             Debug.Log($"[PropFactory] Generated {modelGuids.Length} props from '{modelsPath}'.");
         }
 
-        private ItemDefinition CreateDefinition(string modelName, int mass, string folderPath)
+        private ItemDefinition CreateDefinition(string modelName, string folderPath)
         {
             ItemDefinition definition = CreateInstance<ItemDefinition>();
             SerializedObject serialized = new SerializedObject(definition);
-            serialized.FindProperty("_baseMass").intValue = mass;
-            serialized.FindProperty("_tier").enumValueIndex = (int)_tier;
+            serialized.FindProperty("_baseMass").intValue = 1;
+            serialized.FindProperty("_tier").enumValueIndex = (int)Skills.ItemTier.Small;
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
             string assetPath = AssetDatabase.GenerateUniqueAssetPath($"{folderPath}/D_{modelName}.asset");
@@ -110,7 +93,7 @@ namespace EditorTools
             return AssetDatabase.LoadAssetAtPath<ItemDefinition>(assetPath);
         }
 
-        private Item CreateItemPrefab(GameObject model, ItemDefinition definition, string folderPath)
+        private void CreateItemPrefab(GameObject model, ItemDefinition definition, string folderPath)
         {
             GameObject root = new GameObject($"Item_{model.name}");
 
@@ -140,29 +123,6 @@ namespace EditorTools
             string prefabPath = AssetDatabase.GenerateUniqueAssetPath($"{folderPath}/Item_{model.name}.prefab");
             PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
             DestroyImmediate(root);
-
-            return AssetDatabase.LoadAssetAtPath<Item>(prefabPath);
-        }
-
-        private void AppendToTheme(Item item)
-        {
-            if (_theme == null || item == null)
-            {
-                return;
-            }
-
-            SerializedObject serialized = new SerializedObject(_theme);
-            SerializedProperty pool = serialized.FindProperty("_itemPool");
-
-            if (pool == null || pool.isArray == false)
-            {
-                Debug.LogWarning("[PropFactory] LevelTheme has no _itemPool list.");
-                return;
-            }
-
-            pool.InsertArrayElementAtIndex(pool.arraySize);
-            pool.GetArrayElementAtIndex(pool.arraySize - 1).objectReferenceValue = item;
-            serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static Bounds ComputeBounds(GameObject instance)

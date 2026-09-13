@@ -1,3 +1,4 @@
+using System;
 using Interfaces;
 using Skills;
 using UnityEngine;
@@ -21,10 +22,21 @@ namespace Items
             _defaultScale = transform.localScale;
         }
 
-        public void Initialize(Vector3 position)
+        public void SetDefinition(ItemDefinition definition)
+        {
+            if (definition == null)
+            {
+                throw new ArgumentNullException(nameof(definition),
+                    $"{name}: SetDefinition requires a non-null definition.");
+            }
+
+            _definition = definition;
+        }
+
+        public void Initialize(Vector3 position, float scale)
         {
             transform.position = position;
-            transform.localScale = _defaultScale;
+            transform.localScale = _defaultScale * scale;
             _collider.enabled = true;
         }
 

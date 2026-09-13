@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a17b3c95e2d84f60b8c9d1e3a5f70b42, type: 3}
+  m_Name: LayoutsLibrary
+  m_EditorClassIdentifier: 
+  _layouts:
+  - {fileID: 11400000, guid: 79f850a49727d7f4baf2325c2abd9ba5, type: 2}
+  - {fileID: 11400000, guid: 0318828e02d25f641a94ce43e11a41b4, type: 2}

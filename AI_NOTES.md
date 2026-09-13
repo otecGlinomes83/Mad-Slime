@@ -193,6 +193,18 @@
 - UniTask без пина коммита в manifest.json.
 - Локализации строк вне таблицы нет — новые UI-строки добавлять через Localization.asset + LocalizedText/`Localization.Get`.
 
+## Волна 8 (2026-09-13): тиры без привязки к пропсам — система запекания
+
+Схема (согласована с владельцем):
+- **Tier Table** (SO, глобальный, лежит `Assets/Scriptables/Tiers/TierTable.asset`): тир → Scale + Mass + BadgeColor + ShortLabel (S/M/L/B). Единственный источник размеров/масс.
+- **Layouts Library** (SO, глобальный, `Assets/Scriptables/Levels/LayoutsLibrary.asset`): общий список LayoutSet'ов для ВСЕХ локаций (из LevelConfig лейауты убраны). Prefill: TableLayoutSet + RoomLayoutSet.
+- **Prop Set** (SO, на локацию): просто префабы единичного размера. `RoomProps` (пуст), `TableProps` (предзаполнен пулом из TableTheme). Внутри два блока: `_props` (руки) и `_variants` (генерит Bake).
+- **Bake** (`Mad Slime → Prop Bake`): PropSet + TierTable → на каждую пару (префаб × тир) дефинишн `D_<Проп>_<Тир>.asset` в `Assets/Scriptables/Items/Baked/<PropSet>/` с иконкой из `Assets/Resources/Icons/<Имя>.png` (фототулза НЕ тронута: одна фотка на пропс, тир на тарелке — бейдж S/M/L/B цветной из Tier Table) + запись в `_variants`.
+- **Рантайм**: случайный лейаут из библиотеки → каждому префабу локации назначается ОДИН тир на весь уровень (случайно в диапазоне LevelConfig Min/MaxTier, с гарантией покрытия каждого тира) → зоны отбирают по назначенному тиру → спавн варианта (скейл тира, масса тира) → квота по вариантам (иконка честного скейла… нет — иконка одна на пропс, бейдж показывает тир).
+- `Item`: + `SetDefinition()` (вариант подменяется на спавне), `Initialize(position, scale)`; ItemDefinition не изменён (варианты — обычные дефинишны).
+- LevelTheme: ItemPool удалён (тема = материал + текстура fill). Prop Factory: без тира/массы/темы — только юнит-префабы + дефолтный Small/1 паспорт.
+- Превью: Preview Level удалён (лейауты глобальны), поля Library/TierTable/PropSet — заполнить на объекте drawer'а в сцене!
+
 ## Как проверить компиляцию самому (без редактора)
 `~/Unity/Hub/Editor/2022.3.62f2/Editor/Unity -batchmode -quit -nographics -projectPath . -logFile /tmp/u.log`
 Успех = строка «Exiting batchmode successfully» в логе. Только когда проект не открыт в редакторе (нет Temp/UnityLockfile).

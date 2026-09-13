@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Items;
 using Quota;
 using Scriptables;
+using Skills;
 using UnityEngine;
 using VContainer;
 using Random = UnityEngine.Random;
@@ -16,8 +17,10 @@ namespace Game
         [SerializeField] private Vector2 _mapSize = new Vector2(30f, 30f);
         [SerializeField] private Collectables.Collector _collector;
 
-        private readonly List<Item> _zonePool = new List<Item>(16);
+        private readonly Dictionary<Item, ItemDefinition> _assignedVariants = new Dictionary<Item, ItemDefinition>();
         private readonly Dictionary<ItemDefinition, int> _spawnedCounts = new Dictionary<ItemDefinition, int>();
+        private readonly List<Item> _zonePool = new List<Item>(16);
+        private readonly List<float> _zoneRadii = new List<float>(16);
         private readonly ZoneLayoutPlanner _layoutPlanner = new ZoneLayoutPlanner(new System.Random());
 
         private LevelConfigResolver _configResolver;
@@ -25,18 +28,22 @@ namespace Game
         private LevelProgress _levelProgress;
         private ItemPool _itemPool;
         private QuotaGenerator _quotaGenerator;
+        private TierTable _tierTable;
+        private LayoutsLibrary _layoutsLibrary;
 
         public Vector2 MapSize => _mapSize;
 
         [Inject]
         public void Construct(LevelConfigResolver configResolver, PlayerProgress progress, LevelProgress levelProgress,
-            ItemPool itemPool, QuotaGenerator quotaGenerator)
+            ItemPool itemPool, QuotaGenerator quotaGenerator, TierTable tierTable, LayoutsLibrary layoutsLibrary)
         {
             _configResolver = configResolver;
             _progress = progress;
             _levelProgress = levelProgress;
             _itemPool = itemPool;
             _quotaGenerator = quotaGenerator;
+            _tierTable = tierTable;
+            _layoutsLibrary = layoutsLibrary;
         }
 
         private void Awake()
@@ -80,43 +87,126 @@ namespace Game
         private void Generate()
         {
             LevelConfig config = _configResolver.GetConfigFor(_progress.CurrentLevel);
+            LayoutSet layout = PickLayout();
 
             ApplyTheme(config);
             _spawnedCounts.Clear();
-            SpawnItems(config);
+            AssignTiers(config);
+            SpawnItems(config, layout);
 
             List<QuotaEntry> quota = _quotaGenerator.Generate(_spawnedCounts, config);
             _levelProgress.Reset(quota, config.DefaultCountDivisor);
 
             Debug.Log(
-                $"{name}: level {_progress.CurrentLevel} from '{config.name}': spawned {GetTotalSpawnedCount()} items, quota types {quota.Count}.");
+                $"{name}: level {_progress.CurrentLevel} from '{config.name}', layout '{layout.name}': spawned {GetTotalSpawnedCount()} items, quota types {quota.Count}.");
         }
 
-        private int GetTotalSpawnedCount()
+        private LayoutSet PickLayout()
         {
-            int total = 0;
-
-            foreach (KeyValuePair<ItemDefinition, int> pair in _spawnedCounts)
+            if (_layoutsLibrary == null)
             {
-                total += pair.Value;
+                throw new InvalidOperationException(
+                    $"{name}: LayoutsLibrary was not injected. Assign it in the ProjectScope.");
             }
 
-            return total;
-        }
-
-        private void ApplyTheme(LevelConfig config)
-        {
-            if (_floorRenderer == null || config.Theme.FloorMaterial == null)
+            if (_layoutsLibrary.Layouts.Count == 0)
             {
-                return;
+                throw new InvalidOperationException(
+                    $"{name}: LayoutsLibrary '{_layoutsLibrary.name}' is empty. Add at least one LayoutSet.");
             }
 
-            _floorRenderer.sharedMaterial = config.Theme.FloorMaterial;
+            LayoutSet layout = _layoutsLibrary.Layouts[Random.Range(0, _layoutsLibrary.Layouts.Count)];
+
+            if (layout == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: LayoutsLibrary '{_layoutsLibrary.name}' contains an empty slot. Remove it or assign a LayoutSet asset.");
+            }
+
+            if (layout.Zones.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: LayoutSet '{layout.name}' has no zones. Add at least one SpawnZone.");
+            }
+
+            return layout;
         }
 
-        private void SpawnItems(LevelConfig config)
+        private void AssignTiers(LevelConfig config)
         {
-            LayoutSet layout = PickLayout(config);
+            _assignedVariants.Clear();
+
+            if (config.PropSet == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: LevelConfig '{config.name}' has no PropSet assigned. Drag a PropSet asset into the _propSet field.");
+            }
+
+            IReadOnlyList<PropVariant> variants = config.PropSet.Variants;
+
+            if (variants.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PropSet '{config.PropSet.name}' has no baked variants. Run Mad Slime → Prop Bake.");
+            }
+
+            Dictionary<Item, List<ItemDefinition>> variantsByPrefab = new Dictionary<Item, List<ItemDefinition>>();
+
+            foreach (PropVariant variant in variants)
+            {
+                if (variant == null || variant.Prefab == null || variant.Definition == null)
+                {
+                    throw new InvalidOperationException(
+                        $"{name}: PropSet '{config.PropSet.name}' contains an empty variant. Re-run Mad Slime → Prop Bake.");
+                }
+
+                if (InTierRange(variant.Definition.Tier, config) == false)
+                {
+                    continue;
+                }
+
+                if (variantsByPrefab.TryGetValue(variant.Prefab, out List<ItemDefinition> list) == false)
+                {
+                    list = new List<ItemDefinition>();
+                    variantsByPrefab.Add(variant.Prefab, list);
+                }
+
+                list.Add(variant.Definition);
+            }
+
+            if (variantsByPrefab.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PropSet '{config.PropSet.name}' has no variants within tier range {config.MinTier}-{config.MaxTier}. Re-run Prop Bake.");
+            }
+
+            List<Item> prefabs = new List<Item>(variantsByPrefab.Keys);
+            Shuffle(prefabs);
+
+            List<ItemTier> tiers = TiersInRange(config);
+            int guaranteedCount = Mathf.Min(tiers.Count, prefabs.Count);
+
+            for (int i = 0; i < prefabs.Count; i++)
+            {
+                Item prefab = prefabs[i];
+                List<ItemDefinition> options = variantsByPrefab[prefab];
+                ItemDefinition chosen;
+
+                if (i < guaranteedCount)
+                {
+                    chosen = FindByTier(options, tiers[i]);
+                }
+                else
+                {
+                    chosen = options[Random.Range(0, options.Count)];
+                }
+
+                _assignedVariants[prefab] = chosen;
+            }
+        }
+
+        private void SpawnItems(LevelConfig config, LayoutSet layout)
+        {
             bool mirrorX = layout.AllowMirroring == true && Random.value > 0.5f;
             bool mirrorZ = layout.AllowMirroring == true && Random.value > 0.5f;
 
@@ -126,16 +216,16 @@ namespace Game
             {
                 SpawnZone zone = zones[i];
 
-                ZoneLayoutPlanner.FilterPool(config.Theme.ItemPool, zone, _zonePool);
+                FillZonePool(zone);
 
                 if (_zonePool.Count == 0)
                 {
                     Debug.LogWarning(
-                        $"{name}: zone {i} ({zone.Shape}) skipped: theme '{config.Theme.name}' has no Item prefab with assigned Definition for tiers {zone.MinTier}-{zone.MaxTier}.");
+                        $"{name}: zone {i} ({zone.Shape}) skipped: no props assigned to tiers {zone.MinTier}-{zone.MaxTier} on this run.");
                     continue;
                 }
 
-                float spacing = ZoneLayoutPlanner.ResolveSpacing(zone, layout, _zonePool);
+                float spacing = ZoneLayoutPlanner.ResolveSpacing(zone, layout, _zoneRadii);
 
                 Vector2 center = zone.Center;
 
@@ -153,40 +243,84 @@ namespace Game
 
                 for (int j = 0; j < _layoutPlanner.Positions.Count; j++)
                 {
-                    Item itemPrefab = _zonePool[Random.Range(0, _zonePool.Count)];
+                    Item prefab = _zonePool[Random.Range(0, _zonePool.Count)];
+                    ItemDefinition definition = _assignedVariants[prefab];
+                    float scale = _tierTable.Get(definition.Tier).Scale;
 
-                    Item item = _itemPool.Get(itemPrefab);
-                    item.Initialize(ClampToMap(_layoutPlanner.Positions[j], spacing * 0.5f));
+                    Item item = _itemPool.Get(prefab);
+                    item.SetDefinition(definition);
+                    item.Initialize(ClampToMap(_layoutPlanner.Positions[j], spacing * 0.5f), scale);
                     item.transform.SetParent(_itemsRoot, true);
 
-                    CountSpawned(itemPrefab.Definition);
+                    CountSpawned(definition);
                 }
             }
         }
 
-        private LayoutSet PickLayout(LevelConfig config)
+        private void FillZonePool(SpawnZone zone)
         {
-            if (config.Layouts.Count == 0)
+            _zonePool.Clear();
+            _zoneRadii.Clear();
+
+            foreach (KeyValuePair<Item, ItemDefinition> pair in _assignedVariants)
             {
-                throw new InvalidOperationException(
-                    $"{name}: LevelConfig '{config.name}' has no LayoutSets assigned. Add at least one LayoutSet to the _layouts list.");
+                if (pair.Value.Tier < zone.MinTier || pair.Value.Tier > zone.MaxTier)
+                {
+                    continue;
+                }
+
+                _zonePool.Add(pair.Key);
+                _zoneRadii.Add(ItemSize.GetRadiusXZ(pair.Key) * _tierTable.Get(pair.Value.Tier).Scale);
+            }
+        }
+
+        private void Shuffle(List<Item> list)
+        {
+            for (int i = list.Count - 1; i > 0; i--)
+            {
+                int swapIndex = Random.Range(0, i + 1);
+                (list[i], list[swapIndex]) = (list[swapIndex], list[i]);
+            }
+        }
+
+        private static List<ItemTier> TiersInRange(LevelConfig config)
+        {
+            List<ItemTier> tiers = new List<ItemTier>();
+
+            for (int value = (int)config.MinTier; value <= (int)config.MaxTier; value++)
+            {
+                tiers.Add((ItemTier)value);
             }
 
-            LayoutSet layout = config.Layouts[Random.Range(0, config.Layouts.Count)];
+            return tiers;
+        }
 
-            if (layout == null)
+        private static bool InTierRange(ItemTier tier, LevelConfig config)
+        {
+            return tier >= config.MinTier && tier <= config.MaxTier;
+        }
+
+        private static ItemDefinition FindByTier(List<ItemDefinition> options, ItemTier tier)
+        {
+            for (int i = 0; i < options.Count; i++)
             {
-                throw new InvalidOperationException(
-                    $"{name}: LevelConfig '{config.name}' contains an empty LayoutSet slot. Remove it or assign a LayoutSet asset.");
+                if (options[i].Tier == tier)
+                {
+                    return options[i];
+                }
             }
 
-            if (layout.Zones.Count == 0)
+            return options[0];
+        }
+
+        private void ApplyTheme(LevelConfig config)
+        {
+            if (_floorRenderer == null || config.Theme == null || config.Theme.FloorMaterial == null)
             {
-                throw new InvalidOperationException(
-                    $"{name}: LayoutSet '{layout.name}' has no zones. Add at least one SpawnZone.");
+                return;
             }
 
-            return layout;
+            _floorRenderer.sharedMaterial = config.Theme.FloorMaterial;
         }
 
         private void CountSpawned(ItemDefinition definition)
@@ -199,6 +333,18 @@ namespace Game
             {
                 _spawnedCounts[definition] = 1;
             }
+        }
+
+        private int GetTotalSpawnedCount()
+        {
+            int total = 0;
+
+            foreach (KeyValuePair<ItemDefinition, int> pair in _spawnedCounts)
+            {
+                total += pair.Value;
+            }
+
+            return total;
         }
 
         private Vector3 ClampToMap(Vector3 localPosition, float margin)
