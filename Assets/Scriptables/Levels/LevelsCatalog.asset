@@ -18,4 +18,4 @@ MonoBehaviour:
     _config: {fileID: 11400000, guid: bc5effaf033203d4f93a47ab45f7ebe4, type: 2}
   - _fromLevel: 5
     _toLevel: 6
-    _config: {fileID: 11400000, guid: bc5effaf033203d4f93a47ab45f7ebe4, type: 2}
+    _config: {fileID: 11400000, guid: 44bcfa6c2543cba479d828e5bd89eabf, type: 2}

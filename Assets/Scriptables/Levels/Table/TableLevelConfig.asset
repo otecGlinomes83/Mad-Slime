@@ -15,7 +15,7 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: 49822d7c5f452ed46b3f8bbdaf7ac2c9, type: 2}
   _propSet: {fileID: 11400000, guid: 4a1c8e6d9b3f47c28e0a5d7c9f2b4e81, type: 2}
   _minTier: 0
-  _maxTier: 1
+  _maxTier: 3
   _timerDuration: 120
   _quotaTypesMin: 3
   _quotaTypesMax: 3

@@ -49,6 +49,15 @@ namespace Collectables
 
         private void OnItemDetected(Items.Item item)
         {
+            if (item.Definition == null)
+            {
+                Debug.LogError(
+                    $"{name}: detected item '{item.name}' has no Definition assigned. " +
+                    "Assign a definition to its prefab or delete the item from the scene.",
+                    item.gameObject);
+                return;
+            }
+
             if (item.Definition.Tier > _tierHolder.CurrentTier)
             {
                 return;

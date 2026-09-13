@@ -19,7 +19,10 @@ namespace Items
 
         private void Awake()
         {
-            _defaultScale = transform.localScale;
+            _defaultScale = new Vector3(
+                Mathf.Abs(transform.localScale.x),
+                Mathf.Abs(transform.localScale.y),
+                Mathf.Abs(transform.localScale.z));
         }
 
         public void SetDefinition(ItemDefinition definition)
