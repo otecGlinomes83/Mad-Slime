@@ -115,21 +115,35 @@ namespace Game
                     $"{name}: LayoutsLibrary '{_layoutsLibrary.name}' is empty. Add at least one LayoutSet.");
             }
 
-            LayoutSet layout = _layoutsLibrary.Layouts[Random.Range(0, _layoutsLibrary.Layouts.Count)];
+            List<LayoutSet> playable = new List<LayoutSet>(_layoutsLibrary.Layouts.Count);
 
-            if (layout == null)
+            foreach (LayoutSet layout in _layoutsLibrary.Layouts)
             {
-                throw new InvalidOperationException(
-                    $"{name}: LayoutsLibrary '{_layoutsLibrary.name}' contains an empty slot. Remove it or assign a LayoutSet asset.");
+                if (layout == null)
+                {
+                    Debug.LogWarning(
+                        $"{name}: LayoutsLibrary '{_layoutsLibrary.name}' has an empty slot, skipped.");
+                    continue;
+                }
+
+                if (layout.Zones.Count == 0)
+                {
+                    Debug.LogWarning(
+                        $"{name}: LayoutSet '{layout.name}' has no zones, skipped. Add zones to it or remove it from the library.");
+                    continue;
+                }
+
+                playable.Add(layout);
             }
 
-            if (layout.Zones.Count == 0)
+            if (playable.Count == 0)
             {
                 throw new InvalidOperationException(
-                    $"{name}: LayoutSet '{layout.name}' has no zones. Add at least one SpawnZone.");
+                    $"{name}: LayoutsLibrary '{_layoutsLibrary.name}' has no playable layouts — all are empty or zone-less. " +
+                    "Fill at least one LayoutSet with zones.");
             }
 
-            return layout;
+            return playable[Random.Range(0, playable.Count)];
         }
 
         private void AssignTiers(LevelConfig config)
