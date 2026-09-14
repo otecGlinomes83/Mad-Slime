@@ -19,17 +19,17 @@ MonoBehaviour:
     _badgeColor: {r: 0.45, g: 1, b: 0.45, a: 1}
     _shortLabel: S
   - _tier: 1
-    _scale: 2.2
-    _mass: 5
+    _scale: 20
+    _mass: 500
     _badgeColor: {r: 1, g: 0.92, b: 0.3, a: 1}
     _shortLabel: M
   - _tier: 2
-    _scale: 4.5
-    _mass: 20
+    _scale: 50
+    _mass: 1000
     _badgeColor: {r: 1, g: 0.55, b: 0.15, a: 1}
     _shortLabel: L
   - _tier: 3
-    _scale: 8
-    _mass: 60
+    _scale: 100
+    _mass: 10000
     _badgeColor: {r: 1, g: 0.25, b: 0.25, a: 1}
     _shortLabel: B
