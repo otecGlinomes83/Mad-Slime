@@ -297,3 +297,14 @@
    Color over Lifetime — фейд, Renderer: Material = материал из п.2, Billboard, Custom Vertex Streams
    += Custom1.x.
 4. Game → Collector → WeightPopup → _template = префаб из п.3. _digitSpacing ≈ Start Size.
+
+## Волна 13 (2026-09-15): попап массы отложен владельцем — вырезан весь механизм
+
+Владелец решил продумать позже: убраны партиклы при поглощении ПОЛНОСТЬЮ — WeightPopup, тулза
+Bake Digit Atlas, шейдер DigitParticle, папка Assets/Fx, поля/компоненты из Collector и Game.unity.
+Поглощение сейчас не даёт визуального отклика цифрами (только звук тира и сама анимация Absorber'а).
+
+Если решение изменится — готовая реализация лежит в коммите 89be06f (ветки main/MadSlimeV2/
+otecGlinomes83/MadSlime): вернуть через git cherry-pick / checkout нужных путей. Технические находки
+той реализации (нет per-particle frame API в 2022.3 → Custom1.x + шейдер; Get/SetActiveVertexStreams —
+методы) останутся верными и после возврата.

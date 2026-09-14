@@ -2171,21 +2171,6 @@ MonoBehaviour:
   _group: {fileID: 0}
   _clip: {fileID: 0}
   _volume: 1
---- !u!114 &900000000000000032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4801891008915828649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62f8b0d4a9c15e2783b6d0f4a8c2e79d, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  _template: {fileID: 0}
-  _digitSpacing: 0.8
-  _showPlus: 1
 --- !u!1 &908057355017585183
 GameObject:
   m_ObjectHideFlags: 0
@@ -2240,8 +2225,6 @@ MonoBehaviour:
   _tierHolder: {fileID: 7992803093969525695}
   _detector: {fileID: 3196850747484158986}
   _absorber: {fileID: 6460579104252903941}
-  _absorptionFx: {fileID: 900000000000000031}
-  _weightPopup: {fileID: 900000000000000032}
 --- !u!224 &1278592298309326954
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3201,7 +3184,6 @@ GameObject:
   - component: {fileID: 1178948977339683769}
   - component: {fileID: 3196850747484158986}
   - component: {fileID: 6460579104252903941}
-  - component: {fileID: 900000000000000032}
   m_Layer: 6
   m_Name: Collector
   m_TagString: Untagged
