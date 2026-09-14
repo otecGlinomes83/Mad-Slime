@@ -737,7 +737,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _closeButton: {fileID: 5326996678069395830}
   _entriesText: {fileID: 900000000000000043}
-  _config: {fileID: 11400000, guid: b59c6a2894f8674e08f7c3251741fb73, type: 2}
+  _config: {fileID: 11400000, guid: 8523d7049496a3ee69d341d0a78ea84c, type: 2}
 --- !u!82 &6148277387167173969
 AudioSource:
   m_ObjectHideFlags: 0

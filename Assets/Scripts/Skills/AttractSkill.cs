@@ -37,6 +37,20 @@ namespace Skills
                 throw new InvalidOperationException(
                     $"{name}: AttractableDetector is not assigned. Drag an AttractableDetector component into the _detector field.");
             }
+
+            if (_config.ApproachMultiplier < 1f)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AttractConfig '{_config.name}' has ApproachMultiplier < 1. " +
+                    "It is the pull speed multiplier at the player's center, so it must be 1 or greater.");
+            }
+
+            if (_config.ApproachPower <= 0f)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AttractConfig '{_config.name}' has ApproachPower <= 0. " +
+                    "It must be positive: 1 = linear, 2 = parabola, higher values approach exponential growth.");
+            }
         }
 
         protected override void OnEnable()
@@ -79,12 +93,18 @@ namespace Skills
             Vector3 toPlayer = transform.position - target.position;
             toPlayer.y = 0f;
 
-            if (toPlayer.sqrMagnitude < MinDistanceSqr)
+            float sqrDistance = toPlayer.sqrMagnitude;
+
+            if (sqrDistance < MinDistanceSqr)
             {
                 return;
             }
 
-            target.position += toPlayer.normalized * (_config.AttractionForce * Time.deltaTime);
+            float distance = Mathf.Sqrt(sqrDistance);
+            float approach = 1f - Mathf.Clamp01(distance / _detector.Radius);
+            float multiplier = 1f + (_config.ApproachMultiplier - 1f) * Mathf.Pow(approach, _config.ApproachPower);
+
+            target.position += toPlayer.normalized * (_config.AttractionForce * multiplier * Time.deltaTime);
         }
     }
 }

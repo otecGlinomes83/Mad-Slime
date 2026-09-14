@@ -6,7 +6,11 @@ namespace Skills
     public sealed class AttractConfig : SkillConfig
     {
         [SerializeField] private float _attractionForce = 6f;
+        [SerializeField] private float _approachMultiplier = 3f;
+        [SerializeField] private float _approachPower = 2f;
 
         public float AttractionForce => _attractionForce;
+        public float ApproachMultiplier => _approachMultiplier;
+        public float ApproachPower => _approachPower;
     }
 }

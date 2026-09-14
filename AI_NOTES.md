@@ -308,3 +308,20 @@ Bake Digit Atlas, шейдер DigitParticle, папка Assets/Fx, поля/к�
 otecGlinomes83/MadSlime): вернуть через git cherry-pick / checkout нужных путей. Технические находки
 той реализации (нет per-particle frame API в 2022.3 → Custom1.x + шейдер; Get/SetActiveVertexStreams —
 методы) останутся верными и после возврата.
+
+## Волна 14 (2026-09-15): фиксы из плейтеста + ускорение притяжения
+
+Баги из лога:
+1. Fill-сцена: LeaderboardReporter падал «YandexConfig is not assigned». Причина: в поле лежал
+   **RewardConfig** (гуид b59c6a28...) — чужой тип, Unity резолвит как null. Тот же битый референс
+   был и в LeaderboardMenu.prefab. Оба заменены на реальный YandexConfig (Assets/Scriptables/AD/,
+   гуид 8523d704...).
+2. SkillsConfig: 2 из 4 записей ссылались на удалённые ассеты (гуиды 0c64651c/1900ca26) — warning
+   при каждом показе Level Reward Popup. Мёртвые строки удалены, остались LowAttract/MediumAttract.
+
+Фича: притяжение скиллом ускоряется у центра.
+- AttractConfig: + ApproachMultiplier (множитель скорости в самом центре, default 3),
+  + ApproachPower (степень кривой: 1 линейно, 2 парабола, выше — «экспонента», default 2).
+- AttractSkill.OnAttractableDetected: multiplier = 1 + (M-1) * (1 - d/R)^Power, где R — текущий
+  радиус AttractableDetector'а (растёт с тиром). На краю радиуса скорость базовая, к центру растёт.
+  Валидация M >= 1, Power > 0 в Awake с подсказками.
