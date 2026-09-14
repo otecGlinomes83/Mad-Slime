@@ -19,6 +19,12 @@ namespace Items
 
         private void Awake()
         {
+            if (_collider == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Collider is not assigned. Drag a Collider into the _collider field.");
+            }
+
             _defaultScale = new Vector3(
                 Mathf.Abs(transform.localScale.x),
                 Mathf.Abs(transform.localScale.y),

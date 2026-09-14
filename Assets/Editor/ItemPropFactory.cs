@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Items;
 using UnityEditor;
@@ -135,11 +136,23 @@ namespace EditorTools
                 world.Encapsulate(renderers[i].bounds);
             }
 
-            return new Bounds
+            Matrix4x4 worldToLocal = instance.transform.worldToLocalMatrix;
+
+            Vector3 localSize = new Vector3
             (
-                instance.transform.InverseTransformPoint(world.center),
-                instance.transform.InverseTransformVector(world.size)
+                Mathf.Abs(worldToLocal.m00) * world.size.x + Mathf.Abs(worldToLocal.m01) * world.size.y + Mathf.Abs(worldToLocal.m02) * world.size.z,
+                Mathf.Abs(worldToLocal.m10) * world.size.x + Mathf.Abs(worldToLocal.m11) * world.size.y + Mathf.Abs(worldToLocal.m12) * world.size.z,
+                Mathf.Abs(worldToLocal.m20) * world.size.x + Mathf.Abs(worldToLocal.m21) * world.size.y + Mathf.Abs(worldToLocal.m22) * world.size.z
             );
+
+            if (localSize.x <= 0f || localSize.y <= 0f || localSize.z <= 0f)
+            {
+                throw new InvalidOperationException(
+                    $"[PropFactory] '{instance.name}': computed a degenerate collider size {localSize} " +
+                    "from world size " + world.size + ". Check the model's scale in its hierarchy.");
+            }
+
+            return new Bounds(instance.transform.InverseTransformPoint(world.center), localSize);
         }
 
         private static string GetFolderPath(DefaultAsset folder, string fallback)
