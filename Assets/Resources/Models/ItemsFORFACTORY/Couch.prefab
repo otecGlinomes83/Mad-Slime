@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 8351658570819504376}
   - component: {fileID: 3617573193156488829}
   - component: {fileID: 5500070978415210704}
-  - component: {fileID: 1757832152835945712}
-  - component: {fileID: 8780229775508034221}
   m_Layer: 0
   m_Name: Couch
   m_TagString: Untagged
@@ -85,38 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1757832152835945712
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2145431430527378247}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a77683e9bb44744928d3066b37ee7a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _definition: {fileID: 11400000, guid: d24d3b27b1383cc4e80327fc78a7797e, type: 2}
-  _collider: {fileID: 8780229775508034221}
---- !u!65 &8780229775508034221
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2145431430527378247}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.5605884, y: 0.7705592, z: 0.7455283}
-  m_Center: {x: 0, y: 0.38238275, z: -0.01463455}

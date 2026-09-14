@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 7319805613229858893}
   - component: {fileID: 3114354111441378441}
   - component: {fileID: 1839487413851446523}
-  - component: {fileID: 7457496363532437724}
-  - component: {fileID: 9140609931132370537}
   m_Layer: 0
   m_Name: Book_08
   m_TagString: Untagged
@@ -85,38 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7457496363532437724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6608224049038899812}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a77683e9bb44744928d3066b37ee7a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _definition: {fileID: 11400000, guid: 56124b4886f5c08418cb835c857d808d, type: 2}
-  _collider: {fileID: 9140609931132370537}
---- !u!65 &9140609931132370537
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6608224049038899812}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.24618492, y: 0.14832386, z: 0.34139836}
-  m_Center: {x: 0.0051715937, y: 0.074671015, z: 0.007386596}

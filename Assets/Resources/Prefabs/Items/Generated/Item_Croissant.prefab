@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5457752654000067709}
   - component: {fileID: 467206739712457403}
   - component: {fileID: 5227165341344782142}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Item_Croissant
   m_TagString: Untagged
   m_Icon: {fileID: 0}

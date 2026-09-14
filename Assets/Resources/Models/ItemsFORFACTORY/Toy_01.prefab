@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 4068645088334385659}
   - component: {fileID: 3144992837782328420}
   - component: {fileID: 4038574846542932063}
-  - component: {fileID: 8517031746473288553}
-  - component: {fileID: 7646070015917688615}
   m_Layer: 0
   m_Name: Toy_01
   m_TagString: Untagged
@@ -85,38 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8517031746473288553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6172513090636646739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a77683e9bb44744928d3066b37ee7a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _definition: {fileID: 11400000, guid: 2b5bb4e1ff6a7554fa5394aca54aadbe, type: 2}
-  _collider: {fileID: 7646070015917688615}
---- !u!65 &7646070015917688615
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6172513090636646739}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.28771418, y: 0.2788018, z: 0.2666241}
-  m_Center: {x: -0.030938886, y: 0.13477151, z: -0.051183544}

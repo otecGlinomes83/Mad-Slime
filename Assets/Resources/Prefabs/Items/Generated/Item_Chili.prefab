@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 136248459078753921}
   - component: {fileID: 1763375258491047169}
   - component: {fileID: 5854046532287524286}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Item_Chili
   m_TagString: Untagged
   m_Icon: {fileID: 0}

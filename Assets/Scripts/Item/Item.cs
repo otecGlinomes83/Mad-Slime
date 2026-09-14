@@ -13,9 +13,35 @@ namespace Items
         private Vector3 _defaultScale;
 
         public ItemDefinition Definition => _definition;
-        public int Mass => _definition.BaseMass;
-        public ItemTier Tier => Definition.Tier;
         public Transform Self => transform;
+
+        public int Mass
+        {
+            get
+            {
+                if (_definition == null)
+                {
+                    throw new InvalidOperationException(
+                        $"{name}: Mass requested but Definition is null. Assign a definition on the prefab or via SetDefinition.");
+                }
+
+                return _definition.BaseMass;
+            }
+        }
+
+        public ItemTier Tier
+        {
+            get
+            {
+                if (_definition == null)
+                {
+                    throw new InvalidOperationException(
+                        $"{name}: Tier requested but Definition is null. Assign a definition on the prefab or via SetDefinition.");
+                }
+
+                return _definition.Tier;
+            }
+        }
 
         private void Awake()
         {

@@ -96,7 +96,18 @@ namespace EditorTools
 
         private void CreateItemPrefab(GameObject model, ItemDefinition definition, string folderPath)
         {
-            GameObject root = new GameObject($"Item_{model.name}");
+            int collectableLayer = LayerMask.NameToLayer("Collectable");
+
+            if (collectableLayer < 0)
+            {
+                throw new InvalidOperationException(
+                    "[PropFactory] Layer 'Collectable' does not exist. Add it in Project Settings → Tags and Layers.");
+            }
+
+            GameObject root = new GameObject($"Item_{model.name}")
+            {
+                layer = collectableLayer
+            };
 
             GameObject modelInstance = (GameObject)PrefabUtility.InstantiatePrefab(model, root.transform);
             modelInstance.transform.localPosition = Vector3.zero;

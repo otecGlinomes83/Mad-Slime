@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2114780656655411435}
   - component: {fileID: 5261515415763270817}
   - component: {fileID: 931133692510989102}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Item_Avocado
   m_TagString: Untagged
   m_Icon: {fileID: 0}

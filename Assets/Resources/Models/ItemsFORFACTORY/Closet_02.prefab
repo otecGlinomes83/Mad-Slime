@@ -94,8 +94,6 @@ GameObject:
   - component: {fileID: 7496280609452342201}
   - component: {fileID: 6406033220344487311}
   - component: {fileID: 6685254537188208710}
-  - component: {fileID: 885385737305649600}
-  - component: {fileID: 8303515207299790071}
   m_Layer: 0
   m_Name: Closet_02
   m_TagString: Untagged
@@ -170,41 +168,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &885385737305649600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5493099196583423018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a77683e9bb44744928d3066b37ee7a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _definition: {fileID: 11400000, guid: 7655b2d54ebae8146a9b73a6bfb4f38d, type: 2}
-  _collider: {fileID: 8303515207299790071}
---- !u!65 &8303515207299790071
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5493099196583423018}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.79999995, y: 1.5533386, z: 0.39999998}
-  m_Center: {x: 0, y: 0.77633065, z: 0.19999999}
 --- !u!1 &8585446546752547147
 GameObject:
   m_ObjectHideFlags: 0

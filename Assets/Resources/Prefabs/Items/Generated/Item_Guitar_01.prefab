@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6858784105999834973}
   - component: {fileID: 876334937752417567}
   - component: {fileID: 4119505536415388154}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Item_Guitar_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

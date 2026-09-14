@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1451440052793984846}
   - component: {fileID: 3197283381486693130}
   - component: {fileID: 1709879387467425456}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Item_Toothbrush_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

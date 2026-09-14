@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2256740051923704686}
   - component: {fileID: 8239516980572853572}
   - component: {fileID: 7562192882590264391}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Item_Toothpaste_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

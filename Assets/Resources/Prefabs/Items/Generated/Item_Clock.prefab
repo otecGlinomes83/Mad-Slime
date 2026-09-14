@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5675848299174250762}
   - component: {fileID: 2029390022674998198}
   - component: {fileID: 6855437146391536692}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Item_Clock
   m_TagString: Untagged
   m_Icon: {fileID: 0}

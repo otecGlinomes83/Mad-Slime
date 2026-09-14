@@ -68,58 +68,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Avocado
       objectReference: {fileID: 0}
-    - target: {fileID: 684980232007776303, guid: ffdd9ce98f108ca4fb8b4cbf8cb383e7, type: 3}
-      propertyPath: m_Layer
-      value: 3
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 684980232007776303, guid: ffdd9ce98f108ca4fb8b4cbf8cb383e7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 24947962748573806}
-    - targetCorrespondingSourceObject: {fileID: 684980232007776303, guid: ffdd9ce98f108ca4fb8b4cbf8cb383e7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2509444939695066244}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ffdd9ce98f108ca4fb8b4cbf8cb383e7, type: 3}
---- !u!1 &5287559274734883444 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 684980232007776303, guid: ffdd9ce98f108ca4fb8b4cbf8cb383e7, type: 3}
-  m_PrefabInstance: {fileID: 4674919761163446875}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &24947962748573806
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5287559274734883444}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a77683e9bb44744928d3066b37ee7a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _definition: {fileID: 11400000, guid: 95927cff0e6e93f48a2da36616b00be9, type: 2}
-  _collider: {fileID: 2509444939695066244}
---- !u!65 &2509444939695066244
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5287559274734883444}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.097400665, y: 0.07137953, z: 0.1396006}
-  m_Center: {x: -0.000000057742, y: -0.002506487, z: -0.005039528}

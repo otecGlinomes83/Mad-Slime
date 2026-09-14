@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 6925944735263521518}
   - component: {fileID: 2927587888832269372}
   - component: {fileID: 952449552610379152}
-  - component: {fileID: 5643121965310686429}
-  - component: {fileID: 6140207881204221818}
   m_Layer: 0
   m_Name: Toilet_03
   m_TagString: Untagged
@@ -86,41 +84,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5643121965310686429
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2540735426686267315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a77683e9bb44744928d3066b37ee7a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _definition: {fileID: 11400000, guid: cfa11dc6a12ec0f40b72170031663135, type: 2}
-  _collider: {fileID: 6140207881204221818}
---- !u!65 &6140207881204221818
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2540735426686267315}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.41738155, y: 0.8016598, z: 0.63454247}
-  m_Center: {x: -0.000023260713, y: 0.4008299, z: 0.31580198}
 --- !u!1 &7749114307335915799
 GameObject:
   m_ObjectHideFlags: 0
