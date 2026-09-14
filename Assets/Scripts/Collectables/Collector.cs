@@ -11,7 +11,6 @@ namespace Collectables
         [SerializeField] private PlayerTier _tierHolder;
         [SerializeField] private ItemDetector _detector;
         [SerializeField] private Absorber _absorber;
-        [SerializeField] private AbsorptionFx _absorptionFx;
         [SerializeField] private WeightPopup _weightPopup;
 
         public event Action<Items.Item> ItemCollected;
@@ -34,6 +33,12 @@ namespace Collectables
             {
                 throw new InvalidOperationException(
                     $"{name}: Absorber is not assigned. Drag an Absorber component into the _absorber field.");
+            }
+
+            if (_weightPopup == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: WeightPopup is not assigned. Drag a WeightPopup component into the _weightPopup field.");
             }
         }
 
@@ -71,15 +76,7 @@ namespace Collectables
             Vector3 itemPosition = item.transform.position;
             int itemMass = item.Mass;
 
-            if (_absorptionFx != null)
-            {
-                _absorptionFx.Play(itemPosition);
-            }
-
-            if (_weightPopup != null)
-            {
-                _weightPopup.Show(itemPosition, itemMass);
-            }
+            _weightPopup.Show(itemPosition, itemMass);
 
             item.Collect();
 

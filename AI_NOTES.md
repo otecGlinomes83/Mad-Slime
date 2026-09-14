@@ -267,3 +267,33 @@
 - Prop Factory: ставит Collectable-слой при генерации; слоя нет → InvalidOperationException.
 - Item.Tier/Mass: Definition == null → InvalidOperationException с внятным текстом вместо голого NRE.
 - Batchmode-компиляция чистая.
+
+## Волна 12 (2026-09-15): попап массы — цифры-частицы (атлас + Custom1.x), AbsorptionFx вырезан
+
+Решение владельца: AbsorptionFx удалить, при поглощении показывать «+масса» ЧАСТИЦАМИ, настраиваемыми
+в инспекторе (никакого кодогенерённого VFX).
+
+Важные факты про Unity 2022.3 (проверено компилятором/строками DLL):
+- `ParticleSystem.EmitParams.startFrame` и `ParticleSystem.Particle.startFrame` НЕ существуют
+  (появились позже). Пер-партикл кадр в 2022.3 подаётся только через **Custom Vertex Stream**:
+  `SetCustomParticleData(list, ParticleSystemCustomData.Custom1)`, а нарезку атласа делает шейдер.
+- `ParticleSystemRenderer.activeVertexStreams` — нет; в 2022.3 это метод `GetActiveVertexStreams(List<...>)`.
+
+Что сделано:
+- `Assets/Fx/DigitParticle.shader` — unlit-прозрачный партикл-шейдер: кадр = Custom1.x, атлас 11 клеток.
+- `Assets/Editor/DigitAtlasBake.cs` (Mad Slime → Bake Digit Atlas): рендерит 0–9 и '+' из TMP-шрифта
+  в `Assets/Fx/DigitAtlas.png` (клетка 64–256px, по умолчанию 128 → 1408×128), NPOT=None, mipmaps off.
+- `WeightPopup` переписан: пул инстансов `_template` (твой PS-префаб), Show(pos, mass) эмитит по частице
+  на символ ('+' = кадр 10), кадр пишется в Custom1.x, расстояние между цифрами — `_digitSpacing`
+  (держать ≈ Start Size). Автовалидация шаблона: Play On Awake off, Simulation Space = Local,
+  TS-модуль выключен, в Renderer есть Custom1.x. Пул освобождается, когда particleCount == 0.
+- `AbsorptionFx` удалён (класс, поле в Collector, компонент в Game.unity). Collector теперь требует
+  _weightPopup (fail-fast).
+
+Чек-лист владельцу (один раз):
+1. Mad Slime → Bake Digit Atlas → выбрать шрифт → Bake.
+2. Создать материал: шейдер MadSlime/DigitParticle, в _MainTex — DigitAtlas.png.
+3. Создать PS-префаб: Play On Awake OFF, Emission rate 0, Simulation Space Local, Start Size ~0.5,
+   Color over Lifetime — фейд, Renderer: Material = материал из п.2, Billboard, Custom Vertex Streams
+   += Custom1.x.
+4. Game → Collector → WeightPopup → _template = префаб из п.3. _digitSpacing ≈ Start Size.
