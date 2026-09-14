@@ -11,7 +11,7 @@ namespace EditorTools
         private DefaultAsset _modelsFolder;
         private DefaultAsset _definitionsFolder;
         private DefaultAsset _prefabsFolder;
-        private float _colliderPadding = 1.15f;
+        private float _colliderInset = 0.25f;
 
         [MenuItem("Mad Slime/Prop Factory")]
         private static void Open()
@@ -30,7 +30,7 @@ namespace EditorTools
             _modelsFolder = (DefaultAsset)EditorGUILayout.ObjectField("Models Folder", _modelsFolder, typeof(DefaultAsset), false);
             _definitionsFolder = (DefaultAsset)EditorGUILayout.ObjectField("Definitions Folder", _definitionsFolder, typeof(DefaultAsset), false);
             _prefabsFolder = (DefaultAsset)EditorGUILayout.ObjectField("Prefabs Folder", _prefabsFolder, typeof(DefaultAsset), false);
-            _colliderPadding = EditorGUILayout.Slider("Collider Padding", _colliderPadding, 1f, 2f);
+            _colliderInset = EditorGUILayout.Slider("Collider Inset", _colliderInset, 0f, 1f);
 
             EditorGUILayout.Space();
 
@@ -122,7 +122,8 @@ namespace EditorTools
             }
             else
             {
-                collider.size = bounds.size * _colliderPadding;
+                Vector3 size = bounds.size;
+                collider.size = new Vector3(ApplyInset(size.x), ApplyInset(size.y), ApplyInset(size.z));
                 collider.center = bounds.center;
             }
 
@@ -135,6 +136,14 @@ namespace EditorTools
             string prefabPath = AssetDatabase.GenerateUniqueAssetPath($"{folderPath}/Item_{model.name}.prefab");
             PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
             DestroyImmediate(root);
+        }
+
+        private float ApplyInset(float extent)
+        {
+            float shrunk = extent - _colliderInset * 2f;
+            float floor = extent * 0.5f;
+
+            return Mathf.Max(shrunk, floor);
         }
 
         private static Bounds ComputeBounds(GameObject instance)
