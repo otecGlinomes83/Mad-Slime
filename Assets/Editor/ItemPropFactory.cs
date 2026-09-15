@@ -38,6 +38,11 @@ namespace EditorTools
             {
                 Generate();
             }
+
+            if (GUILayout.Button("Reapply Collider Inset to Generated Prefabs"))
+            {
+                ReapplyColliders();
+            }
         }
 
         private void Generate()
@@ -80,18 +85,78 @@ namespace EditorTools
             Debug.Log($"[PropFactory] Generated {modelGuids.Length} props from '{modelsPath}'.");
         }
 
+        private void ReapplyColliders()
+        {
+            string prefabsPath = GetFolderPath(_prefabsFolder, "Assets/Resources/Prefabs/Items");
+            string[] prefabGuids = AssetDatabase.FindAssets("t:Prefab", new[] { prefabsPath });
+
+            if (prefabGuids.Length == 0)
+            {
+                Debug.LogWarning($"[PropFactory] No item prefabs found in '{prefabsPath}'.");
+                return;
+            }
+
+            int updated = 0;
+
+            foreach (string prefabGuid in prefabGuids)
+            {
+                string prefabPath = AssetDatabase.GUIDToAssetPath(prefabGuid);
+                GameObject root = PrefabUtility.LoadPrefabContents(prefabPath);
+
+                try
+                {
+                    BoxCollider collider = root.GetComponent<BoxCollider>();
+
+                    if (collider == null)
+                    {
+                        Debug.LogError($"[PropFactory] '{root.name}' has no BoxCollider on the root, skipped.");
+                        continue;
+                    }
+
+                    Bounds bounds = ComputeBounds(root);
+
+                    if (bounds.size == Vector3.zero)
+                    {
+                        Debug.LogError($"[PropFactory] '{root.name}' has no renderers, skipped.");
+                        continue;
+                    }
+
+                    Vector3 size = bounds.size;
+                    collider.size = new Vector3(ApplyInset(size.x), ApplyInset(size.y), ApplyInset(size.z));
+                    collider.center = bounds.center;
+
+                    PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
+                    updated++;
+                }
+                finally
+                {
+                    PrefabUtility.UnloadPrefabContents(root);
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log(
+                $"[PropFactory] Reapplied collider inset {_colliderInset} to {updated} of {prefabGuids.Length} prefabs in '{prefabsPath}'.");
+        }
+
         private ItemDefinition CreateDefinition(string modelName, string folderPath)
         {
-            ItemDefinition definition = CreateInstance<ItemDefinition>();
+            string assetPath = $"{folderPath}/D_{modelName}.asset";
+            ItemDefinition definition = AssetDatabase.LoadAssetAtPath<ItemDefinition>(assetPath);
+
+            if (definition == null)
+            {
+                definition = CreateInstance<ItemDefinition>();
+                AssetDatabase.CreateAsset(definition, assetPath);
+            }
+
             SerializedObject serialized = new SerializedObject(definition);
             serialized.FindProperty("_baseMass").intValue = 1;
             serialized.FindProperty("_tier").enumValueIndex = (int)Skills.ItemTier.Small;
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
-            string assetPath = AssetDatabase.GenerateUniqueAssetPath($"{folderPath}/D_{modelName}.asset");
-            AssetDatabase.CreateAsset(definition, assetPath);
-
-            return AssetDatabase.LoadAssetAtPath<ItemDefinition>(assetPath);
+            return definition;
         }
 
         private void CreateItemPrefab(GameObject model, ItemDefinition definition, string folderPath)
@@ -102,6 +167,13 @@ namespace EditorTools
             {
                 throw new InvalidOperationException(
                     "[PropFactory] Layer 'Collectable' does not exist. Add it in Project Settings → Tags and Layers.");
+            }
+
+            string prefabPath = $"{folderPath}/Item_{model.name}.prefab";
+
+            if (TryUpdateExistingPrefab(prefabPath, definition, collectableLayer) == true)
+            {
+                return;
             }
 
             GameObject root = new GameObject($"Item_{model.name}")
@@ -133,14 +205,64 @@ namespace EditorTools
             serialized.FindProperty("_collider").objectReferenceValue = collider;
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
-            string prefabPath = AssetDatabase.GenerateUniqueAssetPath($"{folderPath}/Item_{model.name}.prefab");
             PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
             DestroyImmediate(root);
         }
 
+        private bool TryUpdateExistingPrefab(string prefabPath, ItemDefinition definition, int collectableLayer)
+        {
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) == null)
+            {
+                return false;
+            }
+
+            GameObject contents = PrefabUtility.LoadPrefabContents(prefabPath);
+
+            try
+            {
+                if (contents.GetComponentsInChildren<Renderer>().Length == 0)
+                {
+                    Debug.LogWarning($"[PropFactory] '{contents.name}' has no renderers, prefab left unchanged.");
+                    PrefabUtility.UnloadPrefabContents(contents);
+                    return true;
+                }
+
+                contents.layer = collectableLayer;
+
+                BoxCollider collider = contents.GetComponent<BoxCollider>();
+
+                if (collider == null)
+                {
+                    collider = contents.AddComponent<BoxCollider>();
+                }
+
+                Bounds bounds = ComputeBounds(contents);
+                Vector3 size = bounds.size;
+                collider.size = new Vector3(ApplyInset(size.x), ApplyInset(size.y), ApplyInset(size.z));
+                collider.center = bounds.center;
+
+                Item item = contents.GetComponent<Item>();
+
+                if (item != null)
+                {
+                    SerializedObject serialized = new SerializedObject(item);
+                    serialized.FindProperty("_definition").objectReferenceValue = definition;
+                    serialized.ApplyModifiedPropertiesWithoutUndo();
+                }
+
+                PrefabUtility.SaveAsPrefabAsset(contents, prefabPath);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
+
+            return true;
+        }
+
         private float ApplyInset(float extent)
         {
-            float shrunk = extent - _colliderInset * 2f;
+            float shrunk = extent - _colliderInset;
             float floor = extent * 0.5f;
 
             return Mathf.Max(shrunk, floor);
