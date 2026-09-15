@@ -927,9 +927,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ded7ad1648589f34aac5fed63f7d8a2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _config: {fileID: 11400000, guid: 8523d7049496a3ee69d341d0a78ea84c, type: 2}
+  m_Name:
+  m_EditorClassIdentifier:
+  _config: {fileID: 11400000, guid: b59c6a2894f8674e08f7c3251741fb73, type: 2}
   _wallet: {fileID: 1495407474}
 --- !u!114 &1495407476
 MonoBehaviour:
