@@ -161,7 +161,7 @@ namespace Game
             if (variants.Count == 0)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PropSet '{config.PropSet.name}' has no baked variants. Run Mad Slime → Prop Bake.");
+                    $"{name}: PropSet '{config.PropSet.name}' has no baked variants. Run Mad Slime → Prop Factory.");
             }
 
             Dictionary<Item, List<ItemDefinition>> variantsByPrefab = new Dictionary<Item, List<ItemDefinition>>();
@@ -171,7 +171,7 @@ namespace Game
                 if (variant == null || variant.Prefab == null || variant.Definition == null)
                 {
                     throw new InvalidOperationException(
-                        $"{name}: PropSet '{config.PropSet.name}' contains an empty variant. Re-run Mad Slime → Prop Bake.");
+                        $"{name}: PropSet '{config.PropSet.name}' contains an empty variant. Re-run Mad Slime → Prop Factory.");
                 }
 
                 if (InTierRange(variant.Definition.Tier, config) == false)
@@ -191,7 +191,7 @@ namespace Game
             if (variantsByPrefab.Count == 0)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PropSet '{config.PropSet.name}' has no variants within tier range {config.MinTier}-{config.MaxTier}. Re-run Prop Bake.");
+                    $"{name}: PropSet '{config.PropSet.name}' has no variants within tier range {config.MinTier}-{config.MaxTier}. Re-run Prop Factory.");
             }
 
             List<Item> prefabs = new List<Item>(variantsByPrefab.Keys);

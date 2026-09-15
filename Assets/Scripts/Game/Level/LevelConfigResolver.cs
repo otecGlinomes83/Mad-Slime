@@ -45,7 +45,7 @@ namespace Game
             {
                 throw new InvalidOperationException(
                     $"LevelsCatalog '{_catalog.name}': no playable configs at all — every LevelConfig is missing " +
-                    "a PropSet or its PropSet has no baked variants. Assign a PropSet and run Mad Slime → Prop Bake.");
+                    "a PropSet or its PropSet has no baked variants. Assign a PropSet and run Mad Slime → Prop Factory.");
             }
 
             return fallback;
