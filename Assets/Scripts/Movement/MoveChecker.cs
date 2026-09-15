@@ -1,5 +1,4 @@
 using Interfaces;
-using Player;
 using System;
 using UnityEngine;
 
@@ -8,7 +7,6 @@ namespace Movement
     public sealed class MoveChecker : MonoBehaviour
     {
         [SerializeField] private LayerMask _layerMask;
-        [SerializeField] private PlayerTier _playerTier;
         [SerializeField] private CapsuleCollider _playerCollider;
 
         private Vector3 _lastPosition;
@@ -16,12 +14,6 @@ namespace Movement
 
         private void Awake()
         {
-            if (_playerTier == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: PlayerTier is not assigned. Drag a PlayerTier component into the _playerTier field.");
-            }
-
             if (_playerCollider == null)
             {
                 throw new InvalidOperationException(
@@ -42,12 +34,7 @@ namespace Movement
                 return true;
             }
 
-            if (hitInfo.collider.gameObject.TryGetComponent(out IAttractable attractable) == false)
-            {
-                return false;
-            }
-
-            return attractable.Tier <= _playerTier.CurrentTier;
+            return hitInfo.collider.gameObject.TryGetComponent(out IAttractable attractable);
         }
 
         private void OnDrawGizmosSelected()
