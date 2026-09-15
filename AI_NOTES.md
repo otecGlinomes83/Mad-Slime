@@ -380,8 +380,109 @@ otecGlinomes83/MadSlime): вернуть через git cherry-pick / checkout �
 3. Связка с волной 15: врезка боксов 0.25 («войти в предмет») с проходом насквозь теряет смысл —
    впрок она не мешает, но если берём проход, пересчитывать ничего не нужно.
 
-## Планы, ожидающие старта
+## Волна 17 (2026-09-15): ghost-«сеточка» при входе в предмет
 
-- **Слияние фабрик** (Prop Factory + Icon Generator + Prop Bake → одна тулза, одна кнопка):
-  согласовано владельцем 2026-09-15, НЕ начато, владельцем запрошено не трогать до его «го».
-  Полный план — `AI_PLAN.md` в корне. Не начинать без сверки с фактическим состоянием кода.
+Схема владельца: игрок НЕ свапает материалы сам — он только командует предмету «включи сетку»,
+свап живёт внутри Item («ни один компонент игрока не может влиять не на игрока»). Детект входа —
+свой OverlapSphere-поллинг на Player (как у коллектора), с командой на выход.
+
+- `Assets/Shaders/GhostDither.shader` (NEW): opaque-проход (Queue=Geometry, ForwardBase),
+  screen-space дизер 4×4 Bayer (бранчлесс bayer2-формула, без массивов — безопасно для WebGL2) +
+  `clip(_Opacity - threshold)`. Пиксели ниже порога вырезаются → «сеточка», игрок просвечивает.
+  Нет блендинга/сортировки. Параметры: `_Color`, `_Opacity` (0.7 = лёгкая сеточка, 0.5 = шахматка),
+  `_DitherScale` (крупность). Half-lambert от главного directional + ambient. Fallback Off
+  (ghost не кастит тень — осознанно).
+- `Item.cs`: `+ _ghostMaterial` (fail-fast в Awake), кэш рендереров + оригинальные/ghost-сеты
+  `sharedMaterials` (тумбл без аллокаций, без `.material`-инстансов), `SetGhost(bool)` с гардом
+  `_isGhost`. Сбросы: `Initialize` (пул) и `Collect` (полёт в Absorber — обычным).
+- `Collectables/ItemGhostToggler.cs` (NEW, на Player): каждый кадр OverlapSphereNonAlloc
+  (радиус = capsule.radius + _margin — сам следует за ростом капсулы, LevelScaler мутирует её;
+  центр = корень игрока), маска Collectable, буфер 64. Гейт `item.Tier > CurrentTier` — сетка
+  только на недоступные (доступные собираются мгновенно). Список `_ghostItems`: свип «вышел из
+  радиуса → SetGhost(false) + remove», потом «новые хиты → SetGhost(true) + add». 0 аллокаций.
+  Событий выхода у GenericOverlapDetector нет — потому отдельный поллер, не наследник.
+- MoveChecker (tier-гейт прохода) НЕ тронут — проход владелец делает сам (волна 16/17).
+
+### Владельцу на проводку
+1. Создать материал: шейдер MadSlime/GhostDither, тюнить _Opacity/_DitherScale.
+2. На Player в Game.unity: Add Component → ItemGhostToggler; _tierHolder = PlayerTier,
+   _playerCollider = капсула игрока, _layerMask = Collectable.
+3. `_ghostMaterial` в Item-префабах — ляжет на прогон нового пайплайна (префабы сейчас снесены,
+   пересобираются фабрикой); до проводки Item падает в Awake по fail-fast — осознанно.
+4. Сетка и блокировка прохода независимы: пока MoveChecker не правлен, недоступные предметы
+   СЕТКУ покажут, но не пустят внутрь.
+
+## Волна 18 (2026-09-15): слияние фабрик — один пайплайн Prop Factory
+
+`ItemPropFactory.cs` переписан в единый инструмент (бейк + фабрика + иконки), поля выходных папок — ВСЕ
+указываются владельцем, ничего «Generated» по умолчанию не создаётся. Удалены: `PropBakeWindow.cs`,
+`ItemIconGenerator/`, `IconGenerationSource.cs`, сцена `IconGeneration.unity` (в билде её не было).
+
+**Поля окна** (персистятся в EditorPrefs, ключ `MadSlime.ItemPropFactory`): Models / Prefabs / Definitions /
+Icons Folder, Prop Set, Tier Table, **Ghost Material** (новое требование волны 17: `Item.Awake` fail-fast без
+`_ghostMaterial`), Collider Inset (0.25), Force Icons. Прогон = одна локация (Room-прогон, Table-прогон).
+
+**Стадии Generate:** иконки из МОДЕЛЕЙ (не обёрток — нет edit-mode Awake) → дефинишны `D_<Item_<Model>>_<Tier>`
+(пишутся _tier/_baseMass из TierTable + _icon) → обёртки get-or-create (коллайдер по баундсу с инсетом,
+слой Collectable, `_definition`=Small-fallback, `_collider`, `_ghostMaterial`) → PropSet целиком (_props по
+алфавиту + _variants). Превалидация с abort: пустые поля, 0 моделей, дубли имён, модель без Renderer'ов
+(LogError, не warning — Item.Awake бы упал), пустой TierTable, нет слоя Collectable.
+
+**Баг, которого не было в плане**: свежий PNG импортируется как textureType Default →
+`LoadAssetAtPath<Sprite>` = null → `_icon` никогда не ложится (поэтому у 14 старых D_* `_icon: 0`).
+Тулза теперь форсит `TextureImporter.textureType = Sprite` (в т.ч. на уже лежащих PNG — идемпотентно).
+
+Факты на момент прогона: префабы Item_* и иконки Item_*.png снесены владельцем (первый прогон с нуля);
+`TableProps.asset` держал мёртвые гуиды (перезапись PropSet целиком их сносит); Get-or-create по пути —
+гуиды префабов/дефинишнов живут между прогонами. Обёртки-префабы в Models Folder скипаются
+( TryGetComponent<Item> ). Ошибочные строки LevelGenerator/LevelConfigResolver переведены с «Prop Bake»
+на «Prop Factory». Компиляция batchmode НЕ прогнана — проект открыт в редакторе (Temp/UnityLockfile);
+редактор пересоберёт сам.
+
+**Фикс иконок (тот же день, первый прогон владельца)**: первый прогон дал битые иконки — белый/чёрный фон,
+засвет. Причина: НЕ логика рендера (не тронута), а КОНТЕКСТ — старый тул работал только в выделенной пустой
+сцене IconGeneration.unity (дефолтное солнце + дефолтный ambient, в кадре только модель), а объединённая
+тулза рендерила в текущую открытую сцену: камера захватывала пол/фон (белый = пол Game, чёрный = фон другой
+сцены), солнце сцены поверх иконкового света давало засвет, alpha не оставалась 0 — фон был закрыт геометрией.
+Фикс: Generate теперь открывает временную дефолтную сцену (NewSceneSetup.DefaultGameObjects — точная копия
+окружения старой сцены: дефолтное солнце intensity 1 + дефолтный ambient, проверено по YAML снесённой сцены),
+рендерит иконки там и восстанавливает прежний setup сцен (GetSceneManagerSetup/RestoreSceneManagerSetup).
+Несохранённые сцены: Unity спросит сохранение; отмена = прерывание Generate до порчи ассетов.
+Перегенерация битых PNG — только с Force Icons (существующие считаются рукодельными).
+
+**Фикс 2 (бесконечный «Importing assets»)**: шторм импорта начинался ПОСЛЕ строки Done — виноваты финальные
+глобальные `AssetDatabase.SaveAssets()`+`Refresh()` (флап всего грязного после генерации и смены сцен) и сама
+авто-смена сцен (промпт сохранения → NewScene → Restore). Убрано ПОЛНОСТЬЮ: тулза больше не трогает сцены —
+владелец сам открывает ПУСТУЮ сцену и жмёт Generate (как в старом workflow, HelpBox это говорит). Глобальный
+флап заменён на `AssetDatabase.SaveAssetIfDirty(_propSet)` — префабы/дефинишны сохраняются при создании,
+иконки импортируются одним `Refresh()` ДО дефинишнов. После Generate у Unity не остаётся очереди — шторма нет.
+
+**Фикс 3 (иконки всё ещё с мусором в кадре)**: белый фон = пол открытой сцены, чёрный = тёмная геометрия,
+засвет = солнце сцены — камера иконков рендерила ВСЁ в фрустуме. Сцены больше не переключаются, вместо этого
+ИЗОЛЯЦИЯ ПО СЛОЮ: тулза берёт первый безымянный слой 9–31 (`ResolveFreeLayer`, fail-fast если нет), модель +
+камера + свет кладутся на него, `cam.cullingMask = 1 << iconLayer` (камера видит ТОЛЬКО модель), `light
+.cullingMask` туда же, `light.shadows = None` (чужие тени в кадр не попадают). SetLayerRecursively обязателен —
+дети модели на своих слоях. Прозрачный фон гарантирован: за моделью больше ничего не рендерится, остаётся
+clear-цвет (0,0,0,0). Работает в ЛЮБОЙ открытой сцене — пустая сцена не нужна. Освещение = мануальный свет
+(45°/-30°, 1.2) + ambient открытой сцены. Перегенерация старых PNG — Force Icons ON один прогон.
+
+**Инсет коллайдеров отменён владельцем** (2026-09-15, после волны 16/17 с проходом сквозь недоступные
+предметы стал бессмысленным): поле Collider Inset и ApplyInset удалены, бокс генерится ровно по рендер-баундсу
+(`ApplyCollider` — size = bounds.size). Кнопка Reapply Colliders удалена вовсе — коллайдеры пересчитываются
+каждым Generate (get-or-update-проход). Осталась одна кнопка Generate.
+
+**Блок прохода снят владельцем (волны 16/17 закрыты)**: `MoveChecker.IsAbleToMove` больше не гейтит по тиру —
+предметы (IAttractable) ВСЕ проходимы, блокируются только не-attractable хиты (стены, слой Wall в маске) —
+иначе игрок выпал бы с арены. Поле `_playerTier` из MoveChecker удалено (старая ссылка в Game.unity
+игнорируется Unity, сцену править не нужно). Ghost-сетка (`ItemGhostToggler`) уже была тир-гейтованной:
+включается только на предметы тира ВЫШЕ игрока (`ItemGhostToggler.cs:76`), не менялось.
+
+**Фикс 4 (Fill: «RewardConfig is not assigned» в Rewarder)**: та же болезнь волны 14, зеркально — в
+`Rewarder._config` (тип RewardConfig) в Fill.unity лежал гуид YandexConfig (8523d704…) → Unity резолвит как
+null → fail-fast. Заменён на реальный `Assets/Scriptables/AD/RewardConfig.asset` (b59c6a28…). Остальные два
+`_config` в Fill.unity (AdScheduler, LeaderboardReporter) — тип YandexConfig, гуид 8523d704 там корректен.
+
+**Чек-лист владельцу**: два прогона Generate (Room: RoomFact → Items/… + RoomProps; Table: TableFact → … +
+TableProps), Ghost Material = Assets/Shaders/GhostMaterial.mat, Force Icons ON пока PNG не перезаписаны.
+После прогона проверить иконки в квоте. 14 старых `D_*.asset` в корне `Scriptables/Items/` — снести после
+удачного прогона и ОК владельца (перед удалением сверить гуиды по сценам/префабам).
