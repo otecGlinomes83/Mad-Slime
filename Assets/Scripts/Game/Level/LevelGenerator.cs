@@ -93,6 +93,7 @@ namespace Game
             _spawnedCounts.Clear();
             AssignTiers(config);
             SpawnItems(config, layout);
+            Physics.SyncTransforms();
 
             List<QuotaEntry> quota = _quotaGenerator.Generate(_spawnedCounts, config);
             _levelProgress.Reset(quota, config.DefaultCountDivisor);

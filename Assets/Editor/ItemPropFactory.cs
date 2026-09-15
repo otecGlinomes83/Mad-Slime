@@ -24,6 +24,7 @@ namespace EditorTools
         private PropSet _propSet;
         private TierTable _tierTable;
         private Material _ghostMaterial;
+        private GhostFadeConfig _ghostFadeConfig;
         private bool _forceIcons;
         private int _iconLayer;
 
@@ -60,6 +61,7 @@ namespace EditorTools
             _propSet = (PropSet)EditorGUILayout.ObjectField("Prop Set", _propSet, typeof(PropSet), false);
             _tierTable = (TierTable)EditorGUILayout.ObjectField("Tier Table", _tierTable, typeof(TierTable), false);
             _ghostMaterial = (Material)EditorGUILayout.ObjectField("Ghost Material", _ghostMaterial, typeof(Material), false);
+            _ghostFadeConfig = (GhostFadeConfig)EditorGUILayout.ObjectField("Ghost Fade Config", _ghostFadeConfig, typeof(GhostFadeConfig), false);
             _forceIcons = EditorGUILayout.Toggle("Force Icons", _forceIcons);
 
             EditorGUILayout.Space();
@@ -181,6 +183,11 @@ namespace EditorTools
             if (_ghostMaterial == null)
             {
                 missing.Add("Ghost Material");
+            }
+
+            if (_ghostFadeConfig == null)
+            {
+                missing.Add("Ghost Fade Config");
             }
 
             if (missing.Count > 0)
@@ -449,6 +456,7 @@ namespace EditorTools
             serialized.FindProperty("_definition").objectReferenceValue = fallbackDefinition;
             serialized.FindProperty("_collider").objectReferenceValue = collider;
             serialized.FindProperty("_ghostMaterial").objectReferenceValue = _ghostMaterial;
+            serialized.FindProperty("_ghostFadeConfig").objectReferenceValue = _ghostFadeConfig;
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
@@ -676,6 +684,7 @@ namespace EditorTools
             _propSet = LoadStateAsset<PropSet>(state.PropSetPath);
             _tierTable = LoadStateAsset<TierTable>(state.TierTablePath);
             _ghostMaterial = LoadStateAsset<Material>(state.GhostMaterialPath);
+            _ghostFadeConfig = LoadStateAsset<GhostFadeConfig>(state.GhostFadeConfigPath);
             _forceIcons = state.ForceIcons;
         }
 
@@ -689,6 +698,7 @@ namespace EditorTools
             state.PropSetPath = GetAssetPathOrNull(_propSet);
             state.TierTablePath = GetAssetPathOrNull(_tierTable);
             state.GhostMaterialPath = GetAssetPathOrNull(_ghostMaterial);
+            state.GhostFadeConfigPath = GetAssetPathOrNull(_ghostFadeConfig);
             state.ForceIcons = _forceIcons;
 
             EditorPrefs.SetString(PrefsKey, JsonUtility.ToJson(state));
@@ -740,6 +750,7 @@ namespace EditorTools
             public string PropSetPath;
             public string TierTablePath;
             public string GhostMaterialPath;
+            public string GhostFadeConfigPath;
             public bool ForceIcons;
         }
     }

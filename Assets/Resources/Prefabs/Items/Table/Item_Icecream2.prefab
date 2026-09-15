@@ -70,6 +70,7 @@ MonoBehaviour:
   _definition: {fileID: 11400000, guid: af4fa63e05d7cf644ab40627b3d91ff8, type: 2}
   _collider: {fileID: 5135021384958038590}
   _ghostMaterial: {fileID: 2100000, guid: 2566cc4f8c7914449b603a2474de69ba, type: 2}
+  _ghostFadeConfig: {fileID: 11400000, guid: ee25c91a9b0da4b94b8654ae2cfe4341, type: 2}
 --- !u!1001 &1939145635857945215
 PrefabInstance:
   m_ObjectHideFlags: 0

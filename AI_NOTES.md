@@ -486,3 +486,249 @@ null → fail-fast. Заменён на реальный `Assets/Scriptables/AD/
 TableProps), Ghost Material = Assets/Shaders/GhostMaterial.mat, Force Icons ON пока PNG не перезаписаны.
 После прогона проверить иконки в квоте. 14 старых `D_*.asset` в корне `Scriptables/Items/` — снести после
 удачного прогона и ОК владельца (перед удалением сверить гуиды по сценам/префабам).
+
+## Волна 19 (2026-09-15): расследование «после магазина притягиваются все мелкие объекты»
+
+Симптом владельца: Game → магазин → потыкать скины (в т.ч. залоченные) → выход → старт уровня →
+«все мелкие объекты притягиваются, будто я на всю карту размером».
+
+### Вердикт: магазин НЕВИНОВЕН (проверено по всему коду)
+- Клик по залоченному скину: `ShopPanel.OnItemClick` → `ViewSelected` (превью в Shop-сцене) → `TryUnlock`
+  → `Balance < Price` → return. Ноль глобальных записей: ни сейвов, ни статиков. Клик по своему скину
+  пишет только `SavesYG.SelectedSkinType` (косметика: SkinApplier инстансит визуальную модель; у скинов
+  нет коллайдеров/скриптов — проверено по префабам SlimeSkin/PacmanSkin).
+- Game-сцена при возврате грузится с диска: `PlayerTier._mass=6 → Small`, детекторы `_radius` 0.7/2
+  (Game.unity) — идентично холодному старту. DontDestroyOnLoad в Scripts нет; DDOL только ProjectScope
+  (PlayerProgress/LocalizationService/бриджи) — массы/радиусов не держат. Root-синглтоны VContainer
+  (LevelProgress/LevelConfigResolver) — LevelProgress.Reset вызывается в каждом Generate.
+- Радиус аттракции меняется ТОЛЬКО через TierChanged (масса), масса — только через PlayerTier.Add.
+
+### Настоящая причина: данные уровня — снежный ком на ковре из предметов
+- `TableLayoutSet` (единственный играбельный лейаут — RoomLayoutSet с 0 зонами PickLayout скипает):
+  зона 1 = Scatter, center (0,0) = ТОЧКА СПАВНА, `_count: 1000`, `_radius: 100`, тир Small.
+  Остальные зоны: гриды средних/крупных с центрами ±80 и spacing 16.3/13.3 — лейаут авторён под карту
+  ~160×160.
+- `LevelGenerator._mapSize` = 30×30 → `ClampToMap` сплющивает radius-100 scatter: ~26 мелких
+  накрывают поле с шагом ~1.4, остальные ~974 СХЛОПЫВАЮТСЯ НА БОРТА (сплошные стены из мелких).
+- Снежный ком: мелкий = +1 масса (divisor 4, floor 1) → 44 шт = Medium (радиус ×3), средний =
+  BaseMass 500 → +125 → Large (×6) быстро, Boss (×15) у стены из мелких/на гридах средних.
+  `GenericOverlapDetector`: 0.98 → 2.94 → 4.2 → 10.5; AttractableDetector до 30. На ковре с шагом
+  1.4 это выглядит как «притягивается всё, я размером с карту». Воспроизводится на КАЖДОМ старте
+  уровня, не только после магазина — холодный старт без магазина должен дать то же.
+
+### Кандидаты на фикс (решение за владельцем, код не трогал)
+1. Данные: зоны под фактическую карту (radius ≤ ~13, counts ~30–60) или поднять `_mapSize` сцены
+   под авторские зоны.
+2. Опционально guard в `LevelGenerator`: считать clamped-позиции и LogWarning «N из M за картой».
+3. Тюнинг снежного кома отдельно: TierScalerConfig.RequiredMass (50/500/10000) vs +1 за мелкий.
+
+## Волна 19 (2026-09-15): плавный ghost — НЕ реализовано, рецепт готов (дополнение к 17)
+
+Вопрос владельца: «сеточка включается моментально — можно плавно?» Проверка кода: ДА, можно;
+сейчас — НЕТ. `Item.SetGhost` (Item.cs:107) свапает `sharedMaterials` в один кадр, `_Opacity`
+прибита к общему `GhostMaterial.mat`. Всё нужное для плавности в проекте УЖЕ есть:
+
+- Per-renderer свойство без инстансов материала — паттерн `CubeSpawner.cs:43` (MaterialPropertyBlock
+  → SetPropertyBlock). Анимировать `_Opacity` в блоке: 1.0 (сплошной ghost-шейдер, порог дизера
+  max ≈ 0.94) ↔ 0.5 (сетка). Свап материала делать на «сплошном» кадре (1.0) — попа от подмены
+  почти нет, дырки нарастают/зарастают плавно. Общий .mat не трогается, у каждого предмета своя
+  плотность; при желании тем же блоком лерпить `_Color` от исходного цвета к призрачному.
+- Драйвер анимации — канон `Absorber.AbsorbAsync`: UniTask while + SmoothStep + Yield + токен.
+  Точка врезки: `SetGhost(bool)` остаётся краевым триггером, внутри стартует/отменяет fade-таск;
+  `ItemGhostToggler` не меняется. Duration — сериал-поле или в PlayerConfig (рядом
+  AbsorptionDuration).
+- Нюансы: флип направления посреди анимации (отменять текущий fade), `Collect()` во время fade
+  (Absorber забирает предмет — fade обязан отмениться), сброс property block в `Initialize`
+  (переиспользование из пула — иначе призрачность протечёт в следующий спавн).
+- Попутно проверено: проход сквозь предметы уже в коде — `MoveChecker.IsAbleToMove` теперь
+  `return hit...TryGetComponent(out IAttractable)` (сквозь ЛЮБОЙ attractable, блок только
+  не-attractable — готово под стены: слой стен в маску + те самые false). PlayerTier из него выпрошен.
+
+## Волна 20 (2026-09-15): плавный ghost РЕАЛИЗОВАН (по рецепту волны 19)
+
+Владелец: «плавно появлялась и исчезала у каждого предмета, лишнего не плети». Сделано ТОЛЬКО в
+`Item.cs`, `ItemGhostToggler` не тронут:
+- `_ghostFadeDuration` = 0.25 (SerializeField, fail-fast на ≤0). Target-плотность читается из
+  `_ghostMaterial.GetFloat(_Opacity)` в Awake (сейчас в ассете 0.26) + guard `HasProperty` —
+  тюнинг остаётся на материале, в коде ничего не захардкожено. Solid-якорь = 1.0 (порог дизера
+  в шейдере max ≈ 0.94).
+- `SetGhost(true)`: свап на ghost-материалы на «сплошном» кадре → fade `_Opacity` 1.0 → target
+  через MaterialPropertyBlock (общий .mat не трогается, у каждого предмета своя плотность).
+  `SetGhost(false)`: fade до 1.0 → на сплошном кадре возврат оригинальных материалов + сброс блока.
+- Драйвер — `FadeOpacityAsync`: UniTaskVoid + SmoothStep (канон Absorber), отмена по `_fadeVersion`
+  (int-поколение вместо CTS — 0 аллокаций): флип направления посреди анимации убивает старый fade,
+  стартует новый от текущего `_currentOpacity`. Destroy-отмена — `GetCancellationTokenOnDestroy`.
+- `Initialize`/`Collect` теперь зовут `ResetVisuals()` вместо `SetGhost(false)`: жёсткий сброс
+  (версия++, блок снят, оригинальные материалы) — призрачность не протекает в следующий спавн из
+  пула, `Collect()` посреди fade забирает предмет обычным.
+- НЕ проверено компиляцией: редактор был открыт (Temp/UnityLockfile), batchmode невозможен —
+  следующему агенту убедиться в отсутствии ошибок компиляции.
+
+## Волна 21 (2026-09-15): ghost-fade переведён на конфиг (SO) + DOTween-эйзы
+
+Владелец: «почему скорость на итеме? отдельный конфиг; и раз можно — дотвин с выбором ease».
+Выяснено: DOTween УЖЕ в проекте (`Assets/Plugins/Demigiant/DOTween.dll`, в Scripts раньше не
+использовался). Итог:
+- `Scriptables/Items/GhostFadeConfig.cs` (NEW, namespace Items, меню «Mad Slime/Ghost Fade
+  Config»): `_fadeDuration` (0.25) + `_ease` (`DG.Tweening.Ease`, default InOutSine) — dropdown
+  эйзов в инспекторе без новых зависимостей.
+- `Item.cs`: ручной UniTask-цикл и `_fadeVersion` СНЕСЕНЫ — теперь `DOTween.To(ReadOpacity,
+  ApplyOpacity, target, config.FadeDuration).SetEase(config.Ease).SetTarget(this)
+  .SetLink(gameObject, LinkBehaviour.KillOnDisable).OnComplete(OnFadeCompleted)`. Поле `_ghostFadeDuration`
+  заменено на `_ghostFadeConfig` (fail-fast в Awake: null-конфиг + FadeDuration ≤ 0). Возврат
+  оригинальных материалов — в `OnFadeCompleted` при `Approximately(_currentOpacity, Solid)`;
+  флип направления — `DOTween.Kill(this)` (SetTarget обязателен: у DOTween.To цель сама не
+  ставится). KillOnDisable гасит твины при Shutdown из пула.
+- `ItemPropFactory.cs`: поле «Ghost Fade Config» рядом с Ghost Material — ObjectField,
+  missing-чек, `WriteItemFields` пишет `_ghostFadeConfig`, состояние окна (GhostFadeConfigPath).
+- АССЕТ ЕЩЁ НЕ СОЗДАН (создание .meta запрещено скиллами — GUID даст только импорт .cs в
+  редакторе). Проводка владельцем: 1) фокус Unity (импорт+компиляция), 2) создать ассет
+  (ПКМ → Create → Mad Slime → Ghost Fade Config), 3) фабрика: выбрать конфиг → Generate ×2
+  (Room/Table). До проводки Item падает в Awake по fail-fast — осознанно (как в волне 17).
+  Настройка скорости/эйза теперь ТОЛЬКО в ассете GhostFadeConfig; плотность сетки — по-прежнему
+  `_Opacity` в GhostMaterial.mat.
+- Компиляция владельцем: 1 ошибка — при переписывании Item.cs потерялся `SetDefinition` (зовал
+  LevelGenerator.cs:265) — возвращён, паблик-поверхность Item снова 1-в-1 с до-переписной. Заодно
+  убит мёртвый `LevelLabelUI._labelFormat` (CS0414: текст лейбла давно из `Localization.Get("level_label")`).
+
+## Волна 22 (2026-09-15): диагностические логи [Diag] для бага «после магазина всё притягивается»
+
+Владелец настаивает, что баг именно после магазина; добавлены логи для прогона (префикс `[Diag]`,
+грепается, снести после диагноза). Компиляция НЕ прогнана — редактор был открыт (UnityLockfile).
+
+- `PlayerTier.Awake`: масса + тир + defaultMass при старте сцены.
+- `GenericOverlapDetector.OnEnable`: baseRadius × tierScale → итоговый radius (оба детектора).
+- `GenericOverlapDetector.OnTierSourceChanged`: radius X -> Y (tier) — ловит снежный ком вживую.
+- `LevelScaler.Awake`: collider radius/height/multiplier; `OnTierChanged`: targetMultiplier.
+- `SkinApplier.ApplySelectedSkin`: выбранный скин + localScale модели (ловит кандидат «скин ×100»).
+- `ItemGhostToggler.OnEnable`: capsule radius + margin; ghost ON/OFF с itemTier/playerTier
+  (владелец видит прозрачность на предметах «больше игрока» — по волне 17 это дизайн:
+  тир предмета ВЫШЕ игрока → сетка; лог покажет, тот ли тир в гейте).
+- `SessionStateLogger.OnSceneLoaded`: + timeScale (ловит залипшую паузу плагина YG2).
+
+Что смотреть в логе после возврата из магазина: PlayerTier.Awake mass=6 tier=Small; baseRadius
+0.7/2 с tierScale 1.4; ghost ON при itemTier>playerTier. Если mass/tier иные — вот и канал
+магазин→состояние. Вариант «игрок огромный» опровергается collider radius в LevelScaler.Awake.
+
+## Волна 23 (2026-09-15):GhostFadeConfig создан + 14 Item-префабов пропатчены (диагноз подтверждён логами [Diag])
+
+Логи владельца подтвердили: до/после магазина состояние ИДЕНТИЧНО (mass=6 Small, радиусы 0.98/2.8,
+collider 0.5×1) — канал «магазин→игра» отсутствует. Настоящая поломка уровня:
+- `_ghostFadeConfig` не был заполнен НИ У ОДНОГО из 14 Item_* (Table), ассет не существовал →
+  `Item.Awake` fail-fast падал на каждом `Instantiate` → Initialize NRE (`ResetVisuals`, _renderers
+  null) → `SpawnItems` прерывался на ПЕРВОМ предмете → уровень почти не спавнился; заспавненные
+  обломки падали в `Collect()` → UniTask умирал до Absorber/ItemCollected → масса не росла,
+  LevelProgress.Reset не вызывался (в логе Quota 0/0). «Прозрачные итемы» — SwapGhostMaterials
+  успевал отработать до NRE на конфиге: сетка мгновенно, без фейда.
+- Сделано: создан `Assets/Scriptables/Items/GhostFadeConfig.asset` (duration 0.25, ease int 3 =
+  InOutSine при Linear=0-нумерации; владелец проверит ease в инспекторе), .meta сгенерил импорт
+  редактора (guid ee25c91a9b0da4b94b8654ae2cfe4341). В 14 префабов Item_* (Table) после
+  `_ghostMaterial` вставлено `_ghostFadeConfig: {fileID: 11400000, guid: ee25c91a..., type: 2}`
+  (sed по одному вхождению на файл, проверено grep'ом — 14/14).
+- После реимпорта префабов в редакторе ожидаемо: полный спавн уровня, рабочий сбор/масса, плавный
+  ghost. Логи [Diag] остаются до подтверждения владельцем, потом снести.
+- Не тронуто: warning «RoomProps has no baked variants» (данные владельца: Room пустой, фолбэк на
+  Table легален, волна 10); «снежный ком» данных TableLayoutSet — см. волну 19.
+
+## Волна 24 (2026-09-16): фикс паузного поедания + компаундинг радиуса + проб «дальней» детекции
+
+Разбор лога владельца (уровень 9, 2845 предметов, после магазина) + полный статический проход цепочки
+(префабы 14/14: корень scale 1, коллайдеры 0.02–0.22; TierTable единственный 13/30/60/100; иерархия
+Player вся в (0,0,0) scale 1; SlimeSkin — только mesh+renderer, слой 7, scale 52.19 = компенсация
+импорт-скейла; ItemPool/ZoneLayoutPlanner/Absorber/MoveChecker/LevelTransitor чисты; загрузка сцен
+синхронная не-аддитивная). Скин, магазин и «загрузка до подготовки» — ОПРАВДАНЫ.
+
+Доказано логом: сотни «absorb» при нуле «absorbed»/mass/tier, квота 0/12 → ItemCollected не
+срабатывал ни разу. Торрент-окно без «Gameplay Start» = пауза (GameplaySessionHandler.Awake →
+Pauser → timeScale 0): Update-системы (детекторы, ghost) работают, AbsorbAsync/Mover на
+Time.deltaTime заморожены. Владелец подтвердил: в пасте не двигался; видимое «ем со всей карты» —
+очередь зависших Collect() доигрывает разом после снятия паузы.
+
+Неразгаданное: ghost-запрос радиуса 0.7 (capsule 0.5 + margin 0.2) ловил предметы на 10–107 юнитов —
+по сериализованным данным максимум ~22 мировых юнита у Boss. Нужен рантайм-проб.
+
+Правки:
+- `GenericOverlapDetector`: `_baseRadius` переносён в `Awake` (раньше брался текущий в OnEnable —
+  компаундинг ×1.4 на каждом цикле Disable/Enable, после ~15 циклов радиус = вся карта); `Update`
+  гейтится на `Time.timeScale == 0f` (закрыто и YG-пауза — Pauser.Count через timeScale).
+- `ItemGhostToggler`: тот же гейт в `Update`; ghost ON дополнен itemPos/itemScale/timeScale.
+- `Collector`: absorb-лог дополнен пробом itemPos/itemScale/detectorPos/radius/timeScale.
+
+Компиляция НЕ прогнана (редактор открыт, UnityLockfile). Логи [Diag] оставить до следующего прогона
+владельца: проб либо покажет аномальные itemScale/позиции («дальняя» детекция), либо подтвердит,
+что всё было только на паузе — тогда снести.
+
+## Волна 25 (2026-09-16): корень «дальней» детекции — m_AutoSyncTransforms: 0 + спавн телепортом
+
+Логи владельца после волны 24 (магазин → Game, уровень 9): ghost ON на 47–116 юнитов и burst «absorb»
+на 33–95 юнитов при radius 0.98/0.7 и detectorPos=(0,0.5,0), timeScale=1. Радиус корректен (0.7×1.4,
+компаундинг починен) — геометрически запрос не может вернуть эти коллайдеры. Единственное объяснение:
+физический мир видит их не там, где трансформы. `DynamicsManager.asset`: m_AutoSyncTransforms: 0.
+
+Механизм: ItemPool.Get → Instantiate(prefab, _root) — предмет активен в origin рута пула, коллайдер
+регистрируется в физ-мире в origin; Initialize телепортирует трансформ (enabled=true — но-оп, коллайдер
+уже включён, перерегистрации нет). Сцена стартует на паузе (Pauser.RequestPause в Awake → timeScale 0,
+FixedUpdate/симуляции нет) — стейл живёт до первого ввода. Первый кадр после Begin: Update детекторов
+раньше первого FixedUpdate → запрос по stale-миру, все ~2845 коллайдеров «стоят» в origin = на игроке.
+Коллектор ест всё ≤ тира (мелочь летит с карты), ghost глушит всё > тира. Квота 15→14 — рандом
+AssignTiers/PickLayout, не персистентность.
+
+Магазин НЕ причина и скин оправдан (диаги идентичны в обеих сессиях). Чистый запуск по коду должен
+воспроизводиться так же — владелец в сессии-1 в геймплей до магазина не заходил, сравнения нет.
+
+Правка:
+- `LevelGenerator.Generate`: `Physics.SyncTransforms()` после `SpawnItems` — один явный синк батчем
+  после раскладки, вместо включения autoSyncTransforms глобально (2845 коллайдеров, запросы каждый кадр).
+
+Открытое после фикса: ghost-запрос 0.7 мировых юнитов = capsule.radius(0.5, локальный) + margin без
+учёта lossyScale игрока (52.19 → капсула ~26 мировых). При живой физике игрок блокируется крупными
+предметами на своей капсуле — центр никогда не подойдёт ближе ~26 юнитов к их коллайдеру, гост не
+сработает никогда. До фикса «работал» на stale-артефактах. Владелец подтвердил фикс: радиус запроса =
+`capsule.radius * |lossyScale.x| + margin` (ItemGhostToggler.Update, диаг в OnEnable дополнен).
+
+Fill-сцена: FlyingCube двигается трансформом — если там есть overlap-запросы, тот же класс стейла;
+не проверялось (вне репро).
+
+Компиляция НЕ прогнана (редактор открыт). Проверка владельца: рекомпиляция → чистый запуск с первым
+вводом и цикл магазин→игра — вакуума быть не должно. [Diag]-логи держать до подтверждения.
+
+## Волна 26 (2026-09-16): полное ревью Assets/Scripts + Assets/Editor (123 файла, ~9.7k строк)
+
+Ревью по правилам AI_RULES, без правок. Механика почти чиста (греп: 1 var, 2 тернарника, 0 комментариев,
+0 Find*/UnityEvent/лямбд-подписок, модификаторы на всех типах). Панч-лист по категориям — в чате сессии.
+Ключевые находки не-стилевые:
+1. MoveChecker.cs:32 — SphereCast радиусом `_playerCollider.radius` (0.5 локальный при lossyScale ~52)
+   — тот же класс локальный/мировой юнит-баг, что починен в ItemGhostToggler (волна 25).
+2. ShapeFillOrchestrator.StartFill → ShapeFiller.BuildShape: GridBuilder.Build() зовётся дважды на
+   каждую заливку.
+3. ShapeFiller.Fill/StopFill — флаг вместо отмены: старый FillAsync может пересечься с новым циклом
+   на общем _fillIndex.
+4. PlayerTier.Add — TierChanged летит на каждом пикапе (Small→Small), 4 подписчика гардируются сами.
+5. Player.Awake (`_playerConfig == null → return`) — молчаливый early-return, нарушение fail-fast;
+   там же GenericOverlapDetector.OnEnable, SkinApplier, SkillUnlocker, LevelLabelUI.
+6. AttractableDetector молотит OverlapSphere каждый кадр при неактивном скилле.
+7. ShopContent.cs — единственный файл вне канона: var+LINQ+лямбды+опечатка skinDuplikates.
+8. Структура: Scriptables/Tiers и Scriptables/Tier (два каталога), Scripts/Shop → namespace Skins,
+   Scriptables/Items → namespace Items; файл ShopItem.cs содержит класс SkinItem.
+Не трогать: SavesYG (JSON-ключи), PlayerInputActions (автоген), JS-коллбеки YandexAdsBridge (jslib).
+
+## Волна 26 (2026-09-16): AI_GUIDE.md — путеводитель по системам для ревью
+Полный проход по всем 123 собственным .cs (5 параллельных читателей + ручная сверка проводки сцен/префабов гуидами). Результат — **AI_GUIDE.md** в корне: 16 системных разделов (скрипты / поток / связи / чек-лист ревью) + сквозные инварианты + хвосты. Назначение: брать систему целиком и идти по её файлам.
+
+Новые факты, которых не было в журнале (проверено grep гуидов по .unity/.prefab):
+- `MassUI.cs` не ссылается ни одна сцена/префаб — мёртвый или невозвращённый в HUD.
+- `Wallet`-компонент лежит в Game.unity, но НЕ зарегистрирован в GameLifetimeScope → [Inject] в Game-сцене не выполнится; потребителей Wallet в Game по коду нет — рудимент проводки.
+- `DeathMenu.prefab` — v1-остаток (внутри только UIButtonSound, фабриками не спавнится). `Test.unity` вне билда.
+- SessionStateLogger — НЕ MonoBehaviour, а plain IStartable (RegisterEntryPoint), подписка на sceneLoaded вечная по дизайну.
+
+Ревью-находки по коду (не фиксилось — зафиксированы в AI_GUIDE как цели):
+- Fail-fast дыры: `Player.Awake` молчит на null PlayerConfig + не валидирует `_inputReader/_collector`; `GenericOverlapDetector` молча отключает tier-масштабирование; `SkinApplier`/`SkillUnlocker` — молчаливые early-return на null-progress; `SkillHandler`/`SkillInputBinder`/`MassUI`/`LevelRewardPopup`/`ShopItemViewFactory` без валидаций.
+- Fill: сетка строится дважды за StartFill; `Sprite.Create`-утечка в PlaceGhost; рестарт заливки не снимает летящие кубы (ложный FillCompleted); кубы не деспавнятся никогда.
+- `Timer.StartCount` на исчерпанном таймере → повторный Finished (Continue защищён, StartCount нет).
+- `LocalizationService`: подписки на bridge в Awake, отписка в OnDisable → после re-enable ответы Яндекса уходят в никуда.
+- `AdScheduler`: повторный ShowRewarded до закрытия первого перетирает pending-колбэки.
+- `LevelScaler` не применяет стартовый тир > Small к масштабу (CameraFollow — применяет); `TierThreshold._speed=1` (забытая строка) валидна для Mover.
+- `QuotaGenerator` при typesTarget=0 отдаёт пустую квоту → FillPercent навсегда 0, уровень непроходим молча.
+- Магазин персистит МИМО PlayerProgress (напрямую YG2.saves) — асимметрия шва, осознанная.
+
+Хвосты прежние: [Diag]-логи снести после подтверждения; компиляцию волн 20+ прогнать batchmode; лидерборд max_level / TierUpSound._clip / Room-данные / снежный ком — за владельцем (полный список — AI_GUIDE §19).

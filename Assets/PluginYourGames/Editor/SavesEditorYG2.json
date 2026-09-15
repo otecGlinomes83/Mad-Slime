@@ -7,14 +7,18 @@
         false,
         false
     ],
-    "idSave": 136,
-    "CurrentLevel": 8,
-    "musicVolume": 0.07767164707183838,
-    "sfxVolume": 0.731719970703125,
-    "Balance": 350,
-    "SelectedSkinType": 0,
+    "idSave": 181,
+    "CurrentLevel": 12,
+    "MaxLevel": 12,
+    "Language": "en",
+    "PlayerId": "Guest-895556",
+    "musicVolume": 0.20512743294239045,
+    "sfxVolume": 0.2817195653915405,
+    "Balance": 150,
+    "SelectedSkinType": 1,
     "_openSkins": [
-        0
+        0,
+        1
     ],
     "PreviousScene": "Game"
 }

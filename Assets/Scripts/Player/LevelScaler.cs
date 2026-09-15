@@ -76,6 +76,9 @@ namespace Player
             _baseControllerCenterY = _playerCollider.center.y;
 
             ApplyMultiplier();
+
+            Debug.Log(
+                $"[Diag] {name}: Awake collider radius={_playerCollider.radius} height={_playerCollider.height} multiplier={_currentMultiplier}");
         }
 
         private void OnEnable()
@@ -106,6 +109,8 @@ namespace Player
             _currentTier = currentTier;
             _targetMultiplier = _tierResolver.GetScaleFor(_currentTier);
             _mover.SetDefaultSpeed(_tierResolver.GetSpeedFor(_currentTier));
+
+            Debug.Log($"[Diag] {name}: tier {currentTier} targetMultiplier={_targetMultiplier}");
 
             GrowAsync().Forget();
         }

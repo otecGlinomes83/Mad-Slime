@@ -26,7 +26,7 @@ namespace Game
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            LogState($"scene '{scene.name}' loaded");
+            LogState($"scene '{scene.name}' loaded (timeScale={Time.timeScale})");
         }
 
         private void LogState(string reason)

@@ -30,7 +30,7 @@ MonoBehaviour:
     _minTier: 1
     _maxTier: 1
   - _shape: 0
-    _center: {x: 0, y: 26.871567}
+    _center: {x: -11.690582, y: 35.52987}
     _radius: 100
     _count: 150
     _autoSpacing: 1
@@ -38,7 +38,7 @@ MonoBehaviour:
     _minTier: 0
     _maxTier: 0
   - _shape: 0
-    _center: {x: 81.77337, y: 82.91491}
+    _center: {x: 70.7966, y: 73.56628}
     _radius: 100
     _count: 300
     _autoSpacing: 1
@@ -54,7 +54,7 @@ MonoBehaviour:
     _minTier: 0
     _maxTier: 0
   - _shape: 0
-    _center: {x: -9.155535, y: -54.196014}
+    _center: {x: -1.1775513, y: -58.040947}
     _radius: 100
     _count: 300
     _autoSpacing: 1
@@ -62,7 +62,7 @@ MonoBehaviour:
     _minTier: 0
     _maxTier: 0
   - _shape: 0
-    _center: {x: -41.746002, y: -10.158497}
+    _center: {x: -63.279022, y: -16.60624}
     _radius: 100
     _count: 300
     _autoSpacing: 1
@@ -70,7 +70,7 @@ MonoBehaviour:
     _minTier: 0
     _maxTier: 0
   - _shape: 0
-    _center: {x: -79.011246, y: 79.1462}
+    _center: {x: -71.49039, y: 72.19993}
     _radius: 100
     _count: 300
     _autoSpacing: 1
@@ -78,7 +78,7 @@ MonoBehaviour:
     _minTier: 0
     _maxTier: 0
   - _shape: 0
-    _center: {x: 43.04279, y: -31.37731}
+    _center: {x: 46.940567, y: -33.85743}
     _radius: 100
     _count: 9
     _autoSpacing: 0

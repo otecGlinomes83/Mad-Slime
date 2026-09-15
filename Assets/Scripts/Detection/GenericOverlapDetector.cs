@@ -23,8 +23,18 @@ namespace Detection
 
         public float Radius => _radius;
 
+        private void Awake()
+        {
+            _baseRadius = _radius;
+        }
+
         protected virtual void Update()
         {
+            if (Time.timeScale == 0f)
+            {
+                return;
+            }
+
             int hitsCount = Physics.OverlapSphereNonAlloc(transform.position, _radius, _buffer, _layerMask);
 
             for (int i = 0; i < hitsCount; i++)
@@ -40,8 +50,6 @@ namespace Detection
 
         protected virtual void OnEnable()
         {
-            _baseRadius = _radius;
-
             if (_tierSource == null || _tierResolver == null)
             {
                 return;
@@ -49,6 +57,9 @@ namespace Detection
 
             _tierSource.TierChanged += OnTierSourceChanged;
             SetRadius(_baseRadius * _tierResolver.GetScaleFor(_tierSource.CurrentTier));
+
+            Debug.Log(
+                $"[Diag] {name}: baseRadius={_baseRadius} tierScale={_tierResolver.GetScaleFor(_tierSource.CurrentTier)} radius={_radius}");
         }
 
         protected virtual void OnDisable()
@@ -73,7 +84,11 @@ namespace Detection
 
         private void OnTierSourceChanged(ItemTier previousTier, ItemTier currentTier)
         {
-            SetRadius(_baseRadius * _tierResolver.GetScaleFor(currentTier));
+            float newRadius = _baseRadius * _tierResolver.GetScaleFor(currentTier);
+
+            Debug.Log($"[Diag] {name}: radius {_radius} -> {newRadius} (tier {currentTier})");
+
+            SetRadius(newRadius);
         }
 
         private void OnDrawGizmosSelected()

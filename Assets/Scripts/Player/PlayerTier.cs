@@ -42,6 +42,8 @@ namespace Player
 
             _mass = _defaultMass;
             CurrentTier = _tierResolver.GetUnlockedTier(_mass);
+
+            Debug.Log($"[Diag] {name}: PlayerTier.Awake mass={_mass} tier={CurrentTier} defaultMass={_defaultMass}");
         }
 
         public void Add(int amount)
@@ -62,6 +64,8 @@ namespace Player
 
             ItemTier previousTier = CurrentTier;
             CurrentTier = _tierResolver.GetUnlockedTier(_mass);
+
+            Debug.Log($"[Diag] {name}: mass {previous} -> {_mass} (tier {previousTier} -> {CurrentTier})");
 
             TierChanged?.Invoke(previousTier, CurrentTier);
         }

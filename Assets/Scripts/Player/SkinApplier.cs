@@ -56,14 +56,21 @@ namespace Player
             }
 
             PlayerSkins selectedType = _progress.SelectedSkin;
+
+            Debug.Log($"[Diag] {name}: selected skin {selectedType}");
+
             SkinItem matchingItem = FindItem(selectedType);
 
             if (matchingItem == null)
             {
+                Debug.Log($"[Diag] {name}: no SkinItem found for {selectedType} in ShopContent");
                 return;
             }
 
             _currentModel = Instantiate(matchingItem.Model, _skinsContainer);
+
+            Debug.Log(
+                $"[Diag] {name}: applied '{matchingItem.Model.name}' localScale={matchingItem.Model.transform.localScale}");
         }
 
         private SkinItem FindItem(PlayerSkins skinType)
