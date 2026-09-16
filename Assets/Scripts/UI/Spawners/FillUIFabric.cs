@@ -1,11 +1,9 @@
-﻿using Audio;
+using Audio;
 using Game;
 using Scriptables;
-using Skills;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using VContainer;
 
 namespace UI
 {
@@ -19,23 +17,14 @@ namespace UI
         [SerializeField] private PauseMenu _pauseMenuPrefab;
         [SerializeField] private WinMenu _winMenuPrefab;
         [SerializeField] private FailMenu _failMenuPrefab;
-        [SerializeField] private LevelRewardPopup _levelRewardPopupPrefab;
 
-        [SerializeField] private SkillsConfig _skillsConfig;
         [SerializeField] private Wallet _wallet;
         [SerializeField] private AdScheduler _adScheduler;
         [SerializeField] private YandexConfig _yandexConfig;
 
         [SerializeField] private Pauser _pauser;
 
-        private PlayerProgress _progress;
         private int _lastRewardAmount;
-
-        [Inject]
-        public void Construct(PlayerProgress progress)
-        {
-            _progress = progress;
-        }
 
         private void Awake()
         {
@@ -78,8 +67,6 @@ namespace UI
                 _pauser,
                 _sessionHandler.LoadNextLevel,
                 RequestDoubleReward);
-
-            ShowLevelRewardPopup(_progress.CurrentLevel + 1);
         }
 
         private void OnGameFailed(int rewardAmount)
@@ -113,40 +100,6 @@ namespace UI
         private void OnDoubleRewardGranted()
         {
             _wallet.Add(_lastRewardAmount);
-        }
-
-        private void ShowLevelRewardPopup(int levelNumber)
-        {
-            if (_skillsConfig == null)
-            {
-                Debug.LogWarning(
-                    "[Fill] FillUIFabric: SkillsConfig is not assigned. Level reward popup is skipped. Drag the SkillsConfig asset into the Skills Config field.");
-                return;
-            }
-
-            if (_levelRewardPopupPrefab == null)
-            {
-                Debug.LogWarning(
-                    "[Fill] FillUIFabric: Level Reward Popup prefab is not assigned. Popup is skipped. Drag PopupCanvas.prefab into the Level Reward Popup Prefab field.");
-                return;
-            }
-
-            foreach (SkillConfig config in _skillsConfig.Skills)
-            {
-                if (config == null)
-                {
-                    Debug.LogWarning(
-                        "[Fill] SkillsConfig contains a missing entry. Open the asset and remove the empty list items.");
-                    continue;
-                }
-
-                if (config.RequiredLevel == levelNumber)
-                {
-                    LevelRewardPopup popup = Instantiate(_levelRewardPopupPrefab);
-                    popup.Initialize(levelNumber, config);
-                    return;
-                }
-            }
         }
 
         private void OnPauseButtonClick()

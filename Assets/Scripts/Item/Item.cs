@@ -3,6 +3,7 @@ using DG.Tweening;
 using Interfaces;
 using Skills;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Items
 {
@@ -169,6 +170,7 @@ namespace Items
         public void Initialize(Vector3 position, float scale)
         {
             transform.position = position;
+            transform.rotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
             transform.localScale = _defaultScale * scale;
             _collider.enabled = true;
             ResetVisuals();

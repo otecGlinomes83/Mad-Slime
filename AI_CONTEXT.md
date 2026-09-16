@@ -43,8 +43,8 @@
 ### Магазин
 `Shop.prefab` (инстанс в сцене Shop): `ShopLifetimeScope` инжектит Wallet → `Shop.InitializeShop` (гард `_isInitialized`) → `ShopPanel` (Show/выбор/покупка; сейв только при реальном выборе) → `ModelPlacer` (превью + PlayWalk). `SkinApplier` применяет выбранный скин в Game.
 
-### Скиллы
-`BaseSkill` (FSM: активная фаза/кулдаун через Timer; хуки OnActivated/OnTick/OnDeactivated) → `AttractSkill` (притягивание предметов тира ≤ текущего). Активация: `SkillInputBinder` (input) → `SkillUnlocker.IsUnlocked(config)` (RequiredLevel ≤ CurrentLevel) → `SkillHandler.TryActivate(config)`.
+### Аттрактор (пассивный магнит)
+Активных скиллов в проекте нет (снесены 2026-09-16, волна 28). `ItemAttractor` (Collectables, на GO Attractor в Game.unity) — всегда включён: подписан на `AttractableDetector.Detected`, тянет предметы тира ≤ текущего (`_config` = AttractConfig: сила + approach-кривая ускорения к центру). Радиус детектора = базовый `_radius` × тир-скейл, тюнится в инспекторе сцены. `AttractConfig` — standalone SO (Scriptables/Skills/, там же живёт ItemTier).
 
 ### UI
 HUD: `QuotaUI` (plates по LevelProgress.QuotaChanged + Populate в Start), `GrowthBarView` (тир-прогресс), `MassUI`, `TimerUI`, `LevelLabelUI`. Windows: `BaseWindow` (пауза в Initialize, резюм в OnDisable) → PauseMenu/LeaderboardMenu/WinMenu/FailMenu; `LevelRewardPopup` (награда-скилл за уровень). Fabric'и: `GameplayUIFabric`, `FillUIFabric` (спавнят окна, подписки в OnEnable).

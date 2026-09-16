@@ -68,11 +68,6 @@ namespace Collectables
         {
             item.Collect();
 
-            Debug.Log(
-                $"[Diag] {name}: absorb '{item.name}' #{item.GetInstanceID()} tier={item.Tier} mass={item.Mass} " +
-                $"itemPos={item.transform.position} itemScale={item.transform.lossyScale} " +
-                $"detectorPos={_detector.transform.position} radius={_detector.Radius} timeScale={Time.timeScale}");
-
             try
             {
                 await _absorber.AbsorbAsync(item.transform, this.GetCancellationTokenOnDestroy());
@@ -83,8 +78,6 @@ namespace Collectables
             }
 
             item.Shutdown();
-
-            Debug.Log($"[Diag] {name}: absorbed '{item.name}' #{item.GetInstanceID()}");
 
             ItemCollected?.Invoke(item);
         }

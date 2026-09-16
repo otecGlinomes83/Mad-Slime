@@ -75,8 +75,6 @@ namespace Collectables
 
                 ghostItem.SetGhost(false);
                 _ghostItems.RemoveAt(i);
-
-                Debug.Log($"[Diag] {name}: ghost OFF '{ghostItem.name}' #{ghostItem.GetInstanceID()}");
             }
         }
 
@@ -101,13 +99,6 @@ namespace Collectables
 
                 item.SetGhost(true);
                 _ghostItems.Add(item);
-
-                float distance = Vector3.Distance(transform.position, item.transform.position);
-
-                Debug.Log(
-                    $"[Diag] {name}: ghost ON '{item.name}' #{item.GetInstanceID()} itemTier={item.Tier} " +
-                    $"playerTier={_tierHolder.CurrentTier} distance={distance:0.0} " +
-                    $"itemPos={item.transform.position} itemScale={item.transform.lossyScale} timeScale={Time.timeScale}");
             }
         }
 

@@ -65,8 +65,6 @@ namespace Player
             ItemTier previousTier = CurrentTier;
             CurrentTier = _tierResolver.GetUnlockedTier(_mass);
 
-            Debug.Log($"[Diag] {name}: mass {previous} -> {_mass} (tier {previousTier} -> {CurrentTier})");
-
             TierChanged?.Invoke(previousTier, CurrentTier);
         }
     }

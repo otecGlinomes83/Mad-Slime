@@ -1,12 +1,12 @@
-using Collectables;
 using Interfaces;
 using Player;
+using Skills;
 using System;
 using UnityEngine;
 
-namespace Skills
+namespace Collectables
 {
-    public sealed class AttractSkill : BaseSkill
+    public sealed class ItemAttractor : MonoBehaviour
     {
         private const float MinDistanceSqr = 0.0001f;
 
@@ -14,12 +14,8 @@ namespace Skills
         [SerializeField] private PlayerTier _playerTier;
         [SerializeField] private AttractableDetector _detector;
 
-        public override SkillConfig Config => _config;
-
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
-
             if (_config == null)
             {
                 throw new InvalidOperationException(
@@ -53,37 +49,18 @@ namespace Skills
             }
         }
 
-        protected override void OnEnable()
+        private void OnEnable()
         {
-            base.OnEnable();
             _detector.Detected += OnAttractableDetected;
         }
 
-        protected override void OnDisable()
+        private void OnDisable()
         {
-            base.OnDisable();
             _detector.Detected -= OnAttractableDetected;
-        }
-
-        protected override void OnActivated()
-        {
-        }
-
-        protected override void OnTick()
-        {
-        }
-
-        protected override void OnDeactivated()
-        {
         }
 
         private void OnAttractableDetected(IAttractable attractable)
         {
-            if (IsActive == false)
-            {
-                return;
-            }
-
             if (attractable.Tier > _playerTier.CurrentTier)
             {
                 return;

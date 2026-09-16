@@ -732,3 +732,159 @@ Fill-сцена: FlyingCube двигается трансформом — есл
 - Магазин персистит МИМО PlayerProgress (напрямую YG2.saves) — асимметрия шва, осознанная.
 
 Хвосты прежние: [Diag]-логи снести после подтверждения; компиляцию волн 20+ прогнать batchmode; лидерборд max_level / TierUpSound._clip / Room-данные / снежный ком — за владельцем (полный список — AI_GUIDE §19).
+
+## Волна 27 (2026-09-16): идеи гейм-филя — поглощение и заливка формочки (без правок, только план)
+
+Полный проход по цепочкам фидбека. Контекст текущего состояния:
+
+- **Поглощение:** предмет летит в слайм по SmoothStep-лерпу позиции+скейла за фиксированные 0.3с (`Absorber.AbsorbAsync`). Фидбек после прилёта: CameraImpulse (pull/push оффсета), PlayerPickupSound (один клип + рандом pitch), тихое обновление квотного UI.
+- **Заливка:** бордер появляется мгновенно одним кадром, кубы летят по прямой SmoothStep-лерпу из одной сериализованной точки, прилёт — резкий snap в identity без эффекта, звук на каждый куб без лимитера, при 100% ничего кроме Win-окна.
+- **Факты по проекту:** партикл-систем — ноль ни в одном префабе; DOTween уже используется (Item.SetGhost); HUD-процента заливки в Fill-сцене нет (FillUIFabric спавнит только окна); SoundLimiter есть и свободен.
+
+### Часть 1 — фил поглощения (сцена Game)
+
+1. **Профиль втягивания** — `Absorber.AbsorbAsync`. SmoothStep тормозит и на старте, и в конце — для «вакуума» нужен ease-in (медленно отрывается, разгоняется в пасть). Плюс длительность от дистанции (`distance / absorbSpeed`, кламп сверху): сейчас дальний и ближний предметы прилетают одновременно — близкий сбор ощущается вязким, дальний — телепортом. Новый параметр в `PlayerConfig` (AbsorbSpeed / MaxAbsorbDuration).
+2. **Спираль/вращение в полёте** — тот же `Absorber`: вращение предмета с разгоняющейся угловой скоростью + небольшой тангенциальный оффсет (квадратичная безье). Прямая линия в пасть читается «телепортом», спираль — «всасыванием».
+3. **Squash&stretch слайма** — короткий punch-scale модели на каждый пикап. Обязательно через ДОЧЕРНИЙ трансформ модели: `_modelTransform` занят сглаживанием `LevelScaler`, их нельзя смешивать. На тир-ап — эластичный овершут: сейчас `LevelScaler.GrowAsync` через SmoothDamp затухает без единого отскока, рост «не объявляет» себя телом.
+4. **Тир-ап момент** — сейчас только скейл+камера+звук. Добавить: расходящееся кольцо (меш/декаль под ногами), короткий хитстоп (~80мс timeScale 0.1 — проверить совместимость с YG-паузой/GameplayAPI, см. шаг 0 плана), FOV-kick камеры. Самая дешёвая большая эмоция в игре.
+5. **Частицы** — puff на поглощение (брызги цвета предмета) + ring на тир-ап. В проекте их нет вообще, достаточно одной пуловой системы на эффект.
+6. **Звук по массе** — `PlayerPickupSound`: громкость/клип от `definition.BaseMass`, на крупный предмет — второй слой «глоток», baseline pitch чуть растёт с тиром (звук прогресса).
+7. **CameraImpulse** — сейчас только pull/push оффсета. Добавить микро-шейк на предметы выше порога массы; на тир-ап FOV-punch — на телефоне читается лучше, чем оффсет.
+8. **UI-панч** — тарелка квоты в `QuotaUI` и `GrowthBarView` пунчатся при сборе квотного предмета. Сейчас обновление цифр тихое.
+9. **Пассивный магнит (опционально)** — предметы в части радиуса детектора сами дрейфуют к игроку до формального захвата. КОНФЛИКТ: это ядро ценности `AttractSkill` — пассивка может съесть скилл. Решение владельца.
+
+### Часть 2 — фил заполнения (сцена Fill)
+
+1. **Landing pop** — на `FlyingCube.Arrived` скейл-пунш (1.15 → 1.0, DOTween уже есть) + лёгкая вспышка. Куб «шлёпается», а не «вклеивается».
+2. **Полёт куба** — `FlyingCube`: дуга (рандомный боковой оффсет по безье) + вращение в полёте с плавным доворотом к identity в последних 20% пути (сейчас резкий snap) + stretch по вектору скорости. Один класс — три дешёвых улучшения.
+3. **Звук прибытия** — `FlyingCubeArrivalSound` играет PlayOneShot на каждый куб БЕЗ SoundLimiter: при spawnInterval 0.04с и flightDuration 0.5с это ~25 звуков/сек — каша. Фикс: лимитер + pitch, растущий с процентом заливки (эффект «дожимания» к 100%).
+4. **Порядок заливки** — `GridBuilder.SortFillTopToBottom` даёт «занавес сверху». Снизу вверх читается как «заливка жидкостью» — совпадает с фантазией слайма. Альтернатива: спираль от центра. Решение владельца.
+5. **Цветной призрак** — `ShapeFiller.PlaceGhost` красит фон в серый `_ghostColor`. Если красить той же текстурой в реальных цветах на ~40% непрозрачности — «раскрашивание по номерам»: игрок заранее видит картину и получает удовлетворение от её проявления.
+6. **Бордер каскадом** — `SpawnBorder` спавнит периметр мгновенно. Каскад scale 0→1 по порядку вдоль периметра (~0.5с) = «рисуется формочка», момент предвкушения перед дождём кубов.
+7. **Процент-счётчик** — в Fill-сцене HUD-процента нет. Большой анимированный %, считающийся по факту прилёта кубов (`_arrivedCount` в `ShapeFiller` уже есть), с панчами на 25/50/75/100.
+8. **Финал** — при 100%: общий пунш всей формы (scale-пружина парента), конфетти, лёгкий zoom-out камеры «посмотри, что построил», и только потом Win-окно. Сейчас кульминация уровня — тишина.
+
+### Минимальный набор (макс. фил за мин. правки)
+
+Профиль втягивания + спираль (п.1-2 ч.1), landing pop + полёт куба (п.1-2 ч.2), лимитер звука прибытия (п.3 ч.2), тир-ап хитстоп+кольцо (п.4 ч.1), цветной призрак (п.5 ч.2). Пять точек, три из них — правка одного метода.
+
+### AI-план исполнения
+
+- **Шаг 0 — решения владельца до старта:** (а) пассивный магнит — да/нет (конфликт с AttractSkill); (б) порядок заливки — снизу вверх / спираль / оставить как есть; (в) допустим ли хитстоп через timeScale рядом с YG-паузой (плагиновые GamePause/GameplayAPI читают nowInterAdv/nowRewardAdv, Pauser считает через timeScale — конфликтов по коду не видно, но подтвердить).
+- **Шаг 1 — Absorber:** ease-in вместо SmoothStep, длительность от дистанции, вращение+тангенциальный оффсет. Новые поля в `PlayerConfig` — проставить значения в .asset (batchmode-компиляция их не проверяет).
+- **Шаг 2 — тир-ап:** кольцо + FOV-kick (+ хитстоп, если одобрен); эластичный овершут на модель через дочерний трансформ.
+- **Шаг 3 — звук:** PlayerPickupSound по массе/тиру; FlyingCubeArrivalSound через SoundLimiter + pitch по прогрессу заливки.
+- **Шаг 4 — заливка:** FlyingCube (дуга/спин/доворот + landing pop), SpawnBorder каскадом, цветной призрак, новый FillProgressUI (счётчик % по событию CubeArrived, панчи на milestones).
+- **Шаг 5 — частицы:** пуловые puff (Collector) + ring (TierChanged), настройки в Scriptables по канону проекта.
+- **Шаг 6 — финал формы:** пунш парента формы + zoom-out камеры при FillCompleted == 1.0, до спавна Win-окна.
+- **Шаг 7 — попутный долг тех же файлов (волна 26):** кубы Fill не деспавнятся никогда; рестарт не снимает летящие кубы (ложный FillCompleted); сетка строится дважды за StartFill; Sprite.Create-утечка в PlaceGhost. Править в тех же точках, где будут фил-правки.
+- **Шаг 8 — валидация:** batchmode-компиляция; прогон в редакторе (сбор → тир-ап → заливка до 100% и до фейла); проверить звук под лимитером на большом уровне.
+
+**Примечание:** правки Absorber/FlyingCube не должны трогать [Diag]-логи Collector/ItemGhostToggler (волны 24-26) — они держатся до подтверждения владельцем и сносятся отдельным шагом.
+
+## Волна 27 (2026-09-16): рандомный поворот предметов по Y при спавне
+
+- `Item.Initialize`: `transform.rotation = Quaternion.Euler(0, Random.Range(0..360), 0)` перед скейлом —
+  каждый спавн из пула получает свежий поворот. Коллайдер-бокс вращается с корнем (ок), детекторы/квота —
+  по позициям (ок). Игровой call-site один: `LevelGenerator.cs:267`.
+- Тиры игрока в конфиг НЕ переносились — уже там: `Assets/Scriptables/Tier/TierScalerConfig.asset`
+  (TierScalerConfig → List<TierThreshold>): `_requiredMass` / `_scaleMultiplier` (рост) / `_speed`
+  (скорость) / `_cameraOffsetMultiplier` (отдаление камеры). Потребители: TierResolver → LevelScaler,
+  Mover, CameraFollow. Кода не требовалось — владельцу отвечено путём.
+- Делитель массы — `Assets/Scriptables/Player/PlayerConfig.asset` → `_massPickupDivisor` (сейчас 4),
+  применяется в `PlayerTier.Add` ко ВСЕМ предметам (Round(mass/divisor), минимум 1). Отдельного
+  делителя для не-квотовых предметов НЕТ; квота считается в `LevelProgress.RegisterCollected` по
+  Definition и от делителя не зависит. Если владельцу нужен отдельный не-квотовый делитель — новое
+  поле в PlayerConfig + ветка в Player.OnItemCollected/PlayerTier (не делал, не заказано).
+
+## Волна 28 (2026-09-16): аттрактор пассивный, активных скиллов больше нет
+
+Решение владельца: магнит всегда включён, маленький радиус (тюнинг базой `_radius` детектора в
+сцене), тянет только tier ≤ текущего. Вся активная скилл-машерика снесена.
+
+- `Collectables/ItemAttractor.cs` (NEW, бывший `Skills/AttractSkill.cs`): `git mv` с сохранением
+  GUID `cbdb3ce3…` → сцена пережила переименование без правки m_Script. Наследование BaseSkill
+  срезано: подписка `_detector.Detected` в OnEnable/OnDisable (свои, не виртуальные), тир-гейт и
+  approach-кривая (force × (1+(M-1)·(1-d/R)^Power)) не тронуты. Поля `_config/_playerTier/_detector`
+  сохранены → проводка в сцене выжила. Fail-fast валидации те же.
+- `AttractConfig` — standalone SO (база SkillConfig срезана); ассеты Low/MediumAttractConfig живы
+  (Medium сейчас не подключён никем — пресет для тюнинга).
+- **Удалены**: `BaseSkill`, `SkillHandler`, `SkillInputBinder`, `SkillUnlocker`, `SkillTier`,
+  `SkillConfig`, `SkillsConfig` (+ ассет), `LevelRewardPopup` (+ `PopupCanvas.prefab`), `_skillUnlocker`
+  из `GameLifetimeScope` (поле/валидация/регистрация/using), `AttractPerformed` из `PlayerInputReader`,
+  из `FillUIFabric` — `_skillsConfig`/`_levelRewardPopupPrefab`/`ShowLevelRewardPopup` и `[Inject]`
+  PlayerProgress (использовался только попапом).
+- **Сцены**: Game.unity — с GO Player снесены SkillHandler/SkillInputBinder/SkillUnlocker; GO
+  «AttractSkill» переименован в «Attractor», с него снесён Timer, из компонента аттрактора убрано
+  поле `_timer`. Fill.unity — из модификаций FillUIFabric убраны `_skillsConfig`/`_levelRewardPopupPrefab`.
+- Радиус: тир-скейлинг детектора НЕ тронут (владелец: «работает как надо») — базу `_radius`
+  (сейчас 2) владелец уменьшает в инспекторе сам.
+- `ItemTier.cs` остался в `Skills/` (namespace Skills) — нужен всему домену; папка живёт с одним файлом.
+- Пауза закрыта без правок: `GenericOverlapDetector.Update` гейтится на timeScale==0 — магнит замирает.
+- Не тронуто: action «Attract» в `PlayerInputActions.inputactions` (мёртвый биндинг, автоген не
+  правим — убрать может владелец в редакторе); `Skills.prefab` (SprintButton/AttractButton, v1-мусор,
+  сценами не используется — кандидат на снос отдельно).
+- Владельцу: подстроить `_radius` AttractableDetector в Game.unity; [Diag]-логи волн 22–26 всё ещё в коде.
+- Компиляция batchmode — чисто (Unity на этой машине: `D:\3. files\Unity\Editor\2022.3.62f2`).
+
+## Волна 29 (2026-09-16): мобильное управление — TouchJoystick (код готов, проводка за владельцем)
+
+Контекст: владелец хочет играть с телефона (WebGL/Яндекс). GDD 1.2 прямо предусматривает
+«телефон — джойстик, ПК — клавиатура». Решение владельца: писать свой компонент; ассеты Asset
+Store (Joystick Pack и пр.) отклонены — старый Input API, чужой код вне канона, интеграцию всё
+равно переписывать. Встроенный OnScreenStick (в Input System 1.14.2 есть режим
+ExactPositionWithDynamicOrigin) тоже отклонён: один спрайт едет целиком (нет «круг+точка»), не
+скрывается, зона появления — круг вокруг стартовой позиции.
+
+- `PlayerInput/TouchJoystick.cs` (NEW): sealed, наследует `OnScreenControl` (создаёт виртуальный
+  Gamepad, control path `<Gamepad>/leftStick`), IPointerDown/IDrag/IPointerUp. Схема: сам GO —
+  полноэкранная невидимая зона (Image raycastTarget), дети — Background (круг) + Handle (точка,
+  ребёнок фона). OnPointerDown — фон появляется в точке тапа
+  (RectTransformUtility.ScreenPointToLocalPointInRectangle); OnDrag — ClampMagnitude по
+  `_movementRange`, в стик уходит clamped/range; OnPointerUp/OnDisable — SendValueToControl(zero) +
+  скрытие (в OnDisable база сама сбрасывает контрол в дефолт). Второй палец гейтится по pointerId.
+  Гейт «сенсор ли это»: в Editor всегда true (тест мышью), в билде `Touchscreen.current != null`
+  в момент нажатия — раз событие uGUI пришло от тача, устройство Input System уже создано.
+- **YG2.envir НЕ существует**: в плагине v2.0092 `Modules/` содержит только Authorization+Storage;
+  define `EnvirData_yg` включать НЕЛЬЗЯ (EventsYG2._GetEnvirData зовёт несуществующий
+  YG2.GetEnvirData — компиляция сломается; та же причина, что с Adv/Leaderboard в волне 2).
+  Проверено грепом плагина. Определение мобилы поэтому без YG2.
+- Интеграция через стандартный путь: стик инжектится в виртуальный Gamepad → достаточно биндинга
+  `<Gamepad>/leftStick` на действие Move; PlayerInputReader правок не требует, «старт по первому
+  вводу» (MovementKeyPressed) сработает от стика автоматически.
+- **Владельцу в редакторе** (автоген не правим руками):
+  1. `Assets/Scripts/PlayerInput/PlayerInputActions.inputactions` → Move → Add Binding
+     `<Gamepad>/leftStick` (инспектор сам перегенерит PlayerInputActions.cs).
+  2. В UI.prefab под HUD — первого ребёнка «JoystickZone»: stretch fullscreen, Image (Alpha 0,
+     raycastTarget on) + TouchJoystick; дети: Background (Image-круг) и Handle (Image-точка,
+     ребёнок Background, anchored в центре). Драг рефов в `_background`/`_handle`;
+     `_movementRange` ~100–140 (канвас-юниты). Зону держать ДО кнопочных канвасов по иерархии
+     (raycast-приоритет кнопок остаётся выше).
+  3. Спрайты круга/точки — любые круглые (временно сойдёт дефолтный UISprite).
+- EventSystem в UI.prefab/Game.unity уже на InputSystemUIInputModule (проверено по GUID) — тачи в
+  uGUI работают, Touchscreen на WebGL в Input System поддерживается.
+- Не заказано: кнопки скиллов на мобиле (активных скиллов нет, волна 28).
+- Компиляция batchmode не прогнана — проект открыт в редакторе (lock, exit 21). Проверить консоль
+  редактора при фокусе или прогнать batchmode после закрытия.
+- **Проводка владельца (факт по Game.unity) и фикс**: владелец собрал иначе — JoystickZone это
+  отдельный Overlay-канвас под 3D-объектом HUD; TouchJoystick висел на голом ребёнке «Joystick»
+  (100×100, БЕЗ Image → raycast туда не попадает, события не доходят); Handle был сестрой фона и
+  вечно висел в центре (код прячет только Background, т.к. по схеме точка — ребёнок фона); Scale
+  2.59 на Background. Дан чек-лист: Joystick → stretch fullscreen + Image (alpha 0, raycast on),
+  Handle → внутрь Background, Background Scale=1 и size 260, Raycast Target off на фоне/точке,
+  Sort Order = −1 на канвасе (ниже кнопок), movementRange 180–250 (CanvasScaler Constant Pixel
+  Size → юниты = пиксели). Код не менялся.
+- **Итог (пересборка с нуля, работает — подтверждено владельцем 2026-09-16)**: JoystickZone
+  (Canvas Overlay, Sort Order −1) → Zone (stretch fullscreen, Image alpha 0 raycast ON, на нём
+  TouchJoystick, movementRange 200) → Background (Image круг 260, raycast OFF) → Handle (Image
+  точка 100, raycast OFF). Тап → круг в точке, ведение → движение, отпускание → скрытие.
+  Осталось проверить на телефоне в WebGL-билде (гейт Touchscreen.current; мышью в билде не
+  включается — задумано).
+
+## Волна 30 (2026-09-16): срезаны спам-логи [Diag] при поглощении и ghost
+- Убраны пер-событийные логи, засорявшие консоль в плейтесте: Collector (absorb/absorbed),
+  ItemGhostToggler (ghost ON/OFF, вместе с неиспользуемым distance), PlayerTier.Add (mass X -> Y),
+  GenericOverlapDetector.OnTierSourceChanged (radius X -> Y — стрелял на каждом +1 массы).
+- Разовые [Diag] при Awake/OnEnable оставлены (Scaler, PlayerTier.Awake, baseRadius, capsule,
+  SkinApplier) — спама не дают, диагностика осталась.
+- Файлы: Collector.cs, ItemGhostToggler.cs, GenericOverlapDetector.cs, PlayerTier.cs. Логики не трогали.

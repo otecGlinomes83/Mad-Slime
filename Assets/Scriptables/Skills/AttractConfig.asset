@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d22ac6dd6737f7f4dab7e38ca8078e41, type: 3}
-  m_Name: SkillsConfig
+  m_Script: {fileID: 11500000, guid: 75acee8964d447908364bd63bcad33db, type: 3}
+  m_Name: AttractConfig
   m_EditorClassIdentifier: 
-  _skills:
-  - {fileID: 11400000, guid: bccf9e52416c15042abae3d768cec313, type: 2}
-  - {fileID: 11400000, guid: da34b67f0a184ed4ba5b25876aa5cb75, type: 2}
+  _attractionForce: 2
+  _approachMultiplier: 3
+  _approachPower: 2

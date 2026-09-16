@@ -1439,21 +1439,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1495407476}
     - target: {fileID: 6849455437278059309, guid: 8a65a6b7f9357644e9e827308e86a7af, type: 3}
-      propertyPath: _skillsConfig
-      value: 
-      objectReference: {fileID: 11400000, guid: 875c13b1b4adde94894377dbf1ff2264, type: 2}
-    - target: {fileID: 6849455437278059309, guid: 8a65a6b7f9357644e9e827308e86a7af, type: 3}
       propertyPath: _sessionHandler
-      value: 
+      value:
       objectReference: {fileID: 1495407471}
     - target: {fileID: 6849455437278059309, guid: 8a65a6b7f9357644e9e827308e86a7af, type: 3}
       propertyPath: _mixerController
       value: 
       objectReference: {fileID: 643223068}
-    - target: {fileID: 6849455437278059309, guid: 8a65a6b7f9357644e9e827308e86a7af, type: 3}
-      propertyPath: _levelRewardPopupPrefab
-      value: 
-      objectReference: {fileID: 808406898679370736, guid: 7d8e9d9e814e50445a83b1b52c76f8ae, type: 3}
     - target: {fileID: 9162170889516656164, guid: 8a65a6b7f9357644e9e827308e86a7af, type: 3}
       propertyPath: m_Name
       value: FillUI

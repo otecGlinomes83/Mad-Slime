@@ -2,7 +2,6 @@ using CameraSystem;
 using Game;
 using Player;
 using Scriptables;
-using Skills;
 using System;
 using UI;
 using UnityEngine;
@@ -22,7 +21,6 @@ namespace DI
         [SerializeField] private CameraImpulse _cameraImpulse;
         [SerializeField] private SkinApplier _skinApplier;
         [SerializeField] private LevelLabelUI _levelLabelUI;
-        [SerializeField] private SkillUnlocker _skillUnlocker;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -35,7 +33,6 @@ namespace DI
             ValidateAssigned(_cameraImpulse, nameof(_cameraImpulse));
             ValidateAssigned(_skinApplier, nameof(_skinApplier));
             ValidateAssigned(_levelLabelUI, nameof(_levelLabelUI));
-            ValidateAssigned(_skillUnlocker, nameof(_skillUnlocker));
 
             builder.RegisterInstance(_playerConfig);
             builder.Register<ItemPool>(Lifetime.Scoped);
@@ -49,7 +46,6 @@ namespace DI
             builder.RegisterComponent(_cameraImpulse);
             builder.RegisterComponent(_skinApplier);
             builder.RegisterComponent(_levelLabelUI);
-            builder.RegisterComponent(_skillUnlocker);
         }
 
         private void ValidateAssigned(object dependency, string fieldName)

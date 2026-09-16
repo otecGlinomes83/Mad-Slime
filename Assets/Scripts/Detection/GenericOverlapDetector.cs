@@ -86,8 +86,6 @@ namespace Detection
         {
             float newRadius = _baseRadius * _tierResolver.GetScaleFor(currentTier);
 
-            Debug.Log($"[Diag] {name}: radius {_radius} -> {newRadius} (tier {currentTier})");
-
             SetRadius(newRadius);
         }
 

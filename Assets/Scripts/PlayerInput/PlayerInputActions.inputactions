@@ -14,24 +14,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "Sprint",
-                    "type": "Button",
-                    "id": "0678ce00-d9c0-4f28-8f2d-42f704b98bba",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Attract",
-                    "type": "Button",
-                    "id": "7e25bdbb-731a-43da-ace8-459351eac0d0",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -92,34 +74,12 @@
                 },
                 {
                     "name": "",
-                    "id": "1c2c6916-25d7-416e-9bf5-a8564ef24a60",
-                    "path": "<Keyboard>/shift",
+                    "id": "f4e92243-0112-44dc-a319-1ed4ed4cab42",
+                    "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Sprint",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b28b499e-3626-4a2e-86e0-f87619d324c6",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Attract",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "79963024-bb98-40f0-9996-c8cfc8ab03d4",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Attract",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

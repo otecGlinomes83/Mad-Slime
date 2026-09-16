@@ -7,15 +7,15 @@
         false,
         false
     ],
-    "idSave": 181,
-    "CurrentLevel": 12,
-    "MaxLevel": 12,
-    "Language": "en",
+    "idSave": 190,
+    "CurrentLevel": 14,
+    "MaxLevel": 14,
+    "Language": "ru",
     "PlayerId": "Guest-895556",
     "musicVolume": 0.20512743294239045,
     "sfxVolume": 0.2817195653915405,
-    "Balance": 150,
-    "SelectedSkinType": 1,
+    "Balance": 300,
+    "SelectedSkinType": 0,
     "_openSkins": [
         0,
         1
