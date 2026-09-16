@@ -9,6 +9,7 @@ namespace Skins
     [CreateAssetMenu(menuName = "Mad Slime/Shop Content", fileName = "NewShopContent")]
     public class ShopContent : ScriptableObject
     {
+        [Tooltip("Список скинов, доступных в магазине. Дубли по SkinType запрещены.")]
         [SerializeField] private List<SkinItem> _skinItems;
 
         public IEnumerable<SkinItem> SkinItems => _skinItems;

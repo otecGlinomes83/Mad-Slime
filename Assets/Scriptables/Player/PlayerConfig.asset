@@ -11,22 +11,30 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1801906b686afc47a4a6d209a08dfe0, type: 3}
   m_Name: PlayerConfig
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   _baseMoveSpeed: 4
-  _rotationSpeed: 420
+  _rotationSpeed: 1260
   _moveSmoothTime: 0.12
-  _absorptionDuration: 0.3
+  _minAbsorbDuration: 0.25
+  _maxAbsorbDuration: 0.5
+  _absorbSpeed: 9
+  _minArcFraction: 0.2
+  _maxArcFraction: 0.325
+  _minSpinSpeed: 520
+  _maxSpinSpeed: 1080
+  _shrinkStart: 0.3
+  _absorbEasePower: 3
   _startMass: 6
   _thresholds:
   - _tier: 0
     _requiredMass: 0
-    _scaleMultiplier: 1.4
+    _scaleMultiplier: 2
     _speed: 4
     _cameraOffsetMultiplier: 1
   - _tier: 1
     _requiredMass: 50
-    _scaleMultiplier: 3
-    _speed: 8
+    _scaleMultiplier: 4
+    _speed: 12
     _cameraOffsetMultiplier: 1.5
   - _tier: 2
     _requiredMass: 4000

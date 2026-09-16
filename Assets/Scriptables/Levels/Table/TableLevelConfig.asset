@@ -19,6 +19,7 @@ MonoBehaviour:
   _timerDuration: 120
   _quotaTypesMin: 3
   _quotaTypesMax: 3
-  _quotaTargetMin: 3
-  _quotaTargetMax: 6
-  _defaultCountDivisor: 2
+  _quotaTargetMin: 10
+  _quotaTargetMax: 50
+  _quotaMaxSameTier: 2
+  _defaultCountDivisor: 8

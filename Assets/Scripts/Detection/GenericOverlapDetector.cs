@@ -57,9 +57,6 @@ namespace Detection
 
             _tierSource.TierChanged += OnTierSourceChanged;
             SetRadius(_baseRadius * _tierResolver.GetScaleFor(_tierSource.CurrentTier));
-
-            Debug.Log(
-                $"[Diag] {name}: baseRadius={_baseRadius} tierScale={_tierResolver.GetScaleFor(_tierSource.CurrentTier)} radius={_radius}");
         }
 
         protected virtual void OnDisable()

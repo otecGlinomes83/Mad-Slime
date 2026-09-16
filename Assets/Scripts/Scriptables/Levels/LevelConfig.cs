@@ -7,18 +7,38 @@ namespace Scriptables
     [CreateAssetMenu(menuName = "Mad Slime/Level Config", fileName = "NewLevelConfig")]
     public sealed class LevelConfig : ScriptableObject
     {
+        [Tooltip("Тема уровня: материал пола и текстура формы для сцены заливки.")]
         [SerializeField] private LevelTheme _theme;
+
+        [Tooltip("Набор предметов и их вариантов для генерации уровня.")]
         [SerializeField] private PropSet _propSet;
+
+        [Tooltip("Минимальный тир предметов, спавнящихся на уровне.")]
         [SerializeField, Min(0)] private int _minTier;
+
+        [Tooltip("Максимальный тир предметов на уровне.")]
         [SerializeField, Min(0)] private int _maxTier = 3;
+
+        [Tooltip("Длительность таймера уровня (с).")]
         [SerializeField] private float _timerDuration = 90f;
 
         [Header("Quota Generation")]
+        [Tooltip("Минимум разных типов предметов в квоте.")]
         [SerializeField] private int _quotaTypesMin = 1;
+
+        [Tooltip("Максимум разных типов предметов в квоте.")]
         [SerializeField] private int _quotaTypesMax = 3;
+
+        [Tooltip("Минимальное количество предметов по одному типу квоты.")]
         [SerializeField] private int _quotaTargetMin = 3;
+
+        [Tooltip("Максимальное количество предметов по одному типу квоты.")]
         [SerializeField] private int _quotaTargetMax = 8;
+
+        [Tooltip("Сколько типов квоты может принадлежать одному тиру.")]
         [SerializeField] private int _quotaMaxSameTier = 2;
+
+        [Tooltip("Вес не-квотных предметов в заливке: делитель, на который делится их количество. 4 = четыре посторонних предмета дают 1 предмет квоты.")]
         [SerializeField] private int _defaultCountDivisor = 4;
 
         public LevelTheme Theme => _theme;

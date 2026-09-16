@@ -16,6 +16,7 @@ namespace Player
     {
         [SerializeField] private PlayerInputReader _inputReader;
         [SerializeField] private Collector _collector;
+        [SerializeField] private ScalePunch _collectPunch;
 
         private Mover _mover;
         private Rotator _rotator;
@@ -44,6 +45,24 @@ namespace Player
             {
                 throw new InvalidOperationException(
                     $"{name}: TierTable was not injected. Check that ProjectLifetimeScope has the TierTable asset assigned.");
+            }
+
+            if (_inputReader == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: InputReader is not assigned. Drag a PlayerInputReader component into the _inputReader field.");
+            }
+
+            if (_collector == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Collector is not assigned. Drag a Collector component into the _collector field.");
+            }
+
+            if (_collectPunch == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: CollectPunch is not assigned. Drag a ScalePunch component into the _collectPunch field.");
             }
 
             _mover = GetComponent<Mover>();
@@ -75,6 +94,7 @@ namespace Player
 
         private void OnItemCollected(Items.Item item)
         {
+            _collectPunch.Punch(1f);
             _levelProgress.RegisterCollected(item.Definition);
             _playerTier.Add(_tierTable.Get(item.Definition.Tier).Mass);
         }

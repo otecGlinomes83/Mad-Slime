@@ -41,7 +41,7 @@ namespace ShapeFill
         {
             ReadPixels();
             ClassifyBorder();
-            SortFillTopToBottom();
+            SortFillBottomToTop();
         }
 
         public Vector3 GridToWorld(int gridX, int gridY)
@@ -173,20 +173,20 @@ namespace ShapeFill
             return false;
         }
 
-        private void SortFillTopToBottom()
+        private void SortFillBottomToTop()
         {
-            _fillCells.Sort(TopToBottomLeftToRightComparer.Instance);
+            _fillCells.Sort(BottomToTopLeftToRightComparer.Instance);
         }
 
-        private sealed class TopToBottomLeftToRightComparer : IComparer<Vector2Int>
+        private sealed class BottomToTopLeftToRightComparer : IComparer<Vector2Int>
         {
-            public static readonly TopToBottomLeftToRightComparer Instance = new TopToBottomLeftToRightComparer();
+            public static readonly BottomToTopLeftToRightComparer Instance = new BottomToTopLeftToRightComparer();
 
             public int Compare(Vector2Int left, Vector2Int right)
             {
                 if (left.y != right.y)
                 {
-                    return right.y.CompareTo(left.y);
+                    return left.y.CompareTo(right.y);
                 }
 
                 return left.x.CompareTo(right.x);

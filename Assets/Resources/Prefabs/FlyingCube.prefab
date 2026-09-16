@@ -96,3 +96,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fada3f72c613ce42a9e95d2e6a05c3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _maxStretch: 0.35
+  _stretchSqueeze: 0.5
+  _arcFraction: 0.25
+  _minRollSpeed: 240
+  _maxRollSpeed: 480
+  _rotationSettleStart: 0.75
+  _landingPunch: 0.18
+  _settleDuration: 0.18
+  _settleSquashSpread: 0.6
+  _growDuration: 0.22

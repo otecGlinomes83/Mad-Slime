@@ -18,7 +18,8 @@ namespace Player
         [SerializeField] private CapsuleCollider _playerCollider;
         [SerializeField] private Mover _mover;
         [Space]
-        [SerializeField] private float _smoothTime = 0.4f;
+        [SerializeField, Min(0.01f)] private float _growDuration = 0.55f;
+        [SerializeField, Min(0f)] private float _overshoot = 1.7f;
 
         private float _baseControllerRadius;
         private float _baseControllerCenterY;
@@ -26,7 +27,6 @@ namespace Player
 
         private float _currentMultiplier = 1f;
         private float _targetMultiplier = 1f;
-        private float _multiplierVelocity;
 
         private float _lastAppliedMultiplier = -1f;
 
@@ -66,9 +66,9 @@ namespace Player
                 throw new InvalidOperationException("LevelScaler requires _mover to be assigned.");
             }
 
-            if (_smoothTime <= 0f)
+            if (_growDuration <= 0f)
             {
-                throw new InvalidOperationException("LevelScaler requires a positive _smoothTime.");
+                throw new InvalidOperationException("LevelScaler requires a positive _growDuration.");
             }
 
             _baseControllerHeight = _playerCollider.height;
@@ -76,15 +76,18 @@ namespace Player
             _baseControllerCenterY = _playerCollider.center.y;
 
             ApplyMultiplier();
-
-            Debug.Log(
-                $"[Diag] {name}: Awake collider radius={_playerCollider.radius} height={_playerCollider.height} multiplier={_currentMultiplier}");
         }
 
         private void OnEnable()
         {
             _playerTier.TierChanged += OnTierChanged;
-            _mover.SetDefaultSpeed(_tierResolver.GetSpeedFor(_playerTier.CurrentTier));
+
+            _currentTier = _playerTier.CurrentTier;
+            _targetMultiplier = _tierResolver.GetScaleFor(_currentTier);
+            _currentMultiplier = _targetMultiplier;
+
+            _mover.SetDefaultSpeed(_tierResolver.GetSpeedFor(_currentTier));
+            ApplyMultiplier();
         }
 
         private void OnDisable()
@@ -110,8 +113,6 @@ namespace Player
             _targetMultiplier = _tierResolver.GetScaleFor(_currentTier);
             _mover.SetDefaultSpeed(_tierResolver.GetSpeedFor(_currentTier));
 
-            Debug.Log($"[Diag] {name}: tier {currentTier} targetMultiplier={_targetMultiplier}");
-
             GrowAsync().Forget();
         }
 
@@ -126,17 +127,19 @@ namespace Player
             _growCts = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
             CancellationToken cancellationToken = _growCts.Token;
 
+            float startMultiplier = _currentMultiplier;
+            float elapsedTime = 0f;
+
             try
             {
-                while (Mathf.Abs(_currentMultiplier - _targetMultiplier) > 0.001f)
+                while (elapsedTime < _growDuration)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    _currentMultiplier = Mathf.SmoothDamp(
-                        _currentMultiplier,
-                        _targetMultiplier,
-                        ref _multiplierVelocity,
-                        _smoothTime);
+                    elapsedTime += Time.deltaTime;
+                    float progress = Mathf.Clamp01(elapsedTime / _growDuration);
+
+                    _currentMultiplier = Mathf.LerpUnclamped(startMultiplier, _targetMultiplier, GetBackOutProgress(progress));
 
                     ApplyMultiplier();
 
@@ -150,6 +153,15 @@ namespace Player
             {
                 return;
             }
+        }
+
+        private float GetBackOutProgress(float progress)
+        {
+            float shiftedProgress = progress - 1f;
+
+            return 1f
+                + (_overshoot + 1f) * shiftedProgress * shiftedProgress * shiftedProgress
+                + _overshoot * shiftedProgress * shiftedProgress;
         }
 
         private void ApplyMultiplier()

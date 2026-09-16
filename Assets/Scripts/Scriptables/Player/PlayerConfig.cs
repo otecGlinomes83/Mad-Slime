@@ -7,21 +7,62 @@ namespace Scriptables
     public sealed class PlayerConfig : ScriptableObject
     {
         [Header("Movement")]
+        [Tooltip("Базовая скорость движения слайма (юнитов/с). Действует на старте; после смены тира скорость берётся из порогов тиров.")]
         [SerializeField, Min(0.1f)] private float _baseMoveSpeed = 4f;
+
+        [Tooltip("Скорость поворота модели слайма в сторону движения (град/с).")]
         [SerializeField, Min(1f)] private float _rotationSpeed = 420f;
+
+        [Tooltip("Плавность разгона и торможения (с). Больше = инертнее и мягче, меньше = резче отклик.")]
         [SerializeField, Min(0.01f)] private float _moveSmoothTime = 0.12f;
 
         [Header("Absorption")]
-        [SerializeField, Min(0.05f)] private float _absorptionDuration = 0.3f;
+        [Tooltip("Минимальное время полёта предмета в пасть (с). Предметы рядом не всасываются быстрее.")]
+        [SerializeField, Min(0.05f)] private float _minAbsorbDuration = 0.1f;
+
+        [Tooltip("Максимальное время полёта предмета (с). Дальние предметы не едут дольше.")]
+        [SerializeField, Min(0.05f)] private float _maxAbsorbDuration = 0.45f;
+
+        [Tooltip("Скорость втягивания (юнитов/с). Длительность = дистанция/скорость, зажатая между min и max. Больше = быстрее сбор.")]
+        [SerializeField, Min(0.5f)] private float _absorbSpeed = 9f;
+
+        [Tooltip("Минимальная дуга траектории, доля дистанции. 0 = предметы летят по прямой.")]
+        [SerializeField, Range(0f, 0.5f)] private float _minArcFraction = 0.1f;
+
+        [Tooltip("Максимальная дуга траектории, доля дистанции. Больше = сильнее завихрение; выше ~0.5 предмет залетает за спину.")]
+        [SerializeField, Range(0f, 0.5f)] private float _maxArcFraction = 0.3f;
+
+        [Tooltip("Минимальная скорость вращения предмета в полёте (град/с).")]
+        [SerializeField, Min(0f)] private float _minSpinSpeed = 120f;
+
+        [Tooltip("Максимальная скорость вращения предмета (град/с). Оба поля в 0 = без вращения.")]
+        [SerializeField, Min(0f)] private float _maxSpinSpeed = 540f;
+
+        [Tooltip("С какой доли пути предмет начинает сжиматься в ноль. 0.6 = последние 40% пути; 0.8 = доезжает целым и схлопывается у пасти.")]
+        [SerializeField, Range(0.1f, 0.95f)] private float _shrinkStart = 0.6f;
+
+        [Tooltip("Крутость разгона ease-in. 1 = линейно, 2 = мягкий отрыв и разгон, 3+ = предмет зависает и резко всасывается.")]
+        [SerializeField, Range(1f, 5f)] private float _absorbEasePower = 2f;
 
         [Header("Growth")]
+        [Tooltip("Стартовая масса слайма в начале уровня.")]
         [SerializeField, Min(0)] private int _startMass;
+
+        [Tooltip("Пороги тиров: при какой массе открывается тир и что он даёт (масштаб, скорость, отъезд камеры).")]
         [SerializeField] private List<PlayerTierThreshold> _thresholds = new List<PlayerTierThreshold>();
 
         public float BaseMoveSpeed => _baseMoveSpeed;
         public float RotationSpeed => _rotationSpeed;
         public float MoveSmoothTime => _moveSmoothTime;
-        public float AbsorptionDuration => _absorptionDuration;
+        public float MinAbsorbDuration => _minAbsorbDuration;
+        public float MaxAbsorbDuration => _maxAbsorbDuration;
+        public float AbsorbSpeed => _absorbSpeed;
+        public float MinArcFraction => _minArcFraction;
+        public float MaxArcFraction => _maxArcFraction;
+        public float MinSpinSpeed => _minSpinSpeed;
+        public float MaxSpinSpeed => _maxSpinSpeed;
+        public float ShrinkStart => _shrinkStart;
+        public float AbsorbEasePower => _absorbEasePower;
         public int StartMass => _startMass;
         public IReadOnlyList<PlayerTierThreshold> Thresholds => _thresholds;
     }

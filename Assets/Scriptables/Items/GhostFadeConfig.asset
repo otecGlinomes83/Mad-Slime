@@ -11,6 +11,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1426806d3bf36919288623658390ea46, type: 3}
   m_Name: GhostFadeConfig
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   _fadeDuration: 0.25
-  _ease: 3
+  _ease: 9

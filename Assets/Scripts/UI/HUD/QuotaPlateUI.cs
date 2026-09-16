@@ -1,6 +1,6 @@
 using Quota;
-using Scriptables;
 using System;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,10 +11,13 @@ namespace UI
     {
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _text;
-        [SerializeField] private TMP_Text _tierBadge;
-        [SerializeField] private TierTable _tierTable;
+        [SerializeField, Range(0f, 0.5f)] private float _popStrength = 0.12f;
+        [SerializeField, Min(0.01f)] private float _popDuration = 0.18f;
 
         private QuotaEntry _entry;
+        private Vector3 _baseScale;
+        private Tween _popTween;
+        private float _popProgress;
 
         public QuotaEntry Entry => _entry;
 
@@ -32,32 +35,56 @@ namespace UI
                     $"{name}: Text is not assigned. Drag a TMP_Text into the _text field.");
             }
 
-            if (_tierBadge == null)
+            _baseScale = transform.localScale;
+        }
+
+        private void OnDisable()
+        {
+            if (_popTween != null)
             {
-                throw new InvalidOperationException(
-                    $"{name}: TierBadge is not assigned. Drag a TMP_Text into the _tierBadge field.");
+                _popTween.Kill();
+                _popTween = null;
             }
 
-            if (_tierTable == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: TierTable is not assigned. Drag the TierTable asset into the _tierTable field.");
-            }
+            transform.localScale = _baseScale;
         }
 
         public void Setup(QuotaEntry entry)
         {
             _entry = entry;
             _icon.sprite = entry.Definition.Icon;
-
-            TierEntry tierEntry = _tierTable.Get(entry.Definition.Tier);
-            _tierBadge.text = tierEntry.ShortLabel;
-            _tierBadge.color = tierEntry.BadgeColor;
         }
 
         public void UpdateCount(int remaining)
         {
             _text.text = remaining.ToString();
+            PlayPop();
+        }
+
+        private void PlayPop()
+        {
+            if (_popTween != null)
+            {
+                _popTween.Kill();
+            }
+
+            _popProgress = 0f;
+            transform.localScale = _baseScale;
+
+            _popTween = DOTween.To(ReadPopProgress, ApplyPopProgress, 1f, _popDuration)
+                .SetEase(Ease.OutQuad)
+                .SetTarget(this);
+        }
+
+        private float ReadPopProgress()
+        {
+            return _popProgress;
+        }
+
+        private void ApplyPopProgress(float progress)
+        {
+            _popProgress = progress;
+            transform.localScale = _baseScale * (1f + _popStrength * (1f - progress));
         }
     }
 }

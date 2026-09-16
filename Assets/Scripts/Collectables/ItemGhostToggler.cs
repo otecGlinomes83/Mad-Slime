@@ -39,14 +39,6 @@ namespace Collectables
             }
         }
 
-        private void OnEnable()
-        {
-            float capsuleWorldRadius = _playerCollider.radius * Mathf.Abs(_playerCollider.transform.lossyScale.x);
-
-            Debug.Log(
-                $"[Diag] {name}: capsule localRadius={_playerCollider.radius} worldRadius={capsuleWorldRadius} margin={_margin}");
-        }
-
         private void Update()
         {
             if (Time.timeScale == 0f)

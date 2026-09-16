@@ -40,3 +40,9 @@ MonoBehaviour:
   _tierPushStrength: 4
   _maxPush: 8
   _recoverSpeed: 4
+  _shakeMassThreshold: 1000
+  _shakeStrength: 0.15
+  _maxShake: 0.35
+  _shakeRecoverSpeed: 7
+  _tierFovKick: 7
+  _fovRecoverSpeed: 5

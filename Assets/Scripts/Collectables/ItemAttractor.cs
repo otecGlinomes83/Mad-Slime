@@ -13,6 +13,7 @@ namespace Collectables
         [SerializeField] private AttractConfig _config;
         [SerializeField] private PlayerTier _playerTier;
         [SerializeField] private AttractableDetector _detector;
+        [SerializeField] private ItemDetector _collectDetector;
 
         private void Awake()
         {
@@ -34,11 +35,24 @@ namespace Collectables
                     $"{name}: AttractableDetector is not assigned. Drag an AttractableDetector component into the _detector field.");
             }
 
+            if (_collectDetector == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: ItemDetector is not assigned. Drag an ItemDetector component into the _collectDetector field.");
+            }
+
+            if (_detector.Radius <= _collectDetector.Radius)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AttractableDetector radius ({_detector.Radius}) must be greater than ItemDetector radius ({_collectDetector.Radius}). " +
+                    "The acceleration ramp lives between them: from the attract edge down to the capture point.");
+            }
+
             if (_config.ApproachMultiplier < 1f)
             {
                 throw new InvalidOperationException(
                     $"{name}: AttractConfig '{_config.name}' has ApproachMultiplier < 1. " +
-                    "It is the pull speed multiplier at the player's center, so it must be 1 or greater.");
+                    "It is the pull speed multiplier at the capture point, so it must be 1 or greater.");
             }
 
             if (_config.ApproachPower <= 0f)
@@ -46,6 +60,13 @@ namespace Collectables
                 throw new InvalidOperationException(
                     $"{name}: AttractConfig '{_config.name}' has ApproachPower <= 0. " +
                     "It must be positive: 1 = linear, 2 = parabola, higher values approach exponential growth.");
+            }
+
+            if (_config.OrbitStrength < 0f)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AttractConfig '{_config.name}' has OrbitStrength < 0. " +
+                    "It is the sideways swirl speed as a fraction of the pull speed, so it must be 0 or greater. 0 = straight line.");
             }
         }
 
@@ -78,10 +99,17 @@ namespace Collectables
             }
 
             float distance = Mathf.Sqrt(sqrDistance);
-            float approach = 1f - Mathf.Clamp01(distance / _detector.Radius);
+            float approach = 1f - Mathf.Clamp01(
+                (distance - _collectDetector.Radius) / (_detector.Radius - _collectDetector.Radius));
             float multiplier = 1f + (_config.ApproachMultiplier - 1f) * Mathf.Pow(approach, _config.ApproachPower);
+            float speed = _config.AttractionForce * multiplier;
 
-            target.position += toPlayer.normalized * (_config.AttractionForce * multiplier * Time.deltaTime);
+            Vector3 radial = toPlayer / distance;
+            int instanceId = target.GetInstanceID();
+            float orbitSide = 1f - 2f * (instanceId & 1);
+            Vector3 tangent = new Vector3(radial.z, 0f, -radial.x) * (orbitSide * _config.OrbitStrength);
+
+            target.position += (radial + tangent) * (speed * Time.deltaTime);
         }
     }
 }

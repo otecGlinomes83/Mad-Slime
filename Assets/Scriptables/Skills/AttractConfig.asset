@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75acee8964d447908364bd63bcad33db, type: 3}
   m_Name: AttractConfig
   m_EditorClassIdentifier: 
-  _attractionForce: 2
-  _approachMultiplier: 3
-  _approachPower: 2
+  _attractionForce: 8
+  _approachMultiplier: 40
+  _approachPower: 60
+  _orbitStrength: 0.25

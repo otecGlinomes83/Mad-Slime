@@ -916,3 +916,93 @@ ExactPositionWithDynamicOrigin) тоже отклонён: один спрайт
 - AI_RULES.md дополнен: имя файла = имя класса; граница static-нейминга (`const`/`static readonly` = PascalCase-константы, mutable static = `s_`); раздел «имена под контрактом»; запрет однобуквенных распространён на `p`/`x`/`z`.
 - Граница сглаживает противоречие в старых правилах (таблица `s_` vs пример `WaitForSeconds OneSecondWait`).
 - Компиляция batchmode не прогнана — проект открыт в редакторе (lock, exit 21). Проверить консоль редактора при фокусе: ошибок CS быть не должно (правки — механические переименования).
+- Хвост реформы: `Interfaces/IMassHolder.cs` удалён, `IAttractable` больше не наследует его — единственный смысл члена `Mass` жил на Item, которого больше нет. Потребителей IMassHolder вне IAttractable не было (проверено грепом).
+- Хвост реформы 2: LevelScaler не применял ScaleMultiplier стартового тира (Small) — рост применялся только при смене тира, старт был жёстко 1.0 (пунч-лист волны 26). OnEnable теперь берёт GetScaleFor(CurrentTier), снапит множитель и применяет сразу (без SmoothDamp); скорость — так же от CurrentTier. Стартовый размер настраивается строкой Small в PlayerConfig.
+- Хвост реформы 3: тир-бейдж с тарелок квоты снесён (владелец не заказывал). Удалено: объект TierBadge (+ RectTransform/CanvasRenderer/TMP) из Plate.prefab и его child-ссылка; поля _tierBadge/_tierTable из QuotaPlateUI (Setup теперь только иконка+счётчик); колонки _badgeColor/_shortLabel из TierEntry и TierTable.asset. Уникальные потребители ShortLabel/BadgeColor отсутствовали (проверено грепом). Вложения Plate в Game.unity/UI.prefab не содержат изменений удалённых компонентов.
+- От владельца: фулл-палитру раскраски планирует на будущее, сейчас не заказано — ничего не строить.
+
+## Волна 32 (2026-09-16): магнит — разгон от точки захвата + спираль
+
+Жалоба владельца: «меняю цифры в AttractConfig — движение всё равно линейное». Диагноз (объяснён владельцу):
+1. Путь магнита — прямая по построению (velocity всегда в центр), approach-ручки меняли только скорость вдоль неё.
+2. Кривая разгона была размазана на весь радиус магнита (4×тир ≈ 5.6), а захват происходит на ItemDetector (0.5×тир ≈ 0.7): максимальный разгон жил внутри радиуса захвата, видимой оставалась часть ×1→×2.5 на ~5 юнитов — не читается.
+3. «Линейный полёт», на который смотрел владелец — это Absorber (SmoothStep-лерп по прямой, 0.3с); его ручки не в AttractConfig. Орбита/спин/сквош абсорбера (план волны 27) НЕ реализованы — ждут одобрения.
+
+Решение владельца: тянуть с ускорением от точки контакта + по орбите. Сделано:
+- `AttractConfig`: + `_orbitStrength` (дефолт 0.5 — доля боковой скорости от радиальной; 0 = прямая). В ассете поля нет → возьмётся дефолт класса при реимпорте; тюнить в инспекторе.
+- `ItemAttractor`: + `_collectDetector` (ItemDetector; fail-fast: null, attractRadius ≤ collectRadius, OrbitStrength < 0). Разгон нормирован на видимое кольцо: `approach = 1 − clamp01((d − collectR) / (attractR − collectR))` — при первом контакте скорость = Force, к захвату = Force×Multiplier, вся кривая видима. (Валидация радиусов — на серийных базах в Awake: оба детектора скейлятся одним тир-фактором, отношение стабильно.)
+- Спираль: velocity = radial + tangent×OrbitStrength; tangent = (r.z, 0, −r.x) × сторона; сторона фиксирована на предмет (чётность instanceID — без состояний и аллокаций), путь не ломается на середине. Радиальная составляющая остаётся ровно Force×multiplier — предмет гарантированно приближается, спираль сверху.
+- Game.unity: `ItemAttractor._collectDetector` → ItemDetector (&3196850747484158986).
+- Компиляция НЕ прогнана — редактор открыт (lock). Новых API нет (Mathf/Vector3/GetInstanceID).
+- Абсорбер (Безье-орбита + спин + сквош модели, волна 27) — по-прежнему не одобрен владельцем.
+
+## Волна 33 (2026-09-16): «предметы респавнятся» — статический аудит + пробы в пул
+
+Жалоба владельца: собранные предметы «респавнятся» посреди уровня, массы за них нет, тянутся к игроку снова.
+
+**Статический аудит (полный, воскрешение через код невозможна):**
+- Единственный `SetActive(true)` на предметы в проекте — `ItemPool.Get` (grep по всем Scripts). `Get` зовётся ТОЛЬКО из `LevelGenerator.SpawnItems`, который — только из `Awake` (один раз на загрузку сцены). Посреди уровня пул мёртв.
+- Цепочка сбора герметична: `Collect()` выключает коллайдер сразу (летящий предмет невидим обоим детекторам — двойной сбор невозможен); `Shutdown` → `ItemCollected` → единственный Release-подписчик `LevelGenerator.OnItemCollected` → `Release` (инактив + в пул). `Player.OnItemCollected` даёт массу на каждый прилёт, пропусков нет.
+- Сценарий «Get без Initialize» и «Release дважды» не воспроизводимы статически.
+
+**Главный подозреваемый — двойники (данные, волна 19):** TableLayoutSet так и не перекроен владельцем: scatter 1000 clamped в 30×30 → уровень 9 = 2845 предметов (~14 типов → ~200 копий каждого). Спиральный магнит (волна 32) теперь НАГЛЯДНО тащит всё в радиусе — раньше копии стояли, теперь летят к игроку со всех сторон. «Съел бургер → через 3 юнита ещё бургер тянется» читается как респавн; массы «нет», потому что двойник ещё не собран. Спираль сделала существующий рой видимым — поэтому баг «появился» сегодня.
+
+**Пробы добавлены (временные, [Diag], снести после диагноза):** `ItemPool.Get` — instanceID + reuse/new + pooledLeft; `ItemPool.Release` — instanceID + позиция. Сигнатура: `Get #X` посреди уровня ПОСЛЕ `Release #X` = настоящее воскресение (и лог покажет источник). Если Get'ов между Generate нет — двойники подтверждены, фикс = данные лейаута (чеклист волны 19: зоны под карту / counts 30–60), не код.
+
+**Уточнение симптома владельцем (волна 33.1):** «подбираю S → перехожу на M → S-предметы больше не собираются и не дают массу; с каждым следующим тиром так же; собирается только текущий тир». Статически гейт `Collector: defTier > playerTier` такое запрещать не может. Гипотеза «висящая сфера сбора» (радиус сборщика ужат 0.7→0.3, центр на высоте 0.5×tierScale → до земли (0.5−r)×s; мелкие предметы проезжают под сферой) — числово не доказана (высоты коллайдеров предметов оценочные). Поставлены решающие логи: `Collector.OnItemDetected` — REJECTED/COLLECT с defTier/playerTier/радиусом/позициями; `ItemAttractor` — near-capture (предмет ближе 2×collectRadius, но не собирается). Один прогон S→M с касанием S-предмета назовёт ветку. Двойники объяснены владельцу: спавн-данные (1000-scatter), не клонирование.
+
+**Диагноз ПОДТВЕРЖДЁН владельцем (волна 33.2):** ItemDetector `_radius` 0.3 → 0.7 — сбор починился. Механика: детектор сбора — ребёнок Player-рута в (0,0,0); рут поднят LevelScaler'ом на высоту капсулы = 0.5×tierScale; сфера центра = 0.5×s, досягаемость вниз = (0.5 − r)×s. При r=0.3 сфера висела над землёй (S: +0.4, M: +0.8, L: +1.2, Boss: +3.0); предметы ТЕКУЩЕГО тира (TierTable scale 13/40/70/100 — крупнее) дотягивались до неё, МЕЛКИЕ нижних тиров проезжали под сферой: магнит (AttractableDetector r=1.0 → досягаемость (0.5−1.0)×s < 0, землю достаёт) их таскал, сборщик не видел. «Собирается только текущий тир» = тир-ап поднимал сферу выше макушек нижних тиров. **Инвариант на будущее: у любого детектора, припаркованного в (0,0,0) на Player-руте, base radius ≥ 0.5 (базовый радиус капсулы), иначе на высоких тирах он отрывается от земли. Аттрактор при 1.0 — ок.** [Diag]-логи снесены (Collector/ItemAttractor/ItemPool).
+
+**Хвосты волны 33 (за владельцем, не код):** массы 1/500/1000/10000 при порогах 50/4000/40000 → S-предмет после M даёт +1 из 4000 (полоска не шелохнётся — «не дают ничего» может быть балансом, не багом); количество предметов на уровень ~2845 (TableLayoutSet: 1000-scatter + 150 + 6–8 гридов) — при желании резать `_count` до ~500–700 суммарно.
+
+## Волна 34 (2026-09-17): гейм-фил — абсорбер и заливка (одобренный список владельца)
+
+Владелец одобрил из плана волны 27: Game 1,2,3,7,8; Fill — всё. Исполнено на базе после волн 27–33.
+
+**Поглощение (Game):**
+- `Absorber` переписан: ease-in (progress² — предмет медленно отрывается, разгоняется в пасть), длительность от дистанции (`distance/AbsorbSpeed`, кламп Min/Max), полёт по квадратичной безье с рандомной перпендикулярной дугой (Min/MaxArcFraction), спин вокруг рандомной оси (Min/MaxSpinSpeed), скейл предмета сжимается только в хвосте полёта (ShrinkStart=0.6 → конец). Конец безье = живая позиция игрока (предмет «догоняет», как раньше).
+- `PlayerConfig`: вместо `_absorptionDuration` — 8 полей абсорбции (см. ассет, значения проставлены: speed 9, min/max duration 0.1/0.45, arc 0.1/0.3, spin 120/540, shrinkStart 0.6). Fail-fast перекрёстных значений (min>max) — в `Absorber.Awake`.
+- `Player/ScalePunch.cs` (NEW, guid 1054b88a…): UniTask-пунш скейла таргета со стэкингом (быстрые пики суммируются до MaxStackedStrength). Висит на новом GO **SkinContainer** (ребёнок Model, fileID 900000000000000100-102) — контейнер вставлен МЕЖДУ Model и скином: `SkinApplier._skinsContainer` переброшен на него, `ScalePunch._target` = сам SkinContainer. Model остался у LevelScaler — конфликта нет. `Player._collectPunch` → ScalePunch; пунш на каждый пикап.
+- `LevelScaler`: рост тира теперь easeOutBack (`_growDuration` 0.55, `_overshoot` 1.7) — эластичный овершут вместо затухающего SmoothDamp. Стартовый снап из волны 31 не тронут.
+- `CameraImpulse`: два новых канала — Shake (масса предмета ≥ ShakeMassThreshold=10 → микрошейк) и FovKick (= TierFovKick=7 на тир-ап, экспоненциальное затухание). `CameraImpulseConfig` (+6 полей, ассет пропатчен). `CameraFollow` применяет: перлин-шейк по right/up (`_shakeFrequency` 25) + `fieldOfView = base + FovKick` (камера ищется TryGetComponent — CameraFollow обязан висеть на камере, fail-fast).
+- `QuotaUI`/`GrowthBarView`: DOTween DOPunchScale на тарелку при изменении квоты / на бар при смене массы (поля _platePunchStrength/_barPunchStrength…).
+
+**Заливка (Fill):**
+- `FlyingCube` — FSM Idle/Growing/Flying/Settling: полёт по безье-дуге, ориентация LookRotation(velocity) + крен вокруг forward, в последних 25% плавный доворот в identity (снапа нет), stretch по оси скорости (пик в середине), прилёт — сквош-сеттл (xz+0.6p, y−p, затухание за _settleDuration 0.18). `GrowIn()` — рост 0→скейл для бордера. Новые поля в FlyingCube.prefab (0.35/0.18/0.18/0.22).
+- `GridBuilder`: сортировка заливки перевёрнута — снизу вверх (SortFillBottomToTop), «заливка жидкостью».
+- `ShapeFiller`: призрак цветной (tint white, `_ghostOpacity` 0.4 — картина проявляется кубами поверх); бордер каскадом (SpawnBorderCascadeAsync, `_borderCascadeDuration` 0.5, каждый куб GrowIn); `Fill` стартует с задержкой `_fillDelay` 0.55 (каскад успевает отрисоваться); `FillFraction` (arrived/target) наружу; фикс утечки Sprite.Create (старый спрайт Destroy); двойной Build в `ShapeFillOrchestrator.StartFill` убран.
+- `FlyingCubeArrivalSound`: SoundLimiter (компонент добавлен на GO Shape, fileID 1948289417, maxConcurrent 6) + `_minInterval` 0.03 + pitch Lerp(0.9, 1.35, FillFraction) — «дожимание» к 100%. Раньше был PlayOneShot на каждый куб без лимитера (~25/с).
+- `UI/HUD/FillProgressUI.cs` (NEW, guid b14f080f…): большой % по факту прилёта кубов, панчи на 25/50/75/100. Живёт в FillUI.prefab (новый GO FillProgress: свой Overlay-канвас sortingOrder 20 + CanvasScaler 1920×1080 + TMP LiberationSans, fileID 900000000000000200-206); `_shapeFiller` → ShapeFiller сцены через модификацию PrefabInstance в Fill.unity.
+- `ShapeFill/FillFinale.cs` (NEW, guid 81a276d3…): на FillCompleted(≥1) — конфетти (40 кубов из CubeSpawner, цвета случайных fill-ячеек, разлёт+гравитация+спин, схлопывание и Destroy к 1.1с), DOPunchScale всей формы, FOV-zoom камеры +9 (остаётся — «отъезд и полюбоваться»). `FillSessionHandler._winDelay` 1.3с — Win-окно (timeScale 0) спавнится ПОСЛЕ финала; фейл — без задержки.
+
+**Проводка (проверено грепом по гуидам):** Game.unity — SkinContainer×3 блоков, Player._collectPunch, LevelScaler _growDuration/_overshoot, CameraFollow _shakeFrequency; Fill.unity — SoundLimiter+FillFinale на Shape (+в m_Component), ключи ShapeFiller/ArrivalSound, override FillProgressUI._shapeFiller; FillUI.prefab — GO FillProgress; FlyingCube.prefab — 4 поля; PlayerConfig.asset — 8 полей абсорбции; CameraImpulseConfig.asset — 6 полей.
+
+**ВНИМАНИЕ владельцу:** редактор был ОТКРЫТ во время правок (batchmode: exit 21, project already open) — перед фокусом убедиться, что Game/Fill/FillUI.prefab/FlyingCube.prefab/PlayerConfig.asset/CameraImpulseConfig.asset не в dirty-состоянии: при фокусе Unity подтянет с диска, но НЕ СОХРАНЯТЬ поверх старые копии из памяти (сцена/ассеты), при предложении «reload» — перезагрузить. Компиляция batchmode НЕ прогнана (lock) — консоль редактора при фокусе покажет ошибки CS, если есть.
+- Тюнинг: Absorber (speed/arc/spin/shrink), CameraImpulseConfig (порог шейка 10, кривая MassToPullStrength всё ещё на старом масштабе 0–50 — см. волну 30), LevelScaler _overshoot, FlyingCube stretch/punch, FillFinale count/speed/fov.
+- `PlayerTierThreshold.cs.meta` — untracked при закоммиченном .cs: класс сериализуется инлайн (гуид-ссылок нет, поломки не будет), но мета должна попасть в коммит — гигиена.
+
+### Волна 34, дочистка: все ручки вынесены из кода (второй проход, тот же день)
+
+По требованию владельца захардкоженные параметры переехали в существующие конфиг-носители (без новых SO):
+- `FlyingCube.prefab` +6: _stretchSqueeze 0.5 (насколько x/y сжимаются при вытягивании z), _arcFraction 0.25 (дуга куба), _min/_maxRollSpeed 240/480 (крен), _rotationSettleStart 0.75 (с какой доли пути доворот в identity), _settleSquashSpread 0.6 (расхождение xz относительно сжатия y при прилёте). Fail-fast min/maxRollSpeed в Awake.
+- `PlayerConfig` (+ассет) +1: _absorbEasePower 2 — степень ease-in всасывания (1 = линейно, 3 = резче разгон).
+- `FillProgressUI` (FillUI.prefab) +3: _punchVibrato 8, _punchElasticity 0.4, _punchMilestones [25,50,75,100] (список int, панч на пересечение).
+- `QuotaUI` +2 / `GrowthBarView` +2 / `FillFinale` +2: vibrato/elasticity каждого DOPunchScale.
+- `FillFinale` (Fill.unity) +4: _confettiUpBiasMin/Max 0.6/1.4 (конус разлёта по вертикали), _confettiScaleFactor 0.7 (размер от ячейки), _confettiFadeFraction 0.25 (доля финала на схлопывание; 0 = без фейда). Fail-fast upBias min>max.
+- `CameraFollow` (Game.unity) +1: _shakeAxes {1,1} — вес осей шейка right/up (0 = ось выключена).
+- Остаток в коде — форма/рандомизация, не значения: ось спина абсорбера (рандом-сфера), smoothstep-профиль полёта куба, синус-профиль ScalePunch, перлин-источник шейка, горизонтальный разлёт конфетти (±1 XZ) и скорость вращения конфетти (±360°/с).
+- Batchmode-компиляция снова не прошла (exit 21, редактор открыт) — проверка на фокусе редактора.
+
+### Волна 34, дочистка 2: [Tooltip] на всех SO-конфигах (RU)
+
+- Покрыты все 17 SO-классов + вложенные serializable-записи: PlayerConfig, PlayerTierThreshold, CameraImpulseConfig, TierTable/TierEntry, RewardConfig, YandexConfig, GhostFadeConfig, AttractConfig, ItemDefinition, SkinItem, ShopContent, LevelsCatalog, LevelRange, LevelConfig, LevelTheme, LayoutSet, SpawnZone, PropSet/PropVariant, LayoutsLibrary, LocalizationTable/LocaleEntry. 90 тултипов, RU, с единицами и направлением тюнинга.
+- Семантика спорных полей проверена по коду перед подписью: DefaultCountDivisor = вес не-квотных предметов в FillPercent (LevelProgress); AutoSpacingFactor/ScatterDistanceFactor — шаг и мин-дистанция в ZoneLayoutPlanner; RewardConfig thresholds — сверены с Rewarder (WinFull>порога даёт base×percent; Lose≥порога даёт base/divisor).
+- SpawnShape — enum: тултипы на значения enum инспектор не показывает, оставлен без атрибутов; тултип SpawnZone._shape перечисляет варианты.
+- Атрибуты аддитивные, поведение не тронуто; значения ассетов не менялись (владелец уже подкрутил абсорбер: min/max 0.25/0.5, spin 520/1080, easePower 3).
+- Ошибка по ходу: в FlyingCube.UpdateSettling/ApplyFlightStretch было умножение Vector3×Vector3 (CS0019, найдено владельцем) — исправлено на покомпонентное.
+- Фикс владельца: процент заливки рисовался ПОВЕРХ Win/Fail меню (канвас FillProgress имел sortingOrder 20 против 0 у окон). Сделано: сортирующий порядок понижен до −10 (overlay всегда выше 3D-сцены, порядок лишь среди канвасов) + FillProgressUI подписан на ShapeFiller.FillCompleted и прячет себя (SetActive false) в момент завершения заливки — и на победе, и на фейле, и при пустой заливке.
+- Фикс владельца: GrowthBarView дёргался пуншем скейла при каждом сборе (выглядел как «бар сам увеличивается» — Image растянут лейаутом, пунш скейла на нём ломает размер). Пунш снесён полностью (4 поля _barPunch* удалены); вместо него fillAmount плывёт к цели твином DOTween.To (OutQuad, `_fillSmoothDuration` 0.25, дефолт из инициализатора — YAML сцены не правил). Квотные тарелки (QuotaUI) пунш оставлен — это осознанный фидбек сбора, не бар.
+- Фикс владельца: тарелки квоты ползли вверх и не возвращались — DOPunchScale, убитый посреди анимации, оставляет трансформ раздутым, следующий пунш стартует от него (DOKill не восстанавливает значение). Пунш снесён: поп переехал в QuotaPlateUI (PlayPop: снап к _baseScale, твин прогресса 0→1, scale = base×(1+strength×(1−t)) — всегда ровно в базу; поля _popStrength 0.12/_popDuration 0.18 на тарелке, дефолты из инициализаторов, Plate.prefab не правился). У QuotaUI поля _platePunch* удалены, using DG.Tweening убран.
+- Фикс владельца: шейк камеры «пиздец как сильный» — причина двойная: порог 10 при массах TierTable 1/1000 = шейк на каждый не-Small (стэкался до потолка постоянно) + злые дефолты 0.35/0.8. Новые значения (код + CameraImpulseConfig.asset): threshold 1000 (только Large/Boss; Medium пока =1000 — тоже трясёт, починка данных за владельцем), strength 0.15, max 0.35, recover 7.
+- **[Diag]-логи снесены полностью** (хвост волн 22–33 закрыт): PlayerTier (Awake + масс на каждый пикап), LevelScaler (Awake + тир), GenericOverlapDetector.OnEnable, ItemGhostToggler.OnEnable (метод удалён целиком — был только ради лога), SkinApplier (все 3). Греп «Diag» по Scripts пуст. У ItemGhostToggler.Update вычисление capsuleWorldRadius осталось (нужно для запроса). SessionStateLogger не тронут — это отдельный класс-журнал сессии, не [Diag].
+

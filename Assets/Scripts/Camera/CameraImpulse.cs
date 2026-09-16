@@ -19,8 +19,12 @@ namespace CameraSystem
         private bool _isSubscribed;
 
         private float _pull;
+        private float _shake;
+        private float _fovKick;
 
         public float Pull => _pull;
+        public float Shake => _shake;
+        public float FovKick => _fovKick;
 
         [Inject]
         public void Construct(LevelProgress levelProgress, PlayerTier playerTier, TierTable tierTable)
@@ -72,18 +76,22 @@ namespace CameraSystem
 
         private void Update()
         {
-            if (Mathf.Approximately(_pull, 0f))
+            _pull = Decay(_pull, _config.RecoverSpeed);
+            _shake = Decay(_shake, _config.ShakeRecoverSpeed);
+            _fovKick = Decay(_fovKick, _config.FovRecoverSpeed);
+        }
+
+        private float Decay(float value, float recoverSpeed)
+        {
+            float decay = 1f - Mathf.Exp(-recoverSpeed * Time.deltaTime);
+            float decayedValue = Mathf.Lerp(value, 0f, decay);
+
+            if (Mathf.Abs(decayedValue) < 0.01f)
             {
-                return;
+                return 0f;
             }
 
-            float decay = 1f - Mathf.Exp(-_config.RecoverSpeed * Time.deltaTime);
-            _pull = Mathf.Lerp(_pull, 0f, decay);
-
-            if (Mathf.Abs(_pull) < 0.01f)
-            {
-                _pull = 0f;
-            }
+            return decayedValue;
         }
 
         private void SubscribeIfNeeded()
@@ -100,8 +108,16 @@ namespace CameraSystem
 
         private void OnItemCollected(ItemDefinition definition)
         {
-            float strength = _config.MassToPullStrength.Evaluate(_tierTable.Get(definition.Tier).Mass);
+            float mass = _tierTable.Get(definition.Tier).Mass;
+            float strength = _config.MassToPullStrength.Evaluate(mass);
             _pull = Mathf.Min(_pull + strength, _config.MaxPull);
+
+            if (mass < _config.ShakeMassThreshold)
+            {
+                return;
+            }
+
+            _shake = Mathf.Min(_shake + _config.ShakeStrength, _config.MaxShake);
         }
 
         private void OnTierChanged(ItemTier previousTier, ItemTier currentTier)
@@ -112,6 +128,7 @@ namespace CameraSystem
             }
 
             _pull = Mathf.Max(_pull - _config.TierPushStrength, -_config.MaxPush);
+            _fovKick = _config.TierFovKick;
         }
     }
 }

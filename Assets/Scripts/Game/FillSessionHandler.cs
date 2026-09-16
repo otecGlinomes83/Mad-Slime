@@ -1,4 +1,5 @@
-﻿using Scriptables;
+﻿using Cysharp.Threading.Tasks;
+using Scriptables;
 using ShapeFill;
 using System;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Game
         [SerializeField] private Pauser _pauser;
         [SerializeField] private AdScheduler _adScheduler;
         [SerializeField] private LeaderboardReporter _leaderboardReporter;
+        [SerializeField, Min(0f)] private float _winDelay = 1.3f;
 
         private PlayerProgress _progress;
         private LevelConfigResolver _configResolver;
@@ -119,12 +121,26 @@ namespace Game
         {
             if (percent >= 1f)
             {
-                _rewarder.RewardWin(percent);
+                RewardWinDelayedAsync(percent).Forget();
             }
             else
             {
                 _rewarder.RewardLose(percent);
             }
+        }
+
+        private async UniTaskVoid RewardWinDelayedAsync(float percent)
+        {
+            try
+            {
+                await UniTask.Delay((int)(_winDelay * 1000f), cancellationToken: this.GetCancellationTokenOnDestroy());
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+            _rewarder.RewardWin(percent);
         }
 
         private void OnRewardGranted(int amount, bool isWin)

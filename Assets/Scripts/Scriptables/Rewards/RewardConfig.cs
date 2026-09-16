@@ -5,9 +5,16 @@ namespace Scriptables
     [CreateAssetMenu(menuName = "Mad Slime/Reward Config", fileName = "NewRewardConfig")]
     public sealed class RewardConfig : ScriptableObject
     {
+        [Tooltip("Базовая награда монетами за победу на уровне.")]
         [SerializeField] private int _baseReward = 50;
+
+        [Tooltip("Порог доли заливки, выше которого награда считается с бонусом: базовая × доля заливки. Иначе — ровно базовая.")]
         [SerializeField] private float _winFullMultiplierThreshold = 1.25f;
+
+        [Tooltip("Минимальная доля заливки при провале, за которую хоть что-то платят. Ниже — ноль монет.")]
         [SerializeField] private float _loseMultiplierThreshold = 0.25f;
+
+        [Tooltip("На сколько делится базовая награда при провале. 4 = четверть базовой.")]
         [SerializeField] private int _loseRewardDivisor = 4;
 
         public int BaseReward => _baseReward;

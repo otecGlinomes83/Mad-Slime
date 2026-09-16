@@ -34,7 +34,6 @@ namespace ShapeFill
         public void StartFill()
         {
             _shapeFiller.Initialize();
-            _gridBuilder.Build();
             _shapeFiller.BuildShape();
             _shapeFiller.Fill(_fillCounter.CalculateFill(_gridBuilder.FillCells.Count));
         }

@@ -14,4 +14,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layouts:
   - {fileID: 11400000, guid: 79f850a49727d7f4baf2325c2abd9ba5, type: 2}
-  - {fileID: 11400000, guid: 0318828e02d25f641a94ce43e11a41b4, type: 2}

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Game;
 using Player;
 using Skills;
@@ -14,6 +15,9 @@ namespace UI
         [SerializeField] private TierResolver _tierResolver;
         [SerializeField] private Image _progressBar;
         [SerializeField] private TMP_Text _tierText;
+        [SerializeField, Min(0.01f)] private float _fillSmoothDuration = 0.25f;
+
+        private Tween _fillTween;
 
         private void Awake()
         {
@@ -57,6 +61,12 @@ namespace UI
         {
             _playerTier.MassChanged -= OnMassChanged;
             _playerTier.TierChanged -= OnTierChanged;
+
+            if (_fillTween != null)
+            {
+                _fillTween.Kill();
+                _fillTween = null;
+            }
         }
 
         private void OnMassChanged(int previousMass, int currentMass)
@@ -71,8 +81,28 @@ namespace UI
 
         private void Refresh(int mass)
         {
-            _progressBar.fillAmount = _tierResolver.GetTierProgress(mass);
+            float targetFill = _tierResolver.GetTierProgress(mass);
+
             _tierText.text = Localization.Get($"tier_{_playerTier.CurrentTier}");
+
+            if (_fillTween != null)
+            {
+                _fillTween.Kill();
+            }
+
+            _fillTween = DOTween.To(ReadFillAmount, ApplyFillAmount, targetFill, _fillSmoothDuration)
+                .SetEase(Ease.OutQuad)
+                .SetTarget(this);
+        }
+
+        private float ReadFillAmount()
+        {
+            return _progressBar.fillAmount;
+        }
+
+        private void ApplyFillAmount(float fillAmount)
+        {
+            _progressBar.fillAmount = fillAmount;
         }
     }
 }

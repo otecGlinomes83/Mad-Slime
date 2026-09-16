@@ -1131,6 +1131,8 @@ GameObject:
   - component: {fileID: 1948289415}
   - component: {fileID: 1948289414}
   - component: {fileID: 1948289416}
+  - component: {fileID: 1948289417}
+  - component: {fileID: 1948289418}
   m_Layer: 0
   m_Name: Shape
   m_TagString: Untagged
@@ -1177,11 +1179,13 @@ MonoBehaviour:
   _gridShape: {fileID: 1948289412}
   _ghostBackground: {fileID: 408036645}
   _spawner: {fileID: 1948289416}
-  _ghostColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
+  _ghostOpacity: 0.4
   _spawnPosition: {x: 0, y: 20, z: -100}
   _borderColor: {r: 0, g: 0, b: 0, a: 1}
   _spawnInterval: 0.04
   _flightDuration: 0.5
+  _borderCascadeDuration: 0.5
+  _fillDelay: 0.55
 --- !u!114 &1948289412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1228,6 +1232,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _group: {fileID: -538627474310297102, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}
   _clip: {fileID: 8300000, guid: 153016562482ba2468eff8e842418c30, type: 3}
+  _soundLimiter: {fileID: 1948289417}
+  _minPitch: 0.9
+  _maxPitch: 1.35
+  _minInterval: 0.03
 --- !u!82 &1948289415
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1444,8 +1452,12 @@ PrefabInstance:
       objectReference: {fileID: 1495407471}
     - target: {fileID: 6849455437278059309, guid: 8a65a6b7f9357644e9e827308e86a7af, type: 3}
       propertyPath: _mixerController
-      value: 
+      value:
       objectReference: {fileID: 643223068}
+    - target: {fileID: 900000000000000206, guid: 8a65a6b7f9357644e9e827308e86a7af, type: 3}
+      propertyPath: _shapeFiller
+      value:
+      objectReference: {fileID: 1948289411}
     - target: {fileID: 9162170889516656164, guid: 8a65a6b7f9357644e9e827308e86a7af, type: 3}
       propertyPath: m_Name
       value: FillUI
@@ -1466,6 +1478,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6b3d453645f7c14eb29966416aa210a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1948289417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948289408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b36e42fe91273847b0ad60ae1332c99, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _maxConcurrent: 6
+--- !u!114 &1948289418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948289408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81a276d33d12c942d9d5dc151a678872, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _orchestrator: {fileID: 1948289409}
+  _spawner: {fileID: 1948289416}
+  _gridBuilder: {fileID: 1948289412}
+  _confettiCount: 40
+  _confettiDuration: 1.1
+  _confettiSpeed: 7
+  _confettiGravity: 12
+  _confettiUpBiasMin: 0.6
+  _confettiUpBiasMax: 1.4
+  _confettiScaleFactor: 0.7
+  _confettiFadeFraction: 0.25
+  _shapePunchStrength: 0.06
+  _shapePunchDuration: 0.4
+  _shapePunchVibrato: 10
+  _shapePunchElasticity: 0.3
+  _fovKick: 9
+  _fovDuration: 0.6
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -13,11 +13,16 @@ namespace CameraSystem
         [SerializeField] private CameraImpulse _impulse;
         [SerializeField] private float _positionSmoothTime = 0.25f;
         [SerializeField] private float _maxPositionSpeed = 50f;
+        [SerializeField, Min(0.1f)] private float _shakeFrequency = 25f;
+        [SerializeField, Range(0f, 1f)] private Vector2 _shakeAxes = new Vector2(1f, 1f);
 
         private Vector3 _positionVelocity;
         private Vector3 _currentOffset;
 
         private Vector3 _startOffset;
+
+        private Camera _camera;
+        private float _baseFov;
 
         private void Awake()
         {
@@ -45,6 +50,15 @@ namespace CameraSystem
                     $"{name}: CameraImpulse is not assigned. Drag a CameraImpulse component into the _impulse field in the inspector.");
             }
 
+            if (TryGetComponent(out Camera cameraComponent) == false)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Camera component is not found. CameraFollow must be attached to the camera GameObject.");
+            }
+
+            _camera = cameraComponent;
+            _baseFov = _camera.fieldOfView;
+
             _currentOffset = transform.position - _target.position;
             _startOffset = _currentOffset;
         }
@@ -70,7 +84,24 @@ namespace CameraSystem
                 desiredPosition,
                 ref _positionVelocity,
                 _positionSmoothTime,
-                _maxPositionSpeed);
+                _maxPositionSpeed) + GetShakeOffset();
+
+            _camera.fieldOfView = _baseFov + _impulse.FovKick;
+        }
+
+        private Vector3 GetShakeOffset()
+        {
+            if (_impulse.Shake <= 0.001f)
+            {
+                return Vector3.zero;
+            }
+
+            float noiseTime = Time.time * _shakeFrequency;
+            float noiseX = Mathf.PerlinNoise(noiseTime, 0f) * 2f - 1f;
+            float noiseY = Mathf.PerlinNoise(0f, noiseTime) * 2f - 1f;
+
+            return (transform.right * (noiseX * _shakeAxes.x) + transform.up * (noiseY * _shakeAxes.y))
+                * _impulse.Shake;
         }
 
         private void OnTierChanged(ItemTier previousTier, ItemTier currentTier)
