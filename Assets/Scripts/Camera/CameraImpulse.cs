@@ -15,6 +15,7 @@ namespace CameraSystem
 
         private LevelProgress _levelProgress;
         private PlayerTier _playerTier;
+        private TierTable _tierTable;
         private bool _isSubscribed;
 
         private float _pull;
@@ -22,10 +23,11 @@ namespace CameraSystem
         public float Pull => _pull;
 
         [Inject]
-        public void Construct(LevelProgress levelProgress, PlayerTier playerTier)
+        public void Construct(LevelProgress levelProgress, PlayerTier playerTier, TierTable tierTable)
         {
             _levelProgress = levelProgress;
             _playerTier = playerTier;
+            _tierTable = tierTable;
         }
 
         private void Awake()
@@ -34,6 +36,12 @@ namespace CameraSystem
             {
                 throw new InvalidOperationException(
                     $"{name}: CameraImpulseConfig is not assigned. Create a CameraImpulseConfig asset and drag it into the _config field.");
+            }
+
+            if (_tierTable == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: TierTable was not injected. Check that ProjectLifetimeScope has the TierTable asset assigned.");
             }
         }
 
@@ -92,7 +100,7 @@ namespace CameraSystem
 
         private void OnItemCollected(ItemDefinition definition)
         {
-            float strength = _config.MassToPullStrength.Evaluate(definition.BaseMass);
+            float strength = _config.MassToPullStrength.Evaluate(_tierTable.Get(definition.Tier).Mass);
             _pull = Mathf.Min(_pull + strength, _config.MaxPull);
         }
 

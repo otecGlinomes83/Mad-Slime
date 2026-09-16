@@ -347,7 +347,6 @@ namespace EditorTools
 
                 SerializedObject serialized = new SerializedObject(definition);
                 serialized.FindProperty("_tier").enumValueIndex = (int)entry.Tier;
-                serialized.FindProperty("_baseMass").intValue = entry.Mass;
                 serialized.FindProperty("_icon").objectReferenceValue = LoadIcon(job.IconPath, job.PrefabName);
                 serialized.ApplyModifiedPropertiesWithoutUndo();
 

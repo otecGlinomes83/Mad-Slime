@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [Serializable]
-    public sealed class TierThreshold
+    public sealed class PlayerTierThreshold
     {
         [SerializeField] private ItemTier _tier;
         [SerializeField] private int _requiredMass;

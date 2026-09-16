@@ -888,3 +888,31 @@ ExactPositionWithDynamicOrigin) тоже отклонён: один спрайт
 - Разовые [Diag] при Awake/OnEnable оставлены (Scaler, PlayerTier.Awake, baseRadius, capsule,
   SkinApplier) — спама не дают, диагностика осталась.
 - Файлы: Collector.cs, ItemGhostToggler.cs, GenericOverlapDetector.cs, PlayerTier.cs. Логики не трогали.
+
+## Волна 30 (2026-09-16): реформа массы/тиров — 2 конфига вместо 5 мест
+
+Решения владельца: в SO только данные, логики нет; делитель массы снесён (единица массы одна: масса предмета = прибавка игроку); ItemDefinition = только иконка+тир; TierTable не переименовывался.
+
+- **PlayerConfig** (+ `Scriptables/Player/PlayerTierThreshold.cs` NEW): к движению/всасыванию добавлены `_startMass` (бывший `_defaultMass` со сцены PlayerTier, был 6) и `_thresholds` (бывший TierScalerConfig, поля те же: _tier/_requiredMass/_scaleMultiplier/_speed/_cameraOffsetMultiplier). `_massPickupDivisor` удалён. Ассет перезаписан: пороги **0/50/4000/40000** — сохраняют прежний темп (средний с 50 мелких или 1 среднего; большой с 4 средних; босс с 4 боссов при табличных массах), scale/speed/camera перенесены как были. Мёртвое поле `_label` («Малый/Средний/…») ушло вместе со старым ассетом.
+- **Снесено**: `Scriptables/Tier/` целиком (TierScalerConfig.cs+asset, TierThreshold.cs, обе папки) — гуид ассета 19460ac6… больше никем не нужен.
+- **TierResolver**: `_config` = PlayerConfig (+fail-fast на пустой список порогов); API (`GetUnlockedTier/GetSpeedFor/GetTierProgress/GetScaleFor/GetCameraOffsetFor`) не менялся → LevelScaler/CameraFollow/GenericOverlapDetector/GrowthBarView не тронуты.
+- **PlayerTier**: `_defaultMass` снесён, `_mass = _config.StartMass`, `Add` без делителя.
+- **Player**: `[Inject]` + TierTable; `OnItemCollected` берёт массу `TierTable.Get(tier).Mass`. Молчаливый `if (_playerConfig == null) return;` заменён fail-fast (заодно валидация TierTable — кусок пунч-листа волны 26).
+- **ItemDefinition**: `_baseMass` снесено — оно выпекалось из TierTable.Mass фабрикой и уже протухло (у всех Medium лежало 500 при табличных 1000; Large соответствовал). `Item.Mass` снесён; ItemPropFactory не печёт массу. Стало невозможно расхождение печи и таблицы.
+- **CameraImpulse** (потребитель массы, пропущенный первым обыском): вместо `definition.BaseMass` — `TierTable.Get(tier).Mass`. ВАЖНО владельцу: кривая `MassToPullStrength` настроена на диапазон 0–50 (старый масштаб делителя) — при массах 1/1000/10000 всё не-Small упирается в потолок 2.5; кривую перенастроить в CameraImpulseConfig.asset.
+- **Сцена Game.unity**: `TierResolver._config` переброшен на PlayerConfig.asset (гуид 5870f75c…) правкой YAML. ПРИ ФОКУСЕ РЕДАКТОРА Game не сохранять поверх — сначала перезагрузить сцену с диска.
+- Данные TierTable не тронуты. Найдено: **Medium=Large=1000** — похоже на недосмотр (рантайм-старое было 500/1000); правится теперь в одном месте. badgeColor/shortLabel ЖИВЫЕ: бейдж тира (буква+цвет) на тарелках квоты, Plate.prefab → QuotaPlateUI.Setup. Цветные шарики превью уровня — LayoutPreviewDrawer.GetTierColor, захардкожено, к таблице отношения не имеет.
+- [Diag] в Collector.cs владелец снёс в ходе волны; разовые логи PlayerTier.Awake сохранены.
+- Компиляция batchmode НЕ прогнана — проект открыт в редакторе (lock, exit 21). Проверить консоль при фокусе.
+- Точка отката: коммит f62d976 (запушит владелец — у сессии нет интерактивных учёток).
+
+## Волна 31 (2026-09-16): свип нейминга по AI_RULES + фиксация правил
+- Смертники исправлены:
+  - `Saves/Saves.cs` → `SavesYG.cs`, `Scriptables/Skins/ShopItem.cs` → `SkinItem.cs` (git mv вместе с .meta, GUID целы — классы не тронуты: SavesYG = YG-конвенция, SkinItem = живые ссылки в коде).
+  - `ShopContent.OnValidate`: `var skinDuplikates` → `IEnumerable<IGrouping<PlayerSkins, SkinItem>> duplicateGroups` (var под запретом + опечатка), лямбда-параметр `array` → `group`, добавлен `using Player;`.
+  - Однобуквенные локалы: `LayoutPreviewDrawer` `int p` → `propIndex`, `float x/z` → `offsetX/offsetZ`; `ZoneLayoutPlanner` (CollectCircleGrid, CollectCircle) `float x/z` → `offsetX/offsetZ`.
+  - Mutable static → `s_`: `Localization._table/_language` → `s_table/s_language`, `LayoutPreviewDrawer._zoneLabelStyle` → `s_zoneLabelStyle`.
+- НЕ переименовано (контракты, зафиксировано в AI_RULES): поля `SavesYG` (`_openSkins`, `musicVolume`, `sfxVolume` — JSON-ключи сейвов), поля `LeaderboardPayload/LeaderboardEntry` (ключи Yandex-API под JsonUtility.FromJson), автоген `PlayerInputActions.cs`.
+- AI_RULES.md дополнен: имя файла = имя класса; граница static-нейминга (`const`/`static readonly` = PascalCase-константы, mutable static = `s_`); раздел «имена под контрактом»; запрет однобуквенных распространён на `p`/`x`/`z`.
+- Граница сглаживает противоречие в старых правилах (таблица `s_` vs пример `WaitForSeconds OneSecondWait`).
+- Компиляция batchmode не прогнана — проект открыт в редакторе (lock, exit 21). Проверить консоль редактора при фокусе: ошибок CS быть не должно (правки — механические переименования).

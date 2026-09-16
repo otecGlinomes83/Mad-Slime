@@ -544,9 +544,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 038348e88e2f6274ab2794c919fb9fdc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _config: {fileID: 11400000, guid: 19460ac6b061976438cd956881c1a539, type: 2}
+  m_Name:
+  m_EditorClassIdentifier:
+  _config: {fileID: 11400000, guid: 5870f75c6661e1248a87e3447b467372, type: 2}
 --- !u!114 &292377143
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,12 +12,12 @@ namespace Game
 
         private static readonly string[] LanguageOrder = { Russian, English, Turkish };
 
-        private static LocalizationTable _table;
-        private static string _language = Russian;
+        private static LocalizationTable s_table;
+        private static string s_language = Russian;
 
         public static event Action LanguageChanged;
 
-        public static string CurrentLanguage => _language;
+        public static string CurrentLanguage => s_language;
 
         public static void Initialize(LocalizationTable table, string savedLanguage)
         {
@@ -26,37 +26,37 @@ namespace Game
                 throw new ArgumentNullException(nameof(table));
             }
 
-            _table = table;
-            _language = ResolveLanguage(savedLanguage);
+            s_table = table;
+            s_language = ResolveLanguage(savedLanguage);
         }
 
         public static string Get(string key)
         {
-            if (_table == null)
+            if (s_table == null)
             {
                 throw new InvalidOperationException(
                     "Localization is not initialized. LocalizationService must exist on the ProjectScope.");
             }
 
-            return _table.Get(key, _language);
+            return s_table.Get(key, s_language);
         }
 
         public static void SetLanguage(string language)
         {
             string resolved = ResolveLanguage(language);
 
-            if (resolved == _language)
+            if (resolved == s_language)
             {
                 return;
             }
 
-            _language = resolved;
+            s_language = resolved;
             LanguageChanged?.Invoke();
         }
 
         public static void CycleLanguage()
         {
-            int next = (Array.IndexOf(LanguageOrder, _language) + 1) % LanguageOrder.Length;
+            int next = (Array.IndexOf(LanguageOrder, s_language) + 1) % LanguageOrder.Length;
             SetLanguage(LanguageOrder[next]);
         }
 

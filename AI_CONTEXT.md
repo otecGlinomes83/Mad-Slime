@@ -34,7 +34,7 @@
 ### Геймплей уровня
 - `LevelGenerator` (Awake) генерит предметы из `LevelsCatalog` → `LevelConfigResolver.GetConfigFor(CurrentLevel)`; зоны/формы/тиры из `LayoutSet`/`SpawnZone`; пул — `ItemPool`.
 - Квота генерится `QuotaGenerator` (только из реально заспавненных типов), состояние — `LevelProgress` (чистый C#-класс: QuotaChanged/QuotaCompleted/FillPercent).
-- Рост игрока: `PlayerTier` (масса/тир) → `LevelScaler` (скейл модели/коллайдера + скорость из `TierResolver`) → радиусы детекторов растят сами себя (`GenericOverlapDetector` подписан на TierChanged).
+- Рост игрока: `PlayerTier` (масса/тир) → `LevelScaler` (скейл модели/коллайдера + скорость из `TierResolver`) → радиусы детекторов растят сами себя (`GenericOverlapDetector` подписан на TierChanged). С волны 30: вся настройка игрока (движение, всасывание, старт-масса, пороги/скейл/скорость/камера по тирам) — в `PlayerConfig`; масса предмета = `TierTable.Get(tier).Mass` (ItemDefinition = иконка+тир, делителя массы нет), `Scriptables/Tier` снесён.
 - Таймер уровня: `GameplaySessionHandler` (пауза до первого ввода, timeout/квота → `LoadFill`).
 
 ### Fill-сессия

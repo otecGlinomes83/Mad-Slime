@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Player;
 using UnityEngine;
 
 namespace Skins
@@ -14,14 +15,14 @@ namespace Skins
 
         private void OnValidate()
         {
-            var skinDuplikates = _skinItems
+            IEnumerable<IGrouping<PlayerSkins, SkinItem>> duplicateGroups = _skinItems
                 .Where(item => item != null)
                 .GroupBy(item => item.SkinType)
-                .Where(array => array.Count() > 1);
+                .Where(group => group.Count() > 1);
 
-            if (skinDuplikates.Count() > 0)
+            if (duplicateGroups.Count() > 0)
             {
-                throw new InvalidOperationException("Duplicate SkinType" + skinDuplikates.First().Key);
+                throw new InvalidOperationException("Duplicate SkinType" + duplicateGroups.First().Key);
             }
         }
     }

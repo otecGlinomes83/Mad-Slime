@@ -11,9 +11,30 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1801906b686afc47a4a6d209a08dfe0, type: 3}
   m_Name: PlayerConfig
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   _baseMoveSpeed: 4
   _rotationSpeed: 420
   _moveSmoothTime: 0.12
-  _massPickupDivisor: 2
   _absorptionDuration: 0.3
+  _startMass: 6
+  _thresholds:
+  - _tier: 0
+    _requiredMass: 0
+    _scaleMultiplier: 1.4
+    _speed: 4
+    _cameraOffsetMultiplier: 1
+  - _tier: 1
+    _requiredMass: 50
+    _scaleMultiplier: 3
+    _speed: 8
+    _cameraOffsetMultiplier: 1.5
+  - _tier: 2
+    _requiredMass: 4000
+    _scaleMultiplier: 6
+    _speed: 16
+    _cameraOffsetMultiplier: 2
+  - _tier: 3
+    _requiredMass: 40000
+    _scaleMultiplier: 15
+    _speed: 25
+    _cameraOffsetMultiplier: 3

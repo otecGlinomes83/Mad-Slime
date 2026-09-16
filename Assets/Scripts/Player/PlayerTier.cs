@@ -8,7 +8,6 @@ namespace Player
 {
     public sealed class PlayerTier : MonoBehaviour
     {
-        [SerializeField] private int _defaultMass;
         [SerializeField] private TierResolver _tierResolver;
 
         private int _mass;
@@ -40,10 +39,10 @@ namespace Player
                     $"{name}: PlayerConfig was not injected. Check that GameLifetimeScope is configured and PlayerTier is registered.");
             }
 
-            _mass = _defaultMass;
+            _mass = _config.StartMass;
             CurrentTier = _tierResolver.GetUnlockedTier(_mass);
 
-            Debug.Log($"[Diag] {name}: PlayerTier.Awake mass={_mass} tier={CurrentTier} defaultMass={_defaultMass}");
+            Debug.Log($"[Diag] {name}: PlayerTier.Awake mass={_mass} tier={CurrentTier} startMass={_config.StartMass}");
         }
 
         public void Add(int amount)
@@ -56,14 +55,13 @@ namespace Player
 
             int previous = _mass;
 
-            int scaledMass = Mathf.RoundToInt(amount / (float)_config.MassPickupDivisor);
-            scaledMass = Mathf.Max(1, scaledMass);
-
-            _mass += scaledMass;
+            _mass += amount;
             MassChanged?.Invoke(previous, _mass);
 
             ItemTier previousTier = CurrentTier;
             CurrentTier = _tierResolver.GetUnlockedTier(_mass);
+
+            Debug.Log($"[Diag] {name}: mass {previous} -> {_mass} (tier {previousTier} -> {CurrentTier})");
 
             TierChanged?.Invoke(previousTier, CurrentTier);
         }

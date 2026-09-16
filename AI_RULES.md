@@ -81,9 +81,24 @@
 
 ### Имена переменных
 
-- **Никаких однобуквенных имён.** Не `t`, не `smooth`, не `c`.
+- **Никаких однобуквенных имён.** Не `t`, не `smooth`, не `c`, включая «математические» `p`, `x`, `z` (офсеты называть `offsetX`/`offsetZ`, индексы — `propIndex` и т.п.).
 - Исключение: `i`, `j` как счётчики простых for-циклов.
 - Имена должны быть описательными: `progress`, `smoothedProgress`, `elapsedTime`, `hitCollider`, `cancellationToken`.
+
+### Имя файла = имя класса
+
+- Файл называется так же, как основной класс в нём. Рассинхрон — смертник: переименовывать файл вместе с `.meta` (GUID сохраняется → ассеты не ломаются).
+
+### Граница static-нейминга
+
+- `const` и `static readonly` — это константы → `PascalCase` (`BufferSize`, `OpacityId`, `LanguageOrder`).
+- Mutable `static` поле → `s_fieldName` (`s_table`, `s_language`), даже если оно приватное или в editor-коде.
+
+### Имена под контрактом — не переименовывать
+
+- Поля `SavesYG` — имена = JSON-ключи живых сейвов. Исторические `_openSkins`, `musicVolume`, `sfxVolume` не приводить к канону — сломает сохранения игроков.
+- Поля внешних JSON-DTO (`YandexAdsBridge.LeaderboardPayload` / `LeaderboardEntry`) — имена = ключи внешнего API (`JsonUtility.FromJson`).
+- Автоген (`PlayerInputActions.cs`) — вне правил вообще.
 
 ---
 

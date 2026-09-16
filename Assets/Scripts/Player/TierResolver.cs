@@ -8,16 +8,22 @@ namespace Player
 {
     public sealed class TierResolver : MonoBehaviour
     {
-        [SerializeField] private TierScalerConfig _config;
+        [SerializeField] private PlayerConfig _config;
 
-        private readonly List<TierThreshold> _sortedByMass = new List<TierThreshold>();
+        private readonly List<PlayerTierThreshold> _sortedByMass = new List<PlayerTierThreshold>();
 
         private void Awake()
         {
             if (_config == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: TierScalerConfig is not assigned. Drag a TierScalerConfig asset into the _config field.");
+                    $"{name}: PlayerConfig is not assigned. Drag the PlayerConfig asset into the _config field.");
+            }
+
+            if (_config.Thresholds.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PlayerConfig '{_config.name}' has no tier thresholds. Add at least one threshold row to the asset.");
             }
 
             _sortedByMass.AddRange(_config.Thresholds);
@@ -95,7 +101,7 @@ namespace Player
 
             return Mathf.Clamp01((mass - previousThresholdMass) / segment);
         }
-        
+
         public float GetScaleFor(ItemTier tier)
         {
             for (int i = 0; i < _sortedByMass.Count; i++)

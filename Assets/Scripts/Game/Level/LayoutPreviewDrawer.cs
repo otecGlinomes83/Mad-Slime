@@ -33,17 +33,17 @@ namespace Game
         public LayoutSet CustomLayout => _customLayout;
 
 #if UNITY_EDITOR
-        private static GUIStyle _zoneLabelStyle;
+        private static GUIStyle s_zoneLabelStyle;
 
         private static GUIStyle GetZoneLabelStyle()
         {
-            if (_zoneLabelStyle == null)
+            if (s_zoneLabelStyle == null)
             {
-                _zoneLabelStyle = new GUIStyle();
-                _zoneLabelStyle.normal.textColor = Color.yellow;
+                s_zoneLabelStyle = new GUIStyle();
+                s_zoneLabelStyle.normal.textColor = Color.yellow;
             }
 
-            return _zoneLabelStyle;
+            return s_zoneLabelStyle;
         }
 
         private void OnDrawGizmos()
@@ -114,11 +114,11 @@ namespace Game
                 float maxScale = MaxTierScale(zone);
                 _zoneRadii.Clear();
 
-                for (int p = 0; p < _propSet.Props.Count; p++)
+                for (int propIndex = 0; propIndex < _propSet.Props.Count; propIndex++)
                 {
-                    if (_propSet.Props[p] != null)
+                    if (_propSet.Props[propIndex] != null)
                     {
-                        _zoneRadii.Add(ItemSize.GetRadiusXZ(_propSet.Props[p]) * maxScale);
+                        _zoneRadii.Add(ItemSize.GetRadiusXZ(_propSet.Props[propIndex]) * maxScale);
                     }
                 }
 
@@ -233,10 +233,10 @@ namespace Game
             for (int i = 1; i <= segments; i++)
             {
                 float angle = 2f * Mathf.PI * i / segments;
-                float x = center.x + Mathf.Cos(angle) * radius;
-                float z = center.y + Mathf.Sin(angle) * radius;
+                float offsetX = center.x + Mathf.Cos(angle) * radius;
+                float offsetZ = center.y + Mathf.Sin(angle) * radius;
 
-                Vector3 nextPoint = transform.TransformPoint(new Vector3(x, 0f, z));
+                Vector3 nextPoint = transform.TransformPoint(new Vector3(offsetX, 0f, offsetZ));
                 Gizmos.DrawLine(previousPoint, nextPoint);
                 previousPoint = nextPoint;
             }

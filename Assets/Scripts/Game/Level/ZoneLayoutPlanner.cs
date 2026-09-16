@@ -111,10 +111,10 @@ namespace Game
                 for (int i = 0; i < pointsOnRing; i++)
                 {
                     float angle = angleStep * i;
-                    float x = center.x + Mathf.Cos(angle) * ringRadius;
-                    float z = center.y + Mathf.Sin(angle) * ringRadius;
+                    float offsetX = center.x + Mathf.Cos(angle) * ringRadius;
+                    float offsetZ = center.y + Mathf.Sin(angle) * ringRadius;
 
-                    _positions.Add(new Vector3(x, 0f, z));
+                    _positions.Add(new Vector3(offsetX, 0f, offsetZ));
                     placedCount++;
                 }
 
@@ -134,10 +134,10 @@ namespace Game
             for (int i = 0; i < count; i++)
             {
                 float angle = angleStep * i;
-                float x = center.x + Mathf.Cos(angle) * radius;
-                float z = center.y + Mathf.Sin(angle) * radius;
+                float offsetX = center.x + Mathf.Cos(angle) * radius;
+                float offsetZ = center.y + Mathf.Sin(angle) * radius;
 
-                _positions.Add(new Vector3(x, 0f, z));
+                _positions.Add(new Vector3(offsetX, 0f, offsetZ));
             }
         }
 
