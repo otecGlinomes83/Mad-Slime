@@ -17,19 +17,57 @@ MonoBehaviour:
   _moveSmoothTime: 0.12
   _minAbsorbDuration: 0.25
   _maxAbsorbDuration: 0.5
-  _absorbSpeed: 9
+  _absorbSpeed: 10
   _minArcFraction: 0.2
   _maxArcFraction: 0.325
   _minSpinSpeed: 520
   _maxSpinSpeed: 1080
-  _shrinkStart: 0.3
-  _absorbEasePower: 3
+  _shrinkStart: 0.2
+  _absorbEasePower: 2
+  _squashDuration: 0.3
+  _squashCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.076669306
+      value: 0.88283813
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.4967965
+      value: 1.0472553
+      inSlope: -0.24971221
+      outSlope: -0.24971221
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.20085488
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _pickupSoundMinInterval: 0.05
+  _pickupSoundMaxInterval: 0.1
+  _pickupSoundMinPitch: 0.95
+  _pickupSoundMaxPitch: 1.15
   _startMass: 6
   _thresholds:
   - _tier: 0
     _requiredMass: 0
     _scaleMultiplier: 2
-    _speed: 4
+    _speed: 6
     _cameraOffsetMultiplier: 1
   - _tier: 1
     _requiredMass: 50
@@ -39,7 +77,7 @@ MonoBehaviour:
   - _tier: 2
     _requiredMass: 4000
     _scaleMultiplier: 6
-    _speed: 16
+    _speed: 18
     _cameraOffsetMultiplier: 2
   - _tier: 3
     _requiredMass: 40000

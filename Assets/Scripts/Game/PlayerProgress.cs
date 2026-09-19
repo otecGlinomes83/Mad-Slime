@@ -43,18 +43,6 @@ namespace Game
             }
         }
 
-        public string PlayerId
-        {
-            get
-            {
-                return YG2.saves.PlayerId;
-            }
-            set
-            {
-                YG2.saves.PlayerId = value;
-            }
-        }
-
         public int Balance
         {
             get
@@ -102,16 +90,6 @@ namespace Game
             set
             {
                 YG2.saves.sfxVolume = value;
-            }
-        }
-
-        public const string GuestIdPrefix = "Guest";
-
-        private void Awake()
-        {
-            if (string.IsNullOrEmpty(YG2.saves.PlayerId))
-            {
-                YG2.saves.PlayerId = $"{GuestIdPrefix}-{Random.Range(100000, 1000000)}";
             }
         }
 

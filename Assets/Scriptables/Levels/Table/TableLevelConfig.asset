@@ -15,11 +15,11 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: 49822d7c5f452ed46b3f8bbdaf7ac2c9, type: 2}
   _propSet: {fileID: 11400000, guid: 4a1c8e6d9b3f47c28e0a5d7c9f2b4e81, type: 2}
   _minTier: 0
-  _maxTier: 3
+  _maxTier: 4
   _timerDuration: 120
-  _quotaTypesMin: 3
-  _quotaTypesMax: 3
-  _quotaTargetMin: 10
-  _quotaTargetMax: 50
+  _quotaTypesMin: 2
+  _quotaTypesMax: 6
+  _quotaTargetMin: 3
+  _quotaTargetMax: 10
   _quotaMaxSameTier: 2
-  _defaultCountDivisor: 8
+  _defaultCountDivisor: 64

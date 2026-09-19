@@ -73,3 +73,7 @@ MonoBehaviour:
     _ru: "Босс"
     _en: "Boss"
     _tr: "Patron"
+  - _key: auth_login
+    _ru: "ВОЙТИ"
+    _en: "LOGIN"
+    _tr: "GİRİŞ"

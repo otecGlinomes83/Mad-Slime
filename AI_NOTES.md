@@ -1005,4 +1005,233 @@ ExactPositionWithDynamicOrigin) тоже отклонён: один спрайт
 - Фикс владельца: тарелки квоты ползли вверх и не возвращались — DOPunchScale, убитый посреди анимации, оставляет трансформ раздутым, следующий пунш стартует от него (DOKill не восстанавливает значение). Пунш снесён: поп переехал в QuotaPlateUI (PlayPop: снап к _baseScale, твин прогресса 0→1, scale = base×(1+strength×(1−t)) — всегда ровно в базу; поля _popStrength 0.12/_popDuration 0.18 на тарелке, дефолты из инициализаторов, Plate.prefab не правился). У QuotaUI поля _platePunch* удалены, using DG.Tweening убран.
 - Фикс владельца: шейк камеры «пиздец как сильный» — причина двойная: порог 10 при массах TierTable 1/1000 = шейк на каждый не-Small (стэкался до потолка постоянно) + злые дефолты 0.35/0.8. Новые значения (код + CameraImpulseConfig.asset): threshold 1000 (только Large/Boss; Medium пока =1000 — тоже трясёт, починка данных за владельцем), strength 0.15, max 0.35, recover 7.
 - **[Diag]-логи снесены полностью** (хвост волн 22–33 закрыт): PlayerTier (Awake + масс на каждый пикап), LevelScaler (Awake + тир), GenericOverlapDetector.OnEnable, ItemGhostToggler.OnEnable (метод удалён целиком — был только ради лога), SkinApplier (все 3). Греп «Diag» по Scripts пуст. У ItemGhostToggler.Update вычисление capsuleWorldRadius осталось (нужно для запроса). SessionStateLogger не тронут — это отдельный класс-журнал сессии, не [Diag].
+- **Тултипы скриптов — ОТКАТ по решению владельца.** Владелец просил тултипы только для FillFinale (и SO); моё расширение на все скрипты (5 параллельных агентов, 66 файлов) — перегиб, остановлено и откачено: 12 файлов с tooltip-only изменениями — git checkout; 7 файлов с нашей незакоммиченной работой (Absorber, ItemAttractor, ItemGhostToggler, FlyingCube, GridBuilder, ShapeFiller, FlyingCubeArrivalSound) — построчное удаление [Tooltip]. Остались тултипы ТОЛЬКО в Scriptables (SO) и FillFinale.cs. Греп чист.
 
+## Волна 35 (2026-09-17): границы игрока — кламп по баундам пола, MoveChecker снесён
+
+Решение владельца: размер карты нигде не задаётся цифрами — источник правды = расставленный в сцене
+пол. Свип-тест больше не нужен: предметы не блокируют движение, прозрачность у камеры делает
+ItemGhostToggler своим рейкастом.
+
+- `LevelGenerator`: `_mapSize` снесено (в сцене лежало 200×200 при дефолте 30×30 — цифры в любом
+  случае разъезжались с реальностью); границы = `_floorRenderer.bounds` (мировой AABB пола),
+  захват в `Generate` до ApplyTheme. `ClampToMap` предметов переведён в мировые координаты
+  (TransformPoint → кламп XZ в bounds ± margin). Свойство `MapSize` → `FloorBounds` (null-safe,
+  нужен гизмо drawer'а в edit-mode). `_floorRenderer` стал обязательным (был опциональным — только
+  тема) + `_mover` — fail-fast в Awake.
+- `Mover`: `[RequireComponent(CapsuleCollider)]`, `SetBounds(Bounds)` — LevelGenerator пушит в своём
+  Awake; `Move` после шага клампит XZ в bounds ± текущий радиус капсулы (радиус скейлится
+  LevelScaler'ом по тиру, читается живьём). Fail-fast: Move до SetBounds → исключение. Пер-осевой
+  кламп даёт скольжение вдоль борта — старый блок глушил всю скорость, диагональ в стену стопорила.
+- Снесено: `MoveChecker.cs` (+meta, guid 997c9472…), компонент с GO Player в Game.unity,
+  `RequireComponent(MoveChecker)`. Факт, закрывший вопрос: все Item — IAttractable, ветка
+  attractable в `IsAbleToMove` всегда возвращала true → SphereCast реально блокировал ТОЛЬКО борта.
+  С клампом система не нужна целиком; Mask Collectable|Wall (264) ушла вместе с ней.
+- Сцена Game.unity (гуиды): LevelGenerator (&1691083851) `_mapSize {200,200}` →
+  `_mover: {fileID: 688403098498416583}`; из m_Component GO Player удалён &8234523066227841108;
+  блок MoveChecker удалён. Гуид больше нигде в Assets не встречается (греп).
+- `LayoutPreviewDrawer.DrawMapBounds` рисует мировой AABB пола (y = bounds.min.y) вместо границ из
+  MapSize — TransformPoint drawer'а в границах больше не участвует.
+- Слой Wall (8) и коллайдеры бортов остались в сцене, но никем не читаются (движение трансформом,
+  детекторы маскируют только Collectable) — мёртвый груз, снос за владельцем.
+- **Редактор был ОТКРЫТ при правках** (как в волне 34): Game.unity и MoveChecker.cs правлены на
+  диске — при фокусе НЕ сохранять сцену поверх (сначала Reload), иначе пропадёт и проводка `_mover`,
+  и снятие компонента. Компиляция batchmode не прогнана (lock) — консоль редактора при фокусе
+  покажет ошибки CS, если есть.
+
+## Волна 36 (2026-09-17): сквош сбора — только от предметов своего тира, перевёрнутая кривая, параметры в PlayerConfig
+
+- `Player.OnItemCollected`: пунш сквоша только при `item.Definition.Tier == _playerTier.CurrentTier`
+  (сравнение до `Add` — против тира на момент съедения); предметы ниже тира собираются молча.
+  Жалоба владельца: босс-слайм дёргался от каждого мелкого предмета.
+- `ScalePunch.Punch` — без параметров (множитель `1f` снесён за ненадобностью).
+- Анимация перевёрнута и отдана владельцу в кривую (итерации: power-кривая → DOTween-пресет →
+  AnimationCurve по просьбе владельца после «работает как говнище»). `ScalePunch` — один твин
+  прогресса 0→1 (`SetEase(Ease.Linear)` обязателен, иначе двойное shaping) по
+  `DOTween.To(ReadProgress, ApplyProgress, …)`, скейл = `base × SquashCurve.Evaluate(t)` (идиома
+  Item.cs: Kill/SetTarget/SetLink KillOnDisable/именованный OnComplete; UniTask-цикл снесён).
+  Повторный Punch во время анимации перезапускает проход.
+- Новые поля `PlayerConfig` (Header "Collect Squash"): `_squashDuration` 0.2 и `_squashCurve`
+  (дефолтные ключи (0,1) / (0.35,0.88) / (1,1)); Y кривой = множитель размера. Старые
+  `_squashStrength`/`_squashEase`/`_squashMaxStackedStrength` снесены — финальный вид после
+  трёх итераций. PlayerConfig.asset YAML не правлен, подхватит при фокусе.
+- `PlayerPickupSound` — рандомный берст вместо одиночного попа: на каждый сбор 1..N попов
+  (`PickupSoundMin/MaxPopCount` 1..3) со случайными паузами 0.02–0.06 с
+  (`PickupSoundMin/MaxPopInterval`), питч каждого попа `Random.Range(PickupSoundMinPitch,
+  PickupSoundMaxPitch)` (дефолт 0.95–1.15). Гейт между берстами `_pickupSoundMinInterval` 0.05
+  (был `_minInterval` 0.1 на компоненте — поле снесено). Берсты через UniTask.Delay с linked-CTS
+  (создаётся в OnEnable, Cancel+Dispose в OnDisable + destroy-token), SoundLimiter.TryPlay на
+  каждый поп (нет слота — поп пропускается). Нюанс: pitch на общем AudioSource слегка сдвигает
+  уже играющие OneShots берста (клипы короткие — незаметно). Провка: `_config` на
+  PlayerPickupSound (Game.unity, GO &2432990947744818834) перетащить вручную.
+- Проводка: `ScalePunch` получил `[SerializeField] PlayerConfig _config` (идиома Absorber); в сцене
+  поле пустое → перетащить PlayerConfig.asset в `_config` на SkinContainer (Game.unity,
+  GO &900000000000000100), иначе Awake кинет исключение. Старые сериализованные
+  `_strength/_duration/_maxStackedStrength` — мёртвые ключи YAML, Unity снесёт при сохранении сцены.
+- Редактор открыт (batchmode exit 21) — компиляция при фокусе; сцену поверх диска не сохранять до
+  Reload.
+- Дочистка тултипов FillFinale (жалоба владельца «навожусь — название поля дублируется»): 3
+  поля-ссылки (_orchestrator/_spawner/_gridBuilder) получили тултипы; 5 пересказывающих название
+  переписаны с направлением тюнинга (confettiCount, upBiasMax, shapePunchDuration, fovDuration —
+  с предупреждением про Win Delay). Остальные 9 тултипов волны 34 не тронуты. У владельца в
+  инспекторе мог быть старый compile — тултипы на диске были незакоммиченными (+27 строк к HEAD).
+- **Диагноз «тултипов нет в инспекторе» (байт-уровень по Library/ScriptAssemblies/Assembly-CSharp.dll):**
+  в свежесобранной dll (19:37) ЕСТЬ строки волны 35 (Drag a Mover…, positive XZ size) и fail-fast
+  FillFinale, но НЕТ НИ ОДНОГО нашего тултипа — ни FillFinale (в т.ч. закоммиченных в 02:06 SO),
+  ни LayoutSet («Зоны спавна…» пробована побайтово). Все 149 кириллических строк dll — текст YG2.
+  Вывод: инкрементальный кэш компиляции (Library/Bee) держит протухший снапшот исходников для
+  части файлов; реимпорт отдельных скриптов хэши не чинит. Фикс: закрыть Unity → удалить
+  Library/Bee (32MB, регенерится) → открыть → полная перекомпиляция. Фолбэк: + Library/ScriptAssemblies,
+  затем Reimport All.
+
+- **Фикс применён (2026-09-17):** редактор закрыт владельцем; Library/Bee и Library/ScriptAssemblies
+  снесены (PackageCache/ArtifactDB не тронуты — без reimport всего). При первом открытии Unity —
+  полная перекомпиляция скриптов; тултипы должны появиться (наведение на ЛЕЙБЛ поля, не на значение).
+- **Пикап-звук упрощён (решение владельца «одно поглощение — один звук»):** берст-механика
+  (PopCount 1–3, PopInterval) снесена целиком из PlayerPickupSound (асинхронность/UniTask/CTS
+  ушли вместе с ней) и PlayerConfig (+ассет: 4 поля удалены). Осталось: один поп на ItemCollected,
+  рандомное кд между звуками Min/Max Interval (0.05/0.1, новый _pickupSoundMaxInterval), рандомный
+  питч. Валидации min>max в Awake сохранены (interval, pitch).
+
+## Волна 37 (2026-09-17): аудит Яндекс SDK — решение снести костыльный мост
+
+Жалоба владельца «реклама/лидерборд нихуя не работает». Аудит фактов:
+
+- **Плагин YG2 v2.0092** (последняя, GitHub JustPlay-Max/Unity-PluginYG-2) — модульный. Установлены:
+  ядро + Storage v1.021 + Authorization v1.023 + платформа YandexGames v1.0091. НЕ установлены
+  модули **Adv** (RewardedAdv_yg/InterstitialAdv_yg), **Leaderboard**, **Localization** — их кода в
+  проекте нет, нативных `YG2.RewardedAdvShow/NewLeaderboardScore/GetLeaderboardEntries/lang` не существует.
+- **Костыли волн 2–5** (решено снести): `Assets/Plugins/MadSlimeYandex.jslib`,
+  `Game/Ads/YandexAdsBridge.cs`, `Game/Localization/YandexEnvironmentBridge.cs`, гостевой
+  `PlayerId` в `PlayerProgress` (езда в лидерборд как extraData).
+- **Подтверждённые баги моста**: (1) чтение extra из лидерборда по несуществующим полям
+  `extraParams/extraParam` — в ответе SDK поле `extraData` → имена не показывались; (2) deprecated
+  API `ysdk.getLeaderboards()` вместо `ysdk.leaderboards.getEntries/setScore`; (3) setScore доступен
+  ТОЛЬКО авторизованным — схема «аноним пишет счёт + PlayerId в extra» не работает серверно в
+  принципе; кнопки входа в игре нет (вырезана в волне 4); (4) нет GameplayStop/паузы на рекламе —
+  требование Яндекса, модуль Adv делает сам; (5) интерстишл стреляется и сразу грузится сцена.
+- **Решения владельца (спрошено явно)**: 1) снести мост, ставить официальные модули Adv + Leaderboard
+  + Localization (Tools → YG2 → Version Control — клики владельца в редакторе); LocalizationTable
+  игры (RU/EN/TR) остаётся, модуль даст `YG2.lang` и убьёт YandexEnvironmentBridge. 2) Кнопка входа
+  в окне лидерборда (YG2.OpenAuthDialog, модуль уже стоит); аноним смотрит топ-10 без своей строки.
+  3) Ники в настройках НЕ делаем — у вошедших publicName из Яндекса, у анонимов строки нет.
+- **Чек-лист владельцу**: лидерборд `max_level` в консоли (тип «максимальный», ОПУБЛИКОВАН — не
+  черновик); rewarded-блоки с id = DoubleReward/NextLevel как в YandexConfig; реклама живёт только
+  в сборке на домене Яндекса. После установки модулей — миграция AdScheduler/LeaderboardReporter/
+  LeaderboardMenu на нативный API и снос моста одним куском (сначала модули, потом снос —
+  поэтапно игру без рекламы не оставлять).
+
+## Волна 38 (2026-09-17): мост снесён, всё на нативном API YG2
+
+Модули владельцем установлены: InterstitialAdv v1.02, RewardedAdv v1.011, Leaderboards v1.01,
+Localization v1.02 (дефайны InterstitialAdv_yg/RewardedAdv_yg/Leaderboards_yg/Localization_yg
+прописались сами). Миграция:
+
+- **Снесено**: `Assets/Plugins/MadSlimeYandex.jslib`, `Game/Ads/YandexAdsBridge.cs` (+ папка Ads),
+  `Game/Localization/YandexEnvironmentBridge.cs`, гостевой `PlayerId` (SavesYG.PlayerId,
+  PlayerProgress.PlayerId/GuestIdPrefix/Awake; JSON-ключ в старых сейвах остаётся, JsonUtility его
+  игнорирует).
+- **AdScheduler**: Setup(bridge) снесён; rewarded через `YG2.onOpenRewardedAdv/onRewardAdv(string)/
+  onCloseRewardedAdv/onErrorRewardedAdv` (семантика прежняя: награда только при колбэке, грейнт
+  после закрытия); интерстишл — `YG2.InterstitialAdvShow()` (у плагина свой кулдаун interAdvInterval
+  60с + гард nowAdsShow внутри; TryShowInterstitial оставлен — зовётся FillUIFabric при рестарте
+  после провала). Пауза/EventSystem/GameplayStop на время рекламы — ВНУТРИ плагина
+  (autoPauseGame: 1, PauseGameYG сохраняет/восстанавливает timeScale, корректно с паузой меню).
+- **LeaderboardReporter.Report(int)**: `YG2.SetLeaderboard(name, score)`; аноним отсекается явно
+  (лог) + гардом плагина `player.auth`. SetLeaderboard у плагина молчит при enable=false.
+- **LeaderboardMenu**: `YG2.GetLeaderboard(name, 10, 1, "nonePhoto")` → `YG2.onGetLeaderboard(LBData)`
+  (фильтр по technoName, NO_DATA → leaderboard_empty, своя строка по uniqueID == YG2.player.id
+  жирным, добстрока из currentPlayer если вошёл и вне топа). Кнопка ВОЙТИ (AuthButton в префабе,
+  fileID 900000000000000204) видна при `YG2.player.auth == false` → `YG2.OpenAuthDialog()`;
+  обновление по `YG2.onGetSDKData` (плагин сам перечитывает игрока после логина) + ре-запрос
+  лидерборда. Лейбл через LocalizedText/_key auth_login (новый ключ Localization.asset: ВОЙТИ/LOGIN/GİRİŞ).
+- **LocalizationService**: мост языка снесён — `YG2.lang` (модуль Localization, setLanguageMod =
+  EveryGameLaunch по дефолту) + `YG2.onSwitchLang`/`YG2.onGetSDKData`. syncInitSDK: 0 → сейвы
+  приезжают позже Awake, поэтому язык переприменяется в OnSDKData. Фикс семантики волны 4:
+  авто-применённый платформенный язык больше НЕ пишется в сейв (_suppressPersist) — авто-режим
+  живёт до реального ручного выбора.
+- **Префаб LeaderboardMenu**: добавлены AuthButton (Image UISprite оранжевый + Button + текст TMP
+  шрифтом Entries-ассета 616e1cb2 — кириллица) под списком, _authButton в компонент, кнопка
+  добавлена в UIButtonSound._buttons.
+- Не тронуто: YandexConfig (все 4 поля живы), Fill.unity (компоненты AdScheduler/LeaderboardReporter
+  с _config остались как были), LocalizationTable/LocalizedText.
+- **Не проверено компиляцией**: редактор был открыт (Temp/UnityLockfile). При фокусе редактора —
+  перекомпиляция; проверить: нет ошибок, LeaderboardMenu.prefab не missing-script, кнопка видна
+  (аноним) / скрыта (после ВОЙТИ в редакторе — симулируется мгновенно).
+- **Редактору-владельцу (клики, опционально)**: Tools → YG2 → Settings → Rewarded Adv → включить
+  «Skip the next interstitial after reward» (после rewarded не дёргать интерстишл); → Simulation →
+  Leaderboards → добавить сим-запись с technoName = max_level для игры в редакторе (без неё в
+  редакторе список «нет данных» — это норма).
+
+## Волна 39 (2026-09-17): аудит UI — «New Text» на старте, видимость HUD, иерархия канвасов, концепт MainMenu (ТОЛЬКО отчёт, правок нет)
+
+Полный проход по UI: 3 параллельных агента разобрали Game.unity (вся uGUI-иерархия с fileID),
+Fill.unity + FillUI.prefab + UI.prefab + Plate.prefab, оконные префабы + Shop.prefab/Shop.unity.
+Карта проводок — в транскрипте сессии; ниже — суть. **Решения владельца отложены до завтра**
+(вопросы: скоуп A/B/C + снос мёртвого).
+
+### Находки: заглушки/дефолты
+1. **Текст таймера «numpers» (Game.unity, TMP 7349393060338764257) — «New Text» ВИДЕН от загрузки
+   сцены до первого ввода**: TimerUI пишет только по Timer.Ticked, а Ticked стартует после
+   Begin (первый ввод). Корень: у Timer нет наружного Remaining. Фикс: Timer + public float Remaining
+   (fail-fast до Setup), TimerUI + Start() с рендером Remaining (канон GrowthBarView.Start).
+2. LevelBar («New Text») и GrothTierText («New Text») — перезаписываются в 1-м кадре
+   (LevelLabelUI.OnEnable / GrowthBarView.Start), не видны, но дефолты в YAML мусорные.
+3. **LeaderboardMenu: заголовок «Leaderboard!» — статичная заглушка, никем не пишется, не
+   локализована** (код пишет только entries). После волны 38 в префабе появился AuthButton —
+   заголовок при этом не трогался (проверить при фикс-волне). Фикс: LocalizedText + ключ
+   leaderboard_title.
+4. Shop.prefab: баланс «999999» мигает до SDK-колбэка (Initialize перезапишет).
+5. Win/Fail/PauseMenu/Plate/FillProgress — чисто (Initialize/LocalizedText до первого рендера).
+
+### Находки: видимость и иерархия
+6. Весь HUD виден с кадра 0 во время пре-старт паузы (GameplaySessionHandler.Awake → RequestPause).
+   Требование владельца: таймер-бар и бар роста — скрыты до GameStarted. Квота+лейбл уровня
+   предлагались как «превью цели» (остаются видимыми) — подтвердить.
+7. Game: **8 overlay-канвасов** (Joystick, PauseButton, LeadserboardButton(опечатка), ShopButton,
+   Quota, GameTimer, LevelLabelUI(свой канвас), GrothBarCanvas) под GO «UI» (Transform).
+   Зоопарк скейлеров: ConstantPixelSize (Joystick/LevelLabel/GrothBar) vs SWS 1920×1080 (остальные)
+   → элементы разъезжаются по разрешениям. CanBeOff (только лидерборд+шоп) скрывается по
+   GameStarted, PauseButtonCanvas — вне его (пауза живёт в игре — ок). GrothBarCanvas вне ветки HUD.
+   Весь UI инлайн в сцене.
+8. Fill: FillUI.prefab инстанс (PauseButtonCanvas order 0, FillProgress order −10) + EventSystem
+   сцены. FillProgress «0%» ставится в Awake — ок. Scale 0/0/0 у канвасных RectTransform'ов в YAML
+   (FillProgress, PauseButtonCanvas) — не баг: Overlay-канвас сам контролирует свой RectTransform
+   в рантайме (владелец видел процент в плее — волна 34), YAML-шум.
+
+### Находки: битое/мёртвое
+9. **FillUIFabric._yandexConfig == null в рантайме**: поле позже кода — в FillUI.prefab его нет,
+   Fill.unity оверрайдит все поля кроме него → NRE на кнопке «следующий уровень за рекламу»
+   после фейла (`_yandexConfig.NextLevelRewardId`). Awake валидирует 2 из 8 полей. Волна 38
+   YandexConfig/FillUIFabric не трогала — finding жив.
+10. **Мёртвое (0 ссылок, гуиды перепроверены)**: UI.prefab (дубликат инлайн-HUD Game.unity; внутри
+    протухшие поля _deathMenuPrefab/_hudCanvas и «New Text»), DeathMenu.prefab (+missing script
+    69a3c254…), Skills.prefab, LevelButton.prefab (+missing script e8fee9b3…), PauseButtonCanvas.prefab,
+    **MassUI.cs** (ни сцена ни префаб не ссылаются), Test.unity (вне билда, отдельно спросить).
+11. Мусор: Win/Fail префабы несут сериализованное `_pauser: {fileID: 0}` (старая версия, игнорируется);
+    CanvasScaler окон Win/Fail — дефолтный 800×600 ConstantPixelSize (не скейлятся под телефон),
+    у PauseMenu/Leaderboard — 1080×1920 SWS. Разнобой.
+
+### Предложения (текстом владельцу, не начаты)
+- **Волна A** — дефолты+видимость: Timer.Remaining + TimerUI.Start-рендер; GameTimerCanvas +
+  GrothBarCanvas стартуют inactive, GameplayUIFabric показывает по GameStarted (уже слушает
+  GameStarted ради CanBeOff); дефолты «0.0»/«Level 1»/«S» в YAML; leaderboard_title; проводка
+  _yandexConfig в Fill.unity + fail-fast всех полей FillUIFabric.Awake; снос мёртвого (п.10).
+- **Волна B** — реформа иерархии Game: один UICanvas (SWS 1920×1080) с группами-детьми
+  JoystickZone (первый = низший приоритет рейкаста) / Navigation (шоп+лидерборд, скрывается по
+  GameStarted) / SessionHUD (таймер+бар роста, inactive до GameStarted) / HUD (квота+лейбл+пауза).
+  8 канвасов → 1, один скейлер. YAML-правка сцены по гуидам + перепроводка GameplayUIFabric/
+  TimerUI/DI (GameLifetimeScope._quotaUI/_levelLabelUI). UI.prefab — снос (опция: пересобрать префабом).
+- **Волна C** — MainMenu: сцена Menu первой в билде; MenuLifetimeScope (регистрация только
+  LevelLabelUI — PlayerProgress из Root); Play → LoadGame; Shop → LoadShop (возврат через
+  PreviousScene работает из коробки); Leaderboard → спавн LeaderboardMenu (нужен Pauser в сцене
+  меню); Settings = AudioSettingsPanel + LanguageSwitcher прямо на панели; «Уровень N» =
+  LevelLabelUI. LevelTransitor: + _menuScene/LoadMenu; кнопка «домик» в PauseMenu (опциональный
+  action по паттерну _restartButton). Win/Fail не трогать — гринд непрерывный. YG2
+  GameplayStart/Stop и интерстишл — без изменений.
+
+### Открытые вопросы владельцу (задать завтра по требованию)
+1. Скоуп: только A / A+B (рекомендовано) / A+B+C / пока ничего.
+2. Снос мёртвого (п.10): всё / только MassUI.cs / оставить. Test.unity — тоже сносить?
+3. Квота+лейбл уровня до старта — оставить видимыми (превью цели) или скрыть вместе с сессией?
+4. Где ещё давать «в меню» в волне C: только пауза / пауза+фейл / после победы каждые N уровней?

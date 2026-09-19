@@ -16,15 +16,22 @@ namespace ShapeFill
 
         [Header("Flight")]
         [SerializeField, Range(0f, 0.6f)] private float _maxStretch = 0.35f;
+
         [SerializeField, Range(0f, 1f)] private float _stretchSqueeze = 0.5f;
+
         [SerializeField, Range(0f, 0.6f)] private float _arcFraction = 0.25f;
+
         [SerializeField, Min(0f)] private float _minRollSpeed = 240f;
+
         [SerializeField, Min(0f)] private float _maxRollSpeed = 480f;
+
         [SerializeField, Range(0f, 0.99f)] private float _rotationSettleStart = 0.75f;
 
         [Header("Landing")]
         [SerializeField, Range(0f, 0.6f)] private float _landingPunch = 0.18f;
+
         [SerializeField, Min(0.01f)] private float _settleDuration = 0.18f;
+
         [SerializeField, Range(0f, 2f)] private float _settleSquashSpread = 0.6f;
 
         [Header("Grow")]

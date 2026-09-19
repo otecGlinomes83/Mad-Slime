@@ -1,14 +1,13 @@
 using System;
 using Scriptables;
 using UnityEngine;
+using YG;
 
 namespace Game
 {
     public sealed class LeaderboardReporter : MonoBehaviour
     {
         [SerializeField] private YandexConfig _config;
-
-        private YandexAdsBridge _bridge;
 
         private void Awake()
         {
@@ -25,20 +24,15 @@ namespace Game
             }
         }
 
-        public void Setup(YandexAdsBridge bridge)
+        public void Report(int score)
         {
-            _bridge = bridge ?? throw new ArgumentNullException(nameof(bridge));
-        }
-
-        public void Report(int score, string playerExtra)
-        {
-            if (_bridge == null)
+            if (YG2.player.auth == false)
             {
-                throw new InvalidOperationException(
-                    $"{name}: Setup was not called. The bridge must be passed before the first Report.");
+                YG2.Message("Leaderboard: player is not authorized, score is not reported.");
+                return;
             }
 
-            _bridge.SetLeaderboardScore(_config.LeaderboardName, score, playerExtra);
+            YG2.SetLeaderboard(_config.LeaderboardName, score);
         }
     }
 }

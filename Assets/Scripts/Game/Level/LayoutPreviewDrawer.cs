@@ -153,14 +153,17 @@ namespace Game
 
         private void DrawMapBounds()
         {
-            Vector2 mapSize = _levelGenerator.MapSize;
-            float halfX = mapSize.x * 0.5f;
-            float halfZ = mapSize.y * 0.5f;
+            Bounds floorBounds = _levelGenerator.FloorBounds;
 
-            Vector3 cornerA = transform.TransformPoint(new Vector3(-halfX, 0f, -halfZ));
-            Vector3 cornerB = transform.TransformPoint(new Vector3(halfX, 0f, -halfZ));
-            Vector3 cornerC = transform.TransformPoint(new Vector3(halfX, 0f, halfZ));
-            Vector3 cornerD = transform.TransformPoint(new Vector3(-halfX, 0f, halfZ));
+            if (floorBounds.size.x == 0f || floorBounds.size.z == 0f)
+            {
+                return;
+            }
+
+            Vector3 cornerA = new Vector3(floorBounds.min.x, floorBounds.min.y, floorBounds.min.z);
+            Vector3 cornerB = new Vector3(floorBounds.max.x, floorBounds.min.y, floorBounds.min.z);
+            Vector3 cornerC = new Vector3(floorBounds.max.x, floorBounds.min.y, floorBounds.max.z);
+            Vector3 cornerD = new Vector3(floorBounds.min.x, floorBounds.min.y, floorBounds.max.z);
 
             Gizmos.color = _boundsColor;
             Gizmos.DrawLine(cornerA, cornerB);

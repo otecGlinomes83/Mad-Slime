@@ -11,8 +11,11 @@ namespace Collectables
         private const int BufferSize = 64;
 
         [SerializeField] private PlayerTier _tierHolder;
+
         [SerializeField] private CapsuleCollider _playerCollider;
+
         [SerializeField] private LayerMask _layerMask;
+
         [SerializeField] private float _margin = 0.2f;
 
         private readonly Collider[] _buffer = new Collider[BufferSize];

@@ -44,10 +44,6 @@ namespace Game
                 throw new InvalidOperationException(
                     $"{name}: LeaderboardReporter is not assigned. Drag a LeaderboardReporter component into the _leaderboardReporter field.");
             }
-
-            YandexAdsBridge bridge = YandexAdsBridge.Create();
-            _adScheduler.Setup(bridge);
-            _leaderboardReporter.Setup(bridge);
         }
 
         private void OnEnable()
@@ -106,7 +102,7 @@ namespace Game
             }
 
             _progress.Save();
-            _leaderboardReporter.Report(_progress.MaxLevel, _progress.PlayerId);
+            _leaderboardReporter.Report(_progress.MaxLevel);
 
             _adScheduler.ShowInterstitialIfNeeded(_progress.CurrentLevel);
             _levelTransitor.LoadGame();

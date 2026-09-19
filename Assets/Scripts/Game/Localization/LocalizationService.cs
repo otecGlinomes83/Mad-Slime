@@ -11,7 +11,7 @@ namespace Game
         [SerializeField] private LocalizationTable _table;
 
         private PlayerProgress _progress;
-        private YandexEnvironmentBridge _environmentBridge;
+        private bool _suppressPersist;
 
         [Inject]
         public void Construct(PlayerProgress progress)
@@ -28,54 +28,62 @@ namespace Game
             }
 
             Localization.Initialize(_table, YG2.saves.Language);
-
-            _environmentBridge = YandexEnvironmentBridge.Create(transform);
-            _environmentBridge.LangReceived += OnYandexLangReceived;
-            _environmentBridge.PlayerIdReceived += OnYandexPlayerIdReceived;
         }
 
         private void OnEnable()
         {
             Localization.LanguageChanged += OnLanguageChanged;
-            _environmentBridge.RequestLanguage();
-            _environmentBridge.RequestPlayerId();
+            YG2.onGetSDKData += OnSDKData;
+            YG2.onSwitchLang += OnYandexLangChanged;
+            ApplyLanguage();
         }
 
         private void OnDisable()
         {
             Localization.LanguageChanged -= OnLanguageChanged;
-            _environmentBridge.LangReceived -= OnYandexLangReceived;
-            _environmentBridge.PlayerIdReceived -= OnYandexPlayerIdReceived;
+            YG2.onGetSDKData -= OnSDKData;
+            YG2.onSwitchLang -= OnYandexLangChanged;
         }
 
-        private void OnYandexLangReceived(string language)
+        private void ApplyLanguage()
+        {
+            string savedLanguage = YG2.saves.Language;
+
+            if (string.IsNullOrEmpty(savedLanguage) == false)
+            {
+                Localization.SetLanguage(savedLanguage);
+                return;
+            }
+
+            _suppressPersist = true;
+            Localization.SetLanguage(YG2.lang);
+            _suppressPersist = false;
+        }
+
+        private void OnSDKData()
+        {
+            ApplyLanguage();
+        }
+
+        private void OnYandexLangChanged(string language)
         {
             if (string.IsNullOrEmpty(YG2.saves.Language) == false)
             {
                 return;
             }
 
+            _suppressPersist = true;
             Localization.SetLanguage(language);
-        }
-
-        private void OnYandexPlayerIdReceived(string playerId)
-        {
-            if (string.IsNullOrEmpty(playerId))
-            {
-                return;
-            }
-
-            string savedId = _progress.PlayerId;
-
-            if (string.IsNullOrEmpty(savedId) || savedId.StartsWith(PlayerProgress.GuestIdPrefix) == true)
-            {
-                _progress.PlayerId = playerId;
-                _progress.Save();
-            }
+            _suppressPersist = false;
         }
 
         private void OnLanguageChanged()
         {
+            if (_suppressPersist)
+            {
+                return;
+            }
+
             _progress.Language = Localization.CurrentLanguage;
             _progress.Save();
         }

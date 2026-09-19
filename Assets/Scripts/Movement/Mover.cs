@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Movement
 {
-    [RequireComponent(typeof(MoveChecker))]
+    [RequireComponent(typeof(CapsuleCollider))]
     public sealed class Mover : MonoBehaviour
     {
         [SerializeField] private float _defaultSpeed = 4f;
@@ -11,14 +11,16 @@ namespace Movement
 
         private const float MoveThreshold = 0.05f;
 
-        private MoveChecker _moveChecker;
+        private CapsuleCollider _playerCollider;
+        private Bounds _bounds;
+        private bool _hasBounds;
         private Vector3 _currentVelocity;
         private Vector3 _velocityRef;
         private float _currentSpeed;
 
         private void Awake()
         {
-            _moveChecker = GetComponent<MoveChecker>();
+            _playerCollider = GetComponent<CapsuleCollider>();
             _currentSpeed = _defaultSpeed;
         }
 
@@ -45,8 +47,26 @@ namespace Movement
             _smoothTime = smoothTime;
         }
 
+        public void SetBounds(Bounds bounds)
+        {
+            if (bounds.size.x <= 0f || bounds.size.z <= 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bounds),
+                    "Mover.SetBounds requires positive XZ size.");
+            }
+
+            _bounds = bounds;
+            _hasBounds = true;
+        }
+
         public void Move(Vector3 direction)
         {
+            if (_hasBounds == false)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Move is called before SetBounds. Drag the Mover into the _mover field of LevelGenerator.");
+            }
+
             if (direction.sqrMagnitude < MoveThreshold * MoveThreshold)
             {
                 return;
@@ -55,7 +75,7 @@ namespace Movement
             direction = direction.normalized;
             Vector3 targetVelocity = direction * _currentSpeed;
 
-            Vector3 nextVelocity = Vector3.SmoothDamp
+            _currentVelocity = Vector3.SmoothDamp
             (
                 _currentVelocity,
                 targetVelocity,
@@ -63,15 +83,20 @@ namespace Movement
                 _smoothTime
             );
 
-            if (_moveChecker.IsAbleToMove(transform.position, nextVelocity) == false)
-            {
-                _currentVelocity = Vector3.zero;
-                _velocityRef = Vector3.zero;
-                return;
-            }
-
-            _currentVelocity = nextVelocity;
             transform.position += _currentVelocity * Time.deltaTime;
+
+            ClampToBounds();
+        }
+
+        private void ClampToBounds()
+        {
+            float radius = _playerCollider.radius;
+            Vector3 position = transform.position;
+
+            position.x = Mathf.Clamp(position.x, _bounds.min.x + radius, _bounds.max.x - radius);
+            position.z = Mathf.Clamp(position.z, _bounds.min.z + radius, _bounds.max.z - radius);
+
+            transform.position = position;
         }
     }
 }

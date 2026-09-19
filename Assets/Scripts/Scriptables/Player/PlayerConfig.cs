@@ -44,6 +44,29 @@ namespace Scriptables
         [Tooltip("Крутость разгона ease-in. 1 = линейно, 2 = мягкий отрыв и разгон, 3+ = предмет зависает и резко всасывается.")]
         [SerializeField, Range(1f, 5f)] private float _absorbEasePower = 2f;
 
+        [Header("Collect Squash")]
+        [Tooltip("Длительность полного прохода кривой сквоша (с).")]
+        [SerializeField, Min(0.01f)] private float _squashDuration = 0.2f;
+
+        [Tooltip("Кривая сквоша: X — время прохода (0–1), Y — множитель размера (1 = обычный, 0.85 = вжим до 85%). Форму анимации задаёт целиком.")]
+        [SerializeField] private AnimationCurve _squashCurve = new AnimationCurve(
+            new Keyframe(0f, 1f),
+            new Keyframe(0.35f, 0.88f),
+            new Keyframe(1f, 1f));
+
+        [Header("Collect Sound")]
+        [Tooltip("Минимальная пауза между звуками сбора (с).")]
+        [SerializeField, Min(0f)] private float _pickupSoundMinInterval = 0.05f;
+
+        [Tooltip("Максимальная пауза между звуками сбора (с).")]
+        [SerializeField, Min(0f)] private float _pickupSoundMaxInterval = 0.1f;
+
+        [Tooltip("Минимальный питч звука сбора.")]
+        [SerializeField, Range(0.1f, 3f)] private float _pickupSoundMinPitch = 0.95f;
+
+        [Tooltip("Максимальный питч звука сбора.")]
+        [SerializeField, Range(0.1f, 3f)] private float _pickupSoundMaxPitch = 1.15f;
+
         [Header("Growth")]
         [Tooltip("Стартовая масса слайма в начале уровня.")]
         [SerializeField, Min(0)] private int _startMass;
@@ -63,6 +86,12 @@ namespace Scriptables
         public float MaxSpinSpeed => _maxSpinSpeed;
         public float ShrinkStart => _shrinkStart;
         public float AbsorbEasePower => _absorbEasePower;
+        public float SquashDuration => _squashDuration;
+        public AnimationCurve SquashCurve => _squashCurve;
+        public float PickupSoundMinInterval => _pickupSoundMinInterval;
+        public float PickupSoundMaxInterval => _pickupSoundMaxInterval;
+        public float PickupSoundMinPitch => _pickupSoundMinPitch;
+        public float PickupSoundMaxPitch => _pickupSoundMaxPitch;
         public int StartMass => _startMass;
         public IReadOnlyList<PlayerTierThreshold> Thresholds => _thresholds;
     }

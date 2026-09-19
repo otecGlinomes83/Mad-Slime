@@ -1,24 +1,35 @@
 using System;
-using System.Threading;
-using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using Scriptables;
 using UnityEngine;
 
 namespace Player
 {
     public sealed class ScalePunch : MonoBehaviour
     {
+        [SerializeField] private PlayerConfig _config;
         [SerializeField] private Transform _target;
-        [SerializeField, Range(0f, 0.5f)] private float _strength = 0.12f;
-        [SerializeField, Min(0.01f)] private float _duration = 0.2f;
-        [SerializeField, Range(0f, 0.5f)] private float _maxStackedStrength = 0.3f;
+
+        private const float FullProgress = 1f;
 
         private Vector3 _baseScale;
-        private float _currentStrength;
-        private bool _isPunching;
-        private CancellationTokenSource _punchCts;
+        private float _progress;
+        private Tween _squashTween;
 
         private void Awake()
         {
+            if (_config == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PlayerConfig is not assigned. Drag the PlayerConfig asset into the _config field.");
+            }
+
+            if (_config.SquashCurve == null || _config.SquashCurve.length == 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PlayerConfig has an empty SquashCurve. Add at least one keyframe to the Collect Squash curve in PlayerConfig.");
+            }
+
             if (_target == null)
             {
                 throw new InvalidOperationException(
@@ -30,9 +41,9 @@ namespace Player
 
         private void OnDisable()
         {
-            CancelPunch();
+            KillTween();
 
-            _currentStrength = 0f;
+            _progress = 0f;
 
             if (_target != null)
             {
@@ -40,73 +51,44 @@ namespace Player
             }
         }
 
-        public void Punch(float strengthMultiplier)
+        public void Punch()
         {
-            if (strengthMultiplier < 0f)
-            {
-                throw new ArgumentOutOfRangeException(nameof(strengthMultiplier),
-                    "ScalePunch.Punch requires a non-negative strength multiplier.");
-            }
+            KillTween();
 
-            _currentStrength = Mathf.Min(_currentStrength + _strength * strengthMultiplier, _maxStackedStrength);
-
-            if (_isPunching == true)
-            {
-                return;
-            }
-
-            _isPunching = true;
-
-            if (_punchCts != null)
-            {
-                _punchCts.Dispose();
-            }
-
-            _punchCts = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
-            PunchAsync(_punchCts.Token).Forget();
+            _squashTween = DOTween.To(ReadProgress, ApplyProgress, FullProgress, _config.SquashDuration)
+                .SetEase(Ease.Linear)
+                .SetTarget(this)
+                .SetLink(gameObject, LinkBehaviour.KillOnDisable)
+                .OnComplete(OnSquashCompleted);
         }
 
-        private async UniTaskVoid PunchAsync(CancellationToken cancellationToken)
+        private void OnSquashCompleted()
         {
-            float elapsedTime = 0f;
-
-            try
-            {
-                while (elapsedTime < _duration)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    elapsedTime += Time.deltaTime;
-                    float progress = Mathf.Clamp01(elapsedTime / _duration);
-                    float punch = Mathf.Sin(progress * Mathf.PI) * _currentStrength;
-
-                    _target.localScale = _baseScale * (1f + punch);
-
-                    await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                _isPunching = false;
-                return;
-            }
-
-            _currentStrength = 0f;
-            _isPunching = false;
+            _progress = 0f;
             _target.localScale = _baseScale;
         }
 
-        private void CancelPunch()
+        private float ReadProgress()
         {
-            if (_punchCts == null)
+            return _progress;
+        }
+
+        private void ApplyProgress(float progress)
+        {
+            _progress = progress;
+
+            _target.localScale = _baseScale * _config.SquashCurve.Evaluate(progress);
+        }
+
+        private void KillTween()
+        {
+            if (_squashTween == null)
             {
                 return;
             }
 
-            _punchCts.Cancel();
-            _punchCts.Dispose();
-            _punchCts = null;
-            _isPunching = false;
+            _squashTween.Kill();
+            _squashTween = null;
         }
     }
 }

@@ -11,8 +11,11 @@ namespace Collectables
         private const float MinDistanceSqr = 0.0001f;
 
         [SerializeField] private AttractConfig _config;
+
         [SerializeField] private PlayerTier _playerTier;
+
         [SerializeField] private AttractableDetector _detector;
+
         [SerializeField] private ItemDetector _collectDetector;
 
         private void Awake()

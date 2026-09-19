@@ -10,10 +10,15 @@ namespace Audio
     public sealed class FlyingCubeArrivalSound : MonoBehaviour
     {
         [SerializeField] private AudioMixerGroup _group;
+
         [SerializeField] private AudioClip _clip;
+
         [SerializeField] private SoundLimiter _soundLimiter;
+
         [SerializeField, Range(0.5f, 2f)] private float _minPitch = 0.9f;
+
         [SerializeField, Range(0.5f, 2f)] private float _maxPitch = 1.35f;
+
         [SerializeField, Min(0f)] private float _minInterval = 0.03f;
 
         private AudioSource _source;

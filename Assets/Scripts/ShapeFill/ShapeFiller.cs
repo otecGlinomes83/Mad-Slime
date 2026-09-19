@@ -10,16 +10,23 @@ namespace ShapeFill
     public sealed class ShapeFiller : MonoBehaviour
     {
         [SerializeField] private GridBuilder _gridShape;
+
         [SerializeField] private SpriteRenderer _ghostBackground;
+
         [SerializeField] private CubeSpawner _spawner;
 
         [SerializeField, Range(0f, 1f)] private float _ghostOpacity = 0.4f;
+
         [SerializeField] private Vector3 _spawnPosition;
+
         [SerializeField] private Color _borderColor = Color.black;
 
         [SerializeField] private float _spawnInterval = 0.04f;
+
         [SerializeField] private float _flightDuration = 0.5f;
+
         [SerializeField, Min(0.05f)] private float _borderCascadeDuration = 0.5f;
+
         [SerializeField, Min(0f)] private float _fillDelay = 0.55f;
 
         private int _fillIndex;

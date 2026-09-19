@@ -9,7 +9,6 @@ namespace YG
         public int CurrentLevel = 1;
         public int MaxLevel = 1;
         public string Language = "";
-        public string PlayerId = "";
 
         public float musicVolume = 0.5f;
         public float sfxVolume = 0.35f;

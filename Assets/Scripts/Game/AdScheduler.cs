@@ -9,7 +9,6 @@ namespace Game
     {
         [SerializeField] private YandexConfig _config;
 
-        private YandexAdsBridge _bridge;
         private Action _pendingRewardAction;
         private Action _pendingRejectedAction;
         private bool _rewardedReceived;
@@ -29,29 +28,20 @@ namespace Game
             }
         }
 
-        public void Setup(YandexAdsBridge bridge)
-        {
-            _bridge = bridge ?? throw new ArgumentNullException(nameof(bridge));
-        }
-
         private void OnEnable()
         {
-            if (_bridge == null)
-            {
-                return;
-            }
-
-            Subscribe();
+            YG2.onOpenRewardedAdv += OnRewardedOpened;
+            YG2.onRewardAdv += OnRewardReceived;
+            YG2.onCloseRewardedAdv += OnRewardedClosed;
+            YG2.onErrorRewardedAdv += OnRewardedError;
         }
 
         private void OnDisable()
         {
-            if (_bridge == null)
-            {
-                return;
-            }
-
-            Unsubscribe();
+            YG2.onOpenRewardedAdv -= OnRewardedOpened;
+            YG2.onRewardAdv -= OnRewardReceived;
+            YG2.onCloseRewardedAdv -= OnRewardedClosed;
+            YG2.onErrorRewardedAdv -= OnRewardedError;
         }
 
         public void ShowInterstitialIfNeeded(int levelNumber)
@@ -61,17 +51,12 @@ namespace Game
                 return;
             }
 
-            TryShowInterstitial();
+            YG2.InterstitialAdvShow();
         }
 
         public void TryShowInterstitial()
         {
-            if (YG2.nowAdsShow == true)
-            {
-                return;
-            }
-
-            _bridge.ShowInterstitial();
+            YG2.InterstitialAdvShow();
         }
 
         public void ShowDoubleReward(Action onGranted)
@@ -100,36 +85,20 @@ namespace Game
             _rewardedReceived = false;
             _pendingRewardAction = onGranted;
             _pendingRejectedAction = onRejected;
-            _bridge.ShowRewarded(rewardId);
+            YG2.RewardedAdvShow(rewardId);
         }
 
-        private void Subscribe()
-        {
-            _bridge.RewardedOpened += OnRewardedOpened;
-            _bridge.RewardedReceived += OnRewardedReceived;
-            _bridge.RewardedClosed += OnRewardedClosed;
-            _bridge.RewardedError += OnRewardedError;
-        }
-
-        private void Unsubscribe()
-        {
-            _bridge.RewardedOpened -= OnRewardedOpened;
-            _bridge.RewardedReceived -= OnRewardedReceived;
-            _bridge.RewardedClosed -= OnRewardedClosed;
-            _bridge.RewardedError -= OnRewardedError;
-        }
-
-        private void OnRewardedOpened(string rewardId)
+        private void OnRewardedOpened()
         {
             _rewardedReceived = false;
         }
 
-        private void OnRewardedReceived(string rewardId)
+        private void OnRewardReceived(string rewardId)
         {
             _rewardedReceived = true;
         }
 
-        private void OnRewardedClosed(string rewardId)
+        private void OnRewardedClosed()
         {
             Action action = _pendingRewardAction;
             Action rejected = _pendingRejectedAction;
@@ -146,7 +115,7 @@ namespace Game
             }
         }
 
-        private void OnRewardedError(string rewardId)
+        private void OnRewardedError()
         {
             Action rejected = _pendingRejectedAction;
             _pendingRewardAction = null;

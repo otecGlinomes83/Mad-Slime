@@ -9,7 +9,9 @@ namespace ShapeFill
         private const int BorderThickness = 2;
 
         [SerializeField] private Texture2D _shapeTexture;
+
         [SerializeField] private float _cellSize = 0.5f;
+
         [SerializeField] private int _gridResolution = 64;
 
         private int _gridWidth;

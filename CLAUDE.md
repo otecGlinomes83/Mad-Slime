@@ -61,7 +61,7 @@ Health/         — (пусто в v2: система урона вырезан�
 Interfaces/     — IAttractable, IMassHolder
 Item/           — Item (пул: Initialize/Collect/Shutdown)
 Levels/         — (пусто: карта уровней вырезана)
-Movement/       — Mover (transform-движение + MoveChecker), Rotator
+Movement/       — Mover (transform-движение + кламп по Bounds пола), Rotator
 Player/         — Player, PlayerTier, LevelScaler, TierResolver, SkinApplier
 PlayerInput/    — PlayerInputReader + PlayerInputActions (автоген, не править руками)
 Quota/          — QuotaEntry (остаток квоты — в Game/Level/LevelProgress)
@@ -86,9 +86,9 @@ UI/             — HUD/ (QuotaUI, GrowthBarView, MassUI, TimerUI, LevelLabelUI)
 
 ## Известные факты / открытые вопросы (2026-09-10)
 
-- **Стены:** MoveChecker-маска = только слой «Collectable»; борта уровня на Default, и Mover двигает transform в обход физики — игрок проходит сквозь них. Это осознанно НЕ менялось — решение за владельцем (нужны слой в маске + блок не-attractable хитов в `IsAbleToMove`).
-- **Реклама/лидерборд:** defines `RewardedAdv_yg`/`InterstitialAdv_yg`/`Leaderboard_yg` не объявлены → в сборке `AdScheduler`/`LeaderboardReporter` — no-op. Проверить настройки YG2-hub.
-- **Локализации нет** (платформа мультиязычная).
+- **Границы карты:** `MoveChecker` снесён (волна 35). `LevelGenerator` в Awake берёт `Bounds` пола (`_floorRenderer.bounds`) и пушит в `Mover.SetBounds`; `Mover.Move` клампит XZ с запасом на радиус капсулы. Размер карты задаётся только расстановкой пола в сцене, никакой `_mapSize` больше нет. Слой Wall и коллайдеры бортов теперь никем не читаются (мёртвые) — снос за владельцем.
+- **Реклама/лидерборд/авторизация/язык:** официальные модули YG2 установлены (Adv, Leaderboards, Localization; defines `InterstitialAdv_yg`/`RewardedAdv_yg`/`Leaderboards_yg`/`Localization_yg`). Кастомный jslib-мост снесён (волна 38, см. `AI_NOTES.md`) — только нативный API `YG2.*` (`RewardedAdvShow`, `InterstitialAdvShow`, `SetLeaderboard`, `GetLeaderboard`, `lang`, `player.auth`, `OpenAuthDialog`). Пауза на рекламе — внутри плагина (`autoPauseGame`). Запись очков — только авторизованным (требование Яндекса), кнопка входа в `LeaderboardMenu`.
+- **Локализация:** своя таблица `Scriptables/Localization/Localization.asset` (RU/EN/TR) через `Localization.Get`/`LocalizedText`; язык платформы приходит из `YG2.lang`, ручной выбор (кнопка в паузе) пишется в сейв и приоритетен.
 - `UniTask` в manifest.json без пина коммита — риск плавающего API.
 - Тех. долг/вопросы — в `AI_CONTEXT.md` и `AI_NOTES.md`.
 

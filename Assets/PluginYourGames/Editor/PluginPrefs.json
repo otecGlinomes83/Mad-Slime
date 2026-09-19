@@ -2,7 +2,7 @@
     "stringPrefs": [
         {
             "key": "SelectModuleToggle_YG2",
-            "value": "Authorization;Storage"
+            "value": "Authorization;Storage;InterstitialAdv;RewardedAdv;Localization;Leaderboards;PluginYG2"
         }
     ],
     "intPrefs": [

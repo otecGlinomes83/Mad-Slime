@@ -15,13 +15,13 @@ MonoBehaviour:
   _entries:
   - _tier: 0
     _scale: 13
-    _mass: 1
+    _mass: 2
   - _tier: 1
     _scale: 40
     _mass: 500
   - _tier: 2
     _scale: 70
-    _mass: 1000
+    _mass: 2000
   - _tier: 3
     _scale: 100
     _mass: 10000

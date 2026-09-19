@@ -94,7 +94,11 @@ namespace Player
 
         private void OnItemCollected(Items.Item item)
         {
-            _collectPunch.Punch(1f);
+            if (item.Definition.Tier == _playerTier.CurrentTier)
+            {
+                _collectPunch.Punch();
+            }
+
             _levelProgress.RegisterCollected(item.Definition);
             _playerTier.Add(_tierTable.Get(item.Definition.Tier).Mass);
         }

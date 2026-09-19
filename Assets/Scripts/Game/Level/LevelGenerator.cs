@@ -14,7 +14,7 @@ namespace Game
     {
         [SerializeField] private Transform _itemsRoot;
         [SerializeField] private MeshRenderer _floorRenderer;
-        [SerializeField] private Vector2 _mapSize = new Vector2(30f, 30f);
+        [SerializeField] private Movement.Mover _mover;
         [SerializeField] private Collectables.Collector _collector;
 
         private readonly Dictionary<Item, ItemDefinition> _assignedVariants = new Dictionary<Item, ItemDefinition>();
@@ -30,8 +30,20 @@ namespace Game
         private QuotaGenerator _quotaGenerator;
         private TierTable _tierTable;
         private LayoutsLibrary _layoutsLibrary;
+        private Bounds _floorBounds;
 
-        public Vector2 MapSize => _mapSize;
+        public Bounds FloorBounds
+        {
+            get
+            {
+                if (_floorRenderer == null)
+                {
+                    return default;
+                }
+
+                return _floorRenderer.bounds;
+            }
+        }
 
         [Inject]
         public void Construct(LevelConfigResolver configResolver, PlayerProgress progress, LevelProgress levelProgress,
@@ -58,6 +70,18 @@ namespace Game
             {
                 throw new InvalidOperationException(
                     $"{name}: dependencies were not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
+            }
+
+            if (_floorRenderer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: FloorRenderer is not assigned. Drag a MeshRenderer into the _floorRenderer field.");
+            }
+
+            if (_mover == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Mover is not assigned. Drag a Mover into the _mover field.");
             }
 
             Generate();
@@ -88,6 +112,9 @@ namespace Game
         {
             LevelConfig config = _configResolver.GetConfigFor(_progress.CurrentLevel);
             LayoutSet layout = PickLayout();
+
+            _floorBounds = _floorRenderer.bounds;
+            _mover.SetBounds(_floorBounds);
 
             ApplyTheme(config);
             _spawnedCounts.Clear();
@@ -364,14 +391,11 @@ namespace Game
 
         private Vector3 ClampToMap(Vector3 localPosition, float margin)
         {
-            float halfX = _mapSize.x * 0.5f - margin;
-            float halfZ = _mapSize.y * 0.5f - margin;
+            Vector3 worldPosition = transform.TransformPoint(localPosition);
+            worldPosition.x = Mathf.Clamp(worldPosition.x, _floorBounds.min.x + margin, _floorBounds.max.x - margin);
+            worldPosition.z = Mathf.Clamp(worldPosition.z, _floorBounds.min.z + margin, _floorBounds.max.z - margin);
 
-            Vector3 clamped = localPosition;
-            clamped.x = Mathf.Clamp(clamped.x, -halfX, halfX);
-            clamped.z = Mathf.Clamp(clamped.z, -halfZ, halfZ);
-
-            return transform.TransformPoint(clamped);
+            return worldPosition;
         }
     }
 }

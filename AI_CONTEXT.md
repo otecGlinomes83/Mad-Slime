@@ -51,14 +51,14 @@ HUD: `QuotaUI` (plates по LevelProgress.QuotaChanged + Populate в Start), `Gr
 
 ## Стены, реклама, лидерборд (волна 2, 2026-09-10)
 
-1. **Стены починены**: слой `Wall` (8), борта «Floor» в Game.unity переведены на него, маска `MoveChecker` = Collectable|Wall (m_Bits 264), `IsAbleToMove` блокирует любые не-attractable хиты. Игрок не выходит за границы; мелкие предметы по-прежнему проходимы.
-2. **Реклама работает через собственный мост** (`Assets/Plugins/MadSlimeYandex.jslib` + `Game/Ads/YandexAdsBridge.cs`): в плагине YG2 v2.0092 нет модулей Adv/Leaderboard, их defines включать НЕЛЬЗЯ (сломают компиляцию). Rewarded даёт награду только при колбэке onRewarded; интерстишл — раз в `_interstitialEveryLevels` уровней (AdsConfig). Флаги `YG2.nowRewardAdv/nowInterAdv` синхронизируются для плагиновых GamePause/GameplayAPI. В редакторе — симуляция.
-3. **Лидерборд по максимальному уровню**: в сейвах новое поле `MaxLevel` (дефолт 1, совместимо со старыми сейвами), репортится через `LeaderboardReporter` при каждом выигранном fill'е. **Владельцу: создать в Яндекс.Консоли лидерборд с id `max_level` (тип «максимальный»)** — иначе репорт будет писать ошибку в консоль (нефатально).
+1. **Границы карты (переработано в волне 35, 2026-09-17)**: физика границ снесена — `MoveChecker` удалён целиком (его attractable-ветка всегда была true, блокировал только борта). Источник правды о размере карты — расставленный пол: `LevelGenerator` в Awake захватывает `_floorRenderer.bounds` и пушит в `Mover.SetBounds`; `Mover.Move` после шага клампит XZ в bounds ± радиус капсулы (радиус растёт с тиром — LevelScaler). `_mapSize` снесено, `ClampToMap` предметов переведён в мировые координаты. Слой Wall (8) и коллайдеры бортов больше никем не читаются — мёртвые, снос за владельцем. Бонус: скольжение вдоль борта вместо глушения всей скорости.
+2. **Реклама/лидерборд/авторизация/язык — нативный API YG2 (волна 38, 2026-09-17)**: модули Adv/Leaderboards/Localization установлены, кастомный jslib-мост (MadSlimeYandex.jslib, YandexAdsBridge, YandexEnvironmentBridge, гостевой PlayerId) снесён. Rewarded — `YG2.RewardedAdvShow(id)` + события плагина, награда только при колбэке; интерстишл — `YG2.InterstitialAdvShow()` (кулдаун плагина + правило «раз в N уровней» из YandexConfig); пауза/GameplayStop на рекламе — внутри плагина. Лидерборд `max_level` (поле сейва `MaxLevel`) — `YG2.SetLeaderboard`, запись только у авторизованных (требование Яндекса); в окне LeaderboardMenu кнопка входа (`YG2.OpenAuthDialog`), аноним видит топ-10. Язык платформы — `YG2.lang`, ручной выбор в сейве приоритетен, авто-язык в сейв не пишется. В редакторе всё симулируется плагином.
+3. **Владельцу в Яндекс.Консоли**: лидерборд с id `max_level` (тип «максимальный», опубликованный) — без него чтение/запись дают 404; rewarded-блоки с именами `DoubleReward` и `NextLevel` (как в YandexConfig).
 4. Проверить в редакторе: игрок останавливается у бортов; прогнать WebGL-сборку на Яндексе (реклама/лидерборд работают только в билде).
 
 ## Оставшиеся факты (не чинилось)
 
-- **Локализации нет** (строки RU захардкожены), платформа мультиязычная.
+- **Локализация**: таблица `Localization.asset` (RU/EN/TR) + `LocalizedText`/`Localization.Get`; язык платформы из `YG2.lang`, ручной выбор приоритетен (с волны 38).
 - **UniTask без пина коммита** в manifest.json — риск смены API при re-clone.
 - `PlayerInputActions.cs` — автоген (не править); дубль-мутант `Assets/Settings/Input/PlayerInputActions.inputactions` — НЕ рабочий файл.
 - LevelTransitor в Shop.prefab хранит старые ключи полей (`_nextScene/_levelsScene`) — Unity их игнорирует, магазину поля не нужны.
