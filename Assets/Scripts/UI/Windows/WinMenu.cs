@@ -11,16 +11,24 @@ namespace UI
         [SerializeField] private TMP_Text _moneyCount;
         [SerializeField] private Button _nextLevelButton;
         [SerializeField] private Button _doubleRewardButton;
+        [SerializeField] private Button _menuButton;
 
         private Action _nextLevelAction;
         private Action _doubleRewardAction;
+        private Action _menuAction;
 
-        public void Initialize(int moneyCount, Pauser pauser, Action nextLevelAction, Action doubleRewardAction)
+        public void Initialize(int moneyCount, Pauser pauser, Action nextLevelAction, Action doubleRewardAction, Action menuAction)
         {
             if (_nextLevelButton == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: NextLevelButton is not assigned. Drag a Button into the _nextLevelButton field.");
+            }
+
+            if (_menuButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: MenuButton is not assigned. Drag a Button into the _menuButton field.");
             }
 
             if (_moneyCount == null)
@@ -31,9 +39,12 @@ namespace UI
 
             _nextLevelAction = nextLevelAction;
             _doubleRewardAction = doubleRewardAction;
+            _menuAction = menuAction;
 
             _nextLevelButton.onClick.RemoveListener(RequestNextLevel);
             _nextLevelButton.onClick.AddListener(RequestNextLevel);
+            _menuButton.onClick.RemoveListener(RequestMenu);
+            _menuButton.onClick.AddListener(RequestMenu);
 
             if (_doubleRewardButton != null)
             {
@@ -59,6 +70,7 @@ namespace UI
         {
             _nextLevelButton?.onClick.RemoveListener(RequestNextLevel);
             _doubleRewardButton?.onClick.RemoveListener(RequestDoubleReward);
+            _menuButton?.onClick.RemoveListener(RequestMenu);
 
             base.OnDisable();
         }
@@ -73,6 +85,12 @@ namespace UI
         {
             _doubleRewardAction?.Invoke();
             _doubleRewardButton.gameObject.SetActive(false);
+        }
+
+        private void RequestMenu()
+        {
+            _menuAction?.Invoke();
+            Close();
         }
 
         private void Close()

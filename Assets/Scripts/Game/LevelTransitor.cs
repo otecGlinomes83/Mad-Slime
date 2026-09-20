@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using YG;
 
@@ -9,23 +13,25 @@ namespace Game
         [SerializeField] private string _gameScene;
         [SerializeField] private string _fillScene;
         [SerializeField] private string _shopScene;
+        [SerializeField] private string _menuScene;
 
         public bool IsHasShop => string.IsNullOrEmpty(_shopScene) == false;
+        public bool IsHasMenu => string.IsNullOrEmpty(_menuScene) == false;
 
         public void Restart()
         {
             string currentSceneName = SceneManager.GetActiveScene().name;
-            Load(currentSceneName, false);
+            Load(currentSceneName);
         }
 
         public void LoadGame()
         {
-            Load(_gameScene, false);
+            Load(_gameScene);
         }
 
         public void LoadFill()
         {
-            Load(_fillScene, false);
+            Load(_fillScene);
         }
 
         public void LoadShop()
@@ -35,7 +41,24 @@ namespace Game
                 return;
             }
 
-            Load(_shopScene, true);
+            YG2.saves.PreviousScene = SceneManager.GetActiveScene().name;
+
+            if (YG2.isSDKEnabled == true)
+            {
+                YG2.SaveProgress();
+            }
+
+            Load(_shopScene);
+        }
+
+        public void LoadMenu()
+        {
+            if (IsHasMenu == false)
+            {
+                return;
+            }
+
+            Load(_menuScene);
         }
 
         public void LoadScene(string sceneName)
@@ -45,28 +68,14 @@ namespace Game
                 return;
             }
 
-            Load(sceneName, false);
+            Load(sceneName);
         }
 
-        private void Load(string targetScene, bool savePreviousScene)
+        private void Load(string targetScene)
         {
             if (string.IsNullOrEmpty(targetScene))
             {
-                Debug.LogError(
-                    $"[Scene] {SceneManager.GetActiveScene().name} tried to load EMPTY scene name. Fill the scene name fields on the LevelTransitor component.");
                 return;
-            }
-
-            Debug.Log($"[Scene] {SceneManager.GetActiveScene().name} -> {targetScene}");
-
-            if (savePreviousScene == true)
-            {
-                YG2.saves.PreviousScene = SceneManager.GetActiveScene().name;
-
-                if (YG2.isSDKEnabled == true)
-                {
-                    YG2.SaveProgress();
-                }
             }
 
             SceneManager.LoadScene(targetScene);

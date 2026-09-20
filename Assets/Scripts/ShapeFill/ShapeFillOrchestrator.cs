@@ -35,7 +35,12 @@ namespace ShapeFill
         {
             _shapeFiller.Initialize();
             _shapeFiller.BuildShape();
-            _shapeFiller.Fill(_fillCounter.CalculateFill(_gridBuilder.FillCells.Count));
+
+            int maxCubes = _gridBuilder.FillCells.Count;
+
+            _shapeFiller.Fill(
+                _fillCounter.CalculateQuotaFill(maxCubes),
+                _fillCounter.CalculateBonusFill(maxCubes));
         }
 
         private void OnFillCompleted(float fillPercent)

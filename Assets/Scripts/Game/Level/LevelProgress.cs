@@ -12,7 +12,6 @@ namespace Game
 
         private int _collectedQuotaCount;
         private int _collectedDefaultCount;
-        private int _defaultCountDivisor = 4;
         private int _totalQuotaTarget;
         private bool _isQuotaCompleted;
 
@@ -33,20 +32,18 @@ namespace Game
                     return 0f;
                 }
 
-                int extraWeight = _collectedDefaultCount / Mathf.Max(1, _defaultCountDivisor);
-                float percent = (float)(_collectedQuotaCount + extraWeight) / _totalQuotaTarget;
+                float percent = (float)(_collectedQuotaCount + _collectedDefaultCount) / _totalQuotaTarget;
 
                 return Mathf.Clamp01(percent);
             }
         }
 
-        public void Reset(IReadOnlyList<QuotaEntry> quota, int defaultCountDivisor)
+        public void Reset(IReadOnlyList<QuotaEntry> quota)
         {
             _quota.Clear();
             _collectedQuotaCount = 0;
             _collectedDefaultCount = 0;
             _isQuotaCompleted = false;
-            _defaultCountDivisor = Mathf.Max(1, defaultCountDivisor);
             _totalQuotaTarget = 0;
 
             for (int i = 0; i < quota.Count; i++)

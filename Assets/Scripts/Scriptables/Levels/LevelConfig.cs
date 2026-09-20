@@ -38,9 +38,6 @@ namespace Scriptables
         [Tooltip("Сколько типов квоты может принадлежать одному тиру.")]
         [SerializeField] private int _quotaMaxSameTier = 2;
 
-        [Tooltip("Вес не-квотных предметов в заливке: делитель, на который делится их количество. 4 = четыре посторонних предмета дают 1 предмет квоты.")]
-        [SerializeField] private int _defaultCountDivisor = 4;
-
         public LevelTheme Theme => _theme;
         public PropSet PropSet => _propSet;
         public ItemTier MinTier => (ItemTier)Mathf.Clamp(_minTier, 0, (int)ItemTier.Boss);
@@ -51,6 +48,5 @@ namespace Scriptables
         public int QuotaTargetMin => Mathf.Max(1, _quotaTargetMin);
         public int QuotaTargetMax => Mathf.Max(QuotaTargetMin, _quotaTargetMax);
         public int QuotaMaxSameTier => Mathf.Max(1, _quotaMaxSameTier);
-        public int DefaultCountDivisor => _defaultCountDivisor;
     }
 }

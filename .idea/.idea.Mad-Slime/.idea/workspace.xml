@@ -14,32 +14,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32b22157-d486-449b-b3c9-7cbcbfbd921f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/AI_CONTEXT.md" beforeDir="false" afterPath="$PROJECT_DIR$/AI_CONTEXT.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI_NOTES.md" beforeDir="false" afterPath="$PROJECT_DIR$/AI_NOTES.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI_CONTEXT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI_NOTES.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI_PLAN.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-SemiBold SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-SemiBold SDF.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FillUI.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/FillUI.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Menu/DeathMenu.prefab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Menu/DeathMenu.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Menu/LeaderboardMenu.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Menu/LeaderboardMenu.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Menu/PauseMenu.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Menu/PauseMenu.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/ResultMenu/WinMenu.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/ResultMenu/WinMenu.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Skins/Shop.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Skins/Shop.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/UI.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Prefabs/UI/UI.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Fill.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Fill.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Game.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scriptables/Levels/Table/TableLevelConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scriptables/Levels/Table/TableLevelConfig.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scriptables/Player/PlayerConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scriptables/Player/PlayerConfig.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scriptables/Tiers/TierTable.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scriptables/Tiers/TierTable.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Audio/FlyingCubeArrivalSound.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Audio/FlyingCubeArrivalSound.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Audio/PlayerPickupSound.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Audio/PlayerPickupSound.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Collectables/ItemAttractor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Collectables/ItemAttractor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Collectables/ItemGhostToggler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Collectables/ItemGhostToggler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/Level/LayoutPreviewDrawer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/Level/LayoutPreviewDrawer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scriptables/Localization/Localization.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scriptables/Localization/Localization.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/FillSessionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/FillSessionHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/GameplaySessionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/GameplaySessionHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/Level/LevelGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/Level/LevelGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Movement/MoveChecker.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Movement/MoveChecker.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Movement/Mover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Movement/Mover.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Player/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Player/Player.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Player/ScalePunch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Player/ScalePunch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Scriptables/Player/PlayerConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Scriptables/Player/PlayerConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/FillFinale.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/FillFinale.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/FlyingCube.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/FlyingCube.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/GridBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/GridBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/Level/LevelProgress.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/Level/LevelProgress.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/LevelTransitor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/LevelTransitor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Scriptables/Levels/LevelConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Scriptables/Levels/LevelConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/FillCounter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/FillCounter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/ShapeFillOrchestrator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/ShapeFillOrchestrator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/ShapeFiller.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ShapeFill/ShapeFiller.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CLAUDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/CLAUDE.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/HUD/LevelLabelUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/HUD/LevelLabelUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Spawners/FillUIFabric.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Spawners/FillUIFabric.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Spawners/GameplayUIFabric.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Spawners/GameplayUIFabric.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Windows/FailMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Windows/FailMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Windows/PauseMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Windows/PauseMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Windows/WinMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Windows/WinMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,8 +65,74 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/DI/MenuLifetimeScope.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Game/Wallet.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Scriptables/Skills/SkillsConfig.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.4537595776585803" />
+      <entry key="MS500" value="1.8538177143912449" />
+      <entry key="S2" value="1.96126282148616" />
+      <entry key="S5" value="1.9920781906939447" />
+      <entry key="S10" value="2.1174763407915203" />
+      <entry key="S30" value="3.3318644294881143" />
+      <entry key="S60" value="6.565773219641346" />
+      <entry key="M2" value="13.023228049876879" />
+      <entry key="M5" value="23.668905560179727" />
+      <entry key="M10" value="30.61331156538443" />
+      <entry key="M15" value="35.157513124515106" />
+      <entry key="M30" value="48.27310865591693" />
+      <entry key="H1" value="67.38604625024121" />
+      <entry key="H2" value="85.16788519382256" />
+      <entry key="H4" value="97.51252865038593" />
+      <entry key="D1" value="110.16703075409593" />
+      <entry key="W1" value="112.58863432024248" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="1.0072976075165366E-21" />
+      <entry key="MS500" value="6.318755638680279E-5" />
+      <entry key="S2" value="0.08915816039081376" />
+      <entry key="S5" value="0.3846189003035461" />
+      <entry key="S10" value="0.7069581717953558" />
+      <entry key="S30" value="1.633574209959764" />
+      <entry key="S60" value="2.853483575094723" />
+      <entry key="M2" value="5.29187899856616" />
+      <entry key="M5" value="9.809954305243092" />
+      <entry key="M10" value="12.98169070604397" />
+      <entry key="M15" value="14.998171700974504" />
+      <entry key="M30" value="20.124179865038737" />
+      <entry key="H1" value="26.88476271955824" />
+      <entry key="H2" value="32.88746098891205" />
+      <entry key="H4" value="36.962600659052875" />
+      <entry key="D1" value="41.08389594528586" />
+      <entry key="W1" value="41.867111864355884" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.48971014879361446" />
+      <entry key="MS500" value="0.8696890979998207" />
+      <entry key="S2" value="1.2632053144013315" />
+      <entry key="S5" value="1.8955212801344756" />
+      <entry key="S10" value="2.528654290832897" />
+      <entry key="S30" value="4.811845167483461" />
+      <entry key="S60" value="9.276130275882597" />
+      <entry key="M2" value="18.16526287902895" />
+      <entry key="M5" value="33.35945855158062" />
+      <entry key="M10" value="43.5154759068312" />
+      <entry key="M15" value="50.09572126547303" />
+      <entry key="M30" value="68.36044008695096" />
+      <entry key="H1" value="94.24844566560536" />
+      <entry key="H2" value="118.04249098125025" />
+      <entry key="H4" value="134.46814271996575" />
+      <entry key="D1" value="151.24966882710663" />
+      <entry key="W1" value="154.45556396167018" />
+    </decayedShown>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -75,6 +151,7 @@
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;Notification.DisplayName-DoNotAsk-WindowsDefender&quot;: &quot;Microsoft Defender may affect IDE&quot;,
     &quot;Notification.DoNotAsk-WindowsDefender&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
@@ -82,20 +159,23 @@
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
     &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;MadSlimeV2&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="D:\3. files\Unity\Editor\2022.3.62f2\Editor\Unity.exe" />
+      <option name="EXE_PATH" value="$USER_HOME$/Unity/Hub/Editor/2022.3.62f2/Editor/unityhub-unity-editor-2022.3.62f2" />
       <option name="PROGRAM_PARAMETERS" value="-projectPath &quot;D:\3. files\unity repos\Mad-Slime&quot; -debugCodeOptimization" />
       <option name="WORKING_DIRECTORY" value="D:\3. files\unity repos\Mad-Slime" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -105,7 +185,7 @@
       <method v="2" />
     </configuration>
     <configuration name="Unit Tests (batch mode)" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="D:\3. files\Unity\Editor\2022.3.62f2\Editor\Unity.exe" />
+      <option name="EXE_PATH" value="$USER_HOME$/Unity/Hub/Editor/2022.3.62f2/Editor/unityhub-unity-editor-2022.3.62f2" />
       <option name="PROGRAM_PARAMETERS" value="-runTests -batchmode -projectPath &quot;D:\3. files\unity repos\Mad-Slime&quot; -testResults Logs/results.xml -logFile Logs/Editor.log -testPlatform EditMode -debugCodeOptimization" />
       <option name="WORKING_DIRECTORY" value="D:\3. files\unity repos\Mad-Slime" />
       <option name="PASS_PARENT_ENVS" value="1" />

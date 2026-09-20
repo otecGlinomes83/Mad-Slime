@@ -9,27 +9,23 @@ namespace UI
     public sealed class PauseMenu : BaseWindow
     {
         [SerializeField] private Button _closeButton;
-        [SerializeField] private Button _restartButton;
+        [SerializeField] private Button _menuButton;
         [SerializeField] private AudioSettingsPanel _settingsPanel;
+        
+        private Action _menuAction;
 
-        private Action _restartAction;
-
-        public void Initialize(Pauser pauser, AudioMixerController audioMixerController, bool showRestart, Action restartAction)
+        public void Initialize(Pauser pauser, AudioMixerController audioMixerController, bool isMenuButtonNeeded,
+            Action menuAction = null)
         {
             Initialize(pauser);
             _closeButton.onClick.AddListener(Close);
+            _menuButton.gameObject.SetActive(false);
 
-            _restartAction = restartAction;
-
-            if (_restartButton != null)
+            if (isMenuButtonNeeded && menuAction != null)
             {
-                bool canShow = showRestart == true && restartAction != null;
-                _restartButton.gameObject.SetActive(canShow);
-
-                if (canShow == true)
-                {
-                    _restartButton.onClick.AddListener(OnRestartClicked);
-                }
+                _menuButton.gameObject.SetActive(true);
+                _menuButton.onClick.AddListener(OnMenuClicked);
+                _menuAction = menuAction;
             }
 
             _settingsPanel.Initialize(audioMixerController);
@@ -38,13 +34,13 @@ namespace UI
         protected override void OnDisable()
         {
             _closeButton?.onClick.RemoveListener(Close);
-            _restartButton?.onClick.RemoveListener(OnRestartClicked);
+            _menuButton?.onClick.RemoveListener(OnMenuClicked);
             base.OnDisable();
         }
 
-        private void OnRestartClicked()
+        private void OnMenuClicked()
         {
-            _restartAction?.Invoke();
+            _menuAction?.Invoke();
             Close();
         }
 

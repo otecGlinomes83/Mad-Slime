@@ -13,11 +13,27 @@ namespace ShapeFill
             _levelProgress = levelProgress;
         }
 
-        public int CalculateFill(int maxCubes)
+        public int CalculateQuotaFill(int maxCubes)
         {
-            float percent = _levelProgress.FillPercent;
+            return Mathf.Clamp(Mathf.RoundToInt(GetQuotaPercent() * maxCubes), 0, maxCubes);
+        }
 
-            return Mathf.Clamp(Mathf.RoundToInt(percent * maxCubes), 0, maxCubes);
+        public int CalculateBonusFill(int maxCubes)
+        {
+            int quotaCount = CalculateQuotaFill(maxCubes);
+            int totalCount = Mathf.Clamp(Mathf.RoundToInt(_levelProgress.FillPercent * maxCubes), 0, maxCubes);
+
+            return Mathf.Max(0, totalCount - quotaCount);
+        }
+
+        private float GetQuotaPercent()
+        {
+            if (_levelProgress.TotalQuotaTarget <= 0)
+            {
+                return 0f;
+            }
+
+            return Mathf.Clamp01(_levelProgress.CollectedQuotaCount / (float)_levelProgress.TotalQuotaTarget);
         }
     }
 }

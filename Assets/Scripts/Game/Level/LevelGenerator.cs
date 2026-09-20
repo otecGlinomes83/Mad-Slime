@@ -123,7 +123,7 @@ namespace Game
             Physics.SyncTransforms();
 
             List<QuotaEntry> quota = _quotaGenerator.Generate(_spawnedCounts, config);
-            _levelProgress.Reset(quota, config.DefaultCountDivisor);
+            _levelProgress.Reset(quota);
 
             Debug.Log(
                 $"{name}: level {_progress.CurrentLevel} from '{config.name}', layout '{layout.name}': spawned {GetTotalSpawnedCount()} items, quota types {quota.Count}.");

@@ -4,6 +4,8 @@ using Scriptables;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
+using VContainer.Unity;
 
 namespace UI
 {
@@ -24,10 +26,23 @@ namespace UI
 
         [SerializeField] private Pauser _pauser;
 
+        private IObjectResolver _resolver;
         private int _lastRewardAmount;
+
+        [Inject]
+        public void Construct(IObjectResolver resolver)
+        {
+            _resolver = resolver;
+        }
 
         private void Awake()
         {
+            if (_resolver == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Resolver was not injected. FillLifetimeScope must be the first object in the scene hierarchy.");
+            }
+
             if (_sessionHandler == null)
             {
                 throw new InvalidOperationException(
@@ -61,22 +76,24 @@ namespace UI
         {
             _lastRewardAmount = rewardAmount;
 
-            WinMenu winMenu = Instantiate(_winMenuPrefab);
+            WinMenu winMenu = _resolver.Instantiate(_winMenuPrefab);
             winMenu.Initialize(
                 rewardAmount,
                 _pauser,
                 _sessionHandler.LoadNextLevel,
-                RequestDoubleReward);
+                RequestDoubleReward,
+                _sessionHandler.ExitToMenuAfterWin);
         }
 
         private void OnGameFailed(int rewardAmount)
         {
-            FailMenu failMenu = Instantiate(_failMenuPrefab);
+            FailMenu failMenu = _resolver.Instantiate(_failMenuPrefab);
             failMenu.Initialize(
                 rewardAmount,
                 _pauser,
                 RequestNextLevelForRewarded,
-                OnRestartFromFail);
+                OnRestartFromFail,
+                _sessionHandler.ExitToMenu);
         }
 
         private void RequestNextLevelForRewarded()
@@ -104,8 +121,10 @@ namespace UI
 
         private void OnPauseButtonClick()
         {
-            PauseMenu pauseMenu = Instantiate(_pauseMenuPrefab);
-            pauseMenu.Initialize(_pauser, _mixerController, showRestart: false, restartAction: null);
+            PauseMenu pauseMenu = _resolver.Instantiate(_pauseMenuPrefab);
+            pauseMenu.Initialize(
+                _pauser,
+                _mixerController, false);
         }
     }
 }

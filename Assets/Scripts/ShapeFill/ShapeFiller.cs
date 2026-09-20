@@ -9,6 +9,15 @@ namespace ShapeFill
     [RequireComponent(typeof(CubeSpawner))]
     public sealed class ShapeFiller : MonoBehaviour
     {
+        private enum BoostStage
+        {
+            Normal,
+            Boosted,
+            Instant
+        }
+
+        private const float NominalFrameDuration = 1f / 60f;
+
         [SerializeField] private GridBuilder _gridShape;
 
         [SerializeField] private SpriteRenderer _ghostBackground;
@@ -25,6 +34,27 @@ namespace ShapeFill
 
         [SerializeField] private float _flightDuration = 0.5f;
 
+        [Tooltip("Интервал спавна кубов после первого тапа (с). Меньше = кубы вылетают чаще")]
+        [SerializeField, Min(0.001f)] private float _boostedSpawnInterval = 0.015f;
+
+        [Tooltip("Время полёта куба до ячейки после первого тапа (с). Меньше = резче долетает")]
+        [SerializeField, Min(0.01f)] private float _boostedFlightDuration = 0.25f;
+
+        [Tooltip("Общее окно вылета всех оставшихся кубов после второго тапа (с). «Моментально» условно: 0.25 = короткий залп")]
+        [SerializeField, Min(0.05f)] private float _instantFillDuration = 0.25f;
+
+        [Tooltip("Время полёта каждого куба при досыпании (с). Финал наступит после долёта последнего куба")]
+        [SerializeField, Min(0.01f)] private float _instantFlightDuration = 0.1f;
+
+        [Tooltip("Пауза после долёта квотной волны перед бонусной (с). 0 = без паузы")]
+        [SerializeField, Min(0f)] private float _bonusWaveDelay = 0.35f;
+
+        [Tooltip("Цвет, в который подмешиваются бонусные кубы (заливка сверх квоты)")]
+        [SerializeField] private Color _bonusTintColor = Color.black;
+
+        [Tooltip("Сила подмешивания цвета бонусных кубов. 0 = не отличаются от квотных, 1 = полностью цвета оттенка")]
+        [SerializeField, Range(0f, 1f)] private float _bonusTintStrength = 0.3f;
+
         [SerializeField, Min(0.05f)] private float _borderCascadeDuration = 0.5f;
 
         [SerializeField, Min(0f)] private float _fillDelay = 0.55f;
@@ -32,8 +62,11 @@ namespace ShapeFill
         private int _fillIndex;
         private int _arrivedCount;
         private int _currentTarget;
+        private int _quotaTarget;
         private bool _isFilling;
+        private BoostStage _boostStage;
         private Sprite _ghostSprite;
+        private CancellationTokenSource _fillCts;
         private CancellationTokenSource _borderCts;
 
         public int RequiredFillCount => _gridShape.FillCells.Count;
@@ -62,6 +95,7 @@ namespace ShapeFill
 
         private void OnDisable()
         {
+            CancelFillLoop();
             CancelBorderCascade();
         }
 
@@ -92,9 +126,10 @@ namespace ShapeFill
             _fillIndex = 0;
         }
 
-        public void Fill(int cubesCount)
+        public void Fill(int quotaCubesCount, int bonusCubesCount)
         {
-            int target = Mathf.Clamp(cubesCount, 0, RequiredFillCount);
+            int quota = Mathf.Clamp(quotaCubesCount, 0, RequiredFillCount);
+            int target = Mathf.Clamp(quota + Mathf.Max(0, bonusCubesCount), quota, RequiredFillCount);
 
             if (target <= 0)
             {
@@ -105,14 +140,59 @@ namespace ShapeFill
             StopFill();
             _fillIndex = 0;
             _arrivedCount = 0;
+            _quotaTarget = quota;
             _currentTarget = target;
+            _boostStage = BoostStage.Normal;
             _isFilling = true;
-            FillAsync(this.GetCancellationTokenOnDestroy(), target).Forget();
+
+            _fillCts = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+
+            FillAsync(_fillCts.Token, target).Forget();
         }
 
         public void StopFill()
         {
             _isFilling = false;
+            CancelFillLoop();
+        }
+
+        public void Accelerate()
+        {
+            if (_isFilling == false)
+            {
+                return;
+            }
+
+            if (_boostStage == BoostStage.Normal)
+            {
+                _boostStage = BoostStage.Boosted;
+                return;
+            }
+
+            if (_boostStage == BoostStage.Boosted)
+            {
+                StartInstantCompletion();
+            }
+        }
+
+        private void StartInstantCompletion()
+        {
+            _boostStage = BoostStage.Instant;
+            CancelFillLoop();
+
+            CompleteInstantlyAsync(this.GetCancellationTokenOnDestroy()).Forget();
+        }
+
+        private void CancelFillLoop()
+        {
+            if (_fillCts == null)
+            {
+                return;
+            }
+
+            _fillCts.Cancel();
+            _fillCts.Dispose();
+            _fillCts = null;
         }
 
         private void PlaceGhost()
@@ -213,17 +293,17 @@ namespace ShapeFill
 
                 while (_fillIndex < target)
                 {
-                    if (_isFilling == false)
-                    {
-                        break;
-                    }
-
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    SpawnFillCube(fillCells[_fillIndex], target);
+                    if (IsBonusWaveStart(target) == true)
+                    {
+                        await UniTask.Delay((int)(_bonusWaveDelay * 1000f), cancellationToken: cancellationToken);
+                    }
+
+                    SpawnFillCube(fillCells[_fillIndex], GetFlightDuration());
                     _fillIndex++;
 
-                    await UniTask.Delay((int)(_spawnInterval * 1000f), cancellationToken: cancellationToken);
+                    await UniTask.Delay(GetSpawnDelayMilliseconds(), cancellationToken: cancellationToken);
                 }
             }
             catch (OperationCanceledException)
@@ -234,18 +314,117 @@ namespace ShapeFill
             _isFilling = false;
         }
 
-        private void SpawnFillCube(Vector2Int cell, int target)
+        private float GetSpawnInterval()
+        {
+            if (_boostStage == BoostStage.Boosted)
+            {
+                return _boostedSpawnInterval;
+            }
+
+            return _spawnInterval;
+        }
+
+        private int GetSpawnDelayMilliseconds()
+        {
+            return Mathf.CeilToInt(GetSpawnInterval() * 1000f);
+        }
+
+        private float GetFlightDuration()
+        {
+            if (_boostStage == BoostStage.Boosted)
+            {
+                return _boostedFlightDuration;
+            }
+
+            return _flightDuration;
+        }
+
+        private bool IsBonusWaveStart(int target)
+        {
+            return _fillIndex == _quotaTarget && _quotaTarget > 0 && _quotaTarget < target;
+        }
+
+        private Color GetCubeColor(Vector2Int cell)
+        {
+            Color color = _gridShape.GetPixelColor(cell.x, cell.y);
+
+            if (_fillIndex >= _quotaTarget)
+            {
+                color = Color.Lerp(color, _bonusTintColor, _bonusTintStrength);
+            }
+
+            return color;
+        }
+
+        private async UniTaskVoid CompleteInstantlyAsync(CancellationToken cancellationToken)
+        {
+            IReadOnlyList<Vector2Int> fillCells = _gridShape.FillCells;
+
+            if (_fillIndex >= _currentTarget)
+            {
+                _isFilling = false;
+                return;
+            }
+
+            try
+            {
+                while (_fillIndex < _currentTarget)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    int cubesPerFrame = GetInstantCubesPerFrame(_currentTarget - _fillIndex);
+
+                    for (int i = 0; i < cubesPerFrame && _fillIndex < _currentTarget; i++)
+                    {
+                        SpawnFillCube(fillCells[_fillIndex], _instantFlightDuration);
+                        _fillIndex++;
+                    }
+
+                    if (_fillIndex < _currentTarget)
+                    {
+                        await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+            _isFilling = false;
+        }
+
+        private int GetInstantCubesPerFrame(int remaining)
+        {
+            float frameDuration = Time.deltaTime;
+
+            if (frameDuration <= 0f)
+            {
+                frameDuration = NominalFrameDuration;
+            }
+
+            int framesInWindow = Mathf.CeilToInt(_instantFillDuration / frameDuration);
+
+            if (framesInWindow <= 1)
+            {
+                return remaining;
+            }
+
+            return Mathf.CeilToInt((float)remaining / framesInWindow);
+        }
+
+        private void SpawnFillCube(Vector2Int cell, float flightDuration)
         {
             FlyingCube fillCube = _spawner.Spawn(
                 _spawnPosition,
                 UnityEngine.Random.rotation,
                 _gridShape.CellSize,
-                _gridShape.GetPixelColor(cell.x, cell.y)
+                GetCubeColor(cell)
             );
 
             fillCube.Arrived += OnCubeArrived;
 
-            fillCube.Launch(_gridShape.GridToWorld(cell.x, cell.y), _flightDuration);
+            fillCube.Launch(_gridShape.GridToWorld(cell.x, cell.y), flightDuration);
         }
 
         private void OnCubeArrived(FlyingCube cube)

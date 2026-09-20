@@ -1,17 +1,8 @@
 {
-    "intExample": 5,
-    "strExample": "Hello!",
-    "boolExample": [
-        false,
-        false,
-        false,
-        false
-    ],
-    "idSave": 207,
+    "idSave": 211,
     "CurrentLevel": 19,
     "MaxLevel": 19,
     "Language": "ru",
-    "PlayerId": "Guest-895556",
     "musicVolume": 0.02542438544332981,
     "sfxVolume": 0.06295081973075867,
     "Balance": 774,
@@ -20,5 +11,5 @@
         0,
         1
     ],
-    "PreviousScene": "Game"
+    "PreviousScene": "Menu"
 }

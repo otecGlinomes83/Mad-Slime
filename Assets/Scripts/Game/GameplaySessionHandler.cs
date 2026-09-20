@@ -113,7 +113,24 @@ namespace Game
 
         public void Restart()
         {
+            StopGameplay();
             _levelTransitor.Restart();
+        }
+
+        public void ExitToMenu()
+        {
+            StopGameplay();
+            _levelTransitor.LoadMenu();
+        }
+
+        private void StopGameplay()
+        {
+            if (_isStarted == false)
+            {
+                return;
+            }
+
+            YG2.GameplayStop();
         }
 
         private void Begin()

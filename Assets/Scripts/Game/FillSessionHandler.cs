@@ -130,6 +130,27 @@ namespace Game
             _levelTransitor.LoadGame();
         }
 
+        public void ExitToMenuAfterWin()
+        {
+            _progress.CurrentLevel++;
+
+            if (_progress.CurrentLevel > _progress.MaxLevel)
+            {
+                _progress.MaxLevel = _progress.CurrentLevel;
+            }
+
+            _progress.Save();
+            _leaderboardReporter.Report(_progress.MaxLevel);
+
+            _levelTransitor.LoadMenu();
+        }
+
+        public void ExitToMenu()
+        {
+            _progress.Save();
+            _levelTransitor.LoadMenu();
+        }
+
         private void OnFillCompleted(float percent)
         {
             if (percent >= 1f)

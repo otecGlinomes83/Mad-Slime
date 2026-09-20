@@ -77,3 +77,19 @@ MonoBehaviour:
     _ru: "ВОЙТИ"
     _en: "LOGIN"
     _tr: "GİRİŞ"
+  - _key: to_menu
+    _ru: "В МЕНЮ"
+    _en: "MENU"
+    _tr: "MENÜ"
+  - _key: menu_play
+    _ru: "ИГРАТЬ"
+    _en: "PLAY"
+    _tr: "OYNA"
+  - _key: menu_shop
+    _ru: "МАГАЗИН"
+    _en: "SHOP"
+    _tr: "MAĞAZA"
+  - _key: menu_leaderboard
+    _ru: "РЕЙТИНГ"
+    _en: "LEADERBOARD"
+    _tr: "SIRALAMA"

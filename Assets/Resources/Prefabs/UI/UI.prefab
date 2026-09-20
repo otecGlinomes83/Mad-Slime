@@ -1172,8 +1172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6444badc9bc7aae4592860efff6a4cd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _group: {fileID: -538627474310297102, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}
-  _clip: {fileID: 8300000, guid: 153016562482ba2468eff8e842418c30, type: 3}
+  _sfxClip: {fileID: 11400000, guid: d2ed719930b13b41b820abb33e340ce0, type: 2}
   _buttons:
   - {fileID: 8401897691493738771}
   - {fileID: 376058525767751884}
@@ -1309,17 +1308,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sessionHandler: {fileID: 0}
   _mixerController: {fileID: 0}
-  _hudCanvas: {fileID: 2644478113467517911}
-  _buttonsCanvas: {fileID: 3589929992302629945}
   _pauseButton: {fileID: 8401897691493738771}
-  _leaderboardButton: {fileID: 376058525767751884}
-  _shopButton: {fileID: 7228528999950768913}
-  _levelsButton: {fileID: 3708193967639773064}
   _pauseMenuPrefab: {fileID: 5859713677950448305, guid: 07369f9036a55ff4e8db9b912f0290c3, type: 3}
-  _leaderboardMenuPrefab: {fileID: 8220248474289526730, guid: 65a7a973925ce514787b4a5cea516689, type: 3}
-  _deathMenuPrefab: {fileID: 6513671189925833338, guid: 70371295f32057d438a8451bd0841f3f, type: 3}
   _pauser: {fileID: 0}
-  _levelTransitor: {fileID: 0}
 --- !u!114 &2979847688143477972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1332,7 +1323,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cb2bf3139b742c78aa75c8be007ec12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _quotaTracker: {fileID: 0}
   _platePrefab: {fileID: 5153659263850431688, guid: b9f1b5ac829400249bec41ad444cdb6c, type: 3}
   _container: {fileID: 7584304066477981041}
   _verticalSpacing: 125
