@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using Audio;
+using Cysharp.Threading.Tasks;
 using Scriptables;
 using ShapeFill;
 using System;
@@ -17,7 +18,9 @@ namespace Game
         [SerializeField] private AdScheduler _adScheduler;
         [SerializeField] private LeaderboardReporter _leaderboardReporter;
         [SerializeField, Min(0f)] private float _winDelay = 1.3f;
+        [SerializeField] private SfxClip _musicTrack;
 
+        private MusicPlayer _musicPlayer;
         private PlayerProgress _progress;
         private LevelConfigResolver _configResolver;
 
@@ -25,14 +28,27 @@ namespace Game
         public event Action<int> Failed;
 
         [Inject]
-        public void Construct(PlayerProgress progress, LevelConfigResolver configResolver)
+        public void Construct(PlayerProgress progress, LevelConfigResolver configResolver, MusicPlayer musicPlayer)
         {
             _progress = progress;
             _configResolver = configResolver;
+            _musicPlayer = musicPlayer;
         }
 
         private void Awake()
         {
+            if (_musicPlayer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: MusicPlayer was not injected. FillLifetimeScope must be the first object in the scene hierarchy.");
+            }
+
+            if (_musicTrack == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Music track is not assigned. Drag a SfxClip asset into the _musicTrack field.");
+            }
+
             if (_adScheduler == null)
             {
                 throw new InvalidOperationException(
@@ -54,6 +70,7 @@ namespace Game
 
         private void Start()
         {
+            _musicPlayer.Play(_musicTrack);
             ApplyTheme();
             _fillOrchestrator.StartFill();
         }

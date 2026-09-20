@@ -1,3 +1,4 @@
+using Audio;
 using Game;
 using Scriptables;
 using System;
@@ -14,6 +15,8 @@ namespace DI
         [SerializeField] private LocalizationService _localizationService;
         [SerializeField] private TierTable _tierTable;
         [SerializeField] private LayoutsLibrary _layoutsLibrary;
+        [SerializeField] private SfxPlayer _sfxPlayer;
+        [SerializeField] private MusicPlayer _musicPlayer;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -47,8 +50,22 @@ namespace DI
                     "ProjectLifetimeScope: LayoutsLibrary is not assigned. Open the ProjectScope prefab and drag the LayoutsLibrary asset into the Layouts Library field.");
             }
 
+            if (_sfxPlayer == null)
+            {
+                throw new InvalidOperationException(
+                    "ProjectLifetimeScope: SfxPlayer is not assigned. Open the ProjectScope prefab and drag the SfxPlayer component into the Sfx Player field.");
+            }
+
+            if (_musicPlayer == null)
+            {
+                throw new InvalidOperationException(
+                    "ProjectLifetimeScope: MusicPlayer is not assigned. Open the ProjectScope prefab and drag the MusicPlayer component into the Music Player field.");
+            }
+
             builder.RegisterComponent(_playerProgress);
             builder.RegisterComponent(_localizationService);
+            builder.RegisterComponent(_sfxPlayer);
+            builder.RegisterComponent(_musicPlayer);
             builder.RegisterInstance(_levelsCatalog);
             builder.RegisterInstance(_tierTable);
             builder.RegisterInstance(_layoutsLibrary);

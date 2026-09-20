@@ -1,3 +1,4 @@
+using Audio;
 using Game;
 using ShapeFill;
 using System;
@@ -26,6 +27,17 @@ namespace DI
             builder.RegisterComponent(_fillCounter);
             builder.RegisterComponent(_fillUIFabric);
             builder.RegisterComponent(_wallet);
+
+            builder.RegisterComponentInHierarchy<FlyingCubeArrivalSound>();
+
+            builder.RegisterBuildCallback(
+                container =>
+                {
+                    foreach (UIButtonSound sound in FindObjectsOfType<UIButtonSound>(true))
+                    {
+                        container.Inject(sound);
+                    }
+                });
         }
 
         private void ValidateAssigned(object dependency, string fieldName)

@@ -1,26 +1,37 @@
+using Scriptables;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.UI;
+using VContainer;
 
 namespace Audio
 {
-    [RequireComponent(typeof(AudioSource))]
     public sealed class UIButtonSound : MonoBehaviour
     {
-        [SerializeField] private AudioMixerGroup _group;
-        [SerializeField] private AudioClip _clip;
-        [SerializeField]private  List<Button> _buttons;
+        [SerializeField] private SfxClip _sfxClip;
+        [SerializeField] private List<Button> _buttons;
 
-        private AudioSource _source;
+        private SfxPlayer _sfxPlayer;
+
+        [Inject]
+        public void Construct(SfxPlayer sfxPlayer)
+        {
+            _sfxPlayer = sfxPlayer;
+        }
 
         private void Awake()
         {
-            if (_clip == null)
+            if (_sfxPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: AudioClip is not assigned.");
+                    $"{name}: SfxPlayer was not injected. The object must be spawned through the DI container (IObjectResolver.Instantiate) or its scene scope must be the first object in the scene hierarchy.");
+            }
+
+            if (_sfxClip == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SfxClip is not assigned. Drag a SfxClip asset into the _sfxClip field.");
             }
 
             if (_buttons.Count <= 0)
@@ -28,10 +39,6 @@ namespace Audio
                 throw new InvalidOperationException(
                     $"{name}: buttons is empty");
             }
-
-            _source = GetComponent<AudioSource>();
-            _source.outputAudioMixerGroup = _group;
-            _source.playOnAwake = false;
         }
 
         private void OnEnable()
@@ -55,10 +62,10 @@ namespace Audio
             _buttons.Add(button);
             button.onClick.AddListener(PlayClick);
         }
-        
+
         private void PlayClick()
         {
-            _source.PlayOneShot(_clip);
+            _sfxPlayer.Play(_sfxClip);
         }
     }
 }

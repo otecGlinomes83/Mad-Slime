@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 1404378510113026445}
   - component: {fileID: 7674206806047798816}
   - component: {fileID: 900000000000000020}
+  - component: {fileID: 6330714499415004578}
+  - component: {fileID: 117379798107625886}
   m_Layer: 0
   m_Name: ProjectScope
   m_TagString: Untagged
@@ -55,6 +57,8 @@ MonoBehaviour:
   _localizationService: {fileID: 900000000000000020}
   _tierTable: {fileID: 11400000, guid: 2b8d4f6a9c1e4d7b8f0a3c5e7d9b1f24, type: 2}
   _layoutsLibrary: {fileID: 11400000, guid: 6d4a8c2e7f1b493a8c0d5e7f9a1b3c64, type: 2}
+  _sfxPlayer: {fileID: 6330714499415004578}
+  _musicPlayer: {fileID: 117379798107625886}
 --- !u!114 &7674206806047798816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80,3 +84,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _table: {fileID: 11400000, guid: 4b9e7c2a1d6f48b39e0c5a7d2f8b6c13, type: 2}
+--- !u!114 &6330714499415004578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5567698310828948670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 775393c64f2c681199d7b91161e99683, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sfxGroup: {fileID: -538627474310297102, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}
+  _sourceCount: 7
+--- !u!114 &117379798107625886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5567698310828948670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8ef9424c38d3036db84c52e64a09816, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _musicGroup: {fileID: 2934108869881073407, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}

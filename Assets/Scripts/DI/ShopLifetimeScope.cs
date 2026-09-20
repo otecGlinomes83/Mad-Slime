@@ -1,8 +1,10 @@
+using Audio;
 using Game;
+using Skins;
+using System;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using System;
 
 namespace DI
 {
@@ -19,6 +21,18 @@ namespace DI
             }
 
             builder.RegisterComponent(_wallet);
+
+            builder.RegisterComponentInHierarchy<Shop>();
+            builder.RegisterComponentInHierarchy<ShopItemViewFactory>();
+
+            builder.RegisterBuildCallback(
+                container =>
+                {
+                    foreach (UIButtonSound sound in FindObjectsOfType<UIButtonSound>(true))
+                    {
+                        container.Inject(sound);
+                    }
+                });
         }
     }
 }

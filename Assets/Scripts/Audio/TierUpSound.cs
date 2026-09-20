@@ -1,31 +1,44 @@
-using System;
 using Player;
+using Scriptables;
 using Skills;
+using System;
 using UnityEngine;
-using UnityEngine.Audio;
+using VContainer;
 
 namespace Audio
 {
     public sealed class TierUpSound : MonoBehaviour
     {
         [SerializeField] private PlayerTier _playerTier;
-        [SerializeField] private AudioMixerGroup _group;
-        [SerializeField] private AudioClip _clip;
-        [SerializeField, Range(0f, 1f)] private float _volume = 1f;
+        [SerializeField] private SfxClip _sfxClip;
 
-        private AudioSource _source;
+        private SfxPlayer _sfxPlayer;
+
+        [Inject]
+        public void Construct(SfxPlayer sfxPlayer)
+        {
+            _sfxPlayer = sfxPlayer;
+        }
 
         private void Awake()
         {
+            if (_sfxPlayer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SfxPlayer was not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
+            }
+
             if (_playerTier == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: PlayerTier is not assigned. Drag a PlayerTier component into the _playerTier field.");
             }
 
-            _source = gameObject.AddComponent<AudioSource>();
-            _source.outputAudioMixerGroup = _group;
-            _source.playOnAwake = false;
+            if (_sfxClip == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SfxClip is not assigned. Drag a SfxClip asset into the _sfxClip field.");
+            }
         }
 
         private void OnEnable()
@@ -45,12 +58,7 @@ namespace Audio
                 return;
             }
 
-            if (_clip == null)
-            {
-                return;
-            }
-
-            _source.PlayOneShot(_clip, _volume);
+            _sfxPlayer.Play(_sfxClip);
         }
     }
 }

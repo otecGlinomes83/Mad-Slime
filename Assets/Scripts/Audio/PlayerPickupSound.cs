@@ -1,27 +1,36 @@
 using Collectables;
-using Items;
 using Scriptables;
 using System;
 using UnityEngine;
-using UnityEngine.Audio;
+using VContainer;
 using Random = UnityEngine.Random;
 
 namespace Audio
 {
-    [RequireComponent(typeof(AudioSource))]
     public sealed class PlayerPickupSound : MonoBehaviour
     {
         [SerializeField] private PlayerConfig _config;
         [SerializeField] private Collector _collector;
         [SerializeField] private SoundLimiter _soundLimiter;
-        [SerializeField] private AudioMixerGroup _group;
-        [SerializeField] private AudioClip _clip;
+        [SerializeField] private SfxClip _sfxClip;
 
-        private AudioSource _source;
+        private SfxPlayer _sfxPlayer;
         private float _nextAllowedSoundTime;
+
+        [Inject]
+        public void Construct(SfxPlayer sfxPlayer)
+        {
+            _sfxPlayer = sfxPlayer;
+        }
 
         private void Awake()
         {
+            if (_sfxPlayer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SfxPlayer was not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
+            }
+
             if (_config == null)
             {
                 throw new InvalidOperationException(
@@ -40,10 +49,10 @@ namespace Audio
                     $"{name}: SoundLimiter is not assigned. Drag a SoundLimiter component into the _soundLimiter field.");
             }
 
-            if (_clip == null)
+            if (_sfxClip == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: AudioClip is not assigned.");
+                    $"{name}: SfxClip is not assigned. Drag a SfxClip asset into the _sfxClip field.");
             }
 
             if (_config.PickupSoundMinInterval > _config.PickupSoundMaxInterval)
@@ -57,10 +66,6 @@ namespace Audio
                 throw new InvalidOperationException(
                     $"{name}: PlayerConfig has PickupSoundMinPitch {_config.PickupSoundMinPitch} greater than PickupSoundMaxPitch {_config.PickupSoundMaxPitch}.");
             }
-
-            _source = GetComponent<AudioSource>();
-            _source.outputAudioMixerGroup = _group;
-            _source.playOnAwake = false;
         }
 
         private void OnEnable()
@@ -84,7 +89,7 @@ namespace Audio
                 _config.PickupSoundMinInterval,
                 _config.PickupSoundMaxInterval);
 
-            if (_soundLimiter.TryPlay(_clip.length) == false)
+            if (_soundLimiter.TryPlay(_sfxClip.Clip.length) == false)
             {
                 return;
             }
@@ -94,8 +99,8 @@ namespace Audio
 
         private void PlayPop()
         {
-            _source.pitch = Random.Range(_config.PickupSoundMinPitch, _config.PickupSoundMaxPitch);
-            _source.PlayOneShot(_clip);
+            float pitch = Random.Range(_config.PickupSoundMinPitch, _config.PickupSoundMaxPitch);
+            _sfxPlayer.Play(_sfxClip.Clip, _sfxClip.Volume, pitch);
         }
     }
 }

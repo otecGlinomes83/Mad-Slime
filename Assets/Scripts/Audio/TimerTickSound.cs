@@ -1,40 +1,45 @@
-using System;
 using Game;
+using Scriptables;
+using System;
 using UnityEngine;
-using UnityEngine.Audio;
+using VContainer;
 
 namespace Audio
 {
-    [RequireComponent(typeof(AudioSource))]
     public sealed class TimerTickSound : MonoBehaviour
     {
         [SerializeField] private Timer _timer;
-        [SerializeField] private AudioMixerGroup _group;
-        [SerializeField] private AudioClip _clip;
+        [SerializeField] private SfxClip _sfxClip;
         [SerializeField] private float _thresholdSeconds = 20f;
 
-        private AudioSource _source;
+        private SfxPlayer _sfxPlayer;
         private bool _isTickingActive;
+
+        [Inject]
+        public void Construct(SfxPlayer sfxPlayer)
+        {
+            _sfxPlayer = sfxPlayer;
+        }
 
         private void Awake()
         {
+            if (_sfxPlayer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SfxPlayer was not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
+            }
+
             if (_timer == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: Timer is not assigned.");
             }
 
-            if (_clip == null)
+            if (_sfxClip == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: AudioClip is not assigned.");
+                    $"{name}: SfxClip is not assigned. Drag a SfxClip asset into the _sfxClip field.");
             }
-
-            _source = GetComponent<AudioSource>();
-            _source.outputAudioMixerGroup = _group;
-            _source.playOnAwake = false;
-            _source.loop = true;
-            _source.clip = _clip;
         }
 
         private void OnEnable()
@@ -47,6 +52,12 @@ namespace Audio
         {
             _timer.Ticked -= OnTimerTicked;
             _timer.Finished -= OnTimerFinished;
+
+            if (_isTickingActive == true)
+            {
+                _sfxPlayer.StopLoop();
+                _isTickingActive = false;
+            }
         }
 
         private void OnTimerTicked(float remaining)
@@ -55,7 +66,7 @@ namespace Audio
             {
                 if (_isTickingActive == false)
                 {
-                    _source.Play();
+                    _sfxPlayer.StartLoop(_sfxClip);
                     _isTickingActive = true;
                 }
             }
@@ -63,7 +74,7 @@ namespace Audio
             {
                 if (_isTickingActive == true)
                 {
-                    _source.Stop();
+                    _sfxPlayer.StopLoop();
                     _isTickingActive = false;
                 }
             }
@@ -73,7 +84,7 @@ namespace Audio
         {
             if (_isTickingActive == true)
             {
-                _source.Stop();
+                _sfxPlayer.StopLoop();
                 _isTickingActive = false;
             }
         }

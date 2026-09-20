@@ -1,36 +1,42 @@
-using System;
+using Scriptables;
 using ShapeFill;
+using System;
 using UnityEngine;
-using UnityEngine.Audio;
+using VContainer;
 
 namespace Audio
 {
-    [RequireComponent(typeof(AudioSource))]
     [RequireComponent(typeof(ShapeFiller))]
     public sealed class FlyingCubeArrivalSound : MonoBehaviour
     {
-        [SerializeField] private AudioMixerGroup _group;
-
-        [SerializeField] private AudioClip _clip;
-
+        [SerializeField] private SfxClip _sfxClip;
         [SerializeField] private SoundLimiter _soundLimiter;
-
         [SerializeField, Range(0.5f, 2f)] private float _minPitch = 0.9f;
-
         [SerializeField, Range(0.5f, 2f)] private float _maxPitch = 1.35f;
-
         [SerializeField, Min(0f)] private float _minInterval = 0.03f;
 
-        private AudioSource _source;
+        private SfxPlayer _sfxPlayer;
         private ShapeFiller _filler;
         private float _lastPlayedTime;
 
+        [Inject]
+        public void Construct(SfxPlayer sfxPlayer)
+        {
+            _sfxPlayer = sfxPlayer;
+        }
+
         private void Awake()
         {
-            if (_clip == null)
+            if (_sfxPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: AudioClip is not assigned.");
+                    $"{name}: SfxPlayer was not injected. FillLifetimeScope must be the first object in the scene hierarchy.");
+            }
+
+            if (_sfxClip == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SfxClip is not assigned. Drag a SfxClip asset into the _sfxClip field.");
             }
 
             if (_soundLimiter == null)
@@ -44,11 +50,6 @@ namespace Audio
                 throw new InvalidOperationException(
                     $"{name}: MinPitch {_minPitch} is greater than MaxPitch {_maxPitch}.");
             }
-
-            _source = GetComponent<AudioSource>();
-            _source.outputAudioMixerGroup = _group;
-            _source.playOnAwake = false;
-            _source.spatialBlend = 0f;
 
             _filler = GetComponent<ShapeFiller>();
         }
@@ -70,14 +71,15 @@ namespace Audio
                 return;
             }
 
-            if (_soundLimiter.TryPlay(_clip.length) == false)
+            if (_soundLimiter.TryPlay(_sfxClip.Clip.length) == false)
             {
                 return;
             }
 
             _lastPlayedTime = Time.time;
-            _source.pitch = Mathf.Lerp(_minPitch, _maxPitch, _filler.FillFraction);
-            _source.PlayOneShot(_clip);
+
+            float pitch = Mathf.Lerp(_minPitch, _maxPitch, _filler.FillFraction);
+            _sfxPlayer.Play(_sfxClip.Clip, _sfxClip.Volume, pitch);
         }
     }
 }

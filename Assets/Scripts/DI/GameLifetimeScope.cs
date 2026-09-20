@@ -1,3 +1,4 @@
+using Audio;
 using CameraSystem;
 using Game;
 using Player;
@@ -46,6 +47,11 @@ namespace DI
             builder.RegisterComponent(_cameraImpulse);
             builder.RegisterComponent(_skinApplier);
             builder.RegisterComponent(_levelLabelUI);
+
+            builder.RegisterComponentInHierarchy<GameplayUIFabric>();
+            builder.RegisterComponentInHierarchy<PlayerPickupSound>();
+            builder.RegisterComponentInHierarchy<TierUpSound>();
+            builder.RegisterComponentInHierarchy<TimerTickSound>();
         }
 
         private void ValidateAssigned(object dependency, string fieldName)

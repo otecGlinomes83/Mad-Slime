@@ -1,7 +1,10 @@
+using Audio;
+using Scriptables;
 using System;
 using Game;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 using YG;
 
 namespace Skins
@@ -14,14 +17,34 @@ namespace Skins
         [SerializeField] private ShopContent _shopContent;
         [SerializeField] private ShopPanel _shopPanel;
         [SerializeField] private Button _closeButton;
+        [SerializeField] private SfxClip _musicTrack;
 
         private LevelTransitor _levelTransitor;
         private ModelPlacer _placer;
+        private MusicPlayer _musicPlayer;
         private Wallet _wallet;
         private bool _isInitialized;
 
+        [Inject]
+        public void Construct(MusicPlayer musicPlayer)
+        {
+            _musicPlayer = musicPlayer;
+        }
+
         private void Awake()
         {
+            if (_musicPlayer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: MusicPlayer was not injected. ShopLifetimeScope must be the first object in the scene hierarchy.");
+            }
+
+            if (_musicTrack == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Music track is not assigned. Drag a SfxClip asset into the _musicTrack field.");
+            }
+
             if (_shopContent == null)
             {
                 throw new InvalidOperationException(
@@ -56,6 +79,11 @@ namespace Skins
             {
                 InitializeShop();
             }
+        }
+
+        private void Start()
+        {
+            _musicPlayer.Play(_musicTrack);
         }
 
         private void OnDisable()
