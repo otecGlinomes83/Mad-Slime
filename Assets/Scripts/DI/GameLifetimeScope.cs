@@ -10,6 +10,7 @@ using System;
 using UI;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 using PlayerComponent = Player.Player;
 
 namespace DI
@@ -44,7 +45,6 @@ namespace DI
         [SerializeField] private ItemAttractor _itemAttractor;
         [SerializeField] private ItemGhostToggler _itemGhostToggler;
         [SerializeField] private AudioMixerController _audioMixerController;
-        [SerializeField] private SoundLimiter _soundLimiter;
         [SerializeField] private UIButtonSound[] _uiButtonSounds;
         [SerializeField] private Pauser _pauser;
         [SerializeField] private LevelTransitor _levelTransitor;
@@ -81,7 +81,6 @@ namespace DI
             ValidateAssigned(_itemAttractor, nameof(_itemAttractor));
             ValidateAssigned(_itemGhostToggler, nameof(_itemGhostToggler));
             ValidateAssigned(_audioMixerController, nameof(_audioMixerController));
-            ValidateAssigned(_soundLimiter, nameof(_soundLimiter));
             ValidateButtons(_uiButtonSounds);
             ValidateAssigned(_pauser, nameof(_pauser));
             ValidateAssigned(_levelTransitor, nameof(_levelTransitor));
@@ -119,7 +118,6 @@ namespace DI
             builder.RegisterComponent(_itemAttractor);
             builder.RegisterComponent(_itemGhostToggler);
             builder.RegisterComponent(_audioMixerController);
-            builder.RegisterComponent(_soundLimiter);
             for (int index = 0; index < _uiButtonSounds.Length; index++)
             {
                 builder.RegisterComponent(_uiButtonSounds[index]);

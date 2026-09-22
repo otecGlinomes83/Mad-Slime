@@ -17,6 +17,7 @@ namespace Audio
         private AudioSource[] _sources;
         private AudioSource _loopSource;
         private int _nextSourceIndex;
+        private float[] _sourceEndTimes;
 
         private void Awake()
         {
@@ -32,6 +33,8 @@ namespace Audio
             {
                 _sources[index] = CreateSource();
             }
+
+            _sourceEndTimes = new float[_sourceCount];
 
             _loopSource = CreateSource();
             _loopSource.loop = true;
@@ -83,12 +86,34 @@ namespace Audio
 
         private void PlayOneShot(AudioClip clip, float volume, float pitch)
         {
-            AudioSource source = _sources[_nextSourceIndex];
+            if (CountActiveVoices() >= _sourceCount)
+            {
+                return;
+            }
+
+            int sourceIndex = _nextSourceIndex;
             _nextSourceIndex = (_nextSourceIndex + 1) % _sourceCount;
 
+            AudioSource source = _sources[sourceIndex];
             source.pitch = pitch;
             source.volume = volume;
             source.PlayOneShot(clip);
+            _sourceEndTimes[sourceIndex] = Time.time + clip.length / pitch;
+        }
+
+        private int CountActiveVoices()
+        {
+            int activeCount = 0;
+
+            for (int index = 0; index < _sourceCount; index++)
+            {
+                if (Time.time < _sourceEndTimes[index])
+                {
+                    activeCount++;
+                }
+            }
+
+            return activeCount;
         }
 
         private AudioSource CreateSource()

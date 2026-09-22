@@ -4,6 +4,7 @@ using System;
 using UI;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 
 namespace DI
 {

@@ -1,9 +1,10 @@
 using Audio;
 using Game;
-using Shop;
+using Skins;
 using System;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 
 namespace DI
 {

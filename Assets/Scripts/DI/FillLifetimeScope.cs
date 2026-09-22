@@ -5,6 +5,7 @@ using System;
 using UI;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 
 namespace DI
 {
@@ -26,7 +27,6 @@ namespace DI
         [SerializeField] private Wallet _wallet;
         [SerializeField] private LevelTransitor _levelTransitor;
         [SerializeField] private Pauser _pauser;
-        [SerializeField] private SoundLimiter _soundLimiter;
         [SerializeField] private UIButtonSound[] _uiButtonSounds;
         [SerializeField] private AudioMixerController _audioMixerController;
         [SerializeField] private FillUIFabric _fillUIFabric;
@@ -50,7 +50,6 @@ namespace DI
             ValidateAssigned(_wallet, nameof(_wallet));
             ValidateAssigned(_levelTransitor, nameof(_levelTransitor));
             ValidateAssigned(_pauser, nameof(_pauser));
-            ValidateAssigned(_soundLimiter, nameof(_soundLimiter));
             ValidateButtons(_uiButtonSounds);
             ValidateAssigned(_audioMixerController, nameof(_audioMixerController));
             ValidateAssigned(_fillUIFabric, nameof(_fillUIFabric));
@@ -72,7 +71,6 @@ namespace DI
             builder.RegisterComponent(_wallet);
             builder.RegisterComponent(_levelTransitor);
             builder.RegisterComponent(_pauser);
-            builder.RegisterComponent(_soundLimiter);
             for (int index = 0; index < _uiButtonSounds.Length; index++)
             {
                 builder.RegisterComponent(_uiButtonSounds[index]);

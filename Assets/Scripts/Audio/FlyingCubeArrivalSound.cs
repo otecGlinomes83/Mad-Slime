@@ -15,15 +15,13 @@ namespace Audio
         [SerializeField, Min(0f)] private float _minInterval = 0.03f;
 
         private SfxPlayer _sfxPlayer;
-        private SoundLimiter _soundLimiter;
         private ShapeFiller _filler;
         private float _lastPlayedTime;
 
         [Inject]
-        public void Construct(SfxPlayer sfxPlayer, SoundLimiter soundLimiter)
+        public void Construct(SfxPlayer sfxPlayer)
         {
             _sfxPlayer = sfxPlayer;
-            _soundLimiter = soundLimiter;
         }
 
         private void Awake()
@@ -38,12 +36,6 @@ namespace Audio
             {
                 throw new InvalidOperationException(
                     $"{name}: SfxClip is not assigned. Drag a SfxClip asset into the _sfxClip field.");
-            }
-
-            if (_soundLimiter == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: SoundLimiter was not injected. Check that FillLifetimeScope registers SoundLimiter and FlyingCubeArrivalSound.");
             }
 
             if (_minPitch > _maxPitch)
@@ -68,11 +60,6 @@ namespace Audio
         private void OnFillerCubeArrived(FlyingCube cube)
         {
             if (Time.time - _lastPlayedTime < _minInterval)
-            {
-                return;
-            }
-
-            if (_soundLimiter.TryPlay(_sfxClip.Clip.length) == false)
             {
                 return;
             }

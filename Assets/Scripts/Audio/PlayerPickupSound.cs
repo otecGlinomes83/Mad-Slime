@@ -14,15 +14,13 @@ namespace Audio
 
         private SfxPlayer _sfxPlayer;
         private Collector _collector;
-        private SoundLimiter _soundLimiter;
         private float _nextAllowedSoundTime;
 
         [Inject]
-        public void Construct(SfxPlayer sfxPlayer, Collector collector, SoundLimiter soundLimiter)
+        public void Construct(SfxPlayer sfxPlayer, Collector collector)
         {
             _sfxPlayer = sfxPlayer;
             _collector = collector;
-            _soundLimiter = soundLimiter;
         }
 
         private void Awake()
@@ -43,12 +41,6 @@ namespace Audio
             {
                 throw new InvalidOperationException(
                     $"{name}: Collector was not injected. Check that GameLifetimeScope registers Collector and PlayerPickupSound.");
-            }
-
-            if (_soundLimiter == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: SoundLimiter was not injected. Check that GameLifetimeScope registers SoundLimiter and PlayerPickupSound.");
             }
 
             if (_sfxClip == null)
@@ -90,11 +82,6 @@ namespace Audio
             _nextAllowedSoundTime = Time.time + Random.Range(
                 _config.PickupSoundMinInterval,
                 _config.PickupSoundMaxInterval);
-
-            if (_soundLimiter.TryPlay(_sfxClip.Clip.length) == false)
-            {
-                return;
-            }
 
             PlayPop();
         }
