@@ -36,7 +36,6 @@ namespace DI
         [SerializeField] private TierUpSound _tierUpSound;
         [SerializeField] private TimerTickSound _timerTickSound;
         [SerializeField] private GrowthBarView _growthBarView;
-        [SerializeField] private MassUI _massUI;
         [SerializeField] private TimerUI _timerUI;
         [SerializeField] private Collector _collector;
         [SerializeField] private Absorber _absorber;
@@ -44,7 +43,6 @@ namespace DI
         [SerializeField] private AttractableDetector _attractableDetector;
         [SerializeField] private ItemAttractor _itemAttractor;
         [SerializeField] private ItemGhostToggler _itemGhostToggler;
-        [SerializeField] private AudioMixerController _audioMixerController;
         [SerializeField] private UIButtonSound[] _uiButtonSounds;
         [SerializeField] private Pauser _pauser;
         [SerializeField] private LevelTransitor _levelTransitor;
@@ -72,7 +70,6 @@ namespace DI
             ValidateAssigned(_tierUpSound, nameof(_tierUpSound));
             ValidateAssigned(_timerTickSound, nameof(_timerTickSound));
             ValidateAssigned(_growthBarView, nameof(_growthBarView));
-            ValidateAssigned(_massUI, nameof(_massUI));
             ValidateAssigned(_timerUI, nameof(_timerUI));
             ValidateAssigned(_collector, nameof(_collector));
             ValidateAssigned(_absorber, nameof(_absorber));
@@ -80,7 +77,6 @@ namespace DI
             ValidateAssigned(_attractableDetector, nameof(_attractableDetector));
             ValidateAssigned(_itemAttractor, nameof(_itemAttractor));
             ValidateAssigned(_itemGhostToggler, nameof(_itemGhostToggler));
-            ValidateAssigned(_audioMixerController, nameof(_audioMixerController));
             ValidateButtons(_uiButtonSounds);
             ValidateAssigned(_pauser, nameof(_pauser));
             ValidateAssigned(_levelTransitor, nameof(_levelTransitor));
@@ -109,7 +105,6 @@ namespace DI
             builder.RegisterComponent(_tierUpSound);
             builder.RegisterComponent(_timerTickSound);
             builder.RegisterComponent(_growthBarView);
-            builder.RegisterComponent(_massUI);
             builder.RegisterComponent(_timerUI);
             builder.RegisterComponent(_collector);
             builder.RegisterComponent(_absorber);
@@ -117,15 +112,19 @@ namespace DI
             builder.RegisterComponent(_attractableDetector);
             builder.RegisterComponent(_itemAttractor);
             builder.RegisterComponent(_itemGhostToggler);
-            builder.RegisterComponent(_audioMixerController);
-            for (int index = 0; index < _uiButtonSounds.Length; index++)
-            {
-                builder.RegisterComponent(_uiButtonSounds[index]);
-            }
+            builder.RegisterBuildCallback(InjectButtonSounds);
             builder.RegisterComponent(_pauser);
             builder.RegisterComponent(_levelTransitor);
             builder.RegisterComponent(_timer);
             builder.RegisterComponent(_inputReader);
+        }
+
+        private void InjectButtonSounds(IObjectResolver container)
+        {
+            for (int index = 0; index < _uiButtonSounds.Length; index++)
+            {
+                container.Inject(_uiButtonSounds[index]);
+            }
         }
 
         private void ValidateAssigned(object dependency, string fieldName)
@@ -139,10 +138,10 @@ namespace DI
 
         private void ValidateButtons(UIButtonSound[] buttons)
         {
-            if (buttons == null || buttons.Length == 0)
+            if (buttons == null)
             {
                 throw new InvalidOperationException(
-                    $"GameLifetimeScope: '{nameof(_uiButtonSounds)}' is empty. Drag every UIButtonSound component of the scene into the list.");
+                    $"GameLifetimeScope: '{nameof(_uiButtonSounds)}' is not assigned. An empty list is valid (no static UI buttons), a missing list is not.");
             }
 
             for (int index = 0; index < buttons.Length; index++)

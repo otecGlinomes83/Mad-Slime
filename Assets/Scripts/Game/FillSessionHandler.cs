@@ -10,9 +10,9 @@ namespace Game
 {
     public sealed class FillSessionHandler : MonoBehaviour
     {
-        [SerializeField, Min(0f)] private float _winDelay = 1.3f;
         [SerializeField] private SfxClip _musicTrack;
 
+        private FillConfig _config;
         private MusicPlayer _musicPlayer;
         private PlayerProgress _progress;
         private LevelConfigResolver _configResolver;
@@ -30,10 +30,12 @@ namespace Game
         [Inject]
         public void Construct(PlayerProgress progress, LevelConfigResolver configResolver, MusicPlayer musicPlayer,
             ShapeFillOrchestrator fillOrchestrator, GridBuilder gridBuilder, LevelTransitor levelTransitor,
-            Rewarder rewarder, Pauser pauser, AdScheduler adScheduler, LeaderboardReporter leaderboardReporter)
+            Rewarder rewarder, Pauser pauser, AdScheduler adScheduler, LeaderboardReporter leaderboardReporter,
+            FillConfig config)
         {
             _progress = progress;
             _configResolver = configResolver;
+            _config = config;
             _musicPlayer = musicPlayer;
             _fillOrchestrator = fillOrchestrator;
             _gridBuilder = gridBuilder;
@@ -46,6 +48,12 @@ namespace Game
 
         private void Awake()
         {
+            if (_config == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: FillConfig was not injected. Check that FillLifetimeScope has the FillConfig assigned.");
+            }
+
             if (_musicPlayer == null)
             {
                 throw new InvalidOperationException(
@@ -200,7 +208,7 @@ namespace Game
         {
             try
             {
-                await UniTask.Delay((int)(_winDelay * 1000f), cancellationToken: this.GetCancellationTokenOnDestroy());
+                await UniTask.Delay((int)(_config.WinDelay * 1000f), cancellationToken: this.GetCancellationTokenOnDestroy());
             }
             catch (OperationCanceledException)
             {

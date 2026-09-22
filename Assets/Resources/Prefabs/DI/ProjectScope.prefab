@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 900000000000000020}
   - component: {fileID: 6330714499415004578}
   - component: {fileID: 117379798107625886}
+  - component: {fileID: 623364931739954327}
   m_Layer: 0
   m_Name: ProjectScope
   m_TagString: Untagged
@@ -59,6 +60,7 @@ MonoBehaviour:
   _layoutsLibrary: {fileID: 11400000, guid: 6d4a8c2e7f1b493a8c0d5e7f9a1b3c64, type: 2}
   _sfxPlayer: {fileID: 6330714499415004578}
   _musicPlayer: {fileID: 117379798107625886}
+  _audioMixerController: {fileID: 623364931739954327}
 --- !u!114 &7674206806047798816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,7 +99,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sfxGroup: {fileID: -538627474310297102, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}
-  _sourceCount: 7
+  _uiSourceCount: 2
+  _gameSourceCount: 5
 --- !u!114 &117379798107625886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,3 +114,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _musicGroup: {fileID: 2934108869881073407, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}
+--- !u!114 &623364931739954327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5567698310828948670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b26d38c006e5794f84ff590e087b872, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mixer: {fileID: 24100000, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}
+  _musicGroup: {fileID: 2934108869881073407, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}
+  _sfxGroup: {fileID: -538627474310297102, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}

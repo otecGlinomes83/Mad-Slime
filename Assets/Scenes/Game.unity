@@ -308,7 +308,6 @@ GameObject:
   - component: {fileID: 292377140}
   - component: {fileID: 292377142}
   - component: {fileID: 292377143}
-  - component: {fileID: 292377144}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -509,21 +508,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0111018253ce41e58afbaf4a849e1b58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &292377144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 292377132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b26d38c006e5794f84ff590e087b872, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _mixer: {fileID: 24100000, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}
-  _musicGroup: {fileID: 2934108869881073407, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}
-  _sfxGroup: {fileID: -538627474310297102, guid: 4789a215f2a0cc94bba2ed0135bdabab, type: 2}
 --- !u!1 &456849526
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,6 +1166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controlPath: <Gamepad>/leftStick
+  _canvas: {fileID: 456849530}
   _background: {fileID: 630991966}
   _handle: {fileID: 1600959884}
   _movementRange: 120
@@ -1334,6 +1319,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1242557220 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9022570363871859091, guid: 09a52862f13a1d64299b5e209b29798d, type: 3}
+  m_PrefabInstance: {fileID: 1242557217}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6444badc9bc7aae4592860efff6a4cd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1306941302
@@ -1726,6 +1722,37 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _playerConfig: {fileID: 11400000, guid: 5870f75c6661e1248a87e3447b467372, type: 2}
+  _levelGenerator: {fileID: 1691083851}
+  _player: {fileID: 6899305217913502349}
+  _playerTier: {fileID: 7992803093969525695}
+  _tierResolver: {fileID: 292377142}
+  _mover: {fileID: 688403098498416583}
+  _scalePunch: {fileID: 900000000000000102}
+  _levelScaler: {fileID: 5571263416282016707}
+  _sessionHandler: {fileID: 292377134}
+  _quotaUI: {fileID: 1306941302}
+  _cameraImpulse: {fileID: 1809261852}
+  _cameraFollow: {fileID: 1809261851}
+  _skinApplier: {fileID: 5974846180686308050}
+  _levelLabelUI: {fileID: 1526575033}
+  _gameplayUIFabric: {fileID: 5470701658854778630}
+  _playerPickupSound: {fileID: 5638792502079913924}
+  _tierUpSound: {fileID: 900000000000000030}
+  _timerTickSound: {fileID: 292377139}
+  _growthBarView: {fileID: 1589578819}
+  _timerUI: {fileID: 399660887627273152}
+  _collector: {fileID: 1178948977339683769}
+  _absorber: {fileID: 6460579104252903941}
+  _itemDetector: {fileID: 3196850747484158986}
+  _attractableDetector: {fileID: 4219722846896299918}
+  _itemAttractor: {fileID: 7643889918465946663}
+  _itemGhostToggler: {fileID: 566941591}
+  _uiButtonSounds:
+  - {fileID: 1242557220}
+  _pauser: {fileID: 809963750}
+  _levelTransitor: {fileID: 292377138}
+  _timer: {fileID: 292377136}
+  _inputReader: {fileID: 6575316736882405105}
 --- !u!4 &1684454172
 Transform:
   m_ObjectHideFlags: 0
@@ -2342,7 +2369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c2e6a0d9b34f17a5c83e9d1f7b2a45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sfxClip: {fileID: 0}
+  _sfxClip: {fileID: 11400000, guid: 0bf137f346ebfd4e3b22373d0cafd862, type: 2}
 --- !u!1 &900000000000000100
 GameObject:
   m_ObjectHideFlags: 0
@@ -3036,7 +3063,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: 5870f75c6661e1248a87e3447b467372, type: 2}
-  _sfxClip: {fileID: 0}
+  _sfxClip: {fileID: 11400000, guid: 008ee61a46cfe404b951ebf1b7cbde40, type: 2}
 --- !u!4 &5666162300893317956
 Transform:
   m_ObjectHideFlags: 0

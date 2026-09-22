@@ -13,7 +13,6 @@ namespace DI
         [SerializeField] private MainMenu _mainMenu;
         [SerializeField] private LevelTransitor _levelTransitor;
         [SerializeField] private Pauser _pauser;
-        [SerializeField] private AudioMixerController _audioMixerController;
         [SerializeField] private UIButtonSound[] _uiButtonSounds;
 
         protected override void Configure(IContainerBuilder builder)
@@ -21,17 +20,20 @@ namespace DI
             ValidateAssigned(_mainMenu, nameof(_mainMenu));
             ValidateAssigned(_levelTransitor, nameof(_levelTransitor));
             ValidateAssigned(_pauser, nameof(_pauser));
-            ValidateAssigned(_audioMixerController, nameof(_audioMixerController));
             ValidateButtons(_uiButtonSounds);
 
             builder.RegisterComponent(_mainMenu);
             builder.RegisterComponent(_levelTransitor);
             builder.RegisterComponent(_pauser);
-            builder.RegisterComponent(_audioMixerController);
 
+            builder.RegisterBuildCallback(InjectButtonSounds);
+        }
+
+        private void InjectButtonSounds(IObjectResolver container)
+        {
             for (int index = 0; index < _uiButtonSounds.Length; index++)
             {
-                builder.RegisterComponent(_uiButtonSounds[index]);
+                container.Inject(_uiButtonSounds[index]);
             }
         }
 
@@ -46,10 +48,10 @@ namespace DI
 
         private void ValidateButtons(UIButtonSound[] buttons)
         {
-            if (buttons == null || buttons.Length == 0)
+            if (buttons == null)
             {
                 throw new InvalidOperationException(
-                    $"MenuLifetimeScope: '{nameof(_uiButtonSounds)}' is empty. Drag every UIButtonSound component of the scene into the list.");
+                    $"MenuLifetimeScope: '{nameof(_uiButtonSounds)}' is not assigned. An empty list is valid (no static UI buttons), a missing list is not.");
             }
 
             for (int index = 0; index < buttons.Length; index++)

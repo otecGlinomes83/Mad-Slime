@@ -15,9 +15,10 @@ namespace Items
 
         [SerializeField] private ItemDefinition _definition;
         [SerializeField] private Collider _collider;
-        [SerializeField] private Renderer[] _renderers;
         [SerializeField] private Material _ghostMaterial;
         [SerializeField] private GhostFadeConfig _ghostFadeConfig;
+
+        private Renderer[] _renderers;
 
         private Vector3 _defaultScale;
         private Material[][] _originalMaterials;
@@ -83,10 +84,12 @@ namespace Items
                 Mathf.Abs(transform.localScale.y),
                 Mathf.Abs(transform.localScale.z));
 
-            if (_renderers == null || _renderers.Length == 0)
+            _renderers = GetComponentsInChildren<Renderer>(true);
+
+            if (_renderers.Length == 0)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Renderers list is empty. Drag every Renderer of the item model into the Renderers list on the Item component.");
+                    $"{name}: no Renderers found in children. The item prefab must contain its visual model.");
             }
 
             _originalMaterials = new Material[_renderers.Length][];

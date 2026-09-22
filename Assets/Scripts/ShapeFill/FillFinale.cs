@@ -1,8 +1,7 @@
+using DG.Tweening;
+using Scriptables;
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using UnityEngine;
 using VContainer;
 using Random = UnityEngine.Random;
@@ -11,68 +10,21 @@ namespace ShapeFill
 {
     public sealed class FillFinale : MonoBehaviour
     {
-        [Tooltip("Количество конфетти на финал. Больше = наряднее, но тяжелее по кадрам на слабых телефонах")]
-        [SerializeField, Min(1)] private int _confettiCount = 40;
+        [SerializeField] private ParticleSystem _confetti;
 
-        [Tooltip("Сколько секунд живут конфетти (с). Держи меньше Win Delay у FillSessionHandler, иначе меню заморозит их в воздухе")]
-        [SerializeField, Min(0.1f)] private float _confettiDuration = 1.1f;
-
-        [Tooltip("Сила разлёта конфетти. Больше = фонтан выше и шире")]
-        [SerializeField, Min(0.1f)] private float _confettiSpeed = 7f;
-
-        [Tooltip("Гравитация конфетти. Меньше = дольше висят в воздухе, больше = резче падают")]
-        [SerializeField, Min(0f)] private float _confettiGravity = 12f;
-
-        [Tooltip("Минимальная вертикальная составляющая разлёта. Больше — летит колонной вверх, меньше — стелется в стороны")]
-        [SerializeField, Range(0f, 3f)] private float _confettiUpBiasMin = 0.6f;
-
-        [Tooltip("Верхняя граница конуса разлёта по вертикали. Ниже минимума ставить нельзя — Awake кидает исключение")]
-        [SerializeField, Range(0f, 3f)] private float _confettiUpBiasMax = 1.4f;
-
-        [Tooltip("Размер конфетти-куба относительно ячейки формы. 1 = с ячейку, 0.5 = мелкая крошка")]
-        [SerializeField, Range(0.1f, 2f)] private float _confettiScaleFactor = 0.7f;
-
-        [Tooltip("Какая доля времени жизни уходит на схлопывание кубов в конце. 0 = исчезают резко")]
-        [SerializeField, Range(0f, 0.9f)] private float _confettiFadeFraction = 0.25f;
-
-        [Tooltip("Насколько сильно пульсирует вся форма в момент полного заполнения (доля скейла). 0 = без пульса")]
-        [SerializeField, Range(0f, 0.3f)] private float _shapePunchStrength = 0.06f;
-
-        [Tooltip("Длительность пульса формы (с). Больше = волна читается дольше, но затягивает паузу перед Win-окном")]
-        [SerializeField, Min(0.01f)] private float _shapePunchDuration = 0.4f;
-
-        [Tooltip("Количество мелких колебаний в пульсе формы. Больше = дрожже")]
-        [SerializeField, Min(0)] private int _shapePunchVibrato = 10;
-
-        [Tooltip("Мягкость хвоста пульса: 0 = жёстко обрывается, 1 = пружинит")]
-        [SerializeField, Range(0f, 1f)] private float _shapePunchElasticity = 0.3f;
-
-        [Tooltip("Насколько отъезжает камера при полном заполнении (градусы поля зрения). 0 = камера остаётся на месте")]
-        [SerializeField, Min(0f)] private float _fovKick = 9f;
-
-        [Tooltip("Длительность отъезда камеры (с). Держи меньше Win Delay у FillSessionHandler, иначе меню выскочит посреди отъезда")]
-        [SerializeField, Min(0.01f)] private float _fovDuration = 0.6f;
-
-        private readonly List<FlyingCube> _confetti = new List<FlyingCube>();
-        private readonly List<Vector3> _velocities = new List<Vector3>();
-        private readonly List<Vector3> _angularVelocities = new List<Vector3>();
-
+        private FillConfig _config;
         private ShapeFillOrchestrator _orchestrator;
-        private CubeSpawner _spawner;
         private GridBuilder _gridBuilder;
-
-        private float _burstElapsedTime;
-        private float _confettiScale;
-        private bool _isBursting;
+        private int _confettiCount;
         private Camera _camera;
         private float _startFov;
 
         [Inject]
-        public void Construct(ShapeFillOrchestrator orchestrator, CubeSpawner spawner, GridBuilder gridBuilder)
+        public void Construct(ShapeFillOrchestrator orchestrator, GridBuilder gridBuilder, FillConfig config)
         {
             _orchestrator = orchestrator;
-            _spawner = spawner;
             _gridBuilder = gridBuilder;
+            _config = config;
         }
 
         private void Awake()
@@ -83,23 +35,41 @@ namespace ShapeFill
                     $"{name}: Orchestrator was not injected. Check that FillLifetimeScope registers ShapeFillOrchestrator and FillFinale.");
             }
 
-            if (_spawner == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Spawner was not injected. Check that FillLifetimeScope registers CubeSpawner and FillFinale.");
-            }
-
             if (_gridBuilder == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: GridBuilder was not injected. Check that FillLifetimeScope registers GridBuilder and FillFinale.");
             }
 
-            if (_confettiUpBiasMin > _confettiUpBiasMax)
+            if (_config == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: ConfettiUpBiasMin {_confettiUpBiasMin} is greater than ConfettiUpBiasMax {_confettiUpBiasMax}.");
+                    $"{name}: FillConfig was not injected. Check that FillLifetimeScope has the FillConfig assigned.");
             }
+
+            if (_confetti == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Confetti particle system is not assigned. Drag the confetti ParticleSystem into the _confetti field.");
+            }
+
+            ParticleSystem.EmissionModule emission = _confetti.emission;
+
+            if (emission.burstCount == 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Confetti burst is not set. Set Emission → Bursts on the particle system: its Count is the confetti amount.");
+            }
+
+            _confettiCount = (int)emission.GetBurst(0).count;
+
+            if (_confettiCount <= 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Confetti burst count is {_confettiCount}. Set a positive amount in Emission → Bursts.");
+            }
+
+            emission.SetBursts(Array.Empty<ParticleSystem.Burst>());
         }
 
         private void OnEnable()
@@ -110,22 +80,6 @@ namespace ShapeFill
         private void OnDisable()
         {
             _orchestrator.FillCompleted -= OnFillCompleted;
-        }
-
-        private void Update()
-        {
-            if (_isBursting == false)
-            {
-                return;
-            }
-
-            _burstElapsedTime += Time.deltaTime;
-            UpdateConfetti();
-
-            if (_burstElapsedTime >= _confettiDuration)
-            {
-                StopBurst();
-            }
         }
 
         private void OnFillCompleted(float percent)
@@ -151,23 +105,13 @@ namespace ShapeFill
             _camera = mainCamera;
             _startFov = _camera.fieldOfView;
 
-            SpawnConfetti();
-
-            _gridBuilder.transform.DOKill();
-            _gridBuilder.transform.DOPunchScale(
-                    Vector3.one * _shapePunchStrength,
-                    _shapePunchDuration,
-                    _shapePunchVibrato,
-                    _shapePunchElasticity)
-                .SetLink(gameObject);
-
-            ZoomAsync().Forget();
+            EmitConfetti();
+            PlayShapePunch();
+            PlayCameraKick();
         }
 
-        private void SpawnConfetti()
+        private void EmitConfetti()
         {
-            StopBurst();
-
             IReadOnlyList<Vector2Int> fillCells = _gridBuilder.FillCells;
 
             if (fillCells.Count == 0)
@@ -175,100 +119,37 @@ namespace ShapeFill
                 return;
             }
 
-            Vector3 origin = _gridBuilder.transform.position
-                + Vector3.up * (_gridBuilder.Height * _gridBuilder.CellSize * 0.5f);
-
-            _confettiScale = _gridBuilder.CellSize * _confettiScaleFactor;
-
             for (int i = 0; i < _confettiCount; i++)
             {
                 Vector2Int cell = fillCells[Random.Range(0, fillCells.Count)];
-                Color color = _gridBuilder.GetPixelColor(cell.x, cell.y);
-                FlyingCube confettiCube = _spawner.Spawn(origin, Random.rotation, _confettiScale, color);
 
-                _confetti.Add(confettiCube);
-                _velocities.Add(GetRandomVelocity());
-                _angularVelocities.Add(GetRandomAngularVelocity());
-            }
-
-            _burstElapsedTime = 0f;
-            _isBursting = true;
-        }
-
-        private Vector3 GetRandomVelocity()
-        {
-            Vector3 direction = new Vector3(
-                Random.Range(-1f, 1f),
-                Random.Range(_confettiUpBiasMin, _confettiUpBiasMax),
-                Random.Range(-1f, 1f));
-
-            return direction.normalized * Random.Range(0.5f, 1f) * _confettiSpeed;
-        }
-
-        private Vector3 GetRandomAngularVelocity()
-        {
-            return new Vector3(
-                Random.Range(-360f, 360f),
-                Random.Range(-360f, 360f),
-                Random.Range(-360f, 360f));
-        }
-
-        private void UpdateConfetti()
-        {
-            float deltaTime = Time.deltaTime;
-            float remainingTime = _confettiDuration - _burstElapsedTime;
-            float fadeDuration = _confettiDuration * _confettiFadeFraction;
-
-            for (int i = 0; i < _confetti.Count; i++)
-            {
-                FlyingCube confettiCube = _confetti[i];
-
-                _velocities[i] += Vector3.down * (_confettiGravity * deltaTime);
-                confettiCube.transform.position += _velocities[i] * deltaTime;
-                confettiCube.transform.Rotate(_angularVelocities[i] * deltaTime);
-
-                if (fadeDuration > 0f && remainingTime < fadeDuration)
+                ParticleSystem.EmitParams parameters = new ParticleSystem.EmitParams
                 {
-                    confettiCube.transform.localScale = Vector3.one * (_confettiScale * remainingTime / fadeDuration);
-                }
+                    startColor = _gridBuilder.GetPixelColor(cell.x, cell.y)
+                };
+
+                _confetti.Emit(parameters, 1);
             }
         }
 
-        private void StopBurst()
+        private void PlayShapePunch()
         {
-            for (int i = 0; i < _confetti.Count; i++)
-            {
-                Destroy(_confetti[i].gameObject);
-            }
-
-            _confetti.Clear();
-            _velocities.Clear();
-            _angularVelocities.Clear();
-            _isBursting = false;
+            _gridBuilder.transform.DOKill();
+            _gridBuilder.transform.DOPunchScale(
+                    Vector3.one * _config.ShapePunchStrength,
+                    _config.ShapePunchDuration,
+                    _config.ShapePunchVibrato,
+                    _config.ShapePunchElasticity)
+                .SetLink(gameObject);
         }
 
-        private async UniTaskVoid ZoomAsync()
+        private void PlayCameraKick()
         {
-            CancellationToken cancellationToken = this.GetCancellationTokenOnDestroy();
-            float elapsedTime = 0f;
+            _camera.DOKill();
 
-            try
-            {
-                while (elapsedTime < _fovDuration)
-                {
-                    elapsedTime += Time.deltaTime;
-                    float progress = Mathf.Clamp01(elapsedTime / _fovDuration);
-                    float easedProgress = 1f - (1f - progress) * (1f - progress);
-
-                    _camera.fieldOfView = _startFov + _fovKick * easedProgress;
-
-                    await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                return;
-            }
+            Sequence kick = DOTween.Sequence().SetLink(gameObject);
+            kick.Append(_camera.DOFieldOfView(_startFov + _config.FovKick, _config.FovDuration).SetEase(Ease.OutQuad));
+            kick.Append(_camera.DOFieldOfView(_startFov, _config.FovDuration).SetEase(Ease.InQuad));
         }
     }
 }

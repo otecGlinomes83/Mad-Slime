@@ -110,7 +110,7 @@ namespace Audio
             }
 
             _lastTickTime = currentTime;
-            _sfxPlayer.Play(_tickClip);
+            _sfxPlayer.PlayUi(_tickClip);
         }
     }
 }

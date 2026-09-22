@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7337341657446632787}
   - component: {fileID: 6580195280981459290}
   - component: {fileID: 6736705461956045253}
+  - component: {fileID: 7484920024228993725}
   m_Layer: 7
   m_Name: PacmanSkin
   m_TagString: Untagged
@@ -84,3 +85,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7484920024228993725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784714581818371387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6f7a62a54807924eaef967276f9ebb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 6736705461956045253}
+  _meshFilters:
+  - {fileID: 6580195280981459290}

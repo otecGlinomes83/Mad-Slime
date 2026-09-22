@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using Game;
 using UnityEngine;
 using VContainer;
@@ -81,6 +82,7 @@ namespace ShapeFill
                     $"{name}: component is not initialized. Enter Play Mode before running the test fill.");
             }
 
+            _camera.DOKill();
             _camera.fieldOfView = _startFov;
 
             ClearCubes();

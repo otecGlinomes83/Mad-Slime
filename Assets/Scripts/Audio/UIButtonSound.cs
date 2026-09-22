@@ -27,7 +27,7 @@ namespace Audio
             if (_sfxPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SfxPlayer was not injected. The object must be spawned through the DI container (IObjectResolver.Instantiate) or its scene scope must be the first object in the scene hierarchy.");
+                    $"{name}: SfxPlayer was not injected. The scene scope must inject this UIButtonSound: drag the component into the scope's UI Button Sounds list (runtime-spawned objects are injected automatically via IObjectResolver.Instantiate).");
             }
 
             if (_sfxClip == null)
@@ -55,7 +55,7 @@ namespace Audio
 
         private void PlayClick()
         {
-            _sfxPlayer.Play(_sfxClip);
+            _sfxPlayer.PlayUi(_sfxClip);
         }
     }
 }

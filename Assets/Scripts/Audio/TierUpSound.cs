@@ -59,7 +59,7 @@ namespace Audio
                 return;
             }
 
-            _sfxPlayer.Play(_sfxClip);
+            _sfxPlayer.PlayGame(_sfxClip);
         }
     }
 }

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5e2e2c2b936deb7caed49d9a16fd136, type: 3}
+  m_Name: FillConfig
+  m_EditorClassIdentifier: 
+  _fillDelay: 0.55
+  _spawnInterval: 0.04
+  _flightDuration: 0.5
+  _boostedSpawnInterval: 0.015
+  _boostedFlightDuration: 0.25
+  _instantFillDuration: 0.25
+  _instantFlightDuration: 0.1
+  _bonusWaveDelay: 0.35
+  _bonusTintColor: {r: 1, g: 1, b: 1, a: 1}
+  _bonusTintStrength: 0.3
+  _borderCascadeDuration: 0.5
+  _borderColor: {r: 0, g: 0, b: 0, a: 1}
+  _ghostOpacity: 0.5
+  _shapePunchStrength: 0.081
+  _shapePunchDuration: 0.5
+  _shapePunchVibrato: 10
+  _shapePunchElasticity: 0.3
+  _fovKick: 7
+  _fovDuration: 0.3
+  _winDelay: 3

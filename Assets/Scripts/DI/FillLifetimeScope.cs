@@ -1,5 +1,6 @@
 using Audio;
 using Game;
+using Scriptables;
 using ShapeFill;
 using System;
 using UI;
@@ -11,6 +12,7 @@ namespace DI
 {
     public sealed class FillLifetimeScope : LifetimeScope
     {
+        [SerializeField] private FillConfig _fillConfig;
         [SerializeField] private FillSessionHandler _fillSessionHandler;
         [SerializeField] private ShapeFillOrchestrator _fillOrchestrator;
         [SerializeField] private GridBuilder _gridBuilder;
@@ -28,12 +30,12 @@ namespace DI
         [SerializeField] private LevelTransitor _levelTransitor;
         [SerializeField] private Pauser _pauser;
         [SerializeField] private UIButtonSound[] _uiButtonSounds;
-        [SerializeField] private AudioMixerController _audioMixerController;
         [SerializeField] private FillUIFabric _fillUIFabric;
         [SerializeField] private FlyingCubeArrivalSound _flyingCubeArrivalSound;
 
         protected override void Configure(IContainerBuilder builder)
         {
+            ValidateAssigned(_fillConfig, nameof(_fillConfig));
             ValidateAssigned(_fillSessionHandler, nameof(_fillSessionHandler));
             ValidateAssigned(_fillOrchestrator, nameof(_fillOrchestrator));
             ValidateAssigned(_gridBuilder, nameof(_gridBuilder));
@@ -51,10 +53,10 @@ namespace DI
             ValidateAssigned(_levelTransitor, nameof(_levelTransitor));
             ValidateAssigned(_pauser, nameof(_pauser));
             ValidateButtons(_uiButtonSounds);
-            ValidateAssigned(_audioMixerController, nameof(_audioMixerController));
             ValidateAssigned(_fillUIFabric, nameof(_fillUIFabric));
             ValidateAssigned(_flyingCubeArrivalSound, nameof(_flyingCubeArrivalSound));
 
+            builder.RegisterInstance(_fillConfig);
             builder.RegisterComponent(_fillSessionHandler);
             builder.RegisterComponent(_fillOrchestrator);
             builder.RegisterComponent(_gridBuilder);
@@ -71,13 +73,17 @@ namespace DI
             builder.RegisterComponent(_wallet);
             builder.RegisterComponent(_levelTransitor);
             builder.RegisterComponent(_pauser);
-            for (int index = 0; index < _uiButtonSounds.Length; index++)
-            {
-                builder.RegisterComponent(_uiButtonSounds[index]);
-            }
-            builder.RegisterComponent(_audioMixerController);
+            builder.RegisterBuildCallback(InjectButtonSounds);
             builder.RegisterComponent(_fillUIFabric);
             builder.RegisterComponent(_flyingCubeArrivalSound);
+        }
+
+        private void InjectButtonSounds(IObjectResolver container)
+        {
+            for (int index = 0; index < _uiButtonSounds.Length; index++)
+            {
+                container.Inject(_uiButtonSounds[index]);
+            }
         }
 
         private void ValidateAssigned(object dependency, string fieldName)
@@ -91,10 +97,10 @@ namespace DI
 
         private void ValidateButtons(UIButtonSound[] buttons)
         {
-            if (buttons == null || buttons.Length == 0)
+            if (buttons == null)
             {
                 throw new InvalidOperationException(
-                    $"FillLifetimeScope: '{nameof(_uiButtonSounds)}' is empty. Drag every UIButtonSound component of the scene into the list.");
+                    $"FillLifetimeScope: '{nameof(_uiButtonSounds)}' is not assigned. An empty list is valid (no static UI buttons), a missing list is not.");
             }
 
             for (int index = 0; index < buttons.Length; index++)

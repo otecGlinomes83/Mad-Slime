@@ -67,7 +67,7 @@ namespace Audio
             _lastPlayedTime = Time.time;
 
             float pitch = Mathf.Lerp(_minPitch, _maxPitch, _filler.FillFraction);
-            _sfxPlayer.Play(_sfxClip.Clip, _sfxClip.Volume, pitch);
+            _sfxPlayer.PlayGame(_sfxClip.Clip, _sfxClip.Volume, pitch);
         }
     }
 }

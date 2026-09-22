@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -9,9 +10,7 @@ namespace ShapeFill
         private enum State
         {
             Idle,
-            Growing,
-            Flying,
-            Settling
+            Flying
         }
 
         [Header("Flight")]
@@ -60,8 +59,18 @@ namespace ShapeFill
             }
         }
 
+        private void Update()
+        {
+            if (_state == State.Flying)
+            {
+                UpdateFlying();
+            }
+        }
+
         public void Launch(Vector3 target, float duration)
         {
+            transform.DOKill();
+
             _targetPosition = target;
             _startPosition = transform.position;
             _targetScale = transform.localScale;
@@ -76,43 +85,11 @@ namespace ShapeFill
 
         public void GrowIn()
         {
+            transform.DOKill();
+
             _targetScale = transform.localScale;
             transform.localScale = Vector3.zero;
-            _elapsedTime = 0f;
-            _state = State.Growing;
-        }
-
-        private void Update()
-        {
-            switch (_state)
-            {
-                case State.Growing:
-                    UpdateGrowing();
-                    break;
-
-                case State.Flying:
-                    UpdateFlying();
-                    break;
-
-                case State.Settling:
-                    UpdateSettling();
-                    break;
-            }
-        }
-
-        private void UpdateGrowing()
-        {
-            _elapsedTime += Time.deltaTime;
-            float progress = Mathf.Clamp01(_elapsedTime / _growDuration);
-            float easedProgress = 1f - (1f - progress) * (1f - progress);
-
-            transform.localScale = _targetScale * easedProgress;
-
-            if (progress >= 1f)
-            {
-                transform.localScale = _targetScale;
-                _state = State.Idle;
-            }
+            transform.DOScale(_targetScale, _growDuration).SetEase(Ease.OutQuad).SetLink(gameObject);
         }
 
         private void UpdateFlying()
@@ -137,10 +114,23 @@ namespace ShapeFill
             transform.rotation = Quaternion.identity;
             transform.localScale = _targetScale;
 
-            _elapsedTime = 0f;
-            _state = State.Settling;
+            _state = State.Idle;
+            PlaySettle();
 
             Arrived?.Invoke(this);
+        }
+
+        private void PlaySettle()
+        {
+            float punch = _landingPunch;
+            Vector3 squashScale = new Vector3(
+                _targetScale.x * (1f + punch * _settleSquashSpread),
+                _targetScale.y * (1f - punch),
+                _targetScale.z * (1f + punch * _settleSquashSpread));
+
+            Sequence settle = DOTween.Sequence().SetLink(gameObject);
+            settle.Append(transform.DOScale(squashScale, _settleDuration * 0.3f).SetEase(Ease.InQuad));
+            settle.Append(transform.DOScale(_targetScale, _settleDuration * 0.7f).SetEase(Ease.OutBack));
         }
 
         private void ApplyFlightOrientation(Vector3 velocity, float progress)
@@ -169,24 +159,6 @@ namespace ShapeFill
                 _targetScale.x * squeeze,
                 _targetScale.y * squeeze,
                 _targetScale.z * (1f + stretch));
-        }
-
-        private void UpdateSettling()
-        {
-            _elapsedTime += Time.deltaTime;
-            float progress = Mathf.Clamp01(_elapsedTime / _settleDuration);
-            float punch = _landingPunch * (1f - progress);
-
-            transform.localScale = new Vector3(
-                _targetScale.x * (1f + punch * _settleSquashSpread),
-                _targetScale.y * (1f - punch),
-                _targetScale.z * (1f + punch * _settleSquashSpread));
-
-            if (progress >= 1f)
-            {
-                transform.localScale = _targetScale;
-                _state = State.Idle;
-            }
         }
 
         private Vector3 CalculateControlPosition(Vector3 startPosition, Vector3 endPosition)

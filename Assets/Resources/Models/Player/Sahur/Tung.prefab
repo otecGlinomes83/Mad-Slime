@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9188533657365504114}
   - component: {fileID: 302370944268795570}
   - component: {fileID: 5585993218714630286}
+  - component: {fileID: 6380220921004188222}
   m_Layer: 7
   m_Name: Tung
   m_TagString: Untagged
@@ -88,3 +89,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6380220921004188222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8492548268188994972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6f7a62a54807924eaef967276f9ebb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 5585993218714630286}
+  _meshFilters:
+  - {fileID: 302370944268795570}

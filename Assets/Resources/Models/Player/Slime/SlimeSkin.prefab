@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 615230438200002249}
   - component: {fileID: 2309852500536388802}
   - component: {fileID: 3976293077215245406}
+  - component: {fileID: 4223799299890160374}
   m_Layer: 7
   m_Name: SlimeSkin
   m_TagString: Untagged
@@ -84,3 +85,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4223799299890160374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4985999236574877249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6f7a62a54807924eaef967276f9ebb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderers:
+  - {fileID: 3976293077215245406}
+  _meshFilters:
+  - {fileID: 2309852500536388802}

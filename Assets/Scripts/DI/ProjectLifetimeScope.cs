@@ -17,6 +17,7 @@ namespace DI
         [SerializeField] private LayoutsLibrary _layoutsLibrary;
         [SerializeField] private SfxPlayer _sfxPlayer;
         [SerializeField] private MusicPlayer _musicPlayer;
+        [SerializeField] private AudioMixerController _audioMixerController;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -62,10 +63,17 @@ namespace DI
                     "ProjectLifetimeScope: MusicPlayer is not assigned. Open the ProjectScope prefab and drag the MusicPlayer component into the Music Player field.");
             }
 
+            if (_audioMixerController == null)
+            {
+                throw new InvalidOperationException(
+                    "ProjectLifetimeScope: AudioMixerController is not assigned. Open the ProjectScope prefab and drag the AudioMixerController component into the Audio Mixer Controller field.");
+            }
+
             builder.RegisterComponent(_playerProgress);
             builder.RegisterComponent(_localizationService);
             builder.RegisterComponent(_sfxPlayer);
             builder.RegisterComponent(_musicPlayer);
+            builder.RegisterComponent(_audioMixerController);
             builder.RegisterInstance(_levelsCatalog);
             builder.RegisterInstance(_tierTable);
             builder.RegisterInstance(_layoutsLibrary);

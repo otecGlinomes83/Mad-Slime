@@ -65,7 +65,7 @@ namespace Skins
             if (_currentModel.TryGetComponent(out _currentSkinModel) == false)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Model '{model.name}' has no SkinModel component. Add a SkinModel component to the model prefab and drag its Renderers and MeshFilters into it.");
+                    $"{name}: Model '{model.name}' has no SkinModel component. Add a SkinModel component to the model prefab root.");
             }
 
             FitToCamera(_currentSkinModel);
@@ -91,7 +91,7 @@ namespace Skins
 
             _rotationAnchor = _modelsParent.position + new Vector3(0f, _lift, 0f);
 
-            Bounds localBounds = ComputeLocalBounds(skinModel.Renderers);
+            Bounds localBounds = ComputeLocalBounds(skinModel.Renderer);
 
             float maxVerticalExtent = Mathf.Max(localBounds.extents.y, localBounds.extents.x / _camera.aspect);
 
@@ -105,43 +105,18 @@ namespace Skins
 
         private Bounds GetAccurateWorldBounds(SkinModel skinModel)
         {
-            Bounds? result = null;
+            MeshFilter meshFilter = skinModel.MeshFilter;
 
-            MeshFilter[] meshFilters = skinModel.MeshFilters;
-
-            if (meshFilters != null)
-            {
-                for (int i = 0; i < meshFilters.Length; i++)
-                {
-                    if (meshFilters[i].sharedMesh == null)
-                    {
-                        continue;
-                    }
-
-                    AccumulateByCorners(meshFilters[i].transform, meshFilters[i].sharedMesh.bounds, ref result);
-                }
-            }
-
-            Renderer[] renderers = skinModel.Renderers;
-
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                if (renderers[i] is SkinnedMeshRenderer skinnedRenderer && skinnedRenderer.sharedMesh != null)
-                {
-                    AccumulateByCorners(skinnedRenderer.transform, skinnedRenderer.sharedMesh.bounds, ref result);
-                }
-            }
-
-            if (result.HasValue == false)
+            if (meshFilter.sharedMesh == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SkinModel '{skinModel.name}' has no MeshFilter or SkinnedMeshRenderer with sharedMesh. Cannot compute bounds.");
+                    $"{name}: SkinModel '{skinModel.name}' has no mesh in its MeshFilter. Cannot compute bounds.");
             }
 
-            return result.Value;
+            return TransformCornersToBounds(meshFilter.transform, meshFilter.sharedMesh.bounds);
         }
 
-        private void AccumulateByCorners(Transform sourceTransform, Bounds localBounds, ref Bounds? accumulator)
+        private Bounds TransformCornersToBounds(Transform sourceTransform, Bounds localBounds)
         {
             Vector3 center = localBounds.center;
             Vector3 extents = localBounds.extents;
@@ -155,41 +130,24 @@ namespace Skins
             _localCorners[6] = center + new Vector3(-extents.x, +extents.y, +extents.z);
             _localCorners[7] = center + new Vector3(+extents.x, +extents.y, +extents.z);
 
-            Bounds cornersBounds = new Bounds(sourceTransform.TransformPoint(_localCorners[0]), Vector3.zero);
+            Bounds worldBounds = new Bounds(sourceTransform.TransformPoint(_localCorners[0]), Vector3.zero);
 
             for (int i = 1; i < 8; i++)
             {
-                cornersBounds.Encapsulate(sourceTransform.TransformPoint(_localCorners[i]));
+                worldBounds.Encapsulate(sourceTransform.TransformPoint(_localCorners[i]));
             }
 
-            if (accumulator.HasValue)
-            {
-                Bounds existing = accumulator.Value;
-                existing.Encapsulate(cornersBounds);
-                accumulator = existing;
-            }
-            else
-            {
-                accumulator = cornersBounds;
-            }
+            return worldBounds;
         }
 
-        private Bounds ComputeLocalBounds(Renderer[] renderers)
+        private Bounds ComputeLocalBounds(Renderer renderer)
         {
-            Vector3 firstLocalCenter = _modelsParent.InverseTransformPoint(renderers[0].bounds.center);
-            Bounds localBounds = new Bounds(firstLocalCenter, Vector3.zero);
+            Vector3 localMin = _modelsParent.InverseTransformPoint(renderer.bounds.min);
+            Vector3 localMax = _modelsParent.InverseTransformPoint(renderer.bounds.max);
+            Vector3 localCenter = (localMin + localMax) * 0.5f;
+            Vector3 localSize = localMax - localMin;
 
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                Bounds world = renderers[i].bounds;
-                Vector3 localMin = _modelsParent.InverseTransformPoint(world.min);
-                Vector3 localMax = _modelsParent.InverseTransformPoint(world.max);
-                Vector3 localCenter = (localMin + localMax) * 0.5f;
-                Vector3 localSize = localMax - localMin;
-                localBounds.Encapsulate(new Bounds(localCenter, localSize));
-            }
-
-            return localBounds;
+            return new Bounds(localCenter, localSize);
         }
     }
 }

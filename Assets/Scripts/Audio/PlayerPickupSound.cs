@@ -89,7 +89,7 @@ namespace Audio
         private void PlayPop()
         {
             float pitch = Random.Range(_config.PickupSoundMinPitch, _config.PickupSoundMaxPitch);
-            _sfxPlayer.Play(_sfxClip.Clip, _sfxClip.Volume, pitch);
+            _sfxPlayer.PlayGame(_sfxClip.Clip, _sfxClip.Volume, pitch);
         }
     }
 }

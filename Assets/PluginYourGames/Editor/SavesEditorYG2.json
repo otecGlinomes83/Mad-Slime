@@ -1,12 +1,12 @@
 {
-    "idSave": 221,
+    "idSave": 243,
     "CurrentLevel": 19,
     "MaxLevel": 19,
     "Language": "ru",
-    "musicVolume": 0.02542438544332981,
-    "sfxVolume": 0.06295081973075867,
+    "musicVolume": 1.0,
+    "sfxVolume": 1.0,
     "Balance": 774,
-    "SelectedSkinType": 0,
+    "SelectedSkinType": 1,
     "_openSkins": [
         0,
         1

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Scriptables;
 using UnityEngine;
 using VContainer;
 
@@ -21,40 +22,7 @@ namespace ShapeFill
 
         [SerializeField] private SpriteRenderer _ghostBackground;
 
-        [SerializeField, Range(0f, 1f)] private float _ghostOpacity = 0.4f;
-
         [SerializeField] private Vector3 _spawnPosition;
-
-        [SerializeField] private Color _borderColor = Color.black;
-
-        [SerializeField] private float _spawnInterval = 0.04f;
-
-        [SerializeField] private float _flightDuration = 0.5f;
-
-        [Tooltip("Интервал спавна кубов после первого тапа (с). Меньше = кубы вылетают чаще")]
-        [SerializeField, Min(0.001f)] private float _boostedSpawnInterval = 0.015f;
-
-        [Tooltip("Время полёта куба до ячейки после первого тапа (с). Меньше = резче долетает")]
-        [SerializeField, Min(0.01f)] private float _boostedFlightDuration = 0.25f;
-
-        [Tooltip("Общее окно вылета всех оставшихся кубов после второго тапа (с). «Моментально» условно: 0.25 = короткий залп")]
-        [SerializeField, Min(0.05f)] private float _instantFillDuration = 0.25f;
-
-        [Tooltip("Время полёта каждого куба при досыпании (с). Финал наступит после долёта последнего куба")]
-        [SerializeField, Min(0.01f)] private float _instantFlightDuration = 0.1f;
-
-        [Tooltip("Пауза после долёта квотной волны перед бонусной (с). 0 = без паузы")]
-        [SerializeField, Min(0f)] private float _bonusWaveDelay = 0.35f;
-
-        [Tooltip("Цвет, в который подмешиваются бонусные кубы (заливка сверх квоты)")]
-        [SerializeField] private Color _bonusTintColor = Color.black;
-
-        [Tooltip("Сила подмешивания цвета бонусных кубов. 0 = не отличаются от квотных, 1 = полностью цвета оттенка")]
-        [SerializeField, Range(0f, 1f)] private float _bonusTintStrength = 0.3f;
-
-        [SerializeField, Min(0.05f)] private float _borderCascadeDuration = 0.5f;
-
-        [SerializeField, Min(0f)] private float _fillDelay = 0.55f;
 
         private int _fillIndex;
         private int _arrivedCount;
@@ -63,6 +31,7 @@ namespace ShapeFill
         private bool _isFilling;
         private BoostStage _boostStage;
         private Sprite _ghostSprite;
+        private FillConfig _config;
         private CancellationTokenSource _fillCts;
         private CancellationTokenSource _borderCts;
         private GridBuilder _gridShape;
@@ -88,10 +57,11 @@ namespace ShapeFill
         public event Action<FlyingCube> CubeArrived;
 
         [Inject]
-        public void Construct(GridBuilder gridShape, CubeSpawner spawner)
+        public void Construct(GridBuilder gridShape, CubeSpawner spawner, FillConfig config)
         {
             _gridShape = gridShape;
             _spawner = spawner;
+            _config = config;
         }
 
         private void Awake()
@@ -106,6 +76,12 @@ namespace ShapeFill
             {
                 throw new InvalidOperationException(
                     $"{name}: CubeSpawner was not injected. Check that FillLifetimeScope registers CubeSpawner and ShapeFiller.");
+            }
+
+            if (_config == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: FillConfig was not injected. Check that FillLifetimeScope has the FillConfig assigned.");
             }
         }
 
@@ -221,7 +197,7 @@ namespace ShapeFill
             );
 
             _ghostBackground.sprite = _ghostSprite;
-            _ghostBackground.color = new Color(1f, 1f, 1f, _ghostOpacity);
+            _ghostBackground.color = new Color(1f, 1f, 1f, _config.GhostOpacity);
             _ghostBackground.transform.SetPositionAndRotation(
                 _gridShape.transform.position,
                 _gridShape.transform.rotation
@@ -249,7 +225,7 @@ namespace ShapeFill
             IReadOnlyList<Vector2Int> borderCells,
             CancellationToken cancellationToken)
         {
-            float perCubeDelay = _borderCascadeDuration / borderCells.Count;
+            float perCubeDelay = _config.BorderCascadeDuration / borderCells.Count;
             int delayMilliseconds = Mathf.CeilToInt(perCubeDelay * 1000f);
 
             try
@@ -278,7 +254,7 @@ namespace ShapeFill
                 _gridShape.GridToWorld(cell.x, cell.y),
                 Quaternion.identity,
                 _gridShape.CellSize,
-                _borderColor
+                _config.BorderColor
             );
 
             borderCube.GrowIn();
@@ -290,9 +266,9 @@ namespace ShapeFill
 
             try
             {
-                if (_fillDelay > 0f)
+                if (_config.FillDelay > 0f)
                 {
-                    await UniTask.Delay((int)(_fillDelay * 1000f), cancellationToken: cancellationToken);
+                    await UniTask.Delay((int)(_config.FillDelay * 1000f), cancellationToken: cancellationToken);
                 }
 
                 while (_fillIndex < target)
@@ -301,7 +277,7 @@ namespace ShapeFill
 
                     if (IsBonusWaveStart(target) == true)
                     {
-                        await UniTask.Delay((int)(_bonusWaveDelay * 1000f), cancellationToken: cancellationToken);
+                        await UniTask.Delay((int)(_config.BonusWaveDelay * 1000f), cancellationToken: cancellationToken);
                     }
 
                     SpawnFillCube(fillCells[_fillIndex], GetFlightDuration());
@@ -322,10 +298,10 @@ namespace ShapeFill
         {
             if (_boostStage == BoostStage.Boosted)
             {
-                return _boostedSpawnInterval;
+                return _config.BoostedSpawnInterval;
             }
 
-            return _spawnInterval;
+            return _config.SpawnInterval;
         }
 
         private int GetSpawnDelayMilliseconds()
@@ -337,10 +313,10 @@ namespace ShapeFill
         {
             if (_boostStage == BoostStage.Boosted)
             {
-                return _boostedFlightDuration;
+                return _config.BoostedFlightDuration;
             }
 
-            return _flightDuration;
+            return _config.FlightDuration;
         }
 
         private bool IsBonusWaveStart(int target)
@@ -354,7 +330,7 @@ namespace ShapeFill
 
             if (_fillIndex >= _quotaTarget)
             {
-                color = Color.Lerp(color, _bonusTintColor, _bonusTintStrength);
+                color = Color.Lerp(color, _config.BonusTintColor, _config.BonusTintStrength);
             }
 
             return color;
@@ -380,7 +356,7 @@ namespace ShapeFill
 
                     for (int i = 0; i < cubesPerFrame && _fillIndex < _currentTarget; i++)
                     {
-                        SpawnFillCube(fillCells[_fillIndex], _instantFlightDuration);
+                        SpawnFillCube(fillCells[_fillIndex], _config.InstantFlightDuration);
                         _fillIndex++;
                     }
 
@@ -407,7 +383,7 @@ namespace ShapeFill
                 frameDuration = NominalFrameDuration;
             }
 
-            int framesInWindow = Mathf.CeilToInt(_instantFillDuration / frameDuration);
+            int framesInWindow = Mathf.CeilToInt(_config.InstantFillDuration / frameDuration);
 
             if (framesInWindow <= 1)
             {
