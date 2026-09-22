@@ -860,6 +860,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _musicSlider: {fileID: 7310781602487145867}
   _sfxSlider: {fileID: 5874239278720230727}
+  _tickClip: {fileID: 11400000, guid: d2ed719930b13b41b820abb33e340ce0, type: 2}
 --- !u!1 &4326678724345147160
 GameObject:
   m_ObjectHideFlags: 0

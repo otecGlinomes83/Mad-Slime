@@ -6,31 +6,39 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace UI
 {
     public sealed class GrowthBarView : MonoBehaviour
     {
-        [SerializeField] private PlayerTier _playerTier;
-        [SerializeField] private TierResolver _tierResolver;
         [SerializeField] private Image _progressBar;
         [SerializeField] private TMP_Text _tierText;
         [SerializeField, Min(0.01f)] private float _fillSmoothDuration = 0.25f;
 
+        private PlayerTier _playerTier;
+        private TierResolver _tierResolver;
         private Tween _fillTween;
+
+        [Inject]
+        public void Construct(PlayerTier playerTier, TierResolver tierResolver)
+        {
+            _playerTier = playerTier;
+            _tierResolver = tierResolver;
+        }
 
         private void Awake()
         {
             if (_playerTier == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerTier is not assigned. Drag a PlayerTier component into the _playerTier field.");
+                    $"{name}: PlayerTier was not injected. Check that GameLifetimeScope registers PlayerTier and GrowthBarView.");
             }
 
             if (_tierResolver == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: TierResolver is not assigned. Drag a TierResolver component into the _tierResolver field.");
+                    $"{name}: TierResolver was not injected. Check that GameLifetimeScope registers TierResolver and GrowthBarView.");
             }
 
             if (_progressBar == null)

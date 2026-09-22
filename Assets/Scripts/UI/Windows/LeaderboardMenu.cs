@@ -21,8 +21,10 @@ namespace UI
         [SerializeField] private TMP_Text _entriesText;
         [SerializeField] private YandexConfig _config;
 
-        public override void Initialize(Pauser pauser)
+        public override void Initialize()
         {
+            base.Initialize();
+
             if (_closeButton == null)
             {
                 throw new InvalidOperationException(
@@ -51,8 +53,6 @@ namespace UI
             _authButton.onClick.AddListener(OnAuthClicked);
             YG2.onGetLeaderboard += OnLeaderboardReceived;
             YG2.onGetSDKData += OnSDKDataReceived;
-
-            base.Initialize(pauser);
 
             RefreshAuthView();
             RequestLeaderboard();

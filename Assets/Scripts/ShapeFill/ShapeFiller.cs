@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VContainer;
 
 namespace ShapeFill
 {
@@ -18,11 +19,7 @@ namespace ShapeFill
 
         private const float NominalFrameDuration = 1f / 60f;
 
-        [SerializeField] private GridBuilder _gridShape;
-
         [SerializeField] private SpriteRenderer _ghostBackground;
-
-        [SerializeField] private CubeSpawner _spawner;
 
         [SerializeField, Range(0f, 1f)] private float _ghostOpacity = 0.4f;
 
@@ -68,6 +65,8 @@ namespace ShapeFill
         private Sprite _ghostSprite;
         private CancellationTokenSource _fillCts;
         private CancellationTokenSource _borderCts;
+        private GridBuilder _gridShape;
+        private CubeSpawner _spawner;
 
         public int RequiredFillCount => _gridShape.FillCells.Count;
 
@@ -88,9 +87,26 @@ namespace ShapeFill
 
         public event Action<FlyingCube> CubeArrived;
 
+        [Inject]
+        public void Construct(GridBuilder gridShape, CubeSpawner spawner)
+        {
+            _gridShape = gridShape;
+            _spawner = spawner;
+        }
+
         private void Awake()
         {
-            _spawner = GetComponent<CubeSpawner>();
+            if (_gridShape == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: GridBuilder was not injected. Check that FillLifetimeScope registers GridBuilder and ShapeFiller.");
+            }
+
+            if (_spawner == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: CubeSpawner was not injected. Check that FillLifetimeScope registers CubeSpawner and ShapeFiller.");
+            }
         }
 
         private void OnDisable()
@@ -101,18 +117,6 @@ namespace ShapeFill
 
         public void Initialize()
         {
-            if (_gridShape == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: GridShape is not assigned. Drag a GridShape component into the _gridShape field.");
-            }
-
-            if (_spawner == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: CubeSpawner is not assigned.");
-            }
-
             _spawner.Initialize();
         }
 

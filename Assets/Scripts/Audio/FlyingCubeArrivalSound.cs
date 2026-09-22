@@ -10,19 +10,20 @@ namespace Audio
     public sealed class FlyingCubeArrivalSound : MonoBehaviour
     {
         [SerializeField] private SfxClip _sfxClip;
-        [SerializeField] private SoundLimiter _soundLimiter;
         [SerializeField, Range(0.5f, 2f)] private float _minPitch = 0.9f;
         [SerializeField, Range(0.5f, 2f)] private float _maxPitch = 1.35f;
         [SerializeField, Min(0f)] private float _minInterval = 0.03f;
 
         private SfxPlayer _sfxPlayer;
+        private SoundLimiter _soundLimiter;
         private ShapeFiller _filler;
         private float _lastPlayedTime;
 
         [Inject]
-        public void Construct(SfxPlayer sfxPlayer)
+        public void Construct(SfxPlayer sfxPlayer, SoundLimiter soundLimiter)
         {
             _sfxPlayer = sfxPlayer;
+            _soundLimiter = soundLimiter;
         }
 
         private void Awake()
@@ -42,7 +43,7 @@ namespace Audio
             if (_soundLimiter == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SoundLimiter is not assigned. Drag a SoundLimiter component into the _soundLimiter field.");
+                    $"{name}: SoundLimiter was not injected. Check that FillLifetimeScope registers SoundLimiter and FlyingCubeArrivalSound.");
             }
 
             if (_minPitch > _maxPitch)

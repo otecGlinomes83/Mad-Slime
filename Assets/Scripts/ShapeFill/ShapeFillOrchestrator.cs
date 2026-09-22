@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using VContainer;
 
 namespace ShapeFill
 {
@@ -14,11 +15,33 @@ namespace ShapeFill
         private ShapeFiller _shapeFiller;
         private FillCounter _fillCounter;
 
+        [Inject]
+        public void Construct(GridBuilder gridBuilder, ShapeFiller shapeFiller, FillCounter fillCounter)
+        {
+            _gridBuilder = gridBuilder;
+            _shapeFiller = shapeFiller;
+            _fillCounter = fillCounter;
+        }
+
         private void Awake()
         {
-            _gridBuilder = GetComponent<GridBuilder>();
-            _shapeFiller = GetComponent<ShapeFiller>();
-            _fillCounter = GetComponent<FillCounter>();
+            if (_gridBuilder == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: GridBuilder was not injected. Check that FillLifetimeScope registers GridBuilder and ShapeFillOrchestrator.");
+            }
+
+            if (_shapeFiller == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: ShapeFiller was not injected. Check that FillLifetimeScope registers ShapeFiller and ShapeFillOrchestrator.");
+            }
+
+            if (_fillCounter == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: FillCounter was not injected. Check that FillLifetimeScope registers FillCounter and ShapeFillOrchestrator.");
+            }
         }
 
         private void OnEnable()

@@ -1,4 +1,3 @@
-using Game;
 using System;
 using TMPro;
 using UnityEngine;
@@ -17,8 +16,10 @@ namespace UI
         private Action _restartAction;
         private Action _menuAction;
 
-        public void Initialize(int moneyCount, Pauser pauser, Action nextLevelAction, Action restartAction, Action menuAction)
+        public void Initialize(int moneyCount, Action nextLevelAction, Action restartAction, Action menuAction)
         {
+            base.Initialize();
+
             if (_restartButton == null)
             {
                 throw new InvalidOperationException(
@@ -55,8 +56,6 @@ namespace UI
             _menuButton.onClick.AddListener(RequestMenu);
 
             _moneyCount.text = $"{moneyCount}";
-
-            Initialize(pauser);
         }
 
         protected override void OnDisable()

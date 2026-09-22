@@ -14,6 +14,7 @@ namespace Skins
         private readonly Vector3[] _localCorners = new Vector3[8];
 
         private GameObject _currentModel;
+        private SkinModel _currentSkinModel;
         private Animator _currentAnimator;
         private Vector3 _rotationAnchor;
 
@@ -60,7 +61,14 @@ namespace Skins
 
             _currentModel = Instantiate(model, _modelsParent);
             _currentModel.TryGetComponent(out _currentAnimator);
-            FitToCamera(_currentModel);
+
+            if (_currentModel.TryGetComponent(out _currentSkinModel) == false)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Model '{model.name}' has no SkinModel component. Add a SkinModel component to the model prefab and drag its Renderers and MeshFilters into it.");
+            }
+
+            FitToCamera(_currentSkinModel);
         }
 
         public void PlayWalk()
@@ -73,18 +81,17 @@ namespace Skins
             _currentAnimator.SetTrigger("Walk");
         }
 
-        private void FitToCamera(GameObject instance)
+        private void FitToCamera(SkinModel skinModel)
         {
-            Bounds worldBounds = GetAccurateWorldBounds(instance);
+            Bounds worldBounds = GetAccurateWorldBounds(skinModel);
 
             Vector3 centerOffset = _modelsParent.position - worldBounds.center;
-            instance.transform.position += centerOffset;
-            instance.transform.position += new Vector3(0f, _lift, 0f);
+            _currentModel.transform.position += centerOffset;
+            _currentModel.transform.position += new Vector3(0f, _lift, 0f);
 
             _rotationAnchor = _modelsParent.position + new Vector3(0f, _lift, 0f);
 
-            Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
-            Bounds localBounds = ComputeLocalBounds(renderers);
+            Bounds localBounds = ComputeLocalBounds(skinModel.Renderers);
 
             float maxVerticalExtent = Mathf.Max(localBounds.extents.y, localBounds.extents.x / _camera.aspect);
 
@@ -96,34 +103,39 @@ namespace Skins
             _camera.orthographicSize = Mathf.Max(0.1f, maxVerticalExtent / _padding);
         }
 
-        private Bounds GetAccurateWorldBounds(GameObject instance)
+        private Bounds GetAccurateWorldBounds(SkinModel skinModel)
         {
             Bounds? result = null;
 
-            foreach (MeshFilter meshFilter in instance.GetComponentsInChildren<MeshFilter>())
-            {
-                if (meshFilter.sharedMesh == null)
-                {
-                    continue;
-                }
+            MeshFilter[] meshFilters = skinModel.MeshFilters;
 
-                AccumulateByCorners(meshFilter.transform, meshFilter.sharedMesh.bounds, ref result);
+            if (meshFilters != null)
+            {
+                for (int i = 0; i < meshFilters.Length; i++)
+                {
+                    if (meshFilters[i].sharedMesh == null)
+                    {
+                        continue;
+                    }
+
+                    AccumulateByCorners(meshFilters[i].transform, meshFilters[i].sharedMesh.bounds, ref result);
+                }
             }
 
-            foreach (SkinnedMeshRenderer skinnedRenderer in instance.GetComponentsInChildren<SkinnedMeshRenderer>())
-            {
-                if (skinnedRenderer.sharedMesh == null)
-                {
-                    continue;
-                }
+            Renderer[] renderers = skinModel.Renderers;
 
-                AccumulateByCorners(skinnedRenderer.transform, skinnedRenderer.sharedMesh.bounds, ref result);
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                if (renderers[i] is SkinnedMeshRenderer skinnedRenderer && skinnedRenderer.sharedMesh != null)
+                {
+                    AccumulateByCorners(skinnedRenderer.transform, skinnedRenderer.sharedMesh.bounds, ref result);
+                }
             }
 
             if (result.HasValue == false)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Model '{instance.name}' has no MeshFilter or SkinnedMeshRenderer with sharedMesh. Cannot compute bounds.");
+                    $"{name}: SkinModel '{skinModel.name}' has no MeshFilter or SkinnedMeshRenderer with sharedMesh. Cannot compute bounds.");
             }
 
             return result.Value;
@@ -137,7 +149,7 @@ namespace Skins
             _localCorners[0] = center + new Vector3(-extents.x, -extents.y, -extents.z);
             _localCorners[1] = center + new Vector3(+extents.x, -extents.y, -extents.z);
             _localCorners[2] = center + new Vector3(-extents.x, +extents.y, -extents.z);
-            _localCorners[3] = center + new Vector3(+extents.x, +extents.y, -extents.z);
+            _localCorners[3] = center + new Vector3(+extents.x, -extents.y, -extents.z);
             _localCorners[4] = center + new Vector3(-extents.x, -extents.y, +extents.z);
             _localCorners[5] = center + new Vector3(+extents.x, -extents.y, +extents.z);
             _localCorners[6] = center + new Vector3(-extents.x, +extents.y, +extents.z);

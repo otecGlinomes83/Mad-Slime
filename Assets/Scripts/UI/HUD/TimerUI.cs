@@ -2,20 +2,28 @@ using System;
 using Game;
 using TMPro;
 using UnityEngine;
+using VContainer;
 
 namespace UI
 {
     public sealed class TimerUI : MonoBehaviour
     {
-        [SerializeField] private Timer _timer;
         [SerializeField] private TMP_Text _timerText;
+
+        private Timer _timer;
+
+        [Inject]
+        public void Construct(Timer timer)
+        {
+            _timer = timer;
+        }
 
         private void Awake()
         {
             if (_timer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Timer is not assigned. Drag a Timer component into the _timer field.");
+                    $"{name}: Timer was not injected. Check that GameLifetimeScope registers Timer and TimerUI.");
             }
 
             if (_timerText == null)

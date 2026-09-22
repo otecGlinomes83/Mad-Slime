@@ -9,15 +9,16 @@ namespace Audio
 {
     public sealed class TierUpSound : MonoBehaviour
     {
-        [SerializeField] private PlayerTier _playerTier;
         [SerializeField] private SfxClip _sfxClip;
 
         private SfxPlayer _sfxPlayer;
+        private PlayerTier _playerTier;
 
         [Inject]
-        public void Construct(SfxPlayer sfxPlayer)
+        public void Construct(SfxPlayer sfxPlayer, PlayerTier playerTier)
         {
             _sfxPlayer = sfxPlayer;
+            _playerTier = playerTier;
         }
 
         private void Awake()
@@ -31,7 +32,7 @@ namespace Audio
             if (_playerTier == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerTier is not assigned. Drag a PlayerTier component into the _playerTier field.");
+                    $"{name}: PlayerTier was not injected. Check that GameLifetimeScope registers PlayerTier and TierUpSound.");
             }
 
             if (_sfxClip == null)

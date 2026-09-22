@@ -1,15 +1,23 @@
 using Scriptables;
 using System;
 using UnityEngine;
+using VContainer;
 
 namespace Game
 {
     public sealed class Rewarder : MonoBehaviour
     {
         [SerializeField] private RewardConfig _config;
-        [SerializeField] private Wallet _wallet;
+
+        private Wallet _wallet;
 
         public event Action<int, bool> RewardGranted;
+
+        [Inject]
+        public void Construct(Wallet wallet)
+        {
+            _wallet = wallet;
+        }
 
         private void Awake()
         {
@@ -22,7 +30,7 @@ namespace Game
             if (_wallet == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Rewarder requires Wallet to be assigned in the inspector.");
+                    $"{name}: Wallet was not injected. Check that FillLifetimeScope registers Wallet and Rewarder.");
             }
         }
 

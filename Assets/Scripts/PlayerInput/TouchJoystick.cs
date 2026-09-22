@@ -12,6 +12,7 @@ namespace PlayerInput
         [InputControl(layout = "Vector2")]
         [SerializeField] private string _controlPath = "<Gamepad>/leftStick";
 
+        [SerializeField] private Canvas _canvas;
         [SerializeField] private RectTransform _background;
         [SerializeField] private RectTransform _handle;
 
@@ -41,10 +42,10 @@ namespace PlayerInput
                     $"{name}: TouchJoystick must be attached to a UI element with a RectTransform.");
             }
 
-            if (GetComponentInParent<Canvas>() == null)
+            if (_canvas == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: TouchJoystick must be a child of a Canvas.");
+                    $"{name}: Canvas is not assigned. Drag the Canvas that contains the joystick into the _canvas field.");
             }
 
             if (_movementRange <= 0f)

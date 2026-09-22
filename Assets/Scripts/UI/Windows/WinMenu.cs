@@ -1,4 +1,3 @@
-using Game;
 using System;
 using TMPro;
 using UnityEngine;
@@ -17,8 +16,10 @@ namespace UI
         private Action _doubleRewardAction;
         private Action _menuAction;
 
-        public void Initialize(int moneyCount, Pauser pauser, Action nextLevelAction, Action doubleRewardAction, Action menuAction)
+        public void Initialize(int moneyCount, Action nextLevelAction, Action doubleRewardAction, Action menuAction)
         {
+            base.Initialize();
+
             if (_nextLevelButton == null)
             {
                 throw new InvalidOperationException(
@@ -62,8 +63,6 @@ namespace UI
             }
 
             _moneyCount.text = $"{moneyCount}";
-
-            Initialize(pauser);
         }
 
         protected override void OnDisable()

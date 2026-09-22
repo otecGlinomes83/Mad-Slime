@@ -1,17 +1,17 @@
 using Scriptables;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
 namespace Audio
 {
+    [RequireComponent(typeof(Button))]
     public sealed class UIButtonSound : MonoBehaviour
     {
         [SerializeField] private SfxClip _sfxClip;
-        [SerializeField] private List<Button> _buttons;
 
+        private Button _button;
         private SfxPlayer _sfxPlayer;
 
         [Inject]
@@ -22,6 +22,8 @@ namespace Audio
 
         private void Awake()
         {
+            _button = GetComponent<Button>();
+
             if (_sfxPlayer == null)
             {
                 throw new InvalidOperationException(
@@ -34,33 +36,21 @@ namespace Audio
                     $"{name}: SfxClip is not assigned. Drag a SfxClip asset into the _sfxClip field.");
             }
 
-            if (_buttons.Count <= 0)
+            if (_button == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: buttons is empty");
+                    $"{name}: Button component is missing. UIButtonSound requires the Button component on the same object.");
             }
         }
 
         private void OnEnable()
         {
-            foreach (Button button in _buttons)
-            {
-                button.onClick.AddListener(PlayClick);
-            }
+            _button.onClick.AddListener(PlayClick);
         }
 
         private void OnDisable()
         {
-            foreach (Button button in _buttons)
-            {
-                button.onClick.RemoveListener(PlayClick);
-            }
-        }
-
-        public void AddButton(Button button)
-        {
-            _buttons.Add(button);
-            button.onClick.AddListener(PlayClick);
+            _button.onClick.RemoveListener(PlayClick);
         }
 
         private void PlayClick()

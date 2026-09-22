@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using VContainer;
 
 namespace UI
 {
     public sealed class FillProgressUI : MonoBehaviour
     {
-        [SerializeField] private ShapeFiller _shapeFiller;
         [SerializeField] private TMP_Text _percentText;
         [SerializeField, Range(0f, 1f)] private float _punchStrength = 0.25f;
         [SerializeField, Min(0.01f)] private float _punchDuration = 0.25f;
@@ -18,13 +18,20 @@ namespace UI
         [SerializeField] private List<int> _punchMilestones = new List<int> { 25, 50, 75, 100 };
 
         private int _lastPercent;
+        private ShapeFiller _shapeFiller;
+
+        [Inject]
+        public void Construct(ShapeFiller shapeFiller)
+        {
+            _shapeFiller = shapeFiller;
+        }
 
         private void Awake()
         {
             if (_shapeFiller == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: ShapeFiller is not assigned. Drag a ShapeFiller component into the _shapeFiller field.");
+                    $"{name}: ShapeFiller was not injected. Check that FillLifetimeScope registers ShapeFiller and FillProgressUI.");
             }
 
             if (_percentText == null)

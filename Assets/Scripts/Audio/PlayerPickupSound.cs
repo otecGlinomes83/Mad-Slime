@@ -10,17 +10,19 @@ namespace Audio
     public sealed class PlayerPickupSound : MonoBehaviour
     {
         [SerializeField] private PlayerConfig _config;
-        [SerializeField] private Collector _collector;
-        [SerializeField] private SoundLimiter _soundLimiter;
         [SerializeField] private SfxClip _sfxClip;
 
         private SfxPlayer _sfxPlayer;
+        private Collector _collector;
+        private SoundLimiter _soundLimiter;
         private float _nextAllowedSoundTime;
 
         [Inject]
-        public void Construct(SfxPlayer sfxPlayer)
+        public void Construct(SfxPlayer sfxPlayer, Collector collector, SoundLimiter soundLimiter)
         {
             _sfxPlayer = sfxPlayer;
+            _collector = collector;
+            _soundLimiter = soundLimiter;
         }
 
         private void Awake()
@@ -40,13 +42,13 @@ namespace Audio
             if (_collector == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Collector is not assigned. Drag a Collector component into the _collector field.");
+                    $"{name}: Collector was not injected. Check that GameLifetimeScope registers Collector and PlayerPickupSound.");
             }
 
             if (_soundLimiter == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SoundLimiter is not assigned. Drag a SoundLimiter component into the _soundLimiter field.");
+                    $"{name}: SoundLimiter was not injected. Check that GameLifetimeScope registers SoundLimiter and PlayerPickupSound.");
             }
 
             if (_sfxClip == null)

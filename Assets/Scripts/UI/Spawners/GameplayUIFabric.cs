@@ -1,4 +1,3 @@
-using Audio;
 using Game;
 using System;
 using UnityEngine;
@@ -10,21 +9,17 @@ namespace UI
 {
     public sealed class GameplayUIFabric : MonoBehaviour
     {
-        [SerializeField] private GameplaySessionHandler _sessionHandler;
-        [SerializeField] private AudioMixerController _mixerController;
-
         [SerializeField] private Button _pauseButton;
-
         [SerializeField] private PauseMenu _pauseMenuPrefab;
 
-        [SerializeField] private Pauser _pauser;
-
         private IObjectResolver _resolver;
+        private GameplaySessionHandler _sessionHandler;
 
         [Inject]
-        public void Construct(IObjectResolver resolver)
+        public void Construct(IObjectResolver resolver, GameplaySessionHandler sessionHandler)
         {
             _resolver = resolver;
+            _sessionHandler = sessionHandler;
         }
 
         private void Awake()
@@ -38,7 +33,7 @@ namespace UI
             if (_sessionHandler == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: GameplaySessionHandler is not assigned. Drag a GameplaySessionHandler into the _sessionHandler field.");
+                    $"{name}: GameplaySessionHandler was not injected. Check that GameLifetimeScope registers GameplaySessionHandler and GameplayUIFabric.");
             }
 
             if (_pauseButton == null)
@@ -61,10 +56,7 @@ namespace UI
         private void SpawnPauseMenu()
         {
             PauseMenu pauseMenu = _resolver.Instantiate(_pauseMenuPrefab);
-            pauseMenu.Initialize(
-                _pauser,
-                _mixerController, true,
-                menuAction: _sessionHandler.ExitToMenu);
+            pauseMenu.Initialize(true, menuAction: _sessionHandler.ExitToMenu);
         }
     }
 }

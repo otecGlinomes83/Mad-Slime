@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using Items;
 using Player;
 using UnityEngine;
+using VContainer;
 
 namespace Collectables
 {
     public sealed class ItemGhostToggler : MonoBehaviour
     {
         private const int BufferSize = 64;
-
-        [SerializeField] private PlayerTier _tierHolder;
 
         [SerializeField] private CapsuleCollider _playerCollider;
 
@@ -21,12 +20,20 @@ namespace Collectables
         private readonly Collider[] _buffer = new Collider[BufferSize];
         private readonly List<Item> _ghostItems = new List<Item>();
 
+        private PlayerTier _tierHolder;
+
+        [Inject]
+        public void Construct(PlayerTier tierHolder)
+        {
+            _tierHolder = tierHolder;
+        }
+
         private void Awake()
         {
             if (_tierHolder == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: TierHolder is not assigned. Drag a PlayerTier component into the _tierHolder field.");
+                    $"{name}: TierHolder was not injected. Check that GameLifetimeScope registers PlayerTier and ItemGhostToggler.");
             }
 
             if (_playerCollider == null)

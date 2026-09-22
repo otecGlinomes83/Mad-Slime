@@ -531,8 +531,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sfxClip: {fileID: 11400000, guid: d2ed719930b13b41b820abb33e340ce0, type: 2}
-  _buttons:
-  - {fileID: 8249506779102666086}
 --- !u!1 &5492167246966097462
 GameObject:
   m_ObjectHideFlags: 0

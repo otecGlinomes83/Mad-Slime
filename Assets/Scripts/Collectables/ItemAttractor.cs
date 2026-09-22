@@ -3,6 +3,7 @@ using Player;
 using Skills;
 using System;
 using UnityEngine;
+using VContainer;
 
 namespace Collectables
 {
@@ -12,11 +13,17 @@ namespace Collectables
 
         [SerializeField] private AttractConfig _config;
 
-        [SerializeField] private PlayerTier _playerTier;
+        private PlayerTier _playerTier;
+        private AttractableDetector _detector;
+        private ItemDetector _collectDetector;
 
-        [SerializeField] private AttractableDetector _detector;
-
-        [SerializeField] private ItemDetector _collectDetector;
+        [Inject]
+        public void Construct(PlayerTier playerTier, AttractableDetector detector, ItemDetector collectDetector)
+        {
+            _playerTier = playerTier;
+            _detector = detector;
+            _collectDetector = collectDetector;
+        }
 
         private void Awake()
         {
@@ -29,19 +36,19 @@ namespace Collectables
             if (_playerTier == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerTier is not assigned. Drag a PlayerTier component into the _playerTier field.");
+                    $"{name}: PlayerTier was not injected. Check that GameLifetimeScope registers PlayerTier and ItemAttractor.");
             }
 
             if (_detector == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: AttractableDetector is not assigned. Drag an AttractableDetector component into the _detector field.");
+                    $"{name}: AttractableDetector was not injected. Check that GameLifetimeScope registers AttractableDetector and ItemAttractor.");
             }
 
             if (_collectDetector == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: ItemDetector is not assigned. Drag an ItemDetector component into the _collectDetector field.");
+                    $"{name}: ItemDetector was not injected. Check that GameLifetimeScope registers ItemDetector and ItemAttractor.");
             }
 
             if (_detector.Radius <= _collectDetector.Radius)

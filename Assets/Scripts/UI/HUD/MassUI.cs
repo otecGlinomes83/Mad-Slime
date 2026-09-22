@@ -1,13 +1,37 @@
 using Player;
+using System;
 using TMPro;
 using UnityEngine;
+using VContainer;
 
 namespace UI
 {
     public sealed class MassUI : MonoBehaviour
     {
-        [SerializeField] private PlayerTier _playerTier;
         [SerializeField] private TMP_Text _text;
+
+        private PlayerTier _playerTier;
+
+        [Inject]
+        public void Construct(PlayerTier playerTier)
+        {
+            _playerTier = playerTier;
+        }
+
+        private void Awake()
+        {
+            if (_playerTier == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PlayerTier was not injected. Check that GameLifetimeScope registers PlayerTier and MassUI.");
+            }
+
+            if (_text == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: TMP_Text is not assigned. Drag a TMP_Text component into the _text field.");
+            }
+        }
 
         private void OnEnable()
         {

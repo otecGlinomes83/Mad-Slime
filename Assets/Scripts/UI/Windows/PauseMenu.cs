@@ -1,6 +1,5 @@
 ﻿using System;
 using Audio;
-using Game;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,13 +10,31 @@ namespace UI
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _menuButton;
         [SerializeField] private AudioSettingsPanel _settingsPanel;
-        
+
         private Action _menuAction;
 
-        public void Initialize(Pauser pauser, AudioMixerController audioMixerController, bool isMenuButtonNeeded,
-            Action menuAction = null)
+        public void Initialize(bool isMenuButtonNeeded, Action menuAction = null)
         {
-            Initialize(pauser);
+            base.Initialize();
+
+            if (_closeButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: CloseButton is not assigned. Drag a Button into the _closeButton field.");
+            }
+
+            if (_menuButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: MenuButton is not assigned. Drag a Button into the _menuButton field.");
+            }
+
+            if (_settingsPanel == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SettingsPanel is not assigned. Drag an AudioSettingsPanel into the _settingsPanel field.");
+            }
+
             _closeButton.onClick.AddListener(Close);
             _menuButton.gameObject.SetActive(false);
 
@@ -28,7 +45,7 @@ namespace UI
                 _menuAction = menuAction;
             }
 
-            _settingsPanel.Initialize(audioMixerController);
+            _settingsPanel.Initialize();
         }
 
         protected override void OnDisable()

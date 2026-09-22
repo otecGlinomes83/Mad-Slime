@@ -4,22 +4,23 @@ using System;
 using System.Threading;
 using Skills;
 using UnityEngine;
+using VContainer;
 
 namespace Player
 {
     public sealed class LevelScaler : MonoBehaviour
     {
-        [SerializeField] private PlayerTier _playerTier;
-        [SerializeField] private TierResolver _tierResolver;
-        [Space]
         [SerializeField] private Transform _modelTransform;
         [SerializeField] private Transform _rootTransform;
         [Space]
         [SerializeField] private CapsuleCollider _playerCollider;
-        [SerializeField] private Mover _mover;
         [Space]
         [SerializeField, Min(0.01f)] private float _growDuration = 0.55f;
         [SerializeField, Min(0f)] private float _overshoot = 1.7f;
+
+        private PlayerTier _playerTier;
+        private TierResolver _tierResolver;
+        private Mover _mover;
 
         private float _baseControllerRadius;
         private float _baseControllerCenterY;
@@ -34,11 +35,20 @@ namespace Player
 
         private ItemTier _currentTier = ItemTier.Small;
 
+        [Inject]
+        public void Construct(PlayerTier playerTier, TierResolver tierResolver, Mover mover)
+        {
+            _playerTier = playerTier;
+            _tierResolver = tierResolver;
+            _mover = mover;
+        }
+
         private void Awake()
         {
             if (_playerTier == null)
             {
-                throw new InvalidOperationException("LevelScaler requires _playerTier to be assigned.");
+                throw new InvalidOperationException(
+                    $"{name}: PlayerTier was not injected. Check that GameLifetimeScope registers PlayerTier and LevelScaler.");
             }
 
             if (_modelTransform == null)
@@ -53,7 +63,8 @@ namespace Player
 
             if (_tierResolver == null)
             {
-                throw new InvalidOperationException("LevelScaler requires _tierResolver to be assigned.");
+                throw new InvalidOperationException(
+                    $"{name}: TierResolver was not injected. Check that GameLifetimeScope registers TierResolver and LevelScaler.");
             }
 
             if (_rootTransform == null)
@@ -63,7 +74,8 @@ namespace Player
 
             if (_mover == null)
             {
-                throw new InvalidOperationException("LevelScaler requires _mover to be assigned.");
+                throw new InvalidOperationException(
+                    $"{name}: Mover was not injected. Check that GameLifetimeScope registers Mover and LevelScaler.");
             }
 
             if (_growDuration <= 0f)

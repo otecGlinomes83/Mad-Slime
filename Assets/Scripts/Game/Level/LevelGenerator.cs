@@ -14,8 +14,6 @@ namespace Game
     {
         [SerializeField] private Transform _itemsRoot;
         [SerializeField] private MeshRenderer _floorRenderer;
-        [SerializeField] private Movement.Mover _mover;
-        [SerializeField] private Collectables.Collector _collector;
 
         private readonly Dictionary<Item, ItemDefinition> _assignedVariants = new Dictionary<Item, ItemDefinition>();
         private readonly Dictionary<ItemDefinition, int> _spawnedCounts = new Dictionary<ItemDefinition, int>();
@@ -30,6 +28,8 @@ namespace Game
         private QuotaGenerator _quotaGenerator;
         private TierTable _tierTable;
         private LayoutsLibrary _layoutsLibrary;
+        private Movement.Mover _mover;
+        private Collectables.Collector _collector;
         private Bounds _floorBounds;
 
         public Bounds FloorBounds
@@ -47,7 +47,8 @@ namespace Game
 
         [Inject]
         public void Construct(LevelConfigResolver configResolver, PlayerProgress progress, LevelProgress levelProgress,
-            ItemPool itemPool, QuotaGenerator quotaGenerator, TierTable tierTable, LayoutsLibrary layoutsLibrary)
+            ItemPool itemPool, QuotaGenerator quotaGenerator, TierTable tierTable, LayoutsLibrary layoutsLibrary,
+            Movement.Mover mover, Collectables.Collector collector)
         {
             _configResolver = configResolver;
             _progress = progress;
@@ -56,6 +57,8 @@ namespace Game
             _quotaGenerator = quotaGenerator;
             _tierTable = tierTable;
             _layoutsLibrary = layoutsLibrary;
+            _mover = mover;
+            _collector = collector;
         }
 
         private void Awake()
@@ -81,7 +84,13 @@ namespace Game
             if (_mover == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Mover is not assigned. Drag a Mover into the _mover field.");
+                    $"{name}: Mover was not injected. Check that GameLifetimeScope registers Mover and LevelGenerator.");
+            }
+
+            if (_collector == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Collector was not injected. Check that GameLifetimeScope registers Collector and LevelGenerator.");
             }
 
             Generate();
@@ -89,18 +98,12 @@ namespace Game
 
         private void OnEnable()
         {
-            if (_collector != null)
-            {
-                _collector.ItemCollected += OnItemCollected;
-            }
+            _collector.ItemCollected += OnItemCollected;
         }
 
         private void OnDisable()
         {
-            if (_collector != null)
-            {
-                _collector.ItemCollected -= OnItemCollected;
-            }
+            _collector.ItemCollected -= OnItemCollected;
         }
 
         private void OnItemCollected(Items.Item item)

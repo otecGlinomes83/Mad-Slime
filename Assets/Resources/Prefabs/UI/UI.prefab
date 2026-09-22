@@ -474,7 +474,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95cb0fdcaf55b274bbafcad9a8d9cf9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timer: {fileID: 0}
   _timerText: {fileID: 5609032690254823465}
 --- !u!1 &1519690479133219061
 GameObject:
@@ -1042,6 +1041,7 @@ GameObject:
   - component: {fileID: 7225002553568962805}
   - component: {fileID: 4313454097646750993}
   - component: {fileID: 3125134413433287598}
+  - component: {fileID: 8714244455889361064}
   m_Layer: 0
   m_Name: ButtonSounds
   m_TagString: Untagged
@@ -1173,11 +1173,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sfxClip: {fileID: 11400000, guid: d2ed719930b13b41b820abb33e340ce0, type: 2}
-  _buttons:
-  - {fileID: 8401897691493738771}
-  - {fileID: 376058525767751884}
-  - {fileID: 7228528999950768913}
-  - {fileID: 3708193967639773064}
+--- !u!114 &8714244455889361064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5139117455163393928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 0}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5590437920610202249
 GameObject:
   m_ObjectHideFlags: 0
@@ -1306,11 +1345,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b389bb9ca05ca34d9ddc154eb689ddb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sessionHandler: {fileID: 0}
-  _mixerController: {fileID: 0}
   _pauseButton: {fileID: 8401897691493738771}
   _pauseMenuPrefab: {fileID: 5859713677950448305, guid: 07369f9036a55ff4e8db9b912f0290c3, type: 3}
-  _pauser: {fileID: 0}
 --- !u!114 &2979847688143477972
 MonoBehaviour:
   m_ObjectHideFlags: 0

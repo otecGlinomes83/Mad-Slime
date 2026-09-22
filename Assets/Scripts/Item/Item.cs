@@ -15,11 +15,11 @@ namespace Items
 
         [SerializeField] private ItemDefinition _definition;
         [SerializeField] private Collider _collider;
+        [SerializeField] private Renderer[] _renderers;
         [SerializeField] private Material _ghostMaterial;
         [SerializeField] private GhostFadeConfig _ghostFadeConfig;
 
         private Vector3 _defaultScale;
-        private Renderer[] _renderers;
         private Material[][] _originalMaterials;
         private Material[][] _ghostMaterials;
         private MaterialPropertyBlock _propertyBlock;
@@ -30,6 +30,7 @@ namespace Items
 
         public ItemDefinition Definition => _definition;
         public Transform Self => transform;
+        public Collider Collider => _collider;
 
         public ItemTier Tier
         {
@@ -82,12 +83,10 @@ namespace Items
                 Mathf.Abs(transform.localScale.y),
                 Mathf.Abs(transform.localScale.z));
 
-            _renderers = GetComponentsInChildren<Renderer>(true);
-
-            if (_renderers.Length == 0)
+            if (_renderers == null || _renderers.Length == 0)
             {
                 throw new InvalidOperationException(
-                    $"{name}: no Renderers found in children. An item prefab must contain a model with at least one Renderer.");
+                    $"{name}: Renderers list is empty. Drag every Renderer of the item model into the Renderers list on the Item component.");
             }
 
             _originalMaterials = new Material[_renderers.Length][];

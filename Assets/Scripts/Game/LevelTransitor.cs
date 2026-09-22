@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using YG;
 
@@ -17,12 +13,6 @@ namespace Game
 
         public bool IsHasShop => string.IsNullOrEmpty(_shopScene) == false;
         public bool IsHasMenu => string.IsNullOrEmpty(_menuScene) == false;
-
-        public void Restart()
-        {
-            string currentSceneName = SceneManager.GetActiveScene().name;
-            Load(currentSceneName);
-        }
 
         public void LoadGame()
         {
@@ -75,6 +65,8 @@ namespace Game
         {
             if (string.IsNullOrEmpty(targetScene))
             {
+                Debug.LogError(
+                    $"[Scene] {SceneManager.GetActiveScene().name} tried to load EMPTY scene name. Fill the scene name fields on the LevelTransitor component.");
                 return;
             }
 

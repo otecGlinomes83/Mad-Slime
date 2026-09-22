@@ -16,41 +16,32 @@ namespace UI
         [SerializeField] private Button _leaderboardButton;
         [SerializeField] private Button _settingsButton;
 
-        [SerializeField] private PauseMenu  _pauseMenu;
+        [SerializeField] private PauseMenu _pauseMenu;
         [SerializeField] private LeaderboardMenu _leaderboardMenuPrefab;
         [SerializeField] private SfxClip _musicTrack;
 
-        private AudioMixerController _audioMixerController;
         private MusicPlayer _musicPlayer;
         private Pauser _pauser;
-        private Wallet _wallet;
         private LevelTransitor _levelTransitor;
         private IObjectResolver _resolver;
         private bool _isSubscribed;
 
         [Inject]
-        public void Construct(Wallet wallet, LevelTransitor levelTransitor, Pauser pauser, AudioMixerController audioMixerController, MusicPlayer musicPlayer, IObjectResolver resolver)
+        public void Construct(LevelTransitor levelTransitor, Pauser pauser,
+            MusicPlayer musicPlayer, IObjectResolver resolver)
         {
-            _wallet = wallet;
             _levelTransitor = levelTransitor;
             _pauser = pauser;
-            _audioMixerController = audioMixerController;
             _musicPlayer = musicPlayer;
             _resolver = resolver;
         }
 
         private void Awake()
         {
-            if (_wallet == null || _levelTransitor == null)
+            if (_levelTransitor == null || _pauser == null || _musicPlayer == null || _resolver == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: dependencies were not injected. MenuLifetimeScope must be the first object in the scene hierarchy.");
-            }
-
-            if (_musicPlayer == null || _resolver == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: MusicPlayer or Resolver were not injected. MenuLifetimeScope must be the first object in the scene hierarchy.");
             }
 
             if (_musicTrack == null)
@@ -77,10 +68,10 @@ namespace UI
                     $"{name}: LeaderboardButton is not assigned. Drag a Button into the _leaderboardButton field.");
             }
 
-            if (_audioMixerController == null)
+            if (_settingsButton == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: MixerController is not assigned. Drag an AudioMixerController into the _mixerController field.");
+                    $"{name}: SettingsButton is not assigned. Drag a Button into the _settingsButton field.");
             }
 
             if (_leaderboardMenuPrefab == null)
@@ -88,26 +79,16 @@ namespace UI
                 throw new InvalidOperationException(
                     $"{name}: LeaderboardMenuPrefab is not assigned. Drag a LeaderboardMenu prefab into the _leaderboardMenuPrefab field.");
             }
-
-            if (_pauser == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Pauser is not assigned. Drag a Pauser into the _pauser field.");
-            }
         }
 
         private void Start()
         {
+            Time.timeScale = 1f;
             _musicPlayer.Play(_musicTrack);
         }
 
         private void OnEnable()
         {
-            if (_wallet == null)
-            {
-                return;
-            }
-
             if (_isSubscribed)
             {
                 return;
@@ -120,7 +101,7 @@ namespace UI
             _shopButton.onClick.AddListener(OnShopClicked);
             _leaderboardButton.onClick.AddListener(OnLeaderboardClicked);
         }
-        
+
         private void OnDisable()
         {
             if (_isSubscribed == false)
@@ -131,6 +112,7 @@ namespace UI
             _isSubscribed = false;
 
             _playButton.onClick.RemoveListener(OnPlayClicked);
+            _settingsButton.onClick.RemoveListener(OnSettingsClicked);
             _shopButton.onClick.RemoveListener(OnShopClicked);
             _leaderboardButton.onClick.RemoveListener(OnLeaderboardClicked);
         }
@@ -138,9 +120,9 @@ namespace UI
         private void OnSettingsClicked()
         {
             PauseMenu pauseMenu = _resolver.Instantiate(_pauseMenu);
-            pauseMenu.Initialize(_pauser,_audioMixerController,false);
+            pauseMenu.Initialize(false);
         }
-        
+
         private void OnPlayClicked()
         {
             _levelTransitor.LoadGame();
@@ -154,7 +136,7 @@ namespace UI
         private void OnLeaderboardClicked()
         {
             LeaderboardMenu leaderboardMenu = _resolver.Instantiate(_leaderboardMenuPrefab);
-            leaderboardMenu.Initialize(_pauser);
+            leaderboardMenu.Initialize();
         }
     }
 }

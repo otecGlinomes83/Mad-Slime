@@ -40,18 +40,7 @@ namespace Audio
         public void Play(SfxClip sfxClip)
         {
             ValidateSfxClip(sfxClip);
-
-            float pitch;
-            if (sfxClip.IsRandomPitch == true)
-            {
-                pitch = Random.Range(sfxClip.MinPitch, sfxClip.MaxPitch);
-            }
-            else
-            {
-                pitch = 1f;
-            }
-
-            PlayOneShot(sfxClip.Clip, sfxClip.Volume, pitch);
+            PlayOneShot(sfxClip.Clip, sfxClip.Volume, ResolvePitch(sfxClip));
         }
 
         public void Play(AudioClip clip, float volume, float pitch)
@@ -68,20 +57,20 @@ namespace Audio
         {
             ValidateSfxClip(sfxClip);
 
-            float pitch;
-            if (sfxClip.IsRandomPitch == true)
-            {
-                pitch = Random.Range(sfxClip.MinPitch, sfxClip.MaxPitch);
-            }
-            else
-            {
-                pitch = 1f;
-            }
-
             _loopSource.clip = sfxClip.Clip;
             _loopSource.volume = sfxClip.Volume;
-            _loopSource.pitch = pitch;
+            _loopSource.pitch = ResolvePitch(sfxClip);
             _loopSource.Play();
+        }
+
+        private float ResolvePitch(SfxClip sfxClip)
+        {
+            if (sfxClip.IsRandomPitch == false)
+            {
+                return 1f;
+            }
+
+            return Random.Range(sfxClip.MinPitch, sfxClip.MaxPitch);
         }
 
         public void StopLoop()

@@ -49,13 +49,5 @@ namespace Audio
             _source.clip = musicClip.Clip;
             _source.Play();
         }
-
-        public void Stop()
-        {
-            if (_source.isPlaying == true)
-            {
-                _source.Stop();
-            }
-        }
     }
 }

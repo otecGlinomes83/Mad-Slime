@@ -1,16 +1,30 @@
 using System;
+using Scriptables;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace Audio
 {
     public sealed class AudioSettingsPanel : MonoBehaviour
     {
+        private const float TickThrottleSeconds = 0.08f;
+
         [SerializeField] private Slider _musicSlider;
         [SerializeField] private Slider _sfxSlider;
+        [SerializeField] private SfxClip _tickClip;
 
         private AudioMixerController _mixerController;
+        private SfxPlayer _sfxPlayer;
+        private float _lastTickTime;
         private bool _isInitialized;
+
+        [Inject]
+        public void Construct(AudioMixerController mixerController, SfxPlayer sfxPlayer)
+        {
+            _mixerController = mixerController;
+            _sfxPlayer = sfxPlayer;
+        }
 
         private void OnDisable()
         {
@@ -25,26 +39,36 @@ namespace Audio
             _isInitialized = false;
         }
 
-        public void Initialize(AudioMixerController mixerController)
+        public void Initialize()
         {
-            _mixerController = mixerController;
-
             if (_mixerController == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: AudioMixerController is not assigned.");
+                    $"{name}: AudioMixerController was not injected. The settings prefab must be instantiated through the DI container (IObjectResolver.Instantiate).");
+            }
+
+            if (_sfxPlayer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SfxPlayer was not injected. The settings prefab must be instantiated through the DI container (IObjectResolver.Instantiate).");
             }
 
             if (_musicSlider == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Music Slider is not assigned.");
+                    $"{name}: Music Slider is not assigned. Drag a Slider into the _musicSlider field.");
             }
 
             if (_sfxSlider == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SFX Slider is not assigned.");
+                    $"{name}: SFX Slider is not assigned. Drag a Slider into the _sfxSlider field.");
+            }
+
+            if (_tickClip == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Tick Clip is not assigned. Drag a SfxClip asset into the _tickClip field.");
             }
 
             _musicSlider.minValue = 0f;
@@ -73,6 +97,20 @@ namespace Audio
         private void OnSfxSliderChanged(float value)
         {
             _mixerController.SetSFXVolume(value);
+            PlayTick();
+        }
+
+        private void PlayTick()
+        {
+            float currentTime = Time.unscaledTime;
+
+            if (currentTime - _lastTickTime < TickThrottleSeconds)
+            {
+                return;
+            }
+
+            _lastTickTime = currentTime;
+            _sfxPlayer.Play(_tickClip);
         }
     }
 }

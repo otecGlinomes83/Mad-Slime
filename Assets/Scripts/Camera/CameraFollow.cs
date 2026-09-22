@@ -2,19 +2,21 @@ using Player;
 using Skills;
 using System;
 using UnityEngine;
+using VContainer;
 
 namespace CameraSystem
 {
     public sealed class CameraFollow : MonoBehaviour
     {
         [SerializeField] private Transform _target;
-        [SerializeField] private TierResolver _tierResolver;
-        [SerializeField] private PlayerTier _playerTier;
-        [SerializeField] private CameraImpulse _impulse;
         [SerializeField] private float _positionSmoothTime = 0.25f;
         [SerializeField] private float _maxPositionSpeed = 50f;
         [SerializeField, Min(0.1f)] private float _shakeFrequency = 25f;
         [SerializeField, Range(0f, 1f)] private Vector2 _shakeAxes = new Vector2(1f, 1f);
+
+        private TierResolver _tierResolver;
+        private PlayerTier _playerTier;
+        private CameraImpulse _impulse;
 
         private Vector3 _positionVelocity;
         private Vector3 _currentOffset;
@@ -23,6 +25,14 @@ namespace CameraSystem
 
         private Camera _camera;
         private float _baseFov;
+
+        [Inject]
+        public void Construct(TierResolver tierResolver, PlayerTier playerTier, CameraImpulse impulse)
+        {
+            _tierResolver = tierResolver;
+            _playerTier = playerTier;
+            _impulse = impulse;
+        }
 
         private void Awake()
         {
@@ -35,19 +45,19 @@ namespace CameraSystem
             if (_tierResolver == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: TierResolver is not assigned. Drag a TierResolver component into the _tierResolver field in the inspector.");
+                    $"{name}: TierResolver was not injected. Check that GameLifetimeScope registers TierResolver and CameraFollow.");
             }
 
             if (_playerTier == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerTier is not assigned. Drag a PlayerTier component into the _playerTier field in the inspector.");
+                    $"{name}: PlayerTier was not injected. Check that GameLifetimeScope registers PlayerTier and CameraFollow.");
             }
 
             if (_impulse == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: CameraImpulse is not assigned. Drag a CameraImpulse component into the _impulse field in the inspector.");
+                    $"{name}: CameraImpulse was not injected. Check that GameLifetimeScope registers CameraImpulse and CameraFollow.");
             }
 
             if (TryGetComponent(out Camera cameraComponent) == false)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game;
 using TMPro;
 using UnityEngine;
+using VContainer;
 using YG;
 
 namespace Skins
@@ -22,11 +23,18 @@ namespace Skins
 
         public ShopItemView SelectedView => _selectedView;
 
-        public void Initialize(Wallet wallet)
+        [Inject]
+        public void Construct(Wallet wallet)
         {
-            if (wallet == null)
+            _wallet = wallet;
+        }
+
+        public void Initialize()
+        {
+            if (_wallet == null)
             {
-                throw new ArgumentNullException(nameof(wallet));
+                throw new InvalidOperationException(
+                    $"{name}: Wallet was not injected. Check that ShopLifetimeScope registers Wallet and ShopPanel.");
             }
 
             if (_itemsParent == null)
@@ -47,12 +55,6 @@ namespace Skins
                     $"{name}: MoneyText is not assigned. Drag a TMP_Text into the _moneyText field.");
             }
 
-            if (_wallet != null)
-            {
-                _wallet.BalanceChanged -= OnBalanceChanged;
-            }
-
-            _wallet = wallet;
             _wallet.BalanceChanged += OnBalanceChanged;
             OnBalanceChanged(_wallet.Balance, _wallet.Balance);
         }
@@ -182,10 +184,7 @@ namespace Skins
 
         private void OnDestroy()
         {
-            if (_wallet != null)
-            {
-                _wallet.BalanceChanged -= OnBalanceChanged;
-            }
+            _wallet.BalanceChanged -= OnBalanceChanged;
         }
 
         private void Clear()

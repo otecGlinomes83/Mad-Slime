@@ -1,6 +1,8 @@
 ﻿using Game;
 using System;
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 namespace UI
 {
@@ -8,14 +10,20 @@ namespace UI
     {
         protected Pauser Pauser { get; private set; }
 
-        public virtual void Initialize(Pauser pauser)
+        [Inject]
+        public void Construct(Pauser pauser)
         {
-            if (pauser == null)
+            Pauser = pauser;
+        }
+
+        public virtual void Initialize()
+        {
+            if (Pauser == null)
             {
-                throw new ArgumentNullException(nameof(pauser));
+                throw new InvalidOperationException(
+                    $"{name}: Pauser was not injected. The window prefab must be instantiated through the DI container (IObjectResolver.Instantiate).");
             }
 
-            Pauser = pauser;
             Pauser.RequestPause();
         }
 

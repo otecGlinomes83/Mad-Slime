@@ -1,15 +1,12 @@
 using System;
 using Game;
 using UnityEngine;
+using VContainer;
 
 namespace ShapeFill
 {
     public sealed class FillDebug : MonoBehaviour
     {
-        [SerializeField] private ShapeFiller _filler;
-
-        [SerializeField] private FillSessionHandler _sessionHandler;
-
         [SerializeField] private Transform _cubesContainer;
 
         [SerializeField] private GameObject _fillProgressLabel;
@@ -23,21 +20,31 @@ namespace ShapeFill
         [Tooltip("Сколько обычных (не квотных) предметов «набрано». Каждый даёт +1 к заливке, как квотный")]
         [SerializeField, Min(0)] private int _testDefaultCollected;
 
+        private ShapeFiller _filler;
+        private FillSessionHandler _sessionHandler;
+
         private Camera _camera;
         private float _startFov;
+
+        [Inject]
+        public void Construct(ShapeFiller filler, FillSessionHandler sessionHandler)
+        {
+            _filler = filler;
+            _sessionHandler = sessionHandler;
+        }
 
         private void Awake()
         {
             if (_filler == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: ShapeFiller is not assigned. Drag a ShapeFiller component into the _filler field.");
+                    $"{name}: ShapeFiller was not injected. Check that FillLifetimeScope registers ShapeFiller and FillDebug.");
             }
 
             if (_sessionHandler == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: FillSessionHandler is not assigned. Drag a FillSessionHandler component into the _sessionHandler field.");
+                    $"{name}: FillSessionHandler was not injected. Check that FillLifetimeScope registers FillSessionHandler and FillDebug.");
             }
 
             if (_cubesContainer == null)

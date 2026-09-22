@@ -2,6 +2,7 @@
 using Player;
 using Skills;
 using UnityEngine;
+using VContainer;
 
 namespace Detection
 {
@@ -12,19 +13,38 @@ namespace Detection
         [SerializeField] private float _radius = 1.5f;
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] private Color _gizmoColor = Color.cyan;
-        [SerializeField] private PlayerTier _tierSource;
-        [SerializeField] private TierResolver _tierResolver;
 
         private readonly Collider[] _buffer = new Collider[BufferSize];
 
+        private PlayerTier _tierSource;
+        private TierResolver _tierResolver;
         private float _baseRadius;
 
         public event Action<T> Detected;
 
         public float Radius => _radius;
 
+        [Inject]
+        public void Construct(PlayerTier tierSource, TierResolver tierResolver)
+        {
+            _tierSource = tierSource;
+            _tierResolver = tierResolver;
+        }
+
         private void Awake()
         {
+            if (_tierSource == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: TierSource was not injected. Check that GameLifetimeScope registers PlayerTier and the detector.");
+            }
+
+            if (_tierResolver == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: TierResolver was not injected. Check that GameLifetimeScope registers TierResolver and the detector.");
+            }
+
             _baseRadius = _radius;
         }
 
@@ -50,22 +70,12 @@ namespace Detection
 
         protected virtual void OnEnable()
         {
-            if (_tierSource == null || _tierResolver == null)
-            {
-                return;
-            }
-
             _tierSource.TierChanged += OnTierSourceChanged;
             SetRadius(_baseRadius * _tierResolver.GetScaleFor(_tierSource.CurrentTier));
         }
 
         protected virtual void OnDisable()
         {
-            if (_tierSource == null || _tierResolver == null)
-            {
-                return;
-            }
-
             _tierSource.TierChanged -= OnTierSourceChanged;
         }
 
@@ -73,7 +83,7 @@ namespace Detection
         {
             if (newRadius < 0f)
             {
-                throw new ArgumentOutOfRangeException(nameof(newRadius), $"new radius cannot be negative");
+                throw new ArgumentOutOfRangeException(nameof(newRadius), "new radius cannot be negative");
             }
 
             _radius = newRadius;

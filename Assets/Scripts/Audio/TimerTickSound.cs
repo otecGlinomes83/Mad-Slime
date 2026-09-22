@@ -8,17 +8,18 @@ namespace Audio
 {
     public sealed class TimerTickSound : MonoBehaviour
     {
-        [SerializeField] private Timer _timer;
         [SerializeField] private SfxClip _sfxClip;
         [SerializeField] private float _thresholdSeconds = 20f;
 
         private SfxPlayer _sfxPlayer;
+        private Timer _timer;
         private bool _isTickingActive;
 
         [Inject]
-        public void Construct(SfxPlayer sfxPlayer)
+        public void Construct(SfxPlayer sfxPlayer, Timer timer)
         {
             _sfxPlayer = sfxPlayer;
+            _timer = timer;
         }
 
         private void Awake()
@@ -32,7 +33,7 @@ namespace Audio
             if (_timer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Timer is not assigned.");
+                    $"{name}: Timer was not injected. Check that GameLifetimeScope registers Timer and TimerTickSound.");
             }
 
             if (_sfxClip == null)

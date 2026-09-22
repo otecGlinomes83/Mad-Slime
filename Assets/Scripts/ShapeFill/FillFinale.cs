@@ -4,21 +4,13 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
+using VContainer;
 using Random = UnityEngine.Random;
 
 namespace ShapeFill
 {
     public sealed class FillFinale : MonoBehaviour
     {
-        [Tooltip("Откуда приходит сигнал финала: FillCompleted при 100% заливки")]
-        [SerializeField] private ShapeFillOrchestrator _orchestrator;
-
-        [Tooltip("Пул кубов, из которого спавнится конфетти")]
-        [SerializeField] private CubeSpawner _spawner;
-
-        [Tooltip("Сетка формы: из неё берутся ячейки, цвета конфетти и точка вылета")]
-        [SerializeField] private GridBuilder _gridBuilder;
-
         [Tooltip("Количество конфетти на финал. Больше = наряднее, но тяжелее по кадрам на слабых телефонах")]
         [SerializeField, Min(1)] private int _confettiCount = 40;
 
@@ -65,30 +57,42 @@ namespace ShapeFill
         private readonly List<Vector3> _velocities = new List<Vector3>();
         private readonly List<Vector3> _angularVelocities = new List<Vector3>();
 
+        private ShapeFillOrchestrator _orchestrator;
+        private CubeSpawner _spawner;
+        private GridBuilder _gridBuilder;
+
         private float _burstElapsedTime;
         private float _confettiScale;
         private bool _isBursting;
         private Camera _camera;
         private float _startFov;
 
+        [Inject]
+        public void Construct(ShapeFillOrchestrator orchestrator, CubeSpawner spawner, GridBuilder gridBuilder)
+        {
+            _orchestrator = orchestrator;
+            _spawner = spawner;
+            _gridBuilder = gridBuilder;
+        }
+
         private void Awake()
         {
             if (_orchestrator == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Orchestrator is not assigned. Drag a ShapeFillOrchestrator component into the _orchestrator field.");
+                    $"{name}: Orchestrator was not injected. Check that FillLifetimeScope registers ShapeFillOrchestrator and FillFinale.");
             }
 
             if (_spawner == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Spawner is not assigned. Drag a CubeSpawner component into the _spawner field.");
+                    $"{name}: Spawner was not injected. Check that FillLifetimeScope registers CubeSpawner and FillFinale.");
             }
 
             if (_gridBuilder == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: GridBuilder is not assigned. Drag a GridBuilder component into the _gridBuilder field.");
+                    $"{name}: GridBuilder was not injected. Check that FillLifetimeScope registers GridBuilder and FillFinale.");
             }
 
             if (_confettiUpBiasMin > _confettiUpBiasMax)

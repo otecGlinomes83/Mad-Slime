@@ -10,30 +10,33 @@ namespace Game
 {
     public sealed class GameplaySessionHandler : MonoBehaviour
     {
-        [SerializeField] private LevelTransitor _levelTransitor;
-        [SerializeField] private Timer _timer;
-        [SerializeField] private PlayerInputReader _inputReader;
-        [SerializeField] private Pauser _pauser;
         [SerializeField] private SfxClip _musicTrack;
 
         private LevelConfigResolver _configResolver;
         private MusicPlayer _musicPlayer;
         private PlayerProgress _progress;
         private LevelProgress _levelProgress;
+        private LevelTransitor _levelTransitor;
+        private Timer _timer;
+        private PlayerInputReader _inputReader;
+        private Pauser _pauser;
 
         private bool _isStarted;
         private bool _isFinished;
         private bool _isSubscribed;
 
-        public event Action GameStarted;
-
         [Inject]
-        public void Construct(LevelConfigResolver configResolver, PlayerProgress progress, LevelProgress levelProgress, MusicPlayer musicPlayer)
+        public void Construct(LevelConfigResolver configResolver, PlayerProgress progress, LevelProgress levelProgress,
+            MusicPlayer musicPlayer, LevelTransitor levelTransitor, Timer timer, PlayerInputReader inputReader, Pauser pauser)
         {
             _configResolver = configResolver;
             _progress = progress;
             _levelProgress = levelProgress;
             _musicPlayer = musicPlayer;
+            _levelTransitor = levelTransitor;
+            _timer = timer;
+            _inputReader = inputReader;
+            _pauser = pauser;
         }
 
         private void Awake()
@@ -111,12 +114,6 @@ namespace Game
             _levelProgress.QuotaCompleted += OnQuotaCompleted;
         }
 
-        public void Restart()
-        {
-            StopGameplay();
-            _levelTransitor.Restart();
-        }
-
         public void ExitToMenu()
         {
             StopGameplay();
@@ -145,8 +142,6 @@ namespace Game
             _pauser.RequestResume();
             _timer.StartCount();
             YG2.GameplayStart();
-
-            GameStarted?.Invoke();
         }
 
         private void OnTimeOut()

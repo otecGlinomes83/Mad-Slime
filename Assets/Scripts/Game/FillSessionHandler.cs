@@ -10,29 +10,38 @@ namespace Game
 {
     public sealed class FillSessionHandler : MonoBehaviour
     {
-        [SerializeField] private ShapeFillOrchestrator _fillOrchestrator;
-        [SerializeField] private GridBuilder _gridBuilder;
-        [SerializeField] private LevelTransitor _levelTransitor;
-        [SerializeField] private Rewarder _rewarder;
-        [SerializeField] private Pauser _pauser;
-        [SerializeField] private AdScheduler _adScheduler;
-        [SerializeField] private LeaderboardReporter _leaderboardReporter;
         [SerializeField, Min(0f)] private float _winDelay = 1.3f;
         [SerializeField] private SfxClip _musicTrack;
 
         private MusicPlayer _musicPlayer;
         private PlayerProgress _progress;
         private LevelConfigResolver _configResolver;
+        private ShapeFillOrchestrator _fillOrchestrator;
+        private GridBuilder _gridBuilder;
+        private LevelTransitor _levelTransitor;
+        private Rewarder _rewarder;
+        private Pauser _pauser;
+        private AdScheduler _adScheduler;
+        private LeaderboardReporter _leaderboardReporter;
 
         public event Action<int> Win;
         public event Action<int> Failed;
 
         [Inject]
-        public void Construct(PlayerProgress progress, LevelConfigResolver configResolver, MusicPlayer musicPlayer)
+        public void Construct(PlayerProgress progress, LevelConfigResolver configResolver, MusicPlayer musicPlayer,
+            ShapeFillOrchestrator fillOrchestrator, GridBuilder gridBuilder, LevelTransitor levelTransitor,
+            Rewarder rewarder, Pauser pauser, AdScheduler adScheduler, LeaderboardReporter leaderboardReporter)
         {
             _progress = progress;
             _configResolver = configResolver;
             _musicPlayer = musicPlayer;
+            _fillOrchestrator = fillOrchestrator;
+            _gridBuilder = gridBuilder;
+            _levelTransitor = levelTransitor;
+            _rewarder = rewarder;
+            _pauser = pauser;
+            _adScheduler = adScheduler;
+            _leaderboardReporter = leaderboardReporter;
         }
 
         private void Awake()
@@ -52,13 +61,37 @@ namespace Game
             if (_adScheduler == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: AdScheduler is not assigned. Drag an AdScheduler component into the _adScheduler field.");
+                    $"{name}: AdScheduler was not injected. Check that FillLifetimeScope registers AdScheduler and FillSessionHandler.");
             }
 
             if (_leaderboardReporter == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: LeaderboardReporter is not assigned. Drag a LeaderboardReporter component into the _leaderboardReporter field.");
+                    $"{name}: LeaderboardReporter was not injected. Check that FillLifetimeScope registers LeaderboardReporter and FillSessionHandler.");
+            }
+
+            if (_fillOrchestrator == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: ShapeFillOrchestrator was not injected. Check that FillLifetimeScope registers ShapeFillOrchestrator and FillSessionHandler.");
+            }
+
+            if (_rewarder == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Rewarder was not injected. Check that FillLifetimeScope registers Rewarder and FillSessionHandler.");
+            }
+
+            if (_levelTransitor == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: LevelTransitor was not injected. Check that FillLifetimeScope registers LevelTransitor and FillSessionHandler.");
+            }
+
+            if (_gridBuilder == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: GridBuilder was not injected. Check that FillLifetimeScope registers GridBuilder and FillSessionHandler.");
             }
         }
 
@@ -92,7 +125,7 @@ namespace Game
             if (_gridBuilder == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: GridBuilder is not assigned. Drag the GridBuilder component into the _gridBuilder field.");
+                    $"{name}: GridBuilder was not injected. Check that FillLifetimeScope registers GridBuilder and FillSessionHandler.");
             }
 
             LevelConfig config = _configResolver.GetConfigFor(_progress.CurrentLevel);

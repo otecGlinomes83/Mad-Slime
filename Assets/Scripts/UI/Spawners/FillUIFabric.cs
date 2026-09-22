@@ -1,4 +1,3 @@
-using Audio;
 using Game;
 using Scriptables;
 using System;
@@ -11,28 +10,28 @@ namespace UI
 {
     public sealed class FillUIFabric : MonoBehaviour
     {
-        [SerializeField] private FillSessionHandler _sessionHandler;
-        [SerializeField] private AudioMixerController _mixerController;
-
         [SerializeField] private Button _pauseButton;
 
         [SerializeField] private PauseMenu _pauseMenuPrefab;
         [SerializeField] private WinMenu _winMenuPrefab;
         [SerializeField] private FailMenu _failMenuPrefab;
 
-        [SerializeField] private Wallet _wallet;
-        [SerializeField] private AdScheduler _adScheduler;
         [SerializeField] private YandexConfig _yandexConfig;
 
-        [SerializeField] private Pauser _pauser;
-
         private IObjectResolver _resolver;
+        private FillSessionHandler _sessionHandler;
+        private Wallet _wallet;
+        private AdScheduler _adScheduler;
         private int _lastRewardAmount;
 
         [Inject]
-        public void Construct(IObjectResolver resolver)
+        public void Construct(IObjectResolver resolver, FillSessionHandler sessionHandler, Wallet wallet,
+            AdScheduler adScheduler)
         {
             _resolver = resolver;
+            _sessionHandler = sessionHandler;
+            _wallet = wallet;
+            _adScheduler = adScheduler;
         }
 
         private void Awake()
@@ -46,7 +45,19 @@ namespace UI
             if (_sessionHandler == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: FillSessionHandler is not assigned. Drag a FillSessionHandler into the _sessionHandler field.");
+                    $"{name}: FillSessionHandler was not injected. Check that FillLifetimeScope registers FillSessionHandler and FillUIFabric.");
+            }
+
+            if (_wallet == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Wallet was not injected. Check that FillLifetimeScope registers Wallet and FillUIFabric.");
+            }
+
+            if (_adScheduler == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AdScheduler was not injected. Check that FillLifetimeScope registers AdScheduler and FillUIFabric.");
             }
 
             if (_pauseButton == null)
@@ -79,7 +90,6 @@ namespace UI
             WinMenu winMenu = _resolver.Instantiate(_winMenuPrefab);
             winMenu.Initialize(
                 rewardAmount,
-                _pauser,
                 _sessionHandler.LoadNextLevel,
                 RequestDoubleReward,
                 _sessionHandler.ExitToMenuAfterWin);
@@ -90,7 +100,6 @@ namespace UI
             FailMenu failMenu = _resolver.Instantiate(_failMenuPrefab);
             failMenu.Initialize(
                 rewardAmount,
-                _pauser,
                 RequestNextLevelForRewarded,
                 OnRestartFromFail,
                 _sessionHandler.ExitToMenu);
@@ -122,9 +131,7 @@ namespace UI
         private void OnPauseButtonClick()
         {
             PauseMenu pauseMenu = _resolver.Instantiate(_pauseMenuPrefab);
-            pauseMenu.Initialize(
-                _pauser,
-                _mixerController, false);
+            pauseMenu.Initialize(false);
         }
     }
 }

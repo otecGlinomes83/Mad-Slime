@@ -3,35 +3,44 @@ using Cysharp.Threading.Tasks;
 using Items;
 using Player;
 using UnityEngine;
+using VContainer;
 
 namespace Collectables
 {
     public sealed class Collector : MonoBehaviour
     {
-        [SerializeField] private PlayerTier _tierHolder;
-        [SerializeField] private ItemDetector _detector;
-        [SerializeField] private Absorber _absorber;
+        private PlayerTier _tierHolder;
+        private ItemDetector _detector;
+        private Absorber _absorber;
 
         public event Action<Items.Item> ItemCollected;
+
+        [Inject]
+        public void Construct(PlayerTier tierHolder, ItemDetector detector, Absorber absorber)
+        {
+            _tierHolder = tierHolder;
+            _detector = detector;
+            _absorber = absorber;
+        }
 
         private void Awake()
         {
             if (_tierHolder == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: TierHolder is not assigned. Drag a PlayerTier component into the _tierHolder field.");
+                    $"{name}: TierHolder was not injected. Check that GameLifetimeScope registers PlayerTier and Collector.");
             }
 
             if (_detector == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Detector is not assigned. Drag an ItemDetector component into the _detector field.");
+                    $"{name}: Detector was not injected. Check that GameLifetimeScope registers ItemDetector and Collector.");
             }
 
             if (_absorber == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Absorber is not assigned. Drag an Absorber component into the _absorber field.");
+                    $"{name}: Absorber was not injected. Check that GameLifetimeScope registers Absorber and Collector.");
             }
         }
 

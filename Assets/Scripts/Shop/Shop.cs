@@ -15,7 +15,6 @@ namespace Skins
     public sealed class Shop : MonoBehaviour
     {
         [SerializeField] private ShopContent _shopContent;
-        [SerializeField] private ShopPanel _shopPanel;
         [SerializeField] private Button _closeButton;
         [SerializeField] private SfxClip _musicTrack;
 
@@ -23,12 +22,18 @@ namespace Skins
         private ModelPlacer _placer;
         private MusicPlayer _musicPlayer;
         private Wallet _wallet;
+        private ShopPanel _shopPanel;
         private bool _isInitialized;
 
         [Inject]
-        public void Construct(MusicPlayer musicPlayer)
+        public void Construct(MusicPlayer musicPlayer, ShopPanel shopPanel, ModelPlacer placer,
+            LevelTransitor levelTransitor, Wallet wallet)
         {
             _musicPlayer = musicPlayer;
+            _shopPanel = shopPanel;
+            _placer = placer;
+            _levelTransitor = levelTransitor;
+            _wallet = wallet;
         }
 
         private void Awake()
@@ -37,6 +42,30 @@ namespace Skins
             {
                 throw new InvalidOperationException(
                     $"{name}: MusicPlayer was not injected. ShopLifetimeScope must be the first object in the scene hierarchy.");
+            }
+
+            if (_shopPanel == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: ShopPanel was not injected. Check that ShopLifetimeScope registers ShopPanel and Shop.");
+            }
+
+            if (_placer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: ModelPlacer was not injected. Check that ShopLifetimeScope registers ModelPlacer and Shop.");
+            }
+
+            if (_levelTransitor == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: LevelTransitor was not injected. Check that ShopLifetimeScope registers LevelTransitor and Shop.");
+            }
+
+            if (_wallet == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Wallet was not injected. Check that ShopLifetimeScope registers Wallet and Shop.");
             }
 
             if (_musicTrack == null)
@@ -51,21 +80,11 @@ namespace Skins
                     $"{name}: ShopContent is not assigned. Drag a ShopContent asset into the _shopContent field.");
             }
 
-            if (_shopPanel == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: ShopPanel is not assigned. Drag a ShopPanel component into the _shopPanel field.");
-            }
-
             if (_closeButton == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: CloseButton is not assigned. Drag a Button into the _closeButton field.");
             }
-
-            _wallet = GetComponent<Wallet>();
-            _placer = GetComponent<ModelPlacer>();
-            _levelTransitor = GetComponent<LevelTransitor>();
         }
 
         private void OnEnable()
@@ -106,7 +125,7 @@ namespace Skins
                 return;
             }
 
-            _shopPanel.Initialize(_wallet);
+            _shopPanel.Initialize();
             _shopPanel.Show(_shopContent.SkinItems);
             OnViewSelected(_shopPanel.SelectedView);
 

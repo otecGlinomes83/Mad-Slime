@@ -14,23 +14,26 @@ namespace Player
     [RequireComponent(typeof(PlayerTier))]
     public sealed class Player : MonoBehaviour
     {
-        [SerializeField] private PlayerInputReader _inputReader;
-        [SerializeField] private Collector _collector;
-        [SerializeField] private ScalePunch _collectPunch;
-
         private Mover _mover;
         private Rotator _rotator;
         private PlayerTier _playerTier;
         private LevelProgress _levelProgress;
         private PlayerConfig _playerConfig;
         private TierTable _tierTable;
+        private PlayerInputReader _inputReader;
+        private Collector _collector;
+        private ScalePunch _collectPunch;
 
         [Inject]
-        public void Construct(LevelProgress levelProgress, PlayerConfig playerConfig, TierTable tierTable)
+        public void Construct(LevelProgress levelProgress, PlayerConfig playerConfig, TierTable tierTable,
+            PlayerInputReader inputReader, Collector collector, ScalePunch collectPunch)
         {
             _levelProgress = levelProgress;
             _playerConfig = playerConfig;
             _tierTable = tierTable;
+            _inputReader = inputReader;
+            _collector = collector;
+            _collectPunch = collectPunch;
         }
 
         private void Awake()
@@ -50,19 +53,19 @@ namespace Player
             if (_inputReader == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: InputReader is not assigned. Drag a PlayerInputReader component into the _inputReader field.");
+                    $"{name}: InputReader was not injected. Check that GameLifetimeScope registers PlayerInputReader and Player.");
             }
 
             if (_collector == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Collector is not assigned. Drag a Collector component into the _collector field.");
+                    $"{name}: Collector was not injected. Check that GameLifetimeScope registers Collector and Player.");
             }
 
             if (_collectPunch == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: CollectPunch is not assigned. Drag a ScalePunch component into the _collectPunch field.");
+                    $"{name}: CollectPunch was not injected. Check that GameLifetimeScope registers ScalePunch and Player.");
             }
 
             _mover = GetComponent<Mover>();

@@ -8,10 +8,9 @@ namespace Player
 {
     public sealed class PlayerTier : MonoBehaviour
     {
-        [SerializeField] private TierResolver _tierResolver;
-
         private int _mass;
         private PlayerConfig _config;
+        private TierResolver _tierResolver;
 
         public event Action<ItemTier, ItemTier> TierChanged;
         public event Action<int, int> MassChanged;
@@ -20,9 +19,10 @@ namespace Player
         public ItemTier CurrentTier { get; private set; } = ItemTier.Small;
 
         [Inject]
-        public void Construct(PlayerConfig config)
+        public void Construct(PlayerConfig config, TierResolver tierResolver)
         {
             _config = config;
+            _tierResolver = tierResolver;
         }
 
         private void Awake()
@@ -30,7 +30,7 @@ namespace Player
             if (_tierResolver == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: TierResolver is not assigned. Drag a TierResolver component into the _tierResolver field.");
+                    $"{name}: TierResolver was not injected. Check that GameLifetimeScope registers TierResolver and PlayerTier.");
             }
 
             if (_config == null)
