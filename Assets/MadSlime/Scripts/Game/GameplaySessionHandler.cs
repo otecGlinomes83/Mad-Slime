@@ -1,10 +1,11 @@
 ﻿using Audio;
+using Core;
+using Cysharp.Threading.Tasks;
 using PlayerInput;
 using Scriptables;
 using System;
 using UnityEngine;
 using VContainer;
-using YG;
 
 namespace Game
 {
@@ -16,10 +17,11 @@ namespace Game
         private MusicPlayer _musicPlayer;
         private PlayerProgress _progress;
         private LevelProgress _levelProgress;
-        private LevelTransitor _levelTransitor;
+        private GameDirector _gameDirector;
         private Timer _timer;
         private PlayerInputReader _inputReader;
         private Pauser _pauser;
+        private IGameplayReporter _gameplayReporter;
 
         private bool _isStarted;
         private bool _isFinished;
@@ -27,16 +29,18 @@ namespace Game
 
         [Inject]
         public void Construct(LevelConfigResolver configResolver, PlayerProgress progress, LevelProgress levelProgress,
-            MusicPlayer musicPlayer, LevelTransitor levelTransitor, Timer timer, PlayerInputReader inputReader, Pauser pauser)
+            MusicPlayer musicPlayer, GameDirector gameDirector, Timer timer, PlayerInputReader inputReader, Pauser pauser,
+            IGameplayReporter gameplayReporter)
         {
             _configResolver = configResolver;
             _progress = progress;
             _levelProgress = levelProgress;
             _musicPlayer = musicPlayer;
-            _levelTransitor = levelTransitor;
+            _gameDirector = gameDirector;
             _timer = timer;
             _inputReader = inputReader;
             _pauser = pauser;
+            _gameplayReporter = gameplayReporter;
         }
 
         private void Awake()
@@ -51,6 +55,18 @@ namespace Game
             {
                 throw new InvalidOperationException(
                     $"{name}: MusicPlayer was not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
+            }
+
+            if (_gameDirector == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: GameDirector was not injected. Check that ProjectLifetimeScope registers GameDirector and GameLifetimeScope registers GameplaySessionHandler.");
+            }
+
+            if (_gameplayReporter == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: IGameplayReporter was not injected. Check that ProjectLifetimeScope registers the YG2 gameplay adapter.");
             }
 
             if (_musicTrack == null)
@@ -117,7 +133,7 @@ namespace Game
         public void ExitToMenu()
         {
             StopGameplay();
-            _levelTransitor.LoadMenu();
+            NavigateTo(SceneId.Menu).Forget();
         }
 
         private void StopGameplay()
@@ -127,7 +143,7 @@ namespace Game
                 return;
             }
 
-            YG2.GameplayStop();
+            _gameplayReporter.ReportStop();
         }
 
         private void Begin()
@@ -141,7 +157,7 @@ namespace Game
 
             _pauser.RequestResume();
             _timer.StartCount();
-            YG2.GameplayStart();
+            _gameplayReporter.ReportStart();
         }
 
         private void OnTimeOut()
@@ -172,9 +188,19 @@ namespace Game
                 $"[Game] finished: {reason} | Level={_progress.CurrentLevel} Quota {_levelProgress.CollectedQuotaCount}/{_levelProgress.TotalQuotaTarget} Fill={_levelProgress.FillPercent:0.00}");
 
             _timer.Stop();
-            YG2.GameplayStop();
+            _gameplayReporter.ReportStop();
 
-            _levelTransitor.LoadFill();
+            NavigateTo(SceneId.Fill).Forget();
+        }
+
+        private async UniTaskVoid NavigateTo(SceneId targetSceneId)
+        {
+            if (_gameDirector.IsTransitioning == true)
+            {
+                return;
+            }
+
+            await _gameDirector.LoadAsync(targetSceneId);
         }
     }
 }

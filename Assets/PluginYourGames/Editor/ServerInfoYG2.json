@@ -4,9 +4,11 @@
     "chat": "https://t.me/pluginYG2",
     "video": "https://www.youtube.com/playlist?list=PLjS5DHdpBH0Q9qKLenTNbYwaB5IIIsCya",
     "playerImage": "https://max-games.ru/public/pluginYG2/images/player.png",
+    "anonymousImage": "https://max-games.ru/public/pluginYG2/images/anonymous.png",
     "purchaseImage": "https://max-games.ru/public/pluginYG2/images/purchase.png",
 	"importantVersions": [
-		"PlayerStats/1.01"
+		"PlayerStats/1.01",
+		"YandexGames/1.01"
 	],
     "modules": [
         {

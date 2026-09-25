@@ -105,6 +105,14 @@ MonoBehaviour:
     _ru: "РУЛЕТКА"
     _en: "ROULETTE"
     _tr: "RULET"
+  - _key: tab_all_skins
+    _ru: "ВСЕ СКИНЫ"
+    _en: "ALL SKINS"
+    _tr: "TÜM SKİNLER"
+  - _key: menu_daily
+    _ru: "ЕЖЕДНЕВНЫЙ ПРИЗ"
+    _en: "DAILY REWARD"
+    _tr: "GÜNLÜK ÖDÜL"
   - _key: shop_roulette_button
     _ru: "КРУТИТЬ"
     _en: "SPIN"

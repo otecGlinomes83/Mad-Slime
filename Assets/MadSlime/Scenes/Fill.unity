@@ -5545,10 +5545,7 @@ MonoBehaviour:
   _adScheduler: {fileID: 1495407476}
   _leaderboardReporter: {fileID: 1495407499}
   _wallet: {fileID: 1495407474}
-  _levelTransitor: {fileID: 1495407470}
   _pauser: {fileID: 1495407473}
-  _uiButtonSounds:
-  - {fileID: 3783574669433125315}
   _fillUIFabric: {fileID: 644641159827276039}
   _flyingCubeArrivalSound: {fileID: 1948289414}
 --- !u!4 &1076171417
@@ -5576,7 +5573,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1495407472}
   - component: {fileID: 1495407471}
-  - component: {fileID: 1495407470}
   - component: {fileID: 1495407473}
   - component: {fileID: 1495407475}
   - component: {fileID: 1495407474}
@@ -5589,22 +5585,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1495407470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1495407469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbe2f95f40e399642b470c187c468bdd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _gameScene: Game
-  _fillScene: Fill
-  _shopScene: Shop
-  _menuScene: Menu
 --- !u!114 &1495407471
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -3,7 +3,6 @@ using Game;
 using Skins;
 using UnityEngine;
 using VContainer;
-using YG;
 
 namespace Player
 {
@@ -38,7 +37,7 @@ namespace Player
 
         private void OnEnable()
         {
-            YG2.onGetSDKData += OnSavesLoaded;
+            _progress.Ready += OnSavesLoaded;
         }
 
         private void Start()
@@ -48,7 +47,7 @@ namespace Player
 
         private void OnDisable()
         {
-            YG2.onGetSDKData -= OnSavesLoaded;
+            _progress.Ready -= OnSavesLoaded;
         }
 
         private void OnDestroy()

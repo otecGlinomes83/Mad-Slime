@@ -1,7 +1,9 @@
-using System;
 using Audio;
+using Cysharp.Threading.Tasks;
 using Game;
+using Roulette;
 using Scriptables;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -15,22 +17,24 @@ namespace UI
         [SerializeField] private Button _shopButton;
         [SerializeField] private Button _leaderboardButton;
         [SerializeField] private Button _settingsButton;
+        [SerializeField] private Button _dailyButton;
 
         [SerializeField] private PauseMenu _pauseMenu;
         [SerializeField] private LeaderboardMenu _leaderboardMenuPrefab;
+        [SerializeField] private RouletteView _dailyRoulette;
         [SerializeField] private SfxClip _musicTrack;
 
         private MusicPlayer _musicPlayer;
         private Pauser _pauser;
-        private LevelTransitor _levelTransitor;
+        private GameDirector _gameDirector;
         private IObjectResolver _resolver;
         private bool _isSubscribed;
 
         [Inject]
-        public void Construct(LevelTransitor levelTransitor, Pauser pauser,
+        public void Construct(GameDirector gameDirector, Pauser pauser,
             MusicPlayer musicPlayer, IObjectResolver resolver)
         {
-            _levelTransitor = levelTransitor;
+            _gameDirector = gameDirector;
             _pauser = pauser;
             _musicPlayer = musicPlayer;
             _resolver = resolver;
@@ -38,7 +42,7 @@ namespace UI
 
         private void Awake()
         {
-            if (_levelTransitor == null || _pauser == null || _musicPlayer == null || _resolver == null)
+            if (_gameDirector == null || _pauser == null || _musicPlayer == null || _resolver == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: dependencies were not injected. MenuLifetimeScope must be the first object in the scene hierarchy.");
@@ -79,11 +83,22 @@ namespace UI
                 throw new InvalidOperationException(
                     $"{name}: LeaderboardMenuPrefab is not assigned. Drag a LeaderboardMenu prefab into the _leaderboardMenuPrefab field.");
             }
+
+            if (_dailyButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: DailyButton is not assigned. Drag a Button into the _dailyButton field.");
+            }
+
+            if (_dailyRoulette == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: DailyRoulette is not assigned. Drag the daily RouletteView component into the _dailyRoulette field.");
+            }
         }
 
         private void Start()
         {
-            Time.timeScale = 1f;
             _musicPlayer.Play(_musicTrack);
         }
 
@@ -100,6 +115,7 @@ namespace UI
             _settingsButton.onClick.AddListener(OnSettingsClicked);
             _shopButton.onClick.AddListener(OnShopClicked);
             _leaderboardButton.onClick.AddListener(OnLeaderboardClicked);
+            _dailyButton.onClick.AddListener(OnDailyClicked);
         }
 
         private void OnDisable()
@@ -115,6 +131,7 @@ namespace UI
             _settingsButton.onClick.RemoveListener(OnSettingsClicked);
             _shopButton.onClick.RemoveListener(OnShopClicked);
             _leaderboardButton.onClick.RemoveListener(OnLeaderboardClicked);
+            _dailyButton.onClick.RemoveListener(OnDailyClicked);
         }
 
         private void OnSettingsClicked()
@@ -125,18 +142,33 @@ namespace UI
 
         private void OnPlayClicked()
         {
-            _levelTransitor.LoadGame();
+            NavigateTo(SceneId.Game).Forget();
         }
 
         private void OnShopClicked()
         {
-            _levelTransitor.LoadShop();
+            NavigateTo(SceneId.Shop).Forget();
         }
 
         private void OnLeaderboardClicked()
         {
             LeaderboardMenu leaderboardMenu = _resolver.Instantiate(_leaderboardMenuPrefab);
             leaderboardMenu.Initialize();
+        }
+
+        private void OnDailyClicked()
+        {
+            _dailyRoulette.Open();
+        }
+
+        private async UniTaskVoid NavigateTo(SceneId targetSceneId)
+        {
+            if (_gameDirector.IsTransitioning == true)
+            {
+                return;
+            }
+
+            await _gameDirector.LoadAsync(targetSceneId);
         }
     }
 }

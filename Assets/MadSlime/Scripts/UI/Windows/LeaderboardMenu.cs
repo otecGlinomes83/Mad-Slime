@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
+using Core;
 using Game;
 using Scriptables;
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using YG;
-using YG.Utils.LB;
+using VContainer;
 
 namespace UI
 {
@@ -20,6 +20,16 @@ namespace UI
         [SerializeField] private Button _authButton;
         [SerializeField] private TMP_Text _entriesText;
         [SerializeField] private YandexConfig _config;
+
+        private PlayerProgress _progress;
+        private ILeaderboardService _leaderboardService;
+
+        [Inject]
+        public void Construct(PlayerProgress progress, ILeaderboardService leaderboardService)
+        {
+            _progress = progress;
+            _leaderboardService = leaderboardService;
+        }
 
         public override void Initialize()
         {
@@ -49,10 +59,16 @@ namespace UI
                     $"{name}: YandexConfig is not assigned. Drag the YandexConfig asset into the _config field.");
             }
 
+            if (_progress == null || _leaderboardService == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: dependencies were not injected. The window prefab must be instantiated through the DI container (IObjectResolver.Instantiate).");
+            }
+
             _closeButton.onClick.AddListener(Close);
             _authButton.onClick.AddListener(OnAuthClicked);
-            YG2.onGetLeaderboard += OnLeaderboardReceived;
-            YG2.onGetSDKData += OnSDKDataReceived;
+            _leaderboardService.EntriesReceived += OnLeaderboardReceived;
+            _progress.Ready += OnSdkDataReceived;
 
             RefreshAuthView();
             RequestLeaderboard();
@@ -62,8 +78,8 @@ namespace UI
         {
             _closeButton?.onClick.RemoveListener(Close);
             _authButton?.onClick.RemoveListener(OnAuthClicked);
-            YG2.onGetLeaderboard -= OnLeaderboardReceived;
-            YG2.onGetSDKData -= OnSDKDataReceived;
+            _leaderboardService.EntriesReceived -= OnLeaderboardReceived;
+            _progress.Ready -= OnSdkDataReceived;
 
             base.OnDisable();
         }
@@ -71,31 +87,31 @@ namespace UI
         private void RequestLeaderboard()
         {
             _entriesText.text = Localization.Get("leaderboard_loading");
-            YG2.GetLeaderboard(_config.LeaderboardName, TopCount, AroundCount, PhotoSize);
+            _leaderboardService.RequestEntries(_config.LeaderboardName, TopCount, AroundCount, PhotoSize);
         }
 
-        private void OnLeaderboardReceived(LBData data)
+        private void OnLeaderboardReceived(LeaderboardSnapshot snapshot)
         {
-            if (data.technoName != _config.LeaderboardName)
+            if (snapshot.TechnoName != _config.LeaderboardName)
             {
                 return;
             }
 
-            if (data.entries == InfoYG.NO_DATA || data.players == null || data.players.Length == 0)
+            if (snapshot.HasEntries == false || snapshot.Players.Length == 0)
             {
                 _entriesText.text = Localization.Get("leaderboard_empty");
                 return;
             }
 
-            List<string> lines = new List<string>(data.players.Length + 1);
+            List<string> lines = new List<string>(snapshot.Players.Length + 1);
             bool ownRowInTop = false;
 
-            for (int i = 0; i < data.players.Length; i++)
+            for (int entryIndex = 0; entryIndex < snapshot.Players.Length; entryIndex++)
             {
-                LBPlayerData player = data.players[i];
-                string line = $"{player.rank}. {LBMethods.AnonymousName(player.name)} — {player.score}";
+                LeaderboardEntryData entry = snapshot.Players[entryIndex];
+                string line = $"{entry.Rank}. {entry.Name} — {entry.Score}";
 
-                if (player.uniqueID == YG2.player.id)
+                if (entry.Id == _leaderboardService.PlayerId)
                 {
                     ownRowInTop = true;
                     line = $"<b>{line}</b>";
@@ -104,19 +120,19 @@ namespace UI
                 lines.Add(line);
             }
 
-            if (ownRowInTop == false && YG2.player.auth && data.currentPlayer != null && data.currentPlayer.rank > 0)
+            if (ownRowInTop == false && _leaderboardService.IsAuthorized && snapshot.HasCurrentPlayer && snapshot.CurrentPlayer.Rank > 0)
             {
-                lines.Add($"<b>{data.currentPlayer.rank}. {YG2.player.name} — {data.currentPlayer.score}</b>");
+                lines.Add($"<b>{snapshot.CurrentPlayer.Rank}. {_leaderboardService.PlayerName} — {snapshot.CurrentPlayer.Score}</b>");
             }
 
             _entriesText.text = string.Join("\n", lines);
         }
 
-        private void OnSDKDataReceived()
+        private void OnSdkDataReceived()
         {
             RefreshAuthView();
 
-            if (YG2.player.auth)
+            if (_leaderboardService.IsAuthorized)
             {
                 RequestLeaderboard();
             }
@@ -124,13 +140,13 @@ namespace UI
 
         private void OnAuthClicked()
         {
-            YG2.OpenAuthDialog();
+            _leaderboardService.OpenAuthDialog();
             RefreshAuthView();
         }
 
         private void RefreshAuthView()
         {
-            _authButton.gameObject.SetActive(YG2.player.auth == false);
+            _authButton.gameObject.SetActive(_leaderboardService.IsAuthorized == false);
         }
 
         private void Close()

@@ -7,96 +7,83 @@ This file provides guidance to Claude Code (claude.ai/code) when working in this
 ## ⚠️ ПЕРЕД КАЖДЫМ ОТВЕТОМ — ПЕРЕЧИТАЙ ОБЯЗАТЕЛЬНО
 
 1. **`AI_RULES.md`** — канон стиля, нейминг, форматирование, запреты, UniTask-паттерны, чек-лист перед отдачей кода.
-2. **`AI_CONTEXT.md`** — текущее состояние проекта, GDD.
-3. **`AI_NOTES.md`** — рабочий журнал AI-сессий: решения, открытые вопросы, статус. Дополняй его по ходу работы.
 
----
-
-## Companion files (источники правды)
-
-- **`AI_RULES.md`** — стиль кода, нейминг, форматирование, запреты (`var`, комментарии, лямбды в `+=`, `!`, и т.д.), UniTask-паттерны, чек-лист.
-- **`AI_CONTEXT.md`** — фактическое состояние кода, слабые места, GDD.
-- **`AI_NOTES.md`** — журнал сессий для следующего агента. Обновляй после значимых шагов.
-
-Не дублируй их содержимое здесь.
+Журналы `AI_CONTEXT.md` / `AI_NOTES.md` упразднены владельцем — не создавать и не искать.
 
 ---
 
 ## Project
 
 - **Engine:** Unity **2022.3.62f2 LTS**, 3D (low-poly arcade).
-- **Цель:** WebGL / Яндекс.Игры (YG2). В билде 3 сцены: `Game`, `Fill`, `Shop`.
-- **Стек:** VContainer (DI — норма проекта, см. `Assets/Scripts/DI/`), UniTask, New Input System, TextMeshPro, uGUI, YG2 (сейвы/реклама/лидерборд). Нет ECS/event bus/singleton'ов.
+- **Цель:** WebGL / Яндекс.Игры (YG2). В билде 4 сцены: `Menu`(0), `Game`(1), `Fill`(2), `Shop`(3). `Test.unity` на диске, в билд не входит.
+- **Стек:** VContainer (DI), UniTask, DOTween (только core-API dll), New Input System, TextMeshPro, uGUI, YG2 (сейвы/реклама/лидерборд). Нет ECS/event bus/singleton'ов.
 - **Валидация — fail-fast:** класс получил невалид (null-зависимость, плохой аргумент) — сразу исключение (`InvalidOperationException` в `Awake` с подсказкой «Drag … into the _field field», `ArgumentOutOfRangeException` на аргументы). Молчаливых early-return на невалиде не писать.
 - **IDE:** JetBrains Rider.
+- Весь код и контент игры лежит под `Assets/MadSlime/`. Прочие папки `Assets/` — стор-ассеты.
+
+## Сборки (asmdef)
+
+| Сборка | Папка | Референсы |
+|---|---|---|
+| `MadSlime.Core` | `Assets/MadSlime/Scripts/Core` | — (Scriptables + enum'ы + Item + IAttractable + QuotaEntry + `Core/Interfaces` — шов YG2) |
+| `MadSlime.Gameplay` | `Assets/MadSlime/Scripts` (кроме `Core/`, `UI/`) | Core, VContainer, UniTask, Unity.InputSystem, UnityEngine.UI |
+| `MadSlime.UI` | `Assets/MadSlime/Scripts/UI` (включая подпапки `Shop/`, `Roulette/`) | Core, Gameplay, VContainer, UniTask, Unity.TextMeshPro, UnityEngine.UI |
+
+Вне asmdef (Assembly-CSharp): `Assets/MadSlime/DI` (5 LifetimeScope — составной корень), `Assets/MadSlime/Saves` (`SavesYG.cs` — partial с плагином, **не переносить в asmdef**), `Assets/MadSlime/Adapters` (5 YG2-адаптеров), `Assets/MadSlime/Editor` (генератор контента — он проводит DI-скоупы из Assembly-CSharp, поэтому asmdef ему нельзя принципиально).
+
+**Правило границ:** asmdef не может ссылаться на Assembly-CSharp, где живёт YG2-плагин. Поэтому игра трогает YG2 **только** через интерфейсы `Core` (`ISavesAccess`, `IAdsService`, `ILeaderboardService`, `ILanguageProvider`, `IGameplayReporter`) и адаптеры в `Adapters/`, регистрируемые в `ProjectLifetimeScope`. Новый прямой `using YG` вне `Adapters/`+`Saves/` — ошибка ревью.
 
 ## Build / run
 
 - Сборка через Unity Editor (File → Build Settings, WebGL/Яндекс).
 - Открывать проект строго через Unity 2022.3.62f2 (`ProjectSettings/ProjectVersion.txt`).
-- Локальная проверка компиляции без редактора (если проект не открыт в Editor):
-  `~/Unity/Hub/Editor/2022.3.62f2/Editor/Unity -batchmode -quit -nographics -projectPath <корень> -logFile <лог>`
+- Локальная проверка компиляции без редактора:
+  `"D:\3. files\Unity\Editor\2022.3.62f2\Editor\Unity.exe" -batchmode -quit -nographics -projectPath <корень> -logFile <лог>` (exit 21 = редактор открыт).
+- Генерация/починка контента (префабы, сцены, конфиги) — `Mad Slime/Setup Content` (`Assets/MadSlime/Editor/MadSlimeContentSetup.cs`), идемпотентный, работает и в batchmode через `-executeMethod MadSlimeContentSetup.SetupAll`.
 - Тестовой инфраструктуры нет. `.csproj`/`.sln` генерятся Unity — не редактировать.
 
 ## Архитектура (big picture)
 
-### DI (VContainer)
-- `ProjectLifetimeScope` — корневой (RootLifetimeScope в `Assets/Scriptables/DI/VContainerSettings.asset`, грузится из preloadedAssets, DontDestroyOnLoad). Владеет `PlayerProgress` (шов над `YG2.saves`) и `LevelsCatalog`.
-- `GameLifetimeScope` (сцена Game), `FillLifetimeScope` (сцена Fill), `ShopLifetimeScope` (компонент в `Shop.prefab`). Скоупы без явного родителя автоматически цепляются к RootLifetimeScope.
-- Сценовые компоненты получают зависимости через `[Inject] Construct(...)` + `builder.RegisterComponent(...)`; обязательные ссылки скоупа валидируются в `Configure`.
+### Запуск и смена сцен — только через GameDirector
 
-### Структура `Assets/Scripts/`
+- `Startup` (Menu-сцена, execution order −100, на GO `Systems`) — первая точка: инжектит `GameDirector`, инициализирует его, нормализует `timeScale`.
+- `Game/GameDirector.cs` — plain-класс, синглтон root-скоупа. Единственная точка смены сцен: `LoadAsync(SceneId)` — аддитивная загрузка → ожидание активации → отключение AudioListener/EventSystem/Canvas уходящей сцены → выгрузка предыдущей → SetActive → ре-ассерт timeScale (гард `IAdsService.IsPauseGame`). Точки вызова: `MainMenu`, `GameplaySessionHandler`, `FillSessionHandler`, `Shop.Close` (возврат по `PreviousSceneId`).
+- Скоупы сцен цепляются к root (DontDestroyOnLoad из `VContainerSettings` → `ProjectScope.prefab`).
 
-```
-Audio/          — AudioMixerController, AudioSettingsPanel, SoundLimiter, one-shot плееры
-Camera/         — CameraFollow, CameraImpulse (namespace CameraSystem)
-Collectables/   — Collector, Absorber, ItemDetector, AttractableDetector
-Detection/      — GenericOverlapDetector<T> (радиус растёт с тиром игрока)
-DI/             — 4 LifetimeScope
-Game/           — GameplaySessionHandler, FillSessionHandler, PlayerProgress, Wallet, Rewarder,
-                  Pauser, LevelTransitor, AdScheduler, LeaderboardReporter, SessionStateLogger
-Game/Level/     — LevelGenerator, QuotaGenerator, LevelProgress, ItemPool, ItemSize,
-                  LevelConfigResolver, LayoutPreviewDrawer
-Health/         — (пусто в v2: система урона вырезана)
-Interfaces/     — IAttractable, IMassHolder
-Item/           — Item (пул: Initialize/Collect/Shutdown)
-Levels/         — (пусто: карта уровней вырезана)
-Movement/       — Mover (transform-движение + кламп по Bounds пола), Rotator
-Player/         — Player, PlayerTier, LevelScaler, TierResolver, SkinApplier
-PlayerInput/    — PlayerInputReader + PlayerInputActions (автоген, не править руками)
-Quota/          — QuotaEntry (остаток квоты — в Game/Level/LevelProgress)
-Saves/          — SavesYG partial (YG-конвенция; имена полей = JSON-ключи, не переименовывать)
-Scriptables/    — Levels/ (LevelsCatalog, LevelConfig, LayoutSet, SpawnZone...), Skills/, Tier/,
-                  Items/, Player/, Skins/, Shop/, Ads/, Rewards/, Camera/, DI/VContainerSettings
-ShapeFill/      — ShapeFillOrchestrator, ShapeFiller, GridBuilder, CubeSpawner, FlyingCube, FillCounter
-Shop/           — Shop, ShopPanel, ShopItemView, ShopItemViewFactory, ModelPlacer
-Skills/         — BaseSkill (FSM active/cooldown), AttractSkill, SkillHandler, SkillInputBinder, SkillUnlocker
-UI/             — HUD/ (QuotaUI, GrowthBarView, MassUI, TimerUI, LevelLabelUI), Windows/ (BaseWindow,
-                  PauseMenu, WinMenu, FailMenu, LeaderboardMenu, LevelRewardPopup), Spawners/
-                  (GameplayUIFabric, FillUIFabric), Common/ (ValueView<T>, IntValueView), LookAtCamera
-```
+### Слои
+
+- **Core** — данные и шов: `Scriptables/` (все конфиги), enum'ы, `Item`, `IAttractable`, `QuotaEntry`, интерфейсы `Core/Interfaces`.
+- **Gameplay** — игрок, детекция/сбор, ShapeFill, Timer, сессии (`GameplaySessionHandler`, `FillSessionHandler`), `PlayerProgress` (фасад над `ISavesAccess`), `Wallet`, `Rewarder`, `Pauser`, `AdScheduler`, `LeaderboardReporter`, `LocalizationService`, аудио-плееры, `GameDirector`.
+- **UI** — `UI/` (HUD, окна, фабрики, MainMenu), `UI/Shop/` (магазин), `UI/Roulette/` (`RouletteService` — таймеры/цены/выдача; `RouletteWheel` — холостое вращение + «откат назад → разгон вперёд»; `RouletteView` — встраиваемый виджет и экран).
+
+Направление зависимостей: UI → Gameplay → Core. Game/UI код YG2 не видит.
 
 ### Ключевые цепочки
 
-**Уровень:** `GameLifetimeScope` → `GameplaySessionHandler` (пауза на старте, старт по первому вводу, `YG2.GameplayStart`) → `LevelGenerator` генерит предметы по `LevelConfig` (тиры, зоны, quota) → сбор: `ItemDetector` → `Collector` (анимация `Absorber`) → `Player.OnItemCollected` → `LevelProgress.RegisterCollected` + `PlayerTier.Add` → `LevelScaler` растит модель/коллайдер, `GenericOverlapDetector` растит радиус → квота → `LoadFill`.
+**Старт:** Menu(index 0) → `Startup` → `MainMenu`: Play → `GameDirector.LoadAsync(Game)`; кнопка «Ежедневный приз» → `RouletteView.Open()` (Mode.Main: фри-спин раз в `FreeSpinCooldownSeconds` с автозапуском при открытии, до `AdSpinsPerWindow` спинов за рекламу в окне `AdSpinWindowSeconds`, монеты — всегда; шансы — веса секторов `RouletteConfig`).
 
-**Fill-сессия:** `FillSessionHandler` → `ShapeFillOrchestrator` (кубы по текстуре) → `FillCounter` (процент от `LevelProgress.FillPercent`) → `Rewarder` → `Wallet` (+`PlayerProgress.Save()`) → Win/Fail меню → `LoadGame` (level++) → `AdScheduler` (интерстишл) / `LeaderboardReporter`.
+**Уровень:** `GameplaySessionHandler` (пауза до первого ввода, `IGameplayReporter.ReportStart/Stop`) → `LevelGenerator` по `LevelConfig` → сбор: `ItemDetector` → `Collector`/`Absorber` → `Player.OnItemCollected` → `LevelProgress` + `PlayerTier` → квота → `LoadAsync(Fill)`.
 
-**Магазин:** `Shop.prefab` инстансится в сцене Shop; `ShopLifetimeScope` инжектит `Wallet`; `Shop.OnEnable` (или `YG2.onGetSDKData`) → `ShopPanel.Initialize/Show` → выбор/покупка скина → `SkinApplier` применяет выбранный в Game-сцене.
+**Fill:** `FillSessionHandler` → `ShapeFillOrchestrator` → `FillCounter` → `Rewarder` → `Wallet` (+`PlayerProgress.Save()`) → Win/Fail меню → `LoadAsync(Game/Menu)` → интерстишл через `AdScheduler`.
 
-## Известные факты / открытые вопросы (2026-09-10)
+**Магазин:** 3 вкладки (`ShopPanel`): Улучшения (грид апгрейдов/перков), Скины (встроенная `RouletteView` Mode.Skins — только за монеты, цена = база + шаг × `SkinSpinCount`), Все скины (грид с локами/экипировкой). Выбор скина → `PlayerProgress.SelectedSkin` → `SkinApplier` применяет в Game-сцене. Закрытие → `GameDirector.PreviousSceneId`.
 
-- **Границы карты:** `MoveChecker` снесён (волна 35). `LevelGenerator` в Awake берёт `Bounds` пола (`_floorRenderer.bounds`) и пушит в `Mover.SetBounds`; `Mover.Move` клампит XZ с запасом на радиус капсулы. Размер карты задаётся только расстановкой пола в сцене, никакой `_mapSize` больше нет. Слой Wall и коллайдеры бортов теперь никем не читаются (мёртвые) — снос за владельцем.
-- **Реклама/лидерборд/авторизация/язык:** официальные модули YG2 установлены (Adv, Leaderboards, Localization; defines `InterstitialAdv_yg`/`RewardedAdv_yg`/`Leaderboards_yg`/`Localization_yg`). Кастомный jslib-мост снесён (волна 38, см. `AI_NOTES.md`) — только нативный API `YG2.*` (`RewardedAdvShow`, `InterstitialAdvShow`, `SetLeaderboard`, `GetLeaderboard`, `lang`, `player.auth`, `OpenAuthDialog`). Пауза на рекламе — внутри плагина (`autoPauseGame`). Запись очков — только авторизованным (требование Яндекса), кнопка входа в `LeaderboardMenu`.
-- **Локализация:** своя таблица `Scriptables/Localization/Localization.asset` (RU/EN/TR) через `Localization.Get`/`LocalizedText`; язык платформы приходит из `YG2.lang`, ручной выбор (кнопка в паузе) пишется в сейв и приоритетен.
-- `UniTask` в manifest.json без пина коммита — риск плавающего API.
-- Тех. долг/вопросы — в `AI_CONTEXT.md` и `AI_NOTES.md`.
+**Звук кнопок:** `UIButtonSound` на любом статичном кнопочном GO инжектится автоматически — скоуп сцены в `RegisterBuildCallback` обходит корни своей сцены (`GetRootGameObjects` + `GetComponentsInChildren<UIButtonSound>(true)`) и инжектит. Рукам остаётся только `SfxClip`. Спавн через `resolver.Instantiate` инжектится сам.
+
+## Известные факты (2026-09-25)
+
+- **Границы карты:** `Mover.Move` клампит XZ по `Bounds` пола; размер карты задаётся расстановкой пола в сцене.
+- **YG2:** пауза на рекламе — внутри плагина (`autoPauseGame`); `PauseGameYG` глушит EventSystem на каждый sceneLoaded (директор восстанавливает). Запись очков — только авторизованным. `SavesYG.PreviousScene` больше не используется (поле оставлено ради JSON-совместимости).
+- **Аддитивные переходы:** короткое окно перекрытия сцен — принято (двойной AudioListener/двойная подписка уходящей сцены живут миллисекунды, канвас уходящей гасится заранее).
+- **Формулировки:** «твой проект», вместо «авторский» — «расставленный вручную/статичный».
 
 ## Чего не делать
 
+- **Не трогать YG2 напрямую** вне `Adapters/` и `Saves/` — только через интерфейсы `Core`.
 - **Не создавать `Manager` / `Handler` / `Utility` / `Helper`** без явной причины — см. `AI_RULES.md`.
 - **Не смешивать стили DI и ручных ссылок без причины:** домен — через `[Inject]`, периферия — `[SerializeField]`.
 - **Не переименовывать поля `SavesYG`** (JSON-ключи живых сейвов) и автоген `PlayerInputActions.cs`.
 - **Не подписываться анонимной лямбдой** на событие — только именованный метод + `OnEnable`/`OnDisable`.
+- **Не менять сцену в обход `GameDirector`** (`SceneManager.LoadScene` снаружи — нарушение флоу).
 - **Не выдумывать Unity/VContainer API** — проверяй по доке или `Library/PackageCache/`.
 - **Не лезь в `Library/`, `obj/`, `UserSettings/`, `Logs/`, `Temp/`.**

@@ -1,23 +1,40 @@
-using Player;
+using Core;
 using System;
 using System.Collections.Generic;
+using Player;
 using UnityEngine;
 using Upgrades;
-using YG;
+using VContainer;
 
 namespace Game
 {
     public sealed class PlayerProgress : MonoBehaviour
     {
+        private ISavesAccess _saves;
+
+        public bool IsReady => _saves.IsReady;
+
+        public event Action Ready
+        {
+            add
+            {
+                _saves.Ready += value;
+            }
+            remove
+            {
+                _saves.Ready -= value;
+            }
+        }
+
         public int CurrentLevel
         {
             get
             {
-                return YG2.saves.CurrentLevel;
+                return _saves.CurrentLevel;
             }
             set
             {
-                YG2.saves.CurrentLevel = value;
+                _saves.CurrentLevel = value;
             }
         }
 
@@ -25,11 +42,11 @@ namespace Game
         {
             get
             {
-                return YG2.saves.MaxLevel;
+                return _saves.MaxLevel;
             }
             set
             {
-                YG2.saves.MaxLevel = value;
+                _saves.MaxLevel = value;
             }
         }
 
@@ -37,11 +54,11 @@ namespace Game
         {
             get
             {
-                return YG2.saves.Language;
+                return _saves.Language;
             }
             set
             {
-                YG2.saves.Language = value;
+                _saves.Language = value;
             }
         }
 
@@ -49,11 +66,11 @@ namespace Game
         {
             get
             {
-                return YG2.saves.Balance;
+                return _saves.Balance;
             }
             set
             {
-                YG2.saves.Balance = value;
+                _saves.Balance = value;
             }
         }
 
@@ -61,25 +78,25 @@ namespace Game
         {
             get
             {
-                return YG2.saves.SelectedSkinType;
+                return _saves.SelectedSkinType;
             }
             set
             {
-                YG2.saves.SelectedSkinType = value;
+                _saves.SelectedSkinType = value;
             }
         }
 
-        public List<PlayerSkins> OpenSkins => YG2.saves._openSkins;
+        public List<PlayerSkins> OpenSkins => _saves.OpenSkins;
 
         public float MusicVolume
         {
             get
             {
-                return YG2.saves.musicVolume;
+                return _saves.MusicVolume;
             }
             set
             {
-                YG2.saves.musicVolume = value;
+                _saves.MusicVolume = value;
             }
         }
 
@@ -87,12 +104,46 @@ namespace Game
         {
             get
             {
-                return YG2.saves.sfxVolume;
+                return _saves.SfxVolume;
             }
             set
             {
-                YG2.saves.sfxVolume = value;
+                _saves.SfxVolume = value;
             }
+        }
+
+        public List<PerkType> PurchasedPerks => _saves.PurchasedPerks;
+
+        public long LastFreeSpinUnixTime
+        {
+            get
+            {
+                return _saves.LastFreeSpinUnixTime;
+            }
+            set
+            {
+                _saves.LastFreeSpinUnixTime = value;
+            }
+        }
+
+        public List<long> RouletteAdSpinTimes => _saves.RouletteAdSpinTimes;
+
+        public int SkinSpinCount
+        {
+            get
+            {
+                return _saves.SkinSpinCount;
+            }
+            set
+            {
+                _saves.SkinSpinCount = value;
+            }
+        }
+
+        [Inject]
+        public void Construct(ISavesAccess saves)
+        {
+            _saves = saves;
         }
 
         public int GetUpgradeLevel(UpgradeType type)
@@ -100,16 +151,16 @@ namespace Game
             switch (type)
             {
                 case UpgradeType.Speed:
-                    return YG2.saves.SpeedLevel;
+                    return _saves.SpeedLevel;
 
                 case UpgradeType.Appetite:
-                    return YG2.saves.AppetiteLevel;
+                    return _saves.AppetiteLevel;
 
                 case UpgradeType.Taste:
-                    return YG2.saves.TasteLevel;
+                    return _saves.TasteLevel;
 
                 case UpgradeType.Metabolism:
-                    return YG2.saves.MetabolismLevel;
+                    return _saves.MetabolismLevel;
 
                 default:
                     throw new ArgumentOutOfRangeException(
@@ -124,19 +175,19 @@ namespace Game
             switch (type)
             {
                 case UpgradeType.Speed:
-                    YG2.saves.SpeedLevel = level;
+                    _saves.SpeedLevel = level;
                     break;
 
                 case UpgradeType.Appetite:
-                    YG2.saves.AppetiteLevel = level;
+                    _saves.AppetiteLevel = level;
                     break;
 
                 case UpgradeType.Taste:
-                    YG2.saves.TasteLevel = level;
+                    _saves.TasteLevel = level;
                     break;
 
                 case UpgradeType.Metabolism:
-                    YG2.saves.MetabolismLevel = level;
+                    _saves.MetabolismLevel = level;
                     break;
 
                 default:
@@ -147,42 +198,9 @@ namespace Game
             }
         }
 
-        public List<PerkType> PurchasedPerks => YG2.saves.PurchasedPerks;
-
-        public long LastFreeSpinUnixTime
-        {
-            get
-            {
-                return YG2.saves.LastFreeSpinUnixTime;
-            }
-            set
-            {
-                YG2.saves.LastFreeSpinUnixTime = value;
-            }
-        }
-
-        public List<long> RouletteAdSpinTimes => YG2.saves.RouletteAdSpinTimes;
-
-        public int SkinSpinCount
-        {
-            get
-            {
-                return YG2.saves.SkinSpinCount;
-            }
-            set
-            {
-                YG2.saves.SkinSpinCount = value;
-            }
-        }
-
         public void Save()
         {
-            if (YG2.isSDKEnabled == false)
-            {
-                return;
-            }
-
-            YG2.SaveProgress();
+            _saves.Save();
         }
     }
 }

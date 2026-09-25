@@ -48,6 +48,12 @@ MonoBehaviour:
   _skinSpinBaseCost: 300
   _skinSpinCostStep: 150
   _duplicateCoinsCompensation: 100
-  _adSpinWindowSeconds: 900
-  _adSpinsPerWindow: 2
-  _freeSpinCooldownSeconds: 600
+  _adSpinWindowSeconds: 1800
+  _adSpinsPerWindow: 3
+  _freeSpinCooldownSeconds: 900
+  _idleDegreesPerSecond: 24
+  _windBackDegrees: 45
+  _windBackDuration: 0.35
+  _minTurns: 3
+  _maxTurns: 5
+  _spinDuration: 3

@@ -1,8 +1,8 @@
-using System;
+using Core;
 using Scriptables;
+using System;
 using UnityEngine;
 using VContainer;
-using YG;
 
 namespace Game
 {
@@ -11,12 +11,14 @@ namespace Game
         [SerializeField] private LocalizationTable _table;
 
         private PlayerProgress _progress;
+        private ILanguageProvider _languageProvider;
         private bool _suppressPersist;
 
         [Inject]
-        public void Construct(PlayerProgress progress)
+        public void Construct(PlayerProgress progress, ILanguageProvider languageProvider)
         {
             _progress = progress;
+            _languageProvider = languageProvider;
         }
 
         private void Awake()
@@ -26,28 +28,33 @@ namespace Game
                 throw new InvalidOperationException(
                     $"{name}: LocalizationTable is not assigned. Drag the Localization asset into the _table field.");
             }
-
-            Localization.Initialize(_table, YG2.saves.Language);
         }
 
         private void OnEnable()
         {
+            if (_progress == null || _languageProvider == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: dependencies were not injected. Check that ProjectScope is the first root object of the project.");
+            }
+
+            Localization.Initialize(_table, _progress.Language);
             Localization.LanguageChanged += OnLanguageChanged;
-            YG2.onGetSDKData += OnSDKData;
-            YG2.onSwitchLang += OnYandexLangChanged;
+            _progress.Ready += OnSdkData;
+            _languageProvider.LanguageSwitched += OnYandexLangChanged;
             ApplyLanguage();
         }
 
         private void OnDisable()
         {
             Localization.LanguageChanged -= OnLanguageChanged;
-            YG2.onGetSDKData -= OnSDKData;
-            YG2.onSwitchLang -= OnYandexLangChanged;
+            _progress.Ready -= OnSdkData;
+            _languageProvider.LanguageSwitched -= OnYandexLangChanged;
         }
 
         private void ApplyLanguage()
         {
-            string savedLanguage = YG2.saves.Language;
+            string savedLanguage = _progress.Language;
 
             if (string.IsNullOrEmpty(savedLanguage) == false)
             {
@@ -56,18 +63,18 @@ namespace Game
             }
 
             _suppressPersist = true;
-            Localization.SetLanguage(YG2.lang);
+            Localization.SetLanguage(_languageProvider.Language);
             _suppressPersist = false;
         }
 
-        private void OnSDKData()
+        private void OnSdkData()
         {
             ApplyLanguage();
         }
 
         private void OnYandexLangChanged(string language)
         {
-            if (string.IsNullOrEmpty(YG2.saves.Language) == false)
+            if (string.IsNullOrEmpty(_progress.Language) == false)
             {
                 return;
             }

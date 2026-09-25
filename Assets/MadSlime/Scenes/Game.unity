@@ -303,7 +303,6 @@ GameObject:
   - component: {fileID: 292377135}
   - component: {fileID: 292377134}
   - component: {fileID: 292377136}
-  - component: {fileID: 292377138}
   - component: {fileID: 292377139}
   - component: {fileID: 292377140}
   - component: {fileID: 292377142}
@@ -357,22 +356,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db98a5466b7e4fc6bab9d542d3729fb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &292377138
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 292377132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbe2f95f40e399642b470c187c468bdd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _gameScene: Game
-  _fillScene: Fill
-  _shopScene: Shop
-  _menuScene: Menu
 --- !u!114 &292377139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1321,17 +1304,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1242557220 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9022570363871859091, guid: 09a52862f13a1d64299b5e209b29798d, type: 3}
-  m_PrefabInstance: {fileID: 1242557217}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6444badc9bc7aae4592860efff6a4cd1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1306941302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1795,10 +1767,7 @@ MonoBehaviour:
   _attractableDetector: {fileID: 4219722846896299918}
   _itemAttractor: {fileID: 7643889918465946663}
   _itemGhostToggler: {fileID: 566941591}
-  _uiButtonSounds:
-  - {fileID: 1242557220}
   _pauser: {fileID: 809963750}
-  _levelTransitor: {fileID: 292377138}
   _timer: {fileID: 292377136}
   _inputReader: {fileID: 6575316736882405105}
 --- !u!4 &1684454172

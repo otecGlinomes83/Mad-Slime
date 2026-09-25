@@ -2,7 +2,6 @@ using Game;
 using TMPro;
 using UnityEngine;
 using VContainer;
-using YG;
 
 namespace UI
 {
@@ -21,14 +20,14 @@ namespace UI
         private void OnEnable()
         {
             Localization.LanguageChanged += UpdateLabel;
-            YG2.onGetSDKData += OnSDKDataLoaded;
+            _progress.Ready += OnSDKDataLoaded;
             UpdateLabel();
         }
 
         private void OnDisable()
         {
             Localization.LanguageChanged -= UpdateLabel;
-            YG2.onGetSDKData -= OnSDKDataLoaded;
+            _progress.Ready -= OnSDKDataLoaded;
         }
 
         private void Start()

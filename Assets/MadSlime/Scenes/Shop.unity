@@ -406,22 +406,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -119.5
       objectReference: {fileID: 0}
-    - target: {fileID: 5253860678202729730, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
-      propertyPath: _fillScene
-      value: Fill
-      objectReference: {fileID: 0}
-    - target: {fileID: 5253860678202729730, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
-      propertyPath: _gameScene
-      value: Game
-      objectReference: {fileID: 0}
-    - target: {fileID: 5253860678202729730, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
-      propertyPath: _menuScene
-      value: Menu
-      objectReference: {fileID: 0}
-    - target: {fileID: 5253860678202729730, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
-      propertyPath: _shopScene
-      value: Shop
-      objectReference: {fileID: 0}
     - target: {fileID: 5377987398380444599, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -454,10 +438,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7103007565434901853, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
-      propertyPath: _sfxClip
-      value: 
-      objectReference: {fileID: 11400000, guid: d2ed719930b13b41b820abb33e340ce0, type: 2}
     - target: {fileID: 7123972065419221760, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
       propertyPath: m_SizeDelta.y
       value: 452.0123
@@ -467,8 +447,6 @@ PrefabInstance:
       value: -29.993774
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 2753645178995911442, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
-    - {fileID: 7103007565434901853, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
     - {fileID: 3645036630901147745, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
     m_RemovedGameObjects:
     - {fileID: 5741098345375079463, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
@@ -503,13 +481,13 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &320308525 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5253860678202729730, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
+  m_CorrespondingSourceObject: {fileID: 3989224478319989187, guid: 5b93c57f3a8c41d429b70b5407b9c944, type: 3}
   m_PrefabInstance: {fileID: 320308522}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1608018368}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbe2f95f40e399642b470c187c468bdd, type: 3}
+  m_Script: {fileID: 11500000, guid: b931e60fddfeb184cab4b988d23c2a13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &320308526 stripped
@@ -1136,17 +1114,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1468984895069793039, guid: 180c2a16271d0ac49949744470fb7287, type: 3}
   m_PrefabInstance: {fileID: 1646128265}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1646128268 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 195608263011131561, guid: 180c2a16271d0ac49949744470fb7287, type: 3}
-  m_PrefabInstance: {fileID: 1646128265}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6444badc9bc7aae4592860efff6a4cd1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1753457395
 GameObject:
   m_ObjectHideFlags: 0
@@ -1219,10 +1186,8 @@ MonoBehaviour:
   _upgradeItemViewFactory: {fileID: 1608018369}
   _modelPlacer: {fileID: 320308526}
   _rouletteService: {fileID: 1608018370}
+  _rouletteView: {fileID: 320308525}
   _adScheduler: {fileID: 1608018371}
-  _uiButtonSounds:
-  - {fileID: 1646128268}
-  _levelTransitor: {fileID: 320308525}
   _wallet: {fileID: 320308523}
   _pauser: {fileID: 1072837280}
 --- !u!4 &1898204161

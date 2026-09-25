@@ -1,7 +1,8 @@
+using Core;
 using Scriptables;
 using System;
 using UnityEngine;
-using YG;
+using VContainer;
 
 namespace Game
 {
@@ -9,9 +10,16 @@ namespace Game
     {
         [SerializeField] private YandexConfig _config;
 
+        private IAdsService _adsService;
         private Action _pendingRewardAction;
         private Action _pendingRejectedAction;
         private bool _rewardedReceived;
+
+        [Inject]
+        public void Construct(IAdsService adsService)
+        {
+            _adsService = adsService;
+        }
 
         private void Awake()
         {
@@ -20,27 +28,33 @@ namespace Game
                 throw new InvalidOperationException(
                     $"{name}: YandexConfig is not assigned. Create a YandexConfig asset and drag it into the _config field.");
             }
+
+            if (_adsService == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: IAdsService was not injected. Check that ProjectLifetimeScope registers the YG2 ads adapter.");
+            }
         }
 
         private void OnEnable()
         {
-            YG2.onOpenRewardedAdv += OnRewardedOpened;
-            YG2.onRewardAdv += OnRewardReceived;
-            YG2.onCloseRewardedAdv += OnRewardedClosed;
-            YG2.onErrorRewardedAdv += OnRewardedError;
+            _adsService.RewardedOpened += OnRewardedOpened;
+            _adsService.RewardReceived += OnRewardReceived;
+            _adsService.RewardedClosed += OnRewardedClosed;
+            _adsService.RewardedError += OnRewardedError;
         }
 
         private void OnDisable()
         {
-            YG2.onOpenRewardedAdv -= OnRewardedOpened;
-            YG2.onRewardAdv -= OnRewardReceived;
-            YG2.onCloseRewardedAdv -= OnRewardedClosed;
-            YG2.onErrorRewardedAdv -= OnRewardedError;
+            _adsService.RewardedOpened -= OnRewardedOpened;
+            _adsService.RewardReceived -= OnRewardReceived;
+            _adsService.RewardedClosed -= OnRewardedClosed;
+            _adsService.RewardedError -= OnRewardedError;
         }
 
         public void TryShowInterstitial()
         {
-            YG2.InterstitialAdvShow();
+            _adsService.ShowInterstitial();
         }
 
         public string RouletteRewardId => _config.RouletteRewardId;
@@ -62,7 +76,7 @@ namespace Game
                 throw new ArgumentNullException(nameof(onGranted));
             }
 
-            if (YG2.nowAdsShow == true)
+            if (_adsService.IsAdShowing == true)
             {
                 onRejected?.Invoke();
                 return;
@@ -71,7 +85,7 @@ namespace Game
             _rewardedReceived = false;
             _pendingRewardAction = onGranted;
             _pendingRejectedAction = onRejected;
-            YG2.RewardedAdvShow(rewardId);
+            _adsService.ShowRewarded(rewardId);
         }
 
         private void OnRewardedOpened()

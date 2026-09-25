@@ -1,9 +1,10 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Game;
 using UnityEngine;
 using UnityEngine.Audio;
-using YG;
+using VContainer;
 
 namespace Audio
 {
@@ -21,6 +22,13 @@ namespace Audio
         private float _musicVolume01;
         private float _sfxVolume01;
         private CancellationTokenSource _saveCancellationTokenSource;
+        private PlayerProgress _progress;
+
+        [Inject]
+        public void Construct(PlayerProgress progress)
+        {
+            _progress = progress;
+        }
 
         public float MusicVolume => _musicVolume01;
         public float SFXVolume => _sfxVolume01;
@@ -45,19 +53,22 @@ namespace Audio
                     $"{name}: SFX AudioMixerGroup is not assigned. Drag a group into the _sfxGroup field.");
             }
 
-            _musicVolume01 = YG2.saves.musicVolume;
-            _sfxVolume01 = YG2.saves.sfxVolume;
+            if (_progress == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PlayerProgress was not injected. Check that ProjectLifetimeScope registers PlayerProgress and AudioMixerController.");
+            }
         }
 
         private void OnEnable()
         {
-            YG2.onGetSDKData += OnSavesLoaded;
+            _progress.Ready += OnSavesLoaded;
             ApplyFromSaves();
         }
 
         private void OnDisable()
         {
-            YG2.onGetSDKData -= OnSavesLoaded;
+            _progress.Ready -= OnSavesLoaded;
         }
 
         private void OnDestroy()
@@ -66,9 +77,9 @@ namespace Audio
 
             CancelDelayedSave();
 
-            if (hasPendingSave == true && YG2.isSDKEnabled == true)
+            if (hasPendingSave == true)
             {
-                YG2.SaveProgress();
+                _progress.Save();
             }
         }
 
@@ -79,8 +90,8 @@ namespace Audio
 
         private void ApplyFromSaves()
         {
-            _musicVolume01 = YG2.saves.musicVolume;
-            _sfxVolume01 = YG2.saves.sfxVolume;
+            _musicVolume01 = _progress.MusicVolume;
+            _sfxVolume01 = _progress.SfxVolume;
 
             ApplyMusic();
             ApplySFX();
@@ -90,7 +101,7 @@ namespace Audio
         {
             float clamped = Mathf.Clamp01(volume01);
             _musicVolume01 = clamped;
-            YG2.saves.musicVolume = clamped;
+            _progress.MusicVolume = clamped;
 
             ApplyMusic();
             ScheduleSave();
@@ -100,7 +111,7 @@ namespace Audio
         {
             float clamped = Mathf.Clamp01(volume01);
             _sfxVolume01 = clamped;
-            YG2.saves.sfxVolume = clamped;
+            _progress.SfxVolume = clamped;
 
             ApplySFX();
             ScheduleSave();
@@ -128,10 +139,7 @@ namespace Audio
             _saveCancellationTokenSource?.Dispose();
             _saveCancellationTokenSource = null;
 
-            if (YG2.isSDKEnabled == true)
-            {
-                YG2.SaveProgress();
-            }
+            _progress.Save();
         }
 
         private void CancelDelayedSave()

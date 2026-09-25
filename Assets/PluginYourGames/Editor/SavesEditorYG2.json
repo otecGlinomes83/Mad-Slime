@@ -1,5 +1,4 @@
 {
-    "idSave": 243,
     "CurrentLevel": 19,
     "MaxLevel": 19,
     "Language": "ru",
@@ -11,5 +10,14 @@
         0,
         1
     ],
-    "PreviousScene": "Menu"
+    "SpeedLevel": 0,
+    "AppetiteLevel": 0,
+    "TasteLevel": 0,
+    "MetabolismLevel": 0,
+    "PurchasedPerks": [],
+    "LastFreeSpinUnixTime": 0,
+    "RouletteAdSpinTimes": [],
+    "SkinSpinCount": 0,
+    "PreviousScene": "Menu",
+    "idSave": 247
 }

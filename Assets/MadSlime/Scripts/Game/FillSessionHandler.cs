@@ -1,4 +1,5 @@
 ﻿using Audio;
+using Core;
 using Cysharp.Threading.Tasks;
 using Scriptables;
 using ShapeFill;
@@ -18,11 +19,13 @@ namespace Game
         private LevelConfigResolver _configResolver;
         private ShapeFillOrchestrator _fillOrchestrator;
         private GridBuilder _gridBuilder;
-        private LevelTransitor _levelTransitor;
+        private GameDirector _gameDirector;
         private Rewarder _rewarder;
         private Pauser _pauser;
         private AdScheduler _adScheduler;
         private LeaderboardReporter _leaderboardReporter;
+        private IGameplayReporter _gameplayReporter;
+        private bool _isGameplayStarted;
 
         public event Action<int> Win;
         public event Action<int> Failed;
@@ -31,9 +34,9 @@ namespace Game
 
         [Inject]
         public void Construct(PlayerProgress progress, LevelConfigResolver configResolver, MusicPlayer musicPlayer,
-            ShapeFillOrchestrator fillOrchestrator, GridBuilder gridBuilder, LevelTransitor levelTransitor,
+            ShapeFillOrchestrator fillOrchestrator, GridBuilder gridBuilder, GameDirector gameDirector,
             Rewarder rewarder, Pauser pauser, AdScheduler adScheduler, LeaderboardReporter leaderboardReporter,
-            FillConfig config)
+            IGameplayReporter gameplayReporter, FillConfig config)
         {
             _progress = progress;
             _configResolver = configResolver;
@@ -41,11 +44,12 @@ namespace Game
             _musicPlayer = musicPlayer;
             _fillOrchestrator = fillOrchestrator;
             _gridBuilder = gridBuilder;
-            _levelTransitor = levelTransitor;
+            _gameDirector = gameDirector;
             _rewarder = rewarder;
             _pauser = pauser;
             _adScheduler = adScheduler;
             _leaderboardReporter = leaderboardReporter;
+            _gameplayReporter = gameplayReporter;
         }
 
         private void Awake()
@@ -92,10 +96,16 @@ namespace Game
                     $"{name}: Rewarder was not injected. Check that FillLifetimeScope registers Rewarder and FillSessionHandler.");
             }
 
-            if (_levelTransitor == null)
+            if (_gameplayReporter == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: LevelTransitor was not injected. Check that FillLifetimeScope registers LevelTransitor and FillSessionHandler.");
+                    $"{name}: IGameplayReporter was not injected. Check that ProjectLifetimeScope registers the YG2 gameplay adapter.");
+            }
+
+            if (_gameDirector == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: GameDirector was not injected. Check that ProjectLifetimeScope registers GameDirector and FillLifetimeScope registers FillSessionHandler.");
             }
 
             if (_gridBuilder == null)
@@ -116,6 +126,7 @@ namespace Game
             _musicPlayer.Play(_musicTrack);
             ApplyTheme();
             _fillOrchestrator.StartFill();
+            StartGameplay();
         }
 
         private void OnDisable()
@@ -164,14 +175,12 @@ namespace Game
             _progress.Save();
             _leaderboardReporter.Report(_progress.MaxLevel);
 
-            _adScheduler.TryShowInterstitial();
-            _levelTransitor.LoadGame();
+            NavigateToAfterStop(SceneId.Game);
         }
 
         public void RestartLevel()
         {
-            _adScheduler.TryShowInterstitial();
-            _levelTransitor.LoadGame();
+            NavigateToAfterStop(SceneId.Game);
         }
 
         public void ExitToMenuAfterWin()
@@ -186,24 +195,64 @@ namespace Game
             _progress.Save();
             _leaderboardReporter.Report(_progress.MaxLevel);
 
-            _adScheduler.TryShowInterstitial();
-            _levelTransitor.LoadMenu();
+            NavigateToAfterStop(SceneId.Menu);
         }
 
         public void ExitToMenu()
         {
             _progress.Save();
-            _adScheduler.TryShowInterstitial();
-            _levelTransitor.LoadMenu();
+            NavigateToAfterStop(SceneId.Menu);
         }
 
         public void RescueFill()
         {
             _fillOrchestrator.Rescue();
+            StartGameplay();
+        }
+
+        private void NavigateToAfterStop(SceneId targetSceneId)
+        {
+            StopGameplay();
+            _adScheduler.TryShowInterstitial();
+            NavigateTo(targetSceneId).Forget();
+        }
+
+        private async UniTaskVoid NavigateTo(SceneId targetSceneId)
+        {
+            if (_gameDirector.IsTransitioning == true)
+            {
+                return;
+            }
+
+            await _gameDirector.LoadAsync(targetSceneId);
+        }
+
+        private void StartGameplay()
+        {
+            if (_isGameplayStarted == true)
+            {
+                return;
+            }
+
+            _isGameplayStarted = true;
+            _gameplayReporter.ReportStart();
+        }
+
+        private void StopGameplay()
+        {
+            if (_isGameplayStarted == false)
+            {
+                return;
+            }
+
+            _isGameplayStarted = false;
+            _gameplayReporter.ReportStop();
         }
 
         private void OnFillCompleted(float percent)
         {
+            StopGameplay();
+
             if (percent >= 1f)
             {
                 RewardWinDelayedAsync(percent).Forget();
