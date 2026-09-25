@@ -1,0 +1,35 @@
+using Player;
+using System.Collections.Generic;
+using UnityEngine;
+using Upgrades;
+
+namespace YG
+{
+    public partial class SavesYG
+    {
+        public int CurrentLevel = 1;
+        public int MaxLevel = 1;
+        public string Language = "";
+
+        public float musicVolume = 0.5f;
+        public float sfxVolume = 0.35f;
+
+        public int Balance = 250;
+
+        public PlayerSkins SelectedSkinType = PlayerSkins.Slime;
+        public List<PlayerSkins> _openSkins = new List<PlayerSkins>() { PlayerSkins.Slime };
+
+        public int SpeedLevel;
+        public int AppetiteLevel;
+        public int TasteLevel;
+        public int MetabolismLevel;
+
+        public List<PerkType> PurchasedPerks = new List<PerkType>();
+
+        public long LastFreeSpinUnixTime;
+        public List<long> RouletteAdSpinTimes = new List<long>();
+        public int SkinSpinCount;
+
+        public string PreviousScene;
+    }
+}

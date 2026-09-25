@@ -1,0 +1,175 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4f2a91d8e34b5f9a01c6d8e2f40b17, type: 3}
+  m_Name: Localization
+  m_EditorClassIdentifier: 
+  _entries:
+  - _key: win_title
+    _ru: "ПОБЕДА"
+    _en: "VICTORY"
+    _tr: "ZAFER"
+  - _key: fail_title
+    _ru: "ПРОИГРЫШ"
+    _en: "DEFEAT"
+    _tr: "YENİLGİ"
+  - _key: earned_label
+    _ru: "Заработано:"
+    _en: "Earned:"
+    _tr: "Kazanılan:"
+  - _key: leaderboard_login_hint
+    _ru: "Войди, чтобы попасть в рейтинг"
+    _en: "Log in to enter the leaderboard"
+    _tr: "Liderlik tablosuna girmek için giriş yap"
+  - _key: leaderboard_loading
+    _ru: "Загрузка рейтинга..."
+    _en: "Loading leaderboard..."
+    _tr: "Liderlik tablosu yükleniyor..."
+  - _key: leaderboard_empty
+    _ru: "Рейтинг пока пуст"
+    _en: "Leaderboard is empty"
+    _tr: "Liderlik tablosu boş"
+  - _key: leaderboard_error
+    _ru: "Рейтинг недоступен"
+    _en: "Leaderboard unavailable"
+    _tr: "Liderlik tablosu kullanılamıyor"
+  - _key: lang_self_ru
+    _ru: "Русский"
+    _en: "Русский"
+    _tr: "Русский"
+  - _key: lang_self_en
+    _ru: "English"
+    _en: "English"
+    _tr: "English"
+  - _key: lang_self_tr
+    _ru: "Türkçe"
+    _en: "Türkçe"
+    _tr: "Türkçe"
+  - _key: level_label
+    _ru: "Уровень {0}"
+    _en: "Level {0}"
+    _tr: "Seviye {0}"
+  - _key: tier_Small
+    _ru: "Малёк"
+    _en: "Small"
+    _tr: "Küçük"
+  - _key: tier_Medium
+    _ru: "Средний"
+    _en: "Medium"
+    _tr: "Orta"
+  - _key: tier_Large
+    _ru: "Большой"
+    _en: "Large"
+    _tr: "Büyük"
+  - _key: tier_Boss
+    _ru: "Босс"
+    _en: "Boss"
+    _tr: "Patron"
+  - _key: auth_login
+    _ru: "ВОЙТИ"
+    _en: "LOGIN"
+    _tr: "GİRİŞ"
+  - _key: to_menu
+    _ru: "В МЕНЮ"
+    _en: "MENU"
+    _tr: "MENÜ"
+  - _key: menu_play
+    _ru: "ИГРАТЬ"
+    _en: "PLAY"
+    _tr: "OYNA"
+  - _key: menu_shop
+    _ru: "МАГАЗИН"
+    _en: "SHOP"
+    _tr: "MAĞAZA"
+  - _key: menu_leaderboard
+    _ru: "РЕЙТИНГ"
+    _en: "LEADERBOARD"
+    _tr: "SIRALAMA"
+  - _key: tab_skins
+    _ru: "СКИНЫ"
+    _en: "SKINS"
+    _tr: "KOSTÜMLER"
+  - _key: tab_upgrades
+    _ru: "ПРОКАЧКА"
+    _en: "UPGRADES"
+    _tr: "GELİŞTİRMELER"
+  - _key: tab_roulette
+    _ru: "РУЛЕТКА"
+    _en: "ROULETTE"
+    _tr: "RULET"
+  - _key: shop_roulette_button
+    _ru: "КРУТИТЬ"
+    _en: "SPIN"
+    _tr: "ÇEVİR"
+  - _key: shop_purchased
+    _ru: "КУПЛЕНО"
+    _en: "OWNED"
+    _tr: "SATIN ALINDI"
+  - _key: shop_max
+    _ru: "МАКС"
+    _en: "MAX"
+    _tr: "MAKS"
+  - _key: shop_exclusive
+    _ru: "РУЛЕТКА"
+    _en: "ROULETTE"
+    _tr: "RULET"
+  - _key: upgrade_speed
+    _ru: "Скорость"
+    _en: "Speed"
+    _tr: "Hız"
+  - _key: upgrade_appetite
+    _ru: "Аппетит"
+    _en: "Appetite"
+    _tr: "İştah"
+  - _key: upgrade_taste
+    _ru: "Знаток вкуса"
+    _en: "Connoisseur"
+    _tr: "Lezzet Uzmanı"
+  - _key: upgrade_metabolism
+    _ru: "Метаболизм"
+    _en: "Metabolism"
+    _tr: "Metabolizma"
+  - _key: perk_smell
+    _ru: "Улучшенный нюх"
+    _en: "Keen Nose"
+    _tr: "Keskin Koku"
+  - _key: perk_adrenaline
+    _ru: "Адреналин"
+    _en: "Adrenaline"
+    _tr: "Adrenalin"
+  - _key: perk_ambitions
+    _ru: "Большие амбиции"
+    _en: "Big Ambitions"
+    _tr: "Büyük Hırslar"
+  - _key: roulette_free_ready
+    _ru: "БЕСПЛАТНО"
+    _en: "FREE"
+    _tr: "ÜCRETSİZ"
+  - _key: roulette_free_timer
+    _ru: "Через {0}"
+    _en: "In {0}"
+    _tr: "{0} sonra"
+  - _key: roulette_ad_spins
+    _ru: "РЕКЛАМА ({0})"
+    _en: "AD ({0})"
+    _tr: "REKLAM ({0})"
+  - _key: roulette_won_coins
+    _ru: "+{0} монет"
+    _en: "+{0} coins"
+    _tr: "+{0} jeton"
+  - _key: roulette_won_skin
+    _ru: "НОВЫЙ СКИН!"
+    _en: "NEW SKIN!"
+    _tr: "YENİ KOSTÜM!"
+  - _key: fill_rescue
+    _ru: "ДОБИТЬ ЗАЛИВКУ"
+    _en: "FINISH THE FILL"
+    _tr: "DOLDURMAYI BİTİR"
