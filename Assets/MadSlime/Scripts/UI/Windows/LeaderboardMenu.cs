@@ -151,7 +151,7 @@ namespace UI
 
         private void Close()
         {
-            Destroy(gameObject);
+            CloseAnimated();
         }
     }
 }

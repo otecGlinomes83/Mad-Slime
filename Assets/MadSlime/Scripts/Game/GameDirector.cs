@@ -50,15 +50,14 @@ namespace Game
                 return;
             }
 
-            Scene activeScene = SceneManager.GetActiveScene();
-
-            if (activeScene.isLoaded == false)
+            if (TryResolveLoadedSceneId(out SceneId bootSceneId) == false)
             {
                 throw new InvalidOperationException(
-                    "GameDirector: no active scene to initialize from. The boot scene must be loaded before GameDirector is used.");
+                    "GameDirector: no loaded scene resolves to a known SceneId (Menu, Game, Fill, Shop). " +
+                    "The boot scene must be loaded before GameDirector is used.");
             }
 
-            _currentSceneId = ResolveSceneId(activeScene.name);
+            _currentSceneId = bootSceneId;
             _previousSceneId = _currentSceneId;
             _isInitialized = true;
         }
@@ -135,18 +134,11 @@ namespace Game
                     $"GameDirector: scene '{targetSceneName}' did not finish loading.");
             }
 
-            float desiredTimeScale = Time.timeScale;
+            SceneManager.SetActiveScene(targetScene);
 
             if (sourceScene.isLoaded == true)
             {
                 await SceneManager.UnloadSceneAsync(sourceScene).ToUniTask();
-            }
-
-            SceneManager.SetActiveScene(targetScene);
-
-            if (_adsService.IsPauseGame == false)
-            {
-                Time.timeScale = desiredTimeScale;
             }
 
             RestoreIncomingEventSystem(targetScene);
@@ -227,28 +219,62 @@ namespace Game
             }
         }
 
-        private static SceneId ResolveSceneId(string sceneName)
+        private static bool TryResolveLoadedSceneId(out SceneId sceneId)
+        {
+            Scene activeScene = SceneManager.GetActiveScene();
+
+            if (activeScene.IsValid() == true && TryResolveSceneId(activeScene.name, out sceneId) == true)
+            {
+                return true;
+            }
+
+            int sceneCount = SceneManager.sceneCount;
+
+            for (int index = 0; index < sceneCount; index++)
+            {
+                Scene scene = SceneManager.GetSceneAt(index);
+
+                if (scene.IsValid() == false)
+                {
+                    continue;
+                }
+
+                if (TryResolveSceneId(scene.name, out sceneId) == true)
+                {
+                    return true;
+                }
+            }
+
+            sceneId = default;
+            return false;
+        }
+
+        private static bool TryResolveSceneId(string sceneName, out SceneId sceneId)
         {
             switch (sceneName)
             {
                 case "Menu":
-                    return SceneId.Menu;
+                    sceneId = SceneId.Menu;
+                    return true;
 
                 case "Game":
-                    return SceneId.Game;
+                    sceneId = SceneId.Game;
+                    return true;
 
                 case "Fill":
-                    return SceneId.Fill;
+                    sceneId = SceneId.Fill;
+                    return true;
 
                 case "Shop":
-                    return SceneId.Shop;
+                case "NewShop":
+                    sceneId = SceneId.Shop;
+                    return true;
 
                 default:
-                    throw new ArgumentOutOfRangeException(
-                        nameof(sceneName),
-                        sceneName,
-                        "GameDirector: the active scene is not one of the known scenes (Menu, Game, Fill, Shop).");
+                    sceneId = default;
+                    return false;
             }
         }
+
     }
 }

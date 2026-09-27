@@ -1,0 +1,171 @@
+using System;
+using DG.Tweening;
+using UnityEngine;
+
+namespace UI.Animations
+{
+    public sealed class UiEnableAnimation : MonoBehaviour
+    {
+        [SerializeField] private UiAppearMode _mode = UiAppearMode.Scale;
+
+        [SerializeField, Min(0.01f)] private float _duration = 0.3f;
+
+        [SerializeField, Min(0f)] private float _slideOffset = 140f;
+
+        private RectTransform _rect;
+        private Vector2 _enabledPosition;
+        private Vector3 _enabledScale;
+        private Tween _currentTween;
+
+        private void Awake()
+        {
+            _rect = transform as RectTransform;
+
+            if (_rect == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: UiEnableAnimation requires a RectTransform on the same GameObject.");
+            }
+
+            CaptureEnabledState();
+        }
+
+        private void OnEnable()
+        {
+            if (_mode == UiAppearMode.None)
+            {
+                return;
+            }
+
+            PlayIntro();
+        }
+
+        private void OnDisable()
+        {
+            KillCurrentTween();
+        }
+
+        public void PlayOutro()
+        {
+            if (_mode == UiAppearMode.None)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
+            KillCurrentTween();
+
+            _currentTween = CreateMoveTween(OutPositionFor(_mode), _duration, Ease.InCubic);
+
+            if (_mode == UiAppearMode.Scale)
+            {
+                _currentTween = transform.DOScale(Vector3.zero, _duration)
+                    .SetEase(Ease.InBack)
+                    .SetUpdate(true);
+            }
+
+            _currentTween
+                .SetUpdate(true)
+                .SetLink(gameObject)
+                .OnComplete(OnOutroCompleted);
+        }
+
+        private void PlayIntro()
+        {
+            KillCurrentTween();
+
+            if (_mode == UiAppearMode.Scale)
+            {
+                _rect.localScale = Vector3.zero;
+
+                _currentTween = _rect.DOScale(_enabledScale, _duration)
+                    .SetEase(Ease.OutBack)
+                    .SetUpdate(true);
+            }
+            else
+            {
+                _rect.anchoredPosition = OutPositionFor(_mode);
+
+                _currentTween = CreateMoveTween(_enabledPosition, _duration, Ease.OutCubic);
+            }
+
+            _currentTween
+                .SetUpdate(true)
+                .SetLink(gameObject)
+                .OnComplete(OnIntroCompleted);
+        }
+
+        private void OnIntroCompleted()
+        {
+            _currentTween = null;
+            ApplyEnabledState();
+        }
+
+        private void OnOutroCompleted()
+        {
+            _currentTween = null;
+            ApplyEnabledState();
+            gameObject.SetActive(false);
+        }
+
+        private void ApplyEnabledState()
+        {
+            _rect.anchoredPosition = _enabledPosition;
+            _rect.localScale = _enabledScale;
+        }
+
+        private Tween CreateMoveTween(Vector2 to, float duration, Ease ease)
+        {
+            return DOTween.To(ReadAnchoredPosition, ApplyAnchoredPosition, to, duration)
+                .SetEase(ease);
+        }
+
+        private Vector2 ReadAnchoredPosition()
+        {
+            return _rect.anchoredPosition;
+        }
+
+        private void ApplyAnchoredPosition(Vector2 position)
+        {
+            _rect.anchoredPosition = position;
+        }
+
+        private Vector2 OutPositionFor(UiAppearMode mode)
+        {
+            switch (mode)
+            {
+                case UiAppearMode.FromLeft:
+                    return _enabledPosition + new Vector2(-_slideOffset, 0f);
+
+                case UiAppearMode.FromRight:
+                    return _enabledPosition + new Vector2(_slideOffset, 0f);
+
+                case UiAppearMode.FromTop:
+                    return _enabledPosition + new Vector2(0f, _slideOffset);
+
+                case UiAppearMode.FromBottom:
+                    return _enabledPosition + new Vector2(0f, -_slideOffset);
+
+                default:
+                    return _enabledPosition;
+            }
+        }
+
+        private void CaptureEnabledState()
+        {
+            _enabledPosition = _rect.anchoredPosition;
+            _enabledScale = _rect.localScale;
+        }
+
+        private void KillCurrentTween()
+        {
+            if (_currentTween == null)
+            {
+                return;
+            }
+
+            _currentTween.Kill();
+            _currentTween = null;
+        }
+    }
+}

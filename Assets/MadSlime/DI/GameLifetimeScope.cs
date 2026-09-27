@@ -8,6 +8,7 @@ using PlayerInput;
 using Scriptables;
 using System;
 using UI;
+using UI.Animations;
 using UnityEngine;
 using Upgrades;
 using VContainer;
@@ -27,7 +28,8 @@ namespace DI
         [SerializeField] private ScalePunch _scalePunch;
         [SerializeField] private LevelScaler _levelScaler;
         [SerializeField] private MovementDeformer _movementDeformer;
-        [SerializeField] private CollectBurstSpawner _collectBurstSpawner;
+        [SerializeField] private SpeedSmoke _speedSmoke;
+        [SerializeField] private UiEnableScheduler _uiEnableScheduler;
         [SerializeField] private AdrenalineBoost _adrenalineBoost;
         [SerializeField] private GameplaySessionHandler _sessionHandler;
         [SerializeField] private QuotaUI _quotaUI;
@@ -62,7 +64,8 @@ namespace DI
             ValidateAssigned(_scalePunch, nameof(_scalePunch));
             ValidateAssigned(_levelScaler, nameof(_levelScaler));
             ValidateAssigned(_movementDeformer, nameof(_movementDeformer));
-            ValidateAssigned(_collectBurstSpawner, nameof(_collectBurstSpawner));
+            ValidateAssigned(_speedSmoke, nameof(_speedSmoke));
+            ValidateAssigned(_uiEnableScheduler, nameof(_uiEnableScheduler));
             ValidateAssigned(_adrenalineBoost, nameof(_adrenalineBoost));
             ValidateAssigned(_sessionHandler, nameof(_sessionHandler));
             ValidateAssigned(_quotaUI, nameof(_quotaUI));
@@ -87,7 +90,6 @@ namespace DI
             ValidateAssigned(_inputReader, nameof(_inputReader));
 
             builder.RegisterInstance(_playerConfig);
-            builder.Register<ItemPool>(Lifetime.Scoped);
             builder.Register<QuotaGenerator>(Lifetime.Scoped);
 
             builder.RegisterComponent(_levelGenerator);
@@ -98,7 +100,8 @@ namespace DI
             builder.RegisterComponent(_scalePunch);
             builder.RegisterComponent(_levelScaler);
             builder.RegisterComponent(_movementDeformer);
-            builder.RegisterComponent(_collectBurstSpawner);
+            builder.RegisterComponent(_speedSmoke);
+            builder.RegisterComponent(_uiEnableScheduler);
             builder.RegisterComponent(_adrenalineBoost);
             builder.RegisterComponent(_sessionHandler);
             builder.RegisterComponent(_quotaUI);

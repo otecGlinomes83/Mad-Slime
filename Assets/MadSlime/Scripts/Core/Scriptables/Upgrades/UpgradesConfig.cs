@@ -65,6 +65,9 @@ namespace Upgrades
         [Tooltip("Тип ступенчатой прокачки.")]
         [SerializeField] private UpgradeType _type;
 
+        [Tooltip("Иконка прокачки на плашке.")]
+        [SerializeField] private Sprite _icon;
+
         [Tooltip("Цена первой ступени.")]
         [SerializeField, Min(0)] private int _baseCost = 200;
 
@@ -78,6 +81,7 @@ namespace Upgrades
         [SerializeField, Min(1)] private int _maxSteps = 5;
 
         public UpgradeType Type => _type;
+        public Sprite Icon => _icon;
         public int BaseCost => _baseCost;
         public int CostStep => _costStep;
         public float ValuePerStep => _valuePerStep;
@@ -95,10 +99,14 @@ namespace Upgrades
         [Tooltip("Тип одноразовой покупки.")]
         [SerializeField] private PerkType _type;
 
+        [Tooltip("Иконка перка на плашке.")]
+        [SerializeField] private Sprite _icon;
+
         [Tooltip("Цена. Одноразовые покупки стоят очень дорого.")]
         [SerializeField, Min(0)] private int _cost = 3000;
 
         public PerkType Type => _type;
+        public Sprite Icon => _icon;
         public int Cost => _cost;
     }
 }

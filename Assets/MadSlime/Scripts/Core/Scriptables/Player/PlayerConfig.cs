@@ -67,6 +67,10 @@ namespace Scriptables
         [Tooltip("Максимальный питч звука сбора.")]
         [SerializeField, Range(0.1f, 3f)] private float _pickupSoundMaxPitch = 1.15f;
 
+        [Header("Smoke")]
+        [Tooltip("Скорость (юниты/с), при превышении которой игрок пускает дым. 0 = никогда.")]
+        [SerializeField, Min(0f)] private float _smokeSpeedThreshold = 15f;
+
         [Header("Deform")]
         [Tooltip("Максимальное вытягивание слайма вдоль движения на полной скорости (доля). 0.2 = +20% по оси движения.")]
         [SerializeField, Range(0f, 0.5f)] private float _deformMaxStretch = 0.22f;
@@ -103,6 +107,7 @@ namespace Scriptables
         public float PickupSoundMinPitch => _pickupSoundMinPitch;
         public float PickupSoundMaxPitch => _pickupSoundMaxPitch;
         public float DeformMaxStretch => _deformMaxStretch;
+        public float SmokeSpeedThreshold => _smokeSpeedThreshold;
         public float DeformSqueeze => _deformSqueeze;
         public float DeformSmoothTime => _deformSmoothTime;
         public int StartMass => _startMass;

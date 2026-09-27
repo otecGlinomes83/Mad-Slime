@@ -62,6 +62,10 @@ MonoBehaviour:
   _pickupSoundMaxInterval: 0.1
   _pickupSoundMinPitch: 0.95
   _pickupSoundMaxPitch: 1.15
+  _smokeSpeedThreshold: 1
+  _deformMaxStretch: 0.22
+  _deformSqueeze: 0.55
+  _deformSmoothTime: 0.08
   _startMass: 6
   _thresholds:
   - _tier: 0

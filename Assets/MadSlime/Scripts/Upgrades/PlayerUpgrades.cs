@@ -122,6 +122,30 @@ namespace Upgrades
             return _config.GetUpgrade(type).MaxSteps;
         }
 
+        public Sprite GetUpgradeIcon(UpgradeType type)
+        {
+            return _config.GetUpgrade(type).Icon;
+        }
+
+        public Sprite GetPerkIcon(PerkType type)
+        {
+            return _config.GetPerk(type).Icon;
+        }
+
+        public float GetNextStepValue(UpgradeType type)
+        {
+            UpgradeEntry entry = _config.GetUpgrade(type);
+
+            return entry.ValuePerStep * (GetLevel(type) + 1);
+        }
+
+        public float GetTotalValue(UpgradeType type)
+        {
+            UpgradeEntry entry = _config.GetUpgrade(type);
+
+            return entry.ValuePerStep * GetLevel(type);
+        }
+
         private float GetMultiplier(UpgradeType type)
         {
             UpgradeEntry entry = _config.GetUpgrade(type);

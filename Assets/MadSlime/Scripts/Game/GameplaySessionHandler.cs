@@ -13,6 +13,9 @@ namespace Game
     {
         [SerializeField] private SfxClip _musicTrack;
 
+        [Tooltip("Пауза перед переходом в Fill после конца сессии: игрок видит, что игра закончилась.")]
+        [SerializeField, Min(0f)] private float _sessionEndDelay = 1f;
+
         private LevelConfigResolver _configResolver;
         private MusicPlayer _musicPlayer;
         private PlayerProgress _progress;
@@ -189,6 +192,29 @@ namespace Game
 
             _timer.Stop();
             _gameplayReporter.ReportStop();
+            _pauser.RequestPause();
+
+            FinishDelayAsync().Forget();
+        }
+
+        private async UniTaskVoid FinishDelayAsync()
+        {
+            try
+            {
+                if (_sessionEndDelay > 0f)
+                {
+                    await UniTask.Delay
+                    (
+                        (int)(_sessionEndDelay * 1000f),
+                        DelayType.Realtime,
+                        cancellationToken: this.GetCancellationTokenOnDestroy()
+                    );
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
 
             NavigateTo(SceneId.Fill).Forget();
         }

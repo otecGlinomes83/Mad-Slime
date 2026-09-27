@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Scriptables;
 using Skins;
 using UnityEngine;
 
@@ -28,6 +29,10 @@ namespace Roulette
         [Tooltip("Компенсация монетами за сектор скина, когда все обычные скины уже собраны.")]
         [SerializeField, Min(0)] private int _duplicateCoinsCompensation = 100;
 
+        [Header("Rarity")]
+        [Tooltip("Таблица редкостей скинов: веса выпадения и цвета плашек.")]
+        [SerializeField] private SkinRarityTable _rarityTable;
+
         [Header("Timers")]
         [Tooltip("Длительность окна рекламных круток (с). 1800 = 30 минут.")]
         [SerializeField, Min(60)] private int _adSpinWindowSeconds = 1800;
@@ -38,24 +43,40 @@ namespace Roulette
         [Tooltip("Период бесплатной крутки (с). 900 = раз в 15 минут.")]
         [SerializeField, Min(60)] private int _freeSpinCooldownSeconds = 900;
 
-        [Header("Wheel Motion")]
-        [Tooltip("Скорость холостого вращения колеса (градусов в секунду).")]
-        [SerializeField, Min(0f)] private float _idleDegreesPerSecond = 24f;
+        [Header("Reel Motion")]
+        [Tooltip("Пауза между холостыми шагами ленты (с).")]
+        [SerializeField, Min(0.1f)] private float _idleStepInterval = 1.1f;
 
-        [Tooltip("Резкий откат колеса назад перед круткой (градусов).")]
-        [SerializeField, Min(0f)] private float _windBackDegrees = 45f;
+        [Tooltip("Длительность одного холостого шага на одну карточку (с).")]
+        [SerializeField, Min(0.05f)] private float _idleStepDuration = 0.18f;
+
+        [Tooltip("Откат ленты назад перед круткой (в карточках).")]
+        [SerializeField, Min(0f)] private float _windBackCards = 0.6f;
 
         [Tooltip("Длительность отката назад (с).")]
-        [SerializeField, Min(0.05f)] private float _windBackDuration = 0.35f;
+        [SerializeField, Min(0.05f)] private float _windBackDuration = 0.3f;
 
-        [Tooltip("Минимальное число полных оборотов при крутке.")]
+        [Tooltip("Минимальное число полных прокруток всей ленты при крутке.")]
         [SerializeField, Min(1)] private int _minTurns = 3;
 
-        [Tooltip("Максимальное число полных оборотов при крутке.")]
+        [Tooltip("Максимальное число полных прокруток всей ленты при крутке.")]
         [SerializeField, Min(1)] private int _maxTurns = 5;
 
         [Tooltip("Длительность основной крутки (с).")]
-        [SerializeField, Min(0.5f)] private float _spinDuration = 3f;
+        [SerializeField, Min(0.5f)] private float _spinDuration = 3.2f;
+
+        [Tooltip("Крутизна торможения: 2 — мягкий разгон и плавный выбег, 5 — классика слотов, 8+ — резкий старт и долгое затухание.")]
+        [SerializeField, Min(1f)] private float _spinEasePower = 5f;
+
+        [Header("Reel Sounds")]
+        [Tooltip("Тик при пролёте карточки. Пусто — лента молчит.")]
+        [SerializeField] private SfxClip _stepClip;
+
+        [Tooltip("Звук дёрганья рычага в момент старта крутки. Пусто — без звука.")]
+        [SerializeField] private SfxClip _spinStartClip;
+
+        [Tooltip("Фанфара на выпавший приз. Пусто — без звука.")]
+        [SerializeField] private SfxClip _winClip;
 
         public IReadOnlyList<RouletteSector> Sectors => _sectors;
         public int MainSpinCost => _mainSpinCost;
@@ -63,15 +84,22 @@ namespace Roulette
         public int SkinSpinBaseCost => _skinSpinBaseCost;
         public int SkinSpinCostStep => _skinSpinCostStep;
         public int DuplicateCoinsCompensation => _duplicateCoinsCompensation;
+        public SkinRarityTable RarityTable => _rarityTable;
         public int AdSpinWindowSeconds => _adSpinWindowSeconds;
         public int AdSpinsPerWindow => _adSpinsPerWindow;
         public int FreeSpinCooldownSeconds => _freeSpinCooldownSeconds;
-        public float IdleDegreesPerSecond => _idleDegreesPerSecond;
-        public float WindBackDegrees => _windBackDegrees;
+        public float IdleStepInterval => _idleStepInterval;
+        public float IdleStepDuration => _idleStepDuration;
+        public float WindBackCards => _windBackCards;
         public float WindBackDuration => _windBackDuration;
         public int MinTurns => _minTurns;
         public int MaxTurns => _maxTurns;
         public float SpinDuration => _spinDuration;
+
+        public float SpinEasePower => _spinEasePower;
+        public SfxClip StepClip => _stepClip;
+        public SfxClip SpinStartClip => _spinStartClip;
+        public SfxClip WinClip => _winClip;
     }
 
     [Serializable]

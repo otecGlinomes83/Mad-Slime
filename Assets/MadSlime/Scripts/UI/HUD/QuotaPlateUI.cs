@@ -17,7 +17,9 @@ namespace UI
         private QuotaEntry _entry;
         private Vector3 _baseScale;
         private Tween _popTween;
-        private float _popProgress;
+        private Tween _moveTween;
+        private Tween _lifeTween;
+        private Action _onRemovalCompleted;
 
         public QuotaEntry Entry => _entry;
 
@@ -38,15 +40,9 @@ namespace UI
             _baseScale = transform.localScale;
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
-            if (_popTween != null)
-            {
-                _popTween.Kill();
-                _popTween = null;
-            }
-
-            transform.localScale = _baseScale;
+            KillTweens();
         }
 
         public void Setup(QuotaEntry entry)
@@ -55,10 +51,53 @@ namespace UI
             _icon.sprite = entry.Definition.Icon;
         }
 
+        public void PlayIntro(Vector2 startPosition, Vector2 finalPosition, float duration)
+        {
+            _moveTween?.Kill();
+
+            transform.localPosition = startPosition;
+
+            _moveTween = transform.DOLocalMove(finalPosition, duration)
+                .SetEase(Ease.OutCubic)
+                .SetUpdate(true)
+                .SetLink(gameObject);
+        }
+
         public void UpdateCount(int remaining)
         {
             _text.text = remaining.ToString();
             PlayPop();
+        }
+
+        public void MoveTo(Vector3 localPosition, float duration)
+        {
+            _moveTween?.Kill();
+
+            _moveTween = transform.DOLocalMove(localPosition, duration)
+                .SetEase(Ease.OutCubic)
+                .SetUpdate(true)
+                .SetLink(gameObject);
+        }
+
+        public void PlayRemoval(float duration, Action onCompleted)
+        {
+            KillTweens();
+
+            _onRemovalCompleted = onCompleted;
+
+            _lifeTween = transform.DOScale(Vector3.zero, duration)
+                .SetEase(Ease.InBack)
+                .SetUpdate(true)
+                .SetLink(gameObject)
+                .OnComplete(OnRemovalCompleted);
+        }
+
+        private void OnRemovalCompleted()
+        {
+            Action completed = _onRemovalCompleted;
+            _onRemovalCompleted = null;
+            completed?.Invoke();
+            Destroy(gameObject);
         }
 
         private void PlayPop()
@@ -68,23 +107,43 @@ namespace UI
                 _popTween.Kill();
             }
 
-            _popProgress = 0f;
+            float popProgress = 0f;
             transform.localScale = _baseScale;
 
-            _popTween = DOTween.To(ReadPopProgress, ApplyPopProgress, 1f, _popDuration)
+            _popTween = DOTween.To(
+                    () => popProgress,
+                    value =>
+                    {
+                        popProgress = value;
+                        transform.localScale = _baseScale * (1f + _popStrength * (1f - value));
+                    },
+                    1f,
+                    _popDuration)
                 .SetEase(Ease.OutQuad)
-                .SetTarget(this);
+                .SetUpdate(true)
+                .SetTarget(this)
+                .SetLink(gameObject);
         }
 
-        private float ReadPopProgress()
+        private void KillTweens()
         {
-            return _popProgress;
-        }
+            if (_popTween != null)
+            {
+                _popTween.Kill();
+                _popTween = null;
+            }
 
-        private void ApplyPopProgress(float progress)
-        {
-            _popProgress = progress;
-            transform.localScale = _baseScale * (1f + _popStrength * (1f - progress));
+            if (_moveTween != null)
+            {
+                _moveTween.Kill();
+                _moveTween = null;
+            }
+
+            if (_lifeTween != null)
+            {
+                _lifeTween.Kill();
+                _lifeTween = null;
+            }
         }
     }
 }

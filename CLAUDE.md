@@ -54,7 +54,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working in this
 
 - **Core** — данные и шов: `Scriptables/` (все конфиги), enum'ы, `Item`, `IAttractable`, `QuotaEntry`, интерфейсы `Core/Interfaces`.
 - **Gameplay** — игрок, детекция/сбор, ShapeFill, Timer, сессии (`GameplaySessionHandler`, `FillSessionHandler`), `PlayerProgress` (фасад над `ISavesAccess`), `Wallet`, `Rewarder`, `Pauser`, `AdScheduler`, `LeaderboardReporter`, `LocalizationService`, аудио-плееры, `GameDirector`.
-- **UI** — `UI/` (HUD, окна, фабрики, MainMenu), `UI/Shop/` (магазин), `UI/Roulette/` (`RouletteService` — таймеры/цены/выдача; `RouletteWheel` — холостое вращение + «откат назад → разгон вперёд»; `RouletteView` — встраиваемый виджет и экран).
+- **UI** — `UI/` (HUD, окна, фабрики, MainMenu), `UI/Shop/` (магазин), `UI/Roulette/` (`RouletteService` — таймеры/цены/выдача/роллы наград; `RouletteReel` — вертикальная лента-слот: idle-шаги «щёлками», спин = откат назад → резкий разгон → торможение по предвыбранному индексу; `RouletteView` — встраиваемый виджет и экран). Редкости скинов: `SkinRarity` + `SkinRarityTable` (вес выпадения + цвет плашки), выпадение скина — двухстадийный ролл (тир по весам → скин внутри тира).
 
 Направление зависимостей: UI → Gameplay → Core. Game/UI код YG2 не видит.
 

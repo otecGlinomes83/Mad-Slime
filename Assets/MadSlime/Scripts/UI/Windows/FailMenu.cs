@@ -82,19 +82,19 @@ namespace UI
 
         public void Dismiss()
         {
-            Destroy(gameObject);
+            CloseAnimated();
         }
 
         private void RequestRestart()
         {
             _restartAction?.Invoke();
-            Destroy(gameObject);
+            CloseAnimated();
         }
 
         private void RequestMenu()
         {
             _menuAction?.Invoke();
-            Destroy(gameObject);
+            CloseAnimated();
         }
     }
 }

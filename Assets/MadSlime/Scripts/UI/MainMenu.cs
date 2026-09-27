@@ -163,7 +163,7 @@ namespace UI
 
         private async UniTaskVoid NavigateTo(SceneId targetSceneId)
         {
-            if (_gameDirector.IsTransitioning == true)
+            if (_gameDirector.IsTransitioning == true || _dailyRoulette.IsSpinning == true)
             {
                 return;
             }

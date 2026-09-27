@@ -11,7 +11,6 @@ namespace DI
 {
     public sealed class ShopLifetimeScope : LifetimeScope
     {
-        [SerializeField] private Shop _shop;
         [SerializeField] private ShopPanel _shopPanel;
         [SerializeField] private ShopItemViewFactory _shopItemViewFactory;
         [SerializeField] private UpgradeItemViewFactory _upgradeItemViewFactory;
@@ -21,10 +20,11 @@ namespace DI
         [SerializeField] private AdScheduler _adScheduler;
         [SerializeField] private Wallet _wallet;
         [SerializeField] private Pauser _pauser;
+        [SerializeField] private ShopCloseButton _shopCloseButton;
+        [SerializeField] private ShopMusic _shopMusic;
 
         protected override void Configure(IContainerBuilder builder)
         {
-            ValidateAssigned(_shop, nameof(_shop));
             ValidateAssigned(_shopPanel, nameof(_shopPanel));
             ValidateAssigned(_shopItemViewFactory, nameof(_shopItemViewFactory));
             ValidateAssigned(_upgradeItemViewFactory, nameof(_upgradeItemViewFactory));
@@ -34,8 +34,9 @@ namespace DI
             ValidateAssigned(_adScheduler, nameof(_adScheduler));
             ValidateAssigned(_wallet, nameof(_wallet));
             ValidateAssigned(_pauser, nameof(_pauser));
+            ValidateAssigned(_shopCloseButton, nameof(_shopCloseButton));
+            ValidateAssigned(_shopMusic, nameof(_shopMusic));
 
-            builder.RegisterComponent(_shop);
             builder.RegisterComponent(_shopPanel);
             builder.RegisterComponent(_shopItemViewFactory);
             builder.RegisterComponent(_upgradeItemViewFactory);
@@ -46,6 +47,8 @@ namespace DI
             builder.RegisterBuildCallback(InjectSceneButtonSounds);
             builder.RegisterComponent(_wallet);
             builder.RegisterComponent(_pauser);
+            builder.RegisterComponent(_shopCloseButton);
+            builder.RegisterComponent(_shopMusic);
         }
 
         private void InjectSceneButtonSounds(IObjectResolver container)

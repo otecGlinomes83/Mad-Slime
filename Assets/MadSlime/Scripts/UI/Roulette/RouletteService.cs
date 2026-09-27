@@ -4,11 +4,20 @@ using Game;
 using Skins;
 using UnityEngine;
 using VContainer;
+using Random = UnityEngine.Random;
 
 namespace Roulette
 {
     public sealed class RouletteService : MonoBehaviour
     {
+        private static readonly SkinRarity[] RarityOrder =
+        {
+            SkinRarity.Common,
+            SkinRarity.Rare,
+            SkinRarity.Epic,
+            SkinRarity.Legendary
+        };
+
         [SerializeField] private RouletteConfig _config;
 
         private PlayerProgress _progress;
@@ -39,6 +48,23 @@ namespace Roulette
             {
                 throw new InvalidOperationException(
                     $"{name}: Wallet was not injected. Check that the scene LifetimeScope (Menu or Shop) registers a Wallet and RouletteService.");
+            }
+
+            if (_config.RarityTable == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RouletteConfig '{_config.name}' has no SkinRarityTable assigned.");
+            }
+
+            for (int i = 0; i < RarityOrder.Length; i++)
+            {
+                RaritySettings settings = _config.RarityTable.Get(RarityOrder[i]);
+
+                if (settings.DropWeight <= 0f)
+                {
+                    throw new InvalidOperationException(
+                        $"{name}: Rarity '{RarityOrder[i]}' in '{_config.RarityTable.name}' has a non-positive drop weight.");
+                }
             }
 
             for (int i = 0; i < _config.Sectors.Count; i++)
@@ -190,6 +216,157 @@ namespace Roulette
 
             _progress.OpenSkins.Add(item.SkinType);
             _progress.Save();
+        }
+
+        public int PickMainSectorIndex()
+        {
+            IReadOnlyList<RouletteSector> sectors = _config.Sectors;
+            float totalWeight = 0f;
+
+            for (int i = 0; i < sectors.Count; i++)
+            {
+                totalWeight += sectors[i].Weight;
+            }
+
+            float roll = Random.Range(0f, totalWeight);
+
+            for (int i = 0; i < sectors.Count; i++)
+            {
+                roll -= sectors[i].Weight;
+
+                if (roll <= 0f)
+                {
+                    return i;
+                }
+            }
+
+            return sectors.Count - 1;
+        }
+
+        public int PickSkinIndex(List<SkinItem> pool)
+        {
+            if (pool == null || pool.Count == 0)
+            {
+                throw new ArgumentException(
+                    $"{name}: PickSkinIndex requires a non-empty skin pool.");
+            }
+
+            SkinRarity[] tiers = new SkinRarity[RarityOrder.Length];
+            float[] tierWeights = new float[RarityOrder.Length];
+            float totalWeight = 0f;
+            int tierCount = 0;
+
+            for (int i = 0; i < RarityOrder.Length; i++)
+            {
+                bool hasTier = HasSkinOfRarity(pool, RarityOrder[i]);
+
+                if (hasTier == false)
+                {
+                    continue;
+                }
+
+                float weight = _config.RarityTable.Get(RarityOrder[i]).DropWeight;
+
+                tiers[tierCount] = RarityOrder[i];
+                tierWeights[tierCount] = weight;
+                totalWeight += weight;
+                tierCount++;
+            }
+
+            SkinRarity chosenRarity = RollRarity(tiers, tierWeights, tierCount, totalWeight);
+
+            return PickIndexInRarity(pool, chosenRarity);
+        }
+
+        public Color GetRarityColor(SkinRarity rarity)
+        {
+            return _config.RarityTable.Get(rarity).PlateColor;
+        }
+
+        public void SortByRarityAscending(List<SkinItem> skins)
+        {
+            List<SkinItem> sorted = new List<SkinItem>(skins.Count);
+
+            for (int i = 0; i < RarityOrder.Length; i++)
+            {
+                for (int j = 0; j < skins.Count; j++)
+                {
+                    if (skins[j].Rarity == RarityOrder[i])
+                    {
+                        sorted.Add(skins[j]);
+                    }
+                }
+            }
+
+            skins.Clear();
+
+            for (int i = 0; i < sorted.Count; i++)
+            {
+                skins.Add(sorted[i]);
+            }
+        }
+
+        private static bool HasSkinOfRarity(List<SkinItem> pool, SkinRarity rarity)
+        {
+            for (int i = 0; i < pool.Count; i++)
+            {
+                if (pool[i].Rarity == rarity)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static SkinRarity RollRarity(SkinRarity[] tiers, float[] tierWeights, int tierCount, float totalWeight)
+        {
+            float roll = Random.Range(0f, totalWeight);
+
+            for (int i = 0; i < tierCount; i++)
+            {
+                roll -= tierWeights[i];
+
+                if (roll <= 0f)
+                {
+                    return tiers[i];
+                }
+            }
+
+            return tiers[tierCount - 1];
+        }
+
+        private static int PickIndexInRarity(List<SkinItem> pool, SkinRarity rarity)
+        {
+            int candidateCount = 0;
+
+            for (int i = 0; i < pool.Count; i++)
+            {
+                if (pool[i].Rarity == rarity)
+                {
+                    candidateCount++;
+                }
+            }
+
+            int pick = Random.Range(0, candidateCount);
+
+            for (int i = 0; i < pool.Count; i++)
+            {
+                if (pool[i].Rarity != rarity)
+                {
+                    continue;
+                }
+
+                if (pick == 0)
+                {
+                    return i;
+                }
+
+                pick--;
+            }
+
+            throw new InvalidOperationException(
+                $"RouletteService: failed to pick a skin of rarity '{rarity}' from a pool of {pool.Count} skins.");
         }
 
         private void PruneAdSpins(long nowUnixTime)

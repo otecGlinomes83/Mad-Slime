@@ -25,12 +25,11 @@ namespace Player
         private Collector _collector;
         private ScalePunch _collectPunch;
         private PlayerUpgrades _upgrades;
-        private CollectBurstSpawner _collectBurst;
 
         [Inject]
         public void Construct(LevelProgress levelProgress, PlayerConfig playerConfig, TierTable tierTable,
             PlayerInputReader inputReader, Collector collector, ScalePunch collectPunch,
-            PlayerUpgrades upgrades, CollectBurstSpawner collectBurst)
+            PlayerUpgrades upgrades)
         {
             _levelProgress = levelProgress;
             _playerConfig = playerConfig;
@@ -39,7 +38,6 @@ namespace Player
             _collector = collector;
             _collectPunch = collectPunch;
             _upgrades = upgrades;
-            _collectBurst = collectBurst;
         }
 
         private void Awake()
@@ -80,12 +78,6 @@ namespace Player
                     $"{name}: PlayerUpgrades was not injected. Check that ProjectLifetimeScope registers PlayerUpgrades.");
             }
 
-            if (_collectBurst == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: CollectBurstSpawner was not injected. Check that GameLifetimeScope registers CollectBurstSpawner and Player.");
-            }
-
             _mover = GetComponent<Mover>();
             _rotator = GetComponent<Rotator>();
             _playerTier = GetComponent<PlayerTier>();
@@ -123,8 +115,6 @@ namespace Player
             bool isQuota = _levelProgress.IsQuotaItem(item.Definition);
             float massMultiplier = isQuota == true ? _upgrades.QuotaMassMultiplier : _upgrades.MassMultiplier;
             int mass = Mathf.Max(1, Mathf.RoundToInt(_tierTable.Get(item.Definition.Tier).Mass * massMultiplier));
-
-            _collectBurst.Play(item.transform.position, 1f + (int)item.Definition.Tier * 0.5f);
 
             float fillWeight = isQuota == true ? 1f : _upgrades.ForeignFillMultiplier;
 

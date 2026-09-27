@@ -14,166 +14,92 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="32b22157-d486-449b-b3c9-7cbcbfbd921f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/indexLayout.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/DI/GameLifetimeScope.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/DI/GameLifetimeScope.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/DI/ProjectLifetimeScope.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/DI/ProjectLifetimeScope.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/DI/ShopLifetimeScope.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/DI/ShopLifetimeScope.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Editor/MadSlimeContentSetup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Editor/MadSlimeContentSetup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Images/SkinTexture.renderTexture" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Images/SkinTexture.renderTexture" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/DI/ProjectScope.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/DI/ProjectScope.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteWindow.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteWindow.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Materials/CollectBurstCube.mat.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Materials/CollectBurstCube.mat.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/FX/CollectBurst.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/FX/CollectBurst.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/FX/CollectBurst.prefab.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/FX/CollectBurst.prefab.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteSectorCard.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteSectorCard.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/Shop.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/Shop.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Fill.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Fill.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/UpgradeItem.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/UpgradeItem.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Game.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Menu.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Menu.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Shop.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Shop.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Localization/Localization.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Localization/Localization.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Player/PlayerConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Player/PlayerConfig.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Roulette/RouletteConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Roulette/RouletteConfig.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Shop/ShopContent.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Shop/ShopContent.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Skins/Crown.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Skins/Crown.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Skins/Pacman.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Skins/Pacman.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Skins/Phantom.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Skins/Phantom.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Skins/Slime.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Skins/Slime.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Skins/Tung.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Skins/Tung.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Upgrades/UpgradesConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Upgrades/UpgradesConfig.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Audio/AudioMixerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Audio/AudioMixerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/DI.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/DI/FillLifetimeScope.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/DI/FillLifetimeScope.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/DI/GameLifetimeScope.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/DI/GameLifetimeScope.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/DI/MenuLifetimeScope.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/DI/MenuLifetimeScope.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/DI/ProjectLifetimeScope.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/DI/ProjectLifetimeScope.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/DI/ShopLifetimeScope.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/DI/ShopLifetimeScope.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/AdScheduler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/AdScheduler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/FillSessionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/FillSessionHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Player/PlayerConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Player/PlayerConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Roulette/RouletteConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Roulette/RouletteConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Skins/SkinItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Skins/SkinItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Upgrades/UpgradesConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Upgrades/UpgradesConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/GameDirector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/GameDirector.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/GameplaySessionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/GameplaySessionHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/LeaderboardReporter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/LeaderboardReporter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/LevelTransitor.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/LevelTransitor.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/Localization/LocalizationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/Localization/LocalizationService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/Pauser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/Pauser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/PlayerProgress.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/PlayerProgress.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Interfaces.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Interfaces/IAttractable.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Interfaces/IAttractable.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Item.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Item/Item.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Item/Item.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Player/PlayerSkins.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Player/PlayerSkins.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Player/SkinApplier.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Player/SkinApplier.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/PlayerInput/PlayerInputActions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/PlayerInput/PlayerInputActions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Quota.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Quota/QuotaEntry.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Quota/QuotaEntry.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Roulette.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Roulette/RouletteSectorCard.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Roulette/RouletteSectorCard.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Roulette/RouletteService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Roulette/RouletteService.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Roulette/RouletteWheel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Roulette/RouletteWheel.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Roulette/RouletteWindow.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Roulette/RouletteWindow.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Saves.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Saves/SavesYG.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Saves/SavesYG.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Ads.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Ads/YandexConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Ads/YandexConfig.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Audio.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Audio/SfxClip.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Audio/SfxClip.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Camera.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Camera/CameraImpulseConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Camera/CameraImpulseConfig.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Fill.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Fill/FillConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Fill/FillConfig.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Items.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Items/GhostFadeConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Items/GhostFadeConfig.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Items/ItemDefinition.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Items/ItemDefinition.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LayoutSet.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LayoutSet.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LayoutsLibrary.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LayoutsLibrary.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LevelConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LevelConfig.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LevelRange.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LevelRange.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LevelTheme.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LevelTheme.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LevelsCatalog.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/LevelsCatalog.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/PropSet.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/PropSet.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/SpawnShape.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/SpawnShape.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/SpawnZone.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Levels/SpawnZone.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Localization.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Localization/LocalizationTable.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Localization/LocalizationTable.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Player.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Player/PlayerConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Player/PlayerConfig.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Player/PlayerTierThreshold.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Player/PlayerTierThreshold.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Rewards.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Rewards/RewardConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Rewards/RewardConfig.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Roulette.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Roulette/RouletteConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Roulette/RouletteConfig.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Shop.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Shop/ShopContent.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Shop/ShopContent.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Skills.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Skills/AttractConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Skills/AttractConfig.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Skins.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Skins/SkinItem.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Skins/SkinItem.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Tiers.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Tiers/TierTable.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Tiers/TierTable.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Upgrades.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Upgrades/UpgradesConfig.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Scriptables/Upgrades/UpgradesConfig.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/ModelPlacer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/ModelPlacer.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/Shop.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/Shop.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/ShopItemView.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/ShopItemView.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/ShopItemViewFactory.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/ShopItemViewFactory.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/ShopPanel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/ShopPanel.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/SkinModel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/SkinModel.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/UpgradeItemView.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/UpgradeItemView.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/UpgradeItemViewFactory.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Shop/UpgradeItemViewFactory.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Skills.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Skills/ItemTier.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Skills/ItemTier.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/HUD/LevelLabelUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/HUD/LevelLabelUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/Level/ItemPool.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Game/Level/ItemPool.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Movement/Mover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Movement/Mover.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Player/CollectBurstSpawner.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Player/CollectBurstSpawner.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Player/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Player/Player.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/HUD/QuotaPlateUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/HUD/QuotaPlateUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/HUD/QuotaUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/HUD/QuotaUI.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/MainMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/MainMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteWheel.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteWheel.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/Shop.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/Shop.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/ShopItemView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/ShopItemView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/ShopPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/ShopPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/UpgradeItemView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/UpgradeItemView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Windows/BaseWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Windows/BaseWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Windows/FailMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Windows/FailMenu.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Windows/LeaderboardMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Windows/LeaderboardMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Upgrades/PerkType.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Upgrades/PerkType.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Upgrades/UpgradeType.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Upgrades/UpgradeType.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Windows/PauseMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Windows/PauseMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Windows/WinMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Windows/WinMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Upgrades/PlayerUpgrades.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Upgrades/PlayerUpgrades.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/ServerInfoYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/ServerInfoYG2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Plugins/YandexGame.jslib" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Plugins/YandexGame.jslib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Plugins/YandexGame.jslib.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Plugins/YandexGame.jslib.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/AspectRatio/AspectRatio_build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/AspectRatio/AspectRatio_build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/AspectRatio/AspectRatio_build.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/AspectRatio/AspectRatio_build.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/BackgroundFormat.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/BackgroundFormat.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/BackgroundFormat.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/BackgroundFormat.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/GradientBackground/GradientBackground_build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/GradientBackground/GradientBackground_build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/GradientBackground/GradientBackground_build.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/GradientBackground/GradientBackground_build.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/LogoFormat.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/LogoFormat.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/LogoFormat.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/LogoFormat.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/PixelRatioMobile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/PixelRatioMobile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/PixelRatioMobile.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/PixelRatioMobile.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/ProgressBar/ProgressBar_build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/ProgressBar/ProgressBar_build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/ProgressBar/ProgressBar_build.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/ProgressBar/ProgressBar_build.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/SyncInitSDK.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/SyncInitSDK.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/SyncInitSDK.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/SyncInitSDK.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/TestLabel/TestLabel_build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/TestLabel/TestLabel_build.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/TestLabel/TestLabel_build.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/Editor/TestLabel/TestLabel_build.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/OwnHost/Editor/OwnHostEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/OwnHost/Editor/OwnHostEditor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/OwnHost/Editor/OwnHostEditor.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/OwnHost/Editor/OwnHostEditor.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/OwnHost/OwnHost.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/OwnHost/OwnHost.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/OwnHost/OwnHost.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/OwnHost/OwnHost.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/YandexGamePlatform.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/YandexGamePlatform.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/YandexGamePlatform.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Scripts/YandexGamePlatform.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Version.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Version.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Version.txt.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Platforms/YandexGames/Version.txt.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/WebGLTemplates/YandexGames/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/WebGLTemplates/YandexGames/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/WebGLTemplates/YandexGames/index.html.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/WebGLTemplates/YandexGames/index.html.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CLAUDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/CLAUDE.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -299,7 +225,7 @@
 }</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="D:\3. files\Unity\Editor\2022.3.62f2\Editor\Unity.exe" />
+      <option name="EXE_PATH" value="$USER_HOME$/Unity/Hub/Editor/2022.3.62f2/Editor/unityhub-unity-editor-2022.3.62f2" />
       <option name="PROGRAM_PARAMETERS" value="-projectPath &quot;D:\3. files\unity repos\Mad-Slime&quot; -debugCodeOptimization" />
       <option name="WORKING_DIRECTORY" value="D:\3. files\unity repos\Mad-Slime" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -309,7 +235,7 @@
       <method v="2" />
     </configuration>
     <configuration name="Unit Tests (batch mode)" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="D:\3. files\Unity\Editor\2022.3.62f2\Editor\Unity.exe" />
+      <option name="EXE_PATH" value="$USER_HOME$/Unity/Hub/Editor/2022.3.62f2/Editor/unityhub-unity-editor-2022.3.62f2" />
       <option name="PROGRAM_PARAMETERS" value="-runTests -batchmode -projectPath &quot;D:\3. files\unity repos\Mad-Slime&quot; -testResults Logs/results.xml -logFile Logs/Editor.log -testPlatform EditMode -debugCodeOptimization" />
       <option name="WORKING_DIRECTORY" value="D:\3. files\unity repos\Mad-Slime" />
       <option name="PASS_PARENT_ENVS" value="1" />

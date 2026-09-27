@@ -1,8 +1,11 @@
+using Audio;
 using Game;
 using Skins;
 using System;
 using System.Collections.Generic;
+using Scriptables;
 using TMPro;
+using UI.Animations;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -17,13 +20,13 @@ namespace Roulette
             Skins
         }
 
-        [SerializeField] private RouletteWheel _wheel;
-        [SerializeField] private Button _freeButton;
+        private static readonly Color CoinEntryColor = new Color(1f, 0.8f, 0.3f);
+
+        [SerializeField] private RouletteReel _reel;
+        [SerializeField] private Button _spinButton;
+        [SerializeField] private TMP_Text _spinPriceText;
         [SerializeField] private Button _adButton;
-        [SerializeField] private Button _coinsButton;
-        [SerializeField] private TMP_Text _freeTimerText;
-        [SerializeField] private TMP_Text _adSpinsText;
-        [SerializeField] private TMP_Text _costText;
+        [SerializeField] private TMP_Text _adButtonText;
         [SerializeField] private TMP_Text _resultText;
 
         [SerializeField] private GameObject _screenRoot;
@@ -31,21 +34,24 @@ namespace Roulette
 
         private RouletteService _service;
         private AdScheduler _adScheduler;
+        private SfxPlayer _sfxPlayer;
         private Mode _mode;
         private List<SkinItem> _skinSource;
         private List<SkinItem> _sectorPool;
         private bool _allSkinsCollected;
         private bool _isInitialized;
-        private int _lastFreeTimerKey = int.MinValue;
+        private bool _lastFreeReady;
+        private int _lastAdSpinsLeft = -1;
         private int _pendingIndex;
 
-        public bool IsSpinning => _wheel.IsSpinning;
+        public bool IsSpinning => _reel.IsSpinning;
 
         [Inject]
-        public void Construct(RouletteService service, AdScheduler adScheduler)
+        public void Construct(RouletteService service, AdScheduler adScheduler, SfxPlayer sfxPlayer)
         {
             _service = service;
             _adScheduler = adScheduler;
+            _sfxPlayer = sfxPlayer;
         }
 
         public void Initialize(Mode mode, IEnumerable<SkinItem> skinSource)
@@ -67,22 +73,28 @@ namespace Roulette
                     $"{name}: AdScheduler was not injected. Check that the scene LifetimeScope registers RouletteView.");
             }
 
-            if (_wheel == null)
+            if (_sfxPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Wheel is not assigned. Drag a RouletteWheel into the _wheel field.");
+                    $"{name}: SfxPlayer was not injected. Check that ProjectLifetimeScope registers SfxPlayer.");
             }
 
-            if (_freeButton == null || _adButton == null || _coinsButton == null)
+            if (_reel == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: a button is not assigned. Drag the Free, Ad and Coins buttons into the fields.");
+                    $"{name}: Reel is not assigned. Drag a RouletteReel into the _reel field.");
             }
 
-            if (_freeTimerText == null || _adSpinsText == null || _costText == null || _resultText == null)
+            if (_spinButton == null || _adButton == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: a text is not assigned. Drag the FreeTimer, AdSpins, Cost and Result texts into the fields.");
+                    $"{name}: a button is not assigned. Drag the Spin and Ad buttons into the fields.");
+            }
+
+            if (_spinPriceText == null || _adButtonText == null || _resultText == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: a text is not assigned. Drag the SpinPrice, AdText and Result texts into the fields.");
             }
 
             _mode = mode;
@@ -96,11 +108,23 @@ namespace Roulette
                 }
             }
 
-            _wheel.Setup(_service.Config);
+            _reel.Setup(_service.Config, _sfxPlayer);
             _resultText.gameObject.SetActive(false);
-            _lastFreeTimerKey = int.MinValue;
 
-            BuildWheel();
+            if (_mode == Mode.Skins)
+            {
+                _adButton.gameObject.SetActive(false);
+            }
+
+            _spinButton.onClick.AddListener(OnSpinClicked);
+            _adButton.onClick.AddListener(OnAdClicked);
+
+            if (_closeButton != null)
+            {
+                _closeButton.onClick.AddListener(OnCloseClicked);
+            }
+
+            BuildReel();
             RefreshButtons();
 
             _isInitialized = true;
@@ -118,33 +142,15 @@ namespace Roulette
             _screenRoot.SetActive(true);
         }
 
-        private void OnEnable()
+        private void OnDestroy()
         {
-            _freeButton.onClick.AddListener(OnFreeClicked);
-            _adButton.onClick.AddListener(OnAdClicked);
-            _coinsButton.onClick.AddListener(OnCoinsClicked);
-
-            if (_closeButton != null)
+            if (_isInitialized == false)
             {
-                _closeButton.onClick.AddListener(OnCloseClicked);
+                return;
             }
 
-            if (_isInitialized == true)
-            {
-                _resultText.gameObject.SetActive(false);
-
-                if (_mode == Mode.Main)
-                {
-                    TryAutoSpinFree();
-                }
-            }
-        }
-
-        private void OnDisable()
-        {
-            _freeButton.onClick.RemoveListener(OnFreeClicked);
+            _spinButton.onClick.RemoveListener(OnSpinClicked);
             _adButton.onClick.RemoveListener(OnAdClicked);
-            _coinsButton.onClick.RemoveListener(OnCoinsClicked);
 
             if (_closeButton != null)
             {
@@ -156,39 +162,26 @@ namespace Roulette
         {
             if (_isInitialized == true && _mode == Mode.Main)
             {
-                RefreshFreeTimerText();
+                RefreshButtons();
             }
         }
 
         private void OnCloseClicked()
         {
-            if (_wheel.IsSpinning == true)
+            if (_reel.IsSpinning == true)
             {
                 return;
             }
 
+            UiAnimations.ScaleOut((RectTransform)_screenRoot.transform, UiAnimations.WindowScaleOutDuration, HideScreenRoot);
+        }
+
+        private void HideScreenRoot()
+        {
             _screenRoot.SetActive(false);
         }
 
-        private void TryAutoSpinFree()
-        {
-            if (_wheel.IsSpinning == true)
-            {
-                return;
-            }
-
-            long now = GetNowUnixTime();
-
-            if (_service.CanSpinFree(now) == false)
-            {
-                return;
-            }
-
-            _service.RegisterFreeSpin(now);
-            SpinWheel();
-        }
-
-        private void BuildWheel()
+        private void BuildReel()
         {
             List<RouletteSectorView> views = new List<RouletteSectorView>();
 
@@ -198,17 +191,21 @@ namespace Roulette
                 {
                     if (sector.RewardType == RouletteSector.RewardKind.Coins)
                     {
-                        views.Add(new RouletteSectorView($"×{sector.Coins}", null, new Color(1f, 0.8f, 0.3f)));
+                        views.Add(new RouletteSectorView($"×{sector.Coins}", null, CoinEntryColor));
                     }
                     else
                     {
-                        views.Add(new RouletteSectorView(string.Empty, sector.Skin.Icon, new Color(0.7f, 0.4f, 1f)));
+                        views.Add(new RouletteSectorView(
+                            Localization.Get(GetRarityKey(sector.Skin.Rarity)),
+                            sector.Skin.Icon,
+                            _service.GetRarityColor(sector.Skin.Rarity)));
                     }
                 }
             }
             else
             {
                 List<SkinItem> pool = _service.CollectAvailableSkinPool(_skinSource);
+                _service.SortByRarityAscending(pool);
                 _allSkinsCollected = pool.Count == 0;
                 _sectorPool = new List<SkinItem>(pool);
 
@@ -219,42 +216,61 @@ namespace Roulette
                         views.Add(new RouletteSectorView(
                             $"×{_service.Config.DuplicateCoinsCompensation}",
                             null,
-                            new Color(1f, 0.8f, 0.3f)));
+                            CoinEntryColor));
                     }
                 }
                 else
                 {
                     for (int i = 0; i < pool.Count; i++)
                     {
-                        views.Add(new RouletteSectorView(string.Empty, pool[i].Icon, Color.white));
+                        views.Add(new RouletteSectorView(
+                            Localization.Get(GetRarityKey(pool[i].Rarity)),
+                            pool[i].Icon,
+                            _service.GetRarityColor(pool[i].Rarity)));
                     }
                 }
             }
 
-            _wheel.Build(views);
+            _reel.Build(views);
         }
 
-        private void OnFreeClicked()
+        private void OnSpinClicked()
         {
-            if (CanSpin() == false)
+            if (_reel.IsSpinning == true)
             {
                 return;
             }
 
-            long now = GetNowUnixTime();
-
-            if (_service.CanSpinFree(now) == false)
+            if (_mode == Mode.Main)
             {
+                long now = GetNowUnixTime();
+
+                if (_service.CanSpinFree(now) == true)
+                {
+                    _service.RegisterFreeSpin(now);
+                    SpinReel();
+                    return;
+                }
+
+                if (_service.CanSpinForCoins() == true)
+                {
+                    _service.PayMainSpin();
+                    SpinReel();
+                }
+
                 return;
             }
 
-            _service.RegisterFreeSpin(now);
-            SpinWheel();
+            if (_service.CanSpinSkinsForCoins() == true)
+            {
+                _service.PaySkinSpin();
+                SpinReel();
+            }
         }
 
         private void OnAdClicked()
         {
-            if (CanSpin() == false)
+            if (_reel.IsSpinning == true)
             {
                 return;
             }
@@ -276,92 +292,38 @@ namespace Roulette
         {
             _service.RegisterAdSpin(GetNowUnixTime());
             RefreshButtons();
-            SpinWheel();
+            SpinReel();
         }
 
-        private void OnCoinsClicked()
+        private void SpinReel()
         {
-            if (CanSpin() == false)
-            {
-                return;
-            }
-
-            if (_mode == Mode.Main)
-            {
-                if (_service.CanSpinForCoins() == false)
-                {
-                    return;
-                }
-
-                _service.PayMainSpin();
-            }
-            else
-            {
-                if (_service.CanSpinSkinsForCoins() == false)
-                {
-                    return;
-                }
-
-                _service.PaySkinSpin();
-            }
-
-            SpinWheel();
-        }
-
-        private bool CanSpin()
-        {
-            return _isInitialized && _wheel.IsSpinning == false;
-        }
-
-        private void SpinWheel()
-        {
-            int sectorCount = _wheel.SectorCount;
-
-            _pendingIndex = PickWeightedIndex(sectorCount);
+            _pendingIndex = PickTargetIndex();
 
             _resultText.gameObject.SetActive(false);
             RefreshButtons();
 
-            _wheel.Spin(_pendingIndex, sectorCount, OnWheelSpinCompleted);
+            _reel.Spin(_pendingIndex, _reel.EntryCount, OnReelSpinCompleted);
         }
 
-        private void OnWheelSpinCompleted()
-        {
-            OnWheelStopped(_pendingIndex);
-        }
-
-        private int PickWeightedIndex(int sectorCount)
+        private int PickTargetIndex()
         {
             if (_mode == Mode.Skins)
             {
-                return UnityEngine.Random.Range(0, sectorCount);
+                return _service.PickSkinIndex(_sectorPool);
             }
 
-            IReadOnlyList<RouletteSector> sectors = _service.Config.Sectors;
-            float totalWeight = 0f;
-
-            for (int i = 0; i < sectors.Count; i++)
-            {
-                totalWeight += sectors[i].Weight;
-            }
-
-            float roll = UnityEngine.Random.Range(0f, totalWeight);
-
-            for (int i = 0; i < sectors.Count; i++)
-            {
-                roll -= sectors[i].Weight;
-
-                if (roll <= 0f)
-                {
-                    return i;
-                }
-            }
-
-            return sectors.Count - 1;
+            return _service.PickMainSectorIndex();
         }
 
-        private void OnWheelStopped(int targetIndex)
+        private void OnReelSpinCompleted()
         {
+            OnReelStopped(_pendingIndex);
+        }
+
+        private void OnReelStopped(int targetIndex)
+        {
+            PlayWinSound();
+
             if (_mode == Mode.Main)
             {
                 RouletteSector sector = _service.Config.Sectors[targetIndex];
@@ -401,8 +363,20 @@ namespace Roulette
             _service.GrantSkin(_sectorPool[targetIndex]);
             ShowResult(Localization.Get("roulette_won_skin"));
 
-            BuildWheel();
+            BuildReel();
             RefreshButtons();
+        }
+
+        private void PlayWinSound()
+        {
+            SfxClip winClip = _service.Config.WinClip;
+
+            if (winClip == null)
+            {
+                return;
+            }
+
+            _sfxPlayer.PlayUi(winClip);
         }
 
         private void ShowResult(string message)
@@ -413,59 +387,60 @@ namespace Roulette
 
         private void RefreshButtons()
         {
-            bool spinning = _wheel.IsSpinning;
+            bool spinning = _reel.IsSpinning;
             long now = GetNowUnixTime();
 
             if (_mode == Mode.Main)
             {
-                _freeButton.interactable = spinning == false && _service.CanSpinFree(now);
+                bool freeReady = _service.CanSpinFree(now);
+                int adSpinsLeft = _service.GetAdSpinsLeft(now);
+
+                if (freeReady != _lastFreeReady || adSpinsLeft != _lastAdSpinsLeft)
+                {
+                    _lastFreeReady = freeReady;
+                    _lastAdSpinsLeft = adSpinsLeft;
+
+                    if (freeReady == true)
+                    {
+                        _spinPriceText.text = Localization.Get("roulette_free_ready");
+                    }
+                    else
+                    {
+                        _spinPriceText.text = $"{_service.MainSpinCost}";
+                    }
+
+                    _adButtonText.text = string.Format(
+                        Localization.Get("roulette_ad_spins"),
+                        adSpinsLeft);
+                }
+
+                _spinButton.interactable = spinning == false
+                    && (freeReady == true || _service.CanSpinForCoins() == true);
                 _adButton.interactable = spinning == false && _service.CanSpinForAd(now);
 
-                _adSpinsText.text = string.Format(
-                    Localization.Get("roulette_ad_spins"),
-                    _service.GetAdSpinsLeft(now));
-
-                _costText.text = $"{_service.MainSpinCost}";
-                _coinsButton.interactable = spinning == false && _service.CanSpinForCoins();
-
-                RefreshFreeTimerText();
-
                 return;
             }
 
-            _freeButton.gameObject.SetActive(false);
-            _adButton.gameObject.SetActive(false);
-            _freeTimerText.gameObject.SetActive(false);
-            _adSpinsText.gameObject.SetActive(false);
-
-            _costText.text = $"{_service.GetSkinSpinCost()}";
-            _coinsButton.interactable = spinning == false && _service.CanSpinSkinsForCoins();
+            _spinPriceText.text = $"{_service.GetSkinSpinCost()}";
+            _spinButton.interactable = spinning == false && _service.CanSpinSkinsForCoins();
         }
 
-        private void RefreshFreeTimerText()
+        private static string GetRarityKey(SkinRarity rarity)
         {
-            long now = GetNowUnixTime();
-            bool canSpinFree = _service.CanSpinFree(now);
-            int remainSeconds = canSpinFree == true ? -1 : _service.GetFreeSpinRemainSeconds(now);
-
-            if (remainSeconds == _lastFreeTimerKey)
+            switch (rarity)
             {
-                return;
+                case SkinRarity.Rare:
+                    return "rarity_rare";
+
+                case SkinRarity.Epic:
+                    return "rarity_epic";
+
+                case SkinRarity.Legendary:
+                    return "rarity_legendary";
+
+                default:
+                    return "rarity_common";
             }
-
-            _lastFreeTimerKey = remainSeconds;
-
-            if (canSpinFree == true)
-            {
-                _freeTimerText.text = Localization.Get("roulette_free_ready");
-                return;
-            }
-
-            TimeSpan remain = TimeSpan.FromSeconds(remainSeconds);
-
-            _freeTimerText.text = string.Format(
-                Localization.Get("roulette_free_timer"),
-                $"{(int)remain.TotalMinutes}:{remain.Seconds:00}");
         }
 
         private static long GetNowUnixTime()

@@ -10,6 +10,7 @@ namespace Movement
         [SerializeField] private float _smoothTime = 0.12f;
 
         private const float MoveThreshold = 0.05f;
+        private const float MinDecayVelocity = 0.05f;
 
         private CapsuleCollider _playerCollider;
         private Bounds _bounds;
@@ -86,6 +87,7 @@ namespace Movement
 
             if (direction.sqrMagnitude < MoveThreshold * MoveThreshold)
             {
+                DecayVelocity();
                 return;
             }
 
@@ -99,6 +101,27 @@ namespace Movement
                 ref _velocityRef,
                 _smoothTime
             );
+
+            transform.position += _currentVelocity * Time.deltaTime;
+
+            ClampToBounds();
+        }
+
+        private void DecayVelocity()
+        {
+            _currentVelocity = Vector3.SmoothDamp
+            (
+                _currentVelocity,
+                Vector3.zero,
+                ref _velocityRef,
+                _smoothTime
+            );
+
+            if (_currentVelocity.sqrMagnitude < MinDecayVelocity * MinDecayVelocity)
+            {
+                _currentVelocity = Vector3.zero;
+                return;
+            }
 
             transform.position += _currentVelocity * Time.deltaTime;
 

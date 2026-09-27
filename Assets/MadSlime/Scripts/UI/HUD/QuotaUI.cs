@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using Game;
 using Quota;
 using UnityEngine;
@@ -12,6 +13,18 @@ namespace UI
         [SerializeField] private QuotaPlateUI _platePrefab;
         [SerializeField] private RectTransform _container;
         [SerializeField] private float _verticalSpacing = 60f;
+
+        [Tooltip("Длительность выезда первой плашки (с).")]
+        [SerializeField, Min(0.01f)] private float _plateIntroDuration = 0.25f;
+
+        [Tooltip("Насколько дольше выезжает каждая следующая плашка (с).")]
+        [SerializeField, Min(0f)] private float _plateIntroDurationStep = 0.1f;
+
+        [Tooltip("С какого расстояния слева плашка выезжает (юниты).")]
+        [SerializeField, Min(0f)] private float _plateIntroSlideOffset = 90f;
+
+        [SerializeField, Min(0.01f)] private float _shiftDuration = 0.25f;
+        [SerializeField, Min(0.01f)] private float _removeDuration = 0.2f;
 
         private readonly List<QuotaPlateUI> _plates = new List<QuotaPlateUI>();
         private readonly Dictionary<QuotaEntry, QuotaPlateUI> _platesByEntry = new Dictionary<QuotaEntry, QuotaPlateUI>();
@@ -84,7 +97,7 @@ namespace UI
 
             for (int i = 0; i < quota.Count; i++)
             {
-                QuotaPlateUI plate = CreatePlate(quota[i]);
+                QuotaPlateUI plate = CreatePlate(quota[i], i);
                 plate.UpdateCount(quota[i].Remaining);
             }
         }
@@ -93,23 +106,49 @@ namespace UI
         {
             if (_platesByEntry.TryGetValue(entry, out QuotaPlateUI plate) == false)
             {
-                plate = CreatePlate(entry);
+                plate = CreatePlate(entry, _plates.Count);
             }
 
-            plate.UpdateCount(remaining);
+            if (remaining > 0)
+            {
+                plate.UpdateCount(remaining);
+                return;
+            }
+
+            RemovePlate(plate);
         }
 
-        private QuotaPlateUI CreatePlate(QuotaEntry entry)
+        private QuotaPlateUI CreatePlate(QuotaEntry entry, int index)
         {
             QuotaPlateUI newPlate = Instantiate(_platePrefab, _container);
-            newPlate.transform.localPosition = new Vector3(0f, -_plates.Count * _verticalSpacing, 0f);
+
+            Vector2 finalPosition = new Vector2(0f, -index * _verticalSpacing);
+            Vector2 startPosition = finalPosition + new Vector2(-_plateIntroSlideOffset, 0f);
+            float duration = _plateIntroDuration + index * _plateIntroDurationStep;
 
             newPlate.Setup(entry);
+            newPlate.PlayIntro(startPosition, finalPosition, duration);
 
-            _plates.Add(newPlate);
+            _plates.Insert(index, newPlate);
             _platesByEntry[entry] = newPlate;
 
             return newPlate;
+        }
+
+        private void RemovePlate(QuotaPlateUI plate)
+        {
+            _plates.Remove(plate);
+            _platesByEntry.Remove(plate.Entry);
+
+            plate.PlayRemoval(_removeDuration, ShiftPlates);
+        }
+
+        private void ShiftPlates()
+        {
+            for (int i = 0; i < _plates.Count; i++)
+            {
+                _plates[i].MoveTo(new Vector3(0f, -i * _verticalSpacing, 0f), _shiftDuration);
+            }
         }
     }
 }

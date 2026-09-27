@@ -1,5 +1,6 @@
-﻿using Game;
+using Game;
 using System;
+using UI.Animations;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -25,11 +26,22 @@ namespace UI
             }
 
             Pauser.RequestPause();
+            UiAnimations.ScaleIn((RectTransform)transform, UiAnimations.WindowScaleInDuration);
+        }
+
+        protected void CloseAnimated()
+        {
+            UiAnimations.ScaleOut((RectTransform)transform, UiAnimations.WindowScaleOutDuration, DestroyWindow);
         }
 
         protected virtual void OnDisable()
         {
             Pauser?.RequestResume();
+        }
+
+        private void DestroyWindow()
+        {
+            Destroy(gameObject);
         }
     }
 }

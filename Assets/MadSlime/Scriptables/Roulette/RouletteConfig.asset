@@ -48,12 +48,18 @@ MonoBehaviour:
   _skinSpinBaseCost: 300
   _skinSpinCostStep: 150
   _duplicateCoinsCompensation: 100
+  _rarityTable: {fileID: 11400000, guid: 8d1c7cb302a74805e9f7c0823ae73ed6, type: 2}
   _adSpinWindowSeconds: 1800
   _adSpinsPerWindow: 3
   _freeSpinCooldownSeconds: 900
-  _idleDegreesPerSecond: 24
-  _windBackDegrees: 45
-  _windBackDuration: 0.35
+  _idleStepInterval: 1.1
+  _idleStepDuration: 0.18
+  _windBackCards: 0.6
+  _windBackDuration: 0.3
   _minTurns: 3
   _maxTurns: 5
-  _spinDuration: 3
+  _spinDuration: 3.2
+  _spinEasePower: 5
+  _stepClip: {fileID: 11400000, guid: d2ed719930b13b41b820abb33e340ce0, type: 2}
+  _spinStartClip: {fileID: 0}
+  _winClip: {fileID: 0}

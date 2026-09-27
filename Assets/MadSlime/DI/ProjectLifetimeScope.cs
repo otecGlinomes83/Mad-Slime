@@ -90,6 +90,7 @@ namespace DI
             builder.RegisterInstance(_layoutsLibrary);
             builder.Register<LevelProgress>(Lifetime.Singleton);
             builder.Register<LevelConfigResolver>(Lifetime.Singleton);
+            builder.Register<ItemPool>(Lifetime.Singleton);
             builder.Register<GameDirector>(Lifetime.Singleton);
             builder.Register<ISavesAccess>(resolver => new Yg2SavesAccess(), Lifetime.Singleton);
             builder.Register<IAdsService>(resolver => new Yg2AdsService(), Lifetime.Singleton);

@@ -12,14 +12,19 @@ namespace Skins
 {
     public sealed class ShopPanel : MonoBehaviour
     {
+        [SerializeField] private ShopContent _shopContent;
         [SerializeField] private Transform _itemsParent;
         [SerializeField] private Transform _upgradesParent;
-        [SerializeField] private Transform _rouletteParent;
+        [SerializeField] private GameObject _upgradesPage;
+        [SerializeField] private GameObject _allSkinsPage;
+        [SerializeField] private GameObject _roulettePage;
         [SerializeField] private ShopItemViewFactory _factory;
         [SerializeField] private UpgradeItemViewFactory _upgradeFactory;
+        [SerializeField, Tooltip("Плашка-разделитель перед одноразовыми покупками. Пусто — без разделителя.")]
+        private GameObject _perkSeparatorPrefab;
         [SerializeField] private TMP_Text _moneyText;
         [SerializeField] private Button _upgradesTabButton;
-        [SerializeField] private Button _skinsTabButton;
+        [SerializeField] private Button _rouletteTabButton;
         [SerializeField] private Button _allSkinsTabButton;
         [SerializeField] private RouletteView _rouletteView;
 
@@ -29,21 +34,53 @@ namespace Skins
         private Wallet _wallet;
         private PlayerUpgrades _upgrades;
         private PlayerProgress _progress;
+        private RouletteService _rouletteService;
+        private ModelPlacer _modelPlacer;
         private readonly List<SkinItem> _skinItems = new List<SkinItem>();
         private readonly List<SkinItem> _exclusiveSkins = new List<SkinItem>();
 
         private ShopItemView _selectedView;
+        private GameObject _perkSeparator;
+        private bool _isInitialized;
 
-        public event Action<ShopItemView> ViewSelected;
-
-        public ShopItemView SelectedView => _selectedView;
+        public bool IsRouletteSpinning => _rouletteView != null && _rouletteView.IsSpinning;
 
         [Inject]
-        public void Construct(Wallet wallet, PlayerUpgrades upgrades, PlayerProgress progress)
+        public void Construct(Wallet wallet, PlayerUpgrades upgrades, PlayerProgress progress,
+            RouletteService rouletteService, ModelPlacer modelPlacer)
         {
             _wallet = wallet;
             _upgrades = upgrades;
             _progress = progress;
+            _rouletteService = rouletteService;
+            _modelPlacer = modelPlacer;
+        }
+
+        private void OnEnable()
+        {
+            _progress.Ready += InitializeShop;
+
+            if (_progress.IsReady == true)
+            {
+                InitializeShop();
+            }
+        }
+
+        private void InitializeShop()
+        {
+            if (_isInitialized == true)
+            {
+                return;
+            }
+
+            if (_shopContent == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: ShopContent is not assigned. Drag the ShopContent asset into the _shopContent field.");
+            }
+
+            Initialize(_shopContent.SkinItems, _rouletteService.Config.ExclusiveSkins);
+            ShowRouletteTab();
         }
 
         public void Initialize(IEnumerable<SkinItem> skinItems, IEnumerable<SkinItem> exclusiveSkins)
@@ -66,6 +103,18 @@ namespace Skins
                     $"{name}: PlayerProgress was not injected. Check that ProjectLifetimeScope registers PlayerProgress and ShopLifetimeScope registers ShopPanel.");
             }
 
+            if (_rouletteService == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RouletteService was not injected. Check that ShopLifetimeScope registers RouletteService and ShopPanel.");
+            }
+
+            if (_modelPlacer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: ModelPlacer was not injected. Check that ShopLifetimeScope registers ModelPlacer and ShopPanel.");
+            }
+
             if (_itemsParent == null)
             {
                 throw new InvalidOperationException(
@@ -78,10 +127,10 @@ namespace Skins
                     $"{name}: UpgradesParent is not assigned. Drag a Transform into the _upgradesParent field.");
             }
 
-            if (_rouletteParent == null)
+            if (_upgradesPage == null || _allSkinsPage == null || _roulettePage == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: RouletteParent is not assigned. Drag a Transform into the _rouletteParent field.");
+                    $"{name}: a page is not assigned. Drag the Upgrades, All Skins and Roulette page objects into the fields.");
             }
 
             if (_factory == null)
@@ -102,7 +151,7 @@ namespace Skins
                     $"{name}: MoneyText is not assigned. Drag a TMP_Text into the _moneyText field.");
             }
 
-            if (_upgradesTabButton == null || _skinsTabButton == null || _allSkinsTabButton == null)
+            if (_upgradesTabButton == null || _rouletteTabButton == null || _allSkinsTabButton == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: a tab button is not assigned. Drag the Upgrades, Skins and All Skins tab Buttons into the fields.");
@@ -116,15 +165,18 @@ namespace Skins
 
             FillSkinList(skinItems);
             FillSkinList(exclusiveSkins, isExclusive: true);
+            _rouletteService.SortByRarityAscending(_skinItems);
 
             _wallet.BalanceChanged += OnBalanceChanged;
             _upgradesTabButton.onClick.AddListener(ShowUpgradesTab);
-            _skinsTabButton.onClick.AddListener(ShowSkinsTab);
+            _rouletteTabButton.onClick.AddListener(ShowRouletteTab);
             _allSkinsTabButton.onClick.AddListener(ShowAllSkinsTab);
 
             _rouletteView.Initialize(RouletteView.Mode.Skins, _skinItems);
 
             OnBalanceChanged(_wallet.Balance, _wallet.Balance);
+
+            _isInitialized = true;
         }
 
         public void ShowUpgradesTab()
@@ -134,18 +186,18 @@ namespace Skins
                 return;
             }
 
-            SetPageActive(_upgradesParent, _itemsParent, _rouletteParent);
+            SetPageActive(_upgradesPage, _allSkinsPage, _roulettePage);
             PopulateUpgrades();
         }
 
-        public void ShowSkinsTab()
+        public void ShowRouletteTab()
         {
             if (CanSwitchTab() == false)
             {
                 return;
             }
 
-            SetPageActive(_rouletteParent, _itemsParent, _upgradesParent);
+            SetPageActive(_roulettePage, _allSkinsPage, _upgradesPage);
         }
 
         public void ShowAllSkinsTab()
@@ -155,7 +207,7 @@ namespace Skins
                 return;
             }
 
-            SetPageActive(_itemsParent, _upgradesParent, _rouletteParent);
+            SetPageActive(_allSkinsPage, _upgradesPage, _roulettePage);
             PopulateSkins();
         }
 
@@ -164,11 +216,11 @@ namespace Skins
             return _rouletteView == null || _rouletteView.IsSpinning == false;
         }
 
-        private static void SetPageActive(Transform activePage, Transform pageA, Transform pageB)
+        private static void SetPageActive(GameObject activePage, GameObject pageA, GameObject pageB)
         {
-            activePage.gameObject.SetActive(true);
-            pageA.gameObject.SetActive(false);
-            pageB.gameObject.SetActive(false);
+            activePage.SetActive(true);
+            pageA.SetActive(false);
+            pageB.SetActive(false);
         }
 
         private void FillSkinList(IEnumerable<SkinItem> source, bool isExclusive = false)
@@ -185,14 +237,14 @@ namespace Skins
                     continue;
                 }
 
+                if (isExclusive == true && _exclusiveSkins.Contains(item) == false)
+                {
+                    _exclusiveSkins.Add(item);
+                }
+
                 if (_skinItems.Contains(item) == false)
                 {
                     _skinItems.Add(item);
-
-                    if (isExclusive == true)
-                    {
-                        _exclusiveSkins.Add(item);
-                    }
                 }
             }
         }
@@ -205,6 +257,7 @@ namespace Skins
             {
                 ShopItemView view = _factory.Get(item, _itemsParent);
                 view.Click += OnSkinItemClick;
+                view.SetRarityColor(_rouletteService.GetRarityColor(item.Rarity));
 
                 if (IsOpen(item) == true)
                 {
@@ -243,6 +296,11 @@ namespace Skins
                 _upgradeItems.Add(view);
             }
 
+            if (_perkSeparatorPrefab != null)
+            {
+                _perkSeparator = Instantiate(_perkSeparatorPrefab, _upgradesParent);
+            }
+
             foreach (PerkEntry entry in _upgrades.PerkEntries)
             {
                 UpgradeItemView view = _upgradeFactory.Get(_upgrades, entry.Type, _upgradesParent);
@@ -259,7 +317,8 @@ namespace Skins
                 return;
             }
 
-            ViewSelected?.Invoke(view);
+            _modelPlacer.SetModel(view.Model);
+            _modelPlacer.PlayWalk();
             ApplySelection(view);
             SelectPersist(view.SkinItem);
         }
@@ -347,14 +406,16 @@ namespace Skins
 
         private void OnDisable()
         {
+            _progress.Ready -= InitializeShop;
+
             if (_upgradesTabButton != null)
             {
                 _upgradesTabButton.onClick.RemoveListener(ShowUpgradesTab);
             }
 
-            if (_skinsTabButton != null)
+            if (_rouletteTabButton != null)
             {
-                _skinsTabButton.onClick.RemoveListener(ShowSkinsTab);
+                _rouletteTabButton.onClick.RemoveListener(ShowRouletteTab);
             }
 
             if (_allSkinsTabButton != null)
@@ -390,6 +451,13 @@ namespace Skins
             }
 
             _upgradeItems.Clear();
+
+            if (_perkSeparator != null)
+            {
+                Destroy(_perkSeparator);
+                _perkSeparator = null;
+            }
+
             _selectedView = null;
         }
     }

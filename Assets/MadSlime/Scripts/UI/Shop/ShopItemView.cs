@@ -22,6 +22,7 @@ namespace Skins
 
         private Button _button;
         private Image _backgroundImage;
+        private Color _rarityColor = Color.white;
 
         public event Action<ShopItemView> Click;
 
@@ -46,6 +47,7 @@ namespace Skins
             _button.onClick.AddListener(OnClick);
 
             _backgroundImage.sprite = _standardBackground;
+            _backgroundImage.color = _rarityColor;
 
             SkinItem = skinItem;
 
@@ -60,6 +62,12 @@ namespace Skins
             {
                 _rouletteBadge.gameObject.SetActive(isExclusive);
             }
+        }
+
+        public void SetRarityColor(Color rarityColor)
+        {
+            _rarityColor = rarityColor;
+            _backgroundImage.color = _rarityColor;
         }
 
         public void OnClick()

@@ -23,37 +23,47 @@ public static class MadSlimeContentSetup
     private const string HighlightMaterialPath = "Assets/MadSlime/Resources/Materials/QuotaHighlight.mat";
     private const string BurstPrefabPath = "Assets/MadSlime/Resources/Prefabs/FX/CollectBurst.prefab";
     private const string UpgradeCardPrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/Skins/UpgradeItem.prefab";
+    private const string UpgradePlatePrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/UpgradePlate.prefab";
+    private const string PerkSeparatorUserPrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/PerkSeporator.prefab";
     private const string SectorCardPrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteSectorCard.prefab";
     private const string RouletteViewPrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab";
     private const string RouletteWindowPrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteWindow.prefab";
     private const string UIClickClipPath = "Assets/MadSlime/Scriptables/Audio/UI Click.asset";
+    private const string RarityTablePath = "Assets/MadSlime/Scriptables/Skins/SkinRarityTable.asset";
+    private const string PerkSeparatorPrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/Skins/PerkSeparator.prefab";
+    private const string UpgradeIconsFolder = "Assets/MadSlime/Resources/Images/Upgrades";
+    private const string MusicShopClipPath = "Assets/MadSlime/Scriptables/Audio/Music Shop.asset";
     private const string CrownSkinPath = "Assets/MadSlime/Scriptables/Skins/Crown.asset";
     private const string PhantomSkinPath = "Assets/MadSlime/Scriptables/Skins/Phantom.asset";
-    private const string ShopPrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/Skins/Shop.prefab";
     private const string FailMenuPrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab";
     private const string GameScenePath = "Assets/MadSlime/Scenes/Game.unity";
     private const string FontPath = "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset";
 
-    [MenuItem("Mad Slime/Setup Content")]
+
     public static void SetupAll()
     {
         EnsureFolders();
 
         UpgradesConfig upgradesConfig = CreateUpgradesConfig();
+        AssignUpgradeIcons(upgradesConfig);
         CreateExclusiveSkins();
-        RouletteConfig rouletteConfig = CreateRouletteConfig();
+        ApplySkinRarities();
+        SkinRarityTable rarityTable = CreateSkinRarityTable();
+        CreateRouletteConfig(rarityTable);
         Material highlightMaterial = CreateHighlightMaterial(upgradesConfig);
         GameObject burstPrefab = CreateBurstPrefab();
-        GameObject upgradeCardPrefab = CreateUpgradeCardPrefab();
         GameObject sectorCardPrefab = CreateSectorCardPrefab();
-        GameObject rouletteViewPrefab = CreateRouletteViewPrefab(sectorCardPrefab);
+        CreateRouletteViewPrefab(sectorCardPrefab);
         DeleteLegacyRouletteWindowPrefab();
+        EnsureRarityLocalization();
+        EnsureUpgradeLocalization();
+        FixFontAtlasReadability();
 
         SetupProjectScope(upgradesConfig);
         SetupItemPrefabs(highlightMaterial);
         SetupGameScene(burstPrefab);
         SetupFillScene();
-        SetupShopPrefab(upgradeCardPrefab, rouletteViewPrefab);
+        SetupSkinCardPrefab();
         SetupShopScene();
         SetupMenuScene();
         SetupFailMenuPrefab();
@@ -70,6 +80,32 @@ public static class MadSlimeContentSetup
         EnsureFolder("Assets/MadSlime/Scriptables/Roulette");
         EnsureFolder("Assets/MadSlime/Resources/Materials");
         EnsureFolder("Assets/MadSlime/Resources/Prefabs/FX");
+    }
+
+    private static void FixFontAtlasReadability()
+    {
+        TMP_FontAsset fontAsset = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FontPath);
+
+        if (fontAsset == null)
+        {
+            throw new InvalidOperationException("LiberationSans SDF font asset not found.");
+        }
+
+        Texture2D atlasTexture = fontAsset.atlasTexture;
+
+        if (fontAsset.atlasPopulationMode != AtlasPopulationMode.Dynamic ||
+            atlasTexture == null ||
+            atlasTexture.isReadable == true)
+        {
+            return;
+        }
+
+        // Dynamic mode rasterizes glyphs into the atlas at runtime, which requires a
+        // readable texture. The embedded atlas was baked static, so TMP's own reset
+        // re-creates it readable; glyph tables are cleared and re-filled on demand.
+        fontAsset.ClearFontAssetData();
+
+        Debug.Log("[MadSlimeContentSetup] font atlas made readable for dynamic glyphs");
     }
 
     private static void EnsureFolder(string path)
@@ -98,23 +134,52 @@ public static class MadSlimeContentSetup
         SerializedObject serialized = new SerializedObject(config);
         SerializedProperty upgrades = serialized.FindProperty("_upgrades");
 
-        upgrades.ClearArray();
-        InsertUpgrade(upgrades, UpgradeType.Speed, 200, 150, 0.1f, 5);
-        InsertUpgrade(upgrades, UpgradeType.Appetite, 250, 200, 0.15f, 5);
-        InsertUpgrade(upgrades, UpgradeType.Taste, 400, 300, 0.2f, 5);
-        InsertUpgrade(upgrades, UpgradeType.Metabolism, 350, 250, 0.15f, 5);
+        InsertUpgradeIfMissing(upgrades, UpgradeType.Speed, 200, 150, 0.1f, 5);
+        InsertUpgradeIfMissing(upgrades, UpgradeType.Appetite, 250, 200, 0.15f, 5);
+        InsertUpgradeIfMissing(upgrades, UpgradeType.Taste, 400, 300, 0.2f, 5);
+        InsertUpgradeIfMissing(upgrades, UpgradeType.Metabolism, 350, 250, 0.15f, 5);
 
         SerializedProperty perks = serialized.FindProperty("_perks");
 
-        perks.ClearArray();
-        InsertPerk(perks, PerkType.Smell, 3000);
-        InsertPerk(perks, PerkType.Adrenaline, 4000);
-        InsertPerk(perks, PerkType.Ambitions, 5000);
+        InsertPerkIfMissing(perks, PerkType.Smell, 3000);
+        InsertPerkIfMissing(perks, PerkType.Adrenaline, 4000);
+        InsertPerkIfMissing(perks, PerkType.Ambitions, 5000);
 
         serialized.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(config);
 
         return config;
+    }
+
+    private static void InsertUpgradeIfMissing(SerializedProperty array, UpgradeType type, int baseCost,
+        int costStep, float valuePerStep, int maxSteps)
+    {
+        for (int i = 0; i < array.arraySize; i++)
+        {
+            SerializedProperty element = array.GetArrayElementAtIndex(i);
+
+            if (element.FindPropertyRelative("_type").enumValueIndex == (int)type)
+            {
+                return;
+            }
+        }
+
+        InsertUpgrade(array, type, baseCost, costStep, valuePerStep, maxSteps);
+    }
+
+    private static void InsertPerkIfMissing(SerializedProperty array, PerkType type, int cost)
+    {
+        for (int i = 0; i < array.arraySize; i++)
+        {
+            SerializedProperty element = array.GetArrayElementAtIndex(i);
+
+            if (element.FindPropertyRelative("_type").enumValueIndex == (int)type)
+            {
+                return;
+            }
+        }
+
+        InsertPerk(array, type, cost);
     }
 
     private static void InsertUpgrade(SerializedProperty array, UpgradeType type, int baseCost, int costStep,
@@ -131,6 +196,66 @@ public static class MadSlimeContentSetup
         element.FindPropertyRelative("_maxSteps").intValue = maxSteps;
     }
 
+    private static void AssignUpgradeIcons(UpgradesConfig config)
+    {
+        SerializedObject serialized = new SerializedObject(config);
+
+        SerializedProperty upgrades = serialized.FindProperty("_upgrades");
+        AssignIcon(upgrades, (int)UpgradeType.Speed, "SpeedPerk");
+        AssignIcon(upgrades, (int)UpgradeType.Appetite, "AppetitePerk");
+        AssignIcon(upgrades, (int)UpgradeType.Taste, "TastePerk");
+        AssignIcon(upgrades, (int)UpgradeType.Metabolism, "Metabolism");
+
+        SerializedProperty perks = serialized.FindProperty("_perks");
+        AssignIcon(perks, (int)PerkType.Smell, "SmellPerk");
+        AssignIcon(perks, (int)PerkType.Adrenaline, "AdrenalinePerk");
+        AssignIcon(perks, (int)PerkType.Ambitions, "AmbitionsPerk");
+
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(config);
+    }
+
+    private static void AssignIcon(SerializedProperty array, int typeIndex, string iconName)
+    {
+        string path = $"{UpgradeIconsFolder}/{iconName}.png";
+
+        TextureImporter importer = AssetImporter.GetAtPath(path) as TextureImporter;
+
+        if (importer != null && importer.textureType != TextureImporterType.Sprite)
+        {
+            importer.textureType = TextureImporterType.Sprite;
+            importer.mipmapEnabled = false;
+            importer.SaveAndReimport();
+        }
+
+        Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+
+        if (sprite == null)
+        {
+            Debug.LogWarning($"[MadSlimeContentSetup] upgrade icon not found: {path}");
+            return;
+        }
+
+        for (int i = 0; i < array.arraySize; i++)
+        {
+            SerializedProperty element = array.GetArrayElementAtIndex(i);
+
+            if (element.FindPropertyRelative("_type").enumValueIndex != typeIndex)
+            {
+                continue;
+            }
+
+            SerializedProperty icon = element.FindPropertyRelative("_icon");
+
+            if (icon.objectReferenceValue == null)
+            {
+                icon.objectReferenceValue = sprite;
+            }
+
+            return;
+        }
+    }
+
     private static void InsertPerk(SerializedProperty array, PerkType type, int cost)
     {
         int index = array.arraySize;
@@ -141,7 +266,7 @@ public static class MadSlimeContentSetup
         element.FindPropertyRelative("_cost").intValue = cost;
     }
 
-    private static RouletteConfig CreateRouletteConfig()
+    private static RouletteConfig CreateRouletteConfig(SkinRarityTable rarityTable)
     {
         RouletteConfig config = AssetDatabase.LoadAssetAtPath<RouletteConfig>(RouletteConfigPath);
 
@@ -166,17 +291,158 @@ public static class MadSlimeContentSetup
         serialized.FindProperty("_adSpinWindowSeconds").intValue = 1800;
         serialized.FindProperty("_adSpinsPerWindow").intValue = 3;
         serialized.FindProperty("_freeSpinCooldownSeconds").intValue = 900;
-        serialized.FindProperty("_idleDegreesPerSecond").floatValue = 24f;
-        serialized.FindProperty("_windBackDegrees").floatValue = 45f;
-        serialized.FindProperty("_windBackDuration").floatValue = 0.35f;
+        serialized.FindProperty("_rarityTable").objectReferenceValue = rarityTable;
+        serialized.FindProperty("_idleStepInterval").floatValue = 1.1f;
+        serialized.FindProperty("_idleStepDuration").floatValue = 0.18f;
+        serialized.FindProperty("_windBackCards").floatValue = 0.6f;
+        serialized.FindProperty("_windBackDuration").floatValue = 0.3f;
         serialized.FindProperty("_minTurns").intValue = 3;
         serialized.FindProperty("_maxTurns").intValue = 5;
-        serialized.FindProperty("_spinDuration").floatValue = 3f;
+        serialized.FindProperty("_spinDuration").floatValue = 3.2f;
+        serialized.FindProperty("_stepClip").objectReferenceValue = LoadUiClickClip();
 
         serialized.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(config);
 
         return config;
+    }
+
+    private static SkinRarityTable CreateSkinRarityTable()
+    {
+        EnsureFolder("Assets/MadSlime/Scriptables/Skins");
+
+        SkinRarityTable table = AssetDatabase.LoadAssetAtPath<SkinRarityTable>(RarityTablePath);
+
+        if (table == null)
+        {
+            table = ScriptableObject.CreateInstance<SkinRarityTable>();
+            AssetDatabase.CreateAsset(table, RarityTablePath);
+        }
+
+        SerializedObject serialized = new SerializedObject(table);
+        SerializedProperty settings = serialized.FindProperty("_settings");
+
+        settings.ClearArray();
+        InsertRaritySettings(settings, SkinRarity.Common, 100f, new Color(0.55f, 0.58f, 0.62f));
+        InsertRaritySettings(settings, SkinRarity.Rare, 45f, new Color(0.25f, 0.55f, 0.95f));
+        InsertRaritySettings(settings, SkinRarity.Epic, 15f, new Color(0.65f, 0.35f, 0.95f));
+        InsertRaritySettings(settings, SkinRarity.Legendary, 4f, new Color(1f, 0.72f, 0.2f));
+
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(table);
+
+        return table;
+    }
+
+    private static void InsertRaritySettings(SerializedProperty array, SkinRarity rarity, float dropWeight,
+        Color plateColor)
+    {
+        int index = array.arraySize;
+        array.InsertArrayElementAtIndex(index);
+        SerializedProperty element = array.GetArrayElementAtIndex(index);
+
+        element.FindPropertyRelative("_rarity").enumValueIndex = (int)rarity;
+        element.FindPropertyRelative("_dropWeight").floatValue = dropWeight;
+        element.FindPropertyRelative("_plateColor").colorValue = plateColor;
+    }
+
+    private static void ApplySkinRarities()
+    {
+        ApplySkinRarity(PlayerSkins.Slime, SkinRarity.Common);
+        ApplySkinRarity(PlayerSkins.Pacman, SkinRarity.Common);
+        ApplySkinRarity(PlayerSkins.TripleT, SkinRarity.Rare);
+        ApplySkinRarity(PlayerSkins.Crown, SkinRarity.Epic);
+        ApplySkinRarity(PlayerSkins.Phantom, SkinRarity.Legendary);
+    }
+
+    private static void ApplySkinRarity(PlayerSkins skinType, SkinRarity rarity)
+    {
+        SkinItem skin = FindSkinByType(skinType);
+
+        if (skin == null)
+        {
+            Debug.LogWarning($"[MadSlimeContentSetup] no SkinItem for {skinType}, rarity skipped");
+            return;
+        }
+
+        SerializedObject serialized = new SerializedObject(skin);
+        serialized.FindProperty("<Rarity>k__BackingField").enumValueIndex = (int)rarity;
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(skin);
+    }
+
+    private static void EnsureRarityLocalization()
+    {
+        const string path = "Assets/MadSlime/Scriptables/Localization/Localization.asset";
+
+        LocalizationTable table = AssetDatabase.LoadAssetAtPath<LocalizationTable>(path);
+
+        if (table == null)
+        {
+            throw new InvalidOperationException("Localization asset not found.");
+        }
+
+        SerializedObject serialized = new SerializedObject(table);
+        SerializedProperty entries = serialized.FindProperty("_entries");
+
+        InsertLocaleEntryIfMissing(entries, "rarity_common", "ОБЫЧНЫЙ", "COMMON", "NORMAL");
+        InsertLocaleEntryIfMissing(entries, "rarity_rare", "РЕДКИЙ", "RARE", "NADİR");
+        InsertLocaleEntryIfMissing(entries, "rarity_epic", "ЭПИЧЕСКИЙ", "EPIC", "EPİK");
+        InsertLocaleEntryIfMissing(entries, "rarity_legendary", "ЛЕГЕНДАРНЫЙ", "LEGENDARY", "EFSANEVİ");
+
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(table);
+    }
+
+    private static void EnsureUpgradeLocalization()
+    {
+        const string path = "Assets/MadSlime/Scriptables/Localization/Localization.asset";
+
+        LocalizationTable table = AssetDatabase.LoadAssetAtPath<LocalizationTable>(path);
+
+        if (table == null)
+        {
+            throw new InvalidOperationException("Localization asset not found.");
+        }
+
+        SerializedObject serialized = new SerializedObject(table);
+        SerializedProperty entries = serialized.FindProperty("_entries");
+
+        InsertLocaleEntryIfMissing(entries, "upgrade_step", "ШАГ {0}/{1}", "STEP {0}/{1}", "ADIM {0}/{1}");
+        InsertLocaleEntryIfMissing(entries, "upgrade_speed_desc", "Скорость +{0}%", "Speed +{0}%", "Hız +{0}%");
+        InsertLocaleEntryIfMissing(entries, "upgrade_appetite_desc", "Объём +{0}%", "Size +{0}%", "Büyüklük +{0}%");
+        InsertLocaleEntryIfMissing(entries, "upgrade_taste_desc", "Сытность +{0}%", "Fullness +{0}%", "Doyuruculuk +{0}%");
+        InsertLocaleEntryIfMissing(entries, "upgrade_metabolism_desc", "Усвоение +{0}%", "Digestion +{0}%", "Sindirim +{0}%");
+        InsertLocaleEntryIfMissing(entries, "perk_smell_desc", "Подсвечивает нужные предметы", "Highlights the required items", "Gerekli nesneleri vurgular");
+        InsertLocaleEntryIfMissing(entries, "perk_adrenaline_desc", "Ускорение в конце раунда", "Speed boost at the end of the round", "Rauntun sonunda hızlanma");
+        InsertLocaleEntryIfMissing(entries, "perk_ambitions_desc", "Старт на тир выше", "Start one tier higher", "Bir kademeden yüksek başla");
+        InsertLocaleEntryIfMissing(entries, "shop_one_time", "ОДНОРАЗОВЫЕ ПОКУПКИ", "ONE-TIME BUYS", "TEK SEFERLİK SATIN ALIMLAR");
+
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(table);
+    }
+
+    private static void InsertLocaleEntryIfMissing(SerializedProperty entries, string key, string ru, string en,
+        string tr)
+    {
+        for (int i = 0; i < entries.arraySize; i++)
+        {
+            SerializedProperty element = entries.GetArrayElementAtIndex(i);
+
+            if (element.FindPropertyRelative("_key").stringValue == key)
+            {
+                return;
+            }
+        }
+
+        int index = entries.arraySize;
+        entries.InsertArrayElementAtIndex(index);
+        SerializedProperty entry = entries.GetArrayElementAtIndex(index);
+
+        entry.FindPropertyRelative("_key").stringValue = key;
+        entry.FindPropertyRelative("_ru").stringValue = ru;
+        entry.FindPropertyRelative("_en").stringValue = en;
+        entry.FindPropertyRelative("_tr").stringValue = tr;
     }
 
     private static void InsertCoinSector(SerializedProperty array, int coins, float weight)
@@ -388,154 +654,434 @@ public static class MadSlimeContentSetup
         return mesh;
     }
 
-    private static GameObject CreateUpgradeCardPrefab()
+    private static GameObject EnsureUpgradeCardPrefab()
     {
-        if (AssetDatabase.LoadAssetAtPath<GameObject>(UpgradeCardPrefabPath) != null)
+        GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(UpgradeCardPrefabPath);
+
+        if (existing == null)
         {
+            GameObject created = new GameObject(
+                "UpgradeItem",
+                typeof(RectTransform),
+                typeof(Image),
+                typeof(Button),
+                typeof(UpgradeItemView));
+
+            BuildUpgradeCardLayout(created);
+            PrefabUtility.SaveAsPrefabAsset(created, UpgradeCardPrefabPath);
+            UnityEngine.Object.DestroyImmediate(created);
+
             return AssetDatabase.LoadAssetAtPath<GameObject>(UpgradeCardPrefabPath);
         }
 
-        TMP_FontAsset font = LoadFont();
-        Color cardColor = new Color(0.16f, 0.16f, 0.2f);
+        GameObject root = PrefabUtility.LoadPrefabContents(UpgradeCardPrefabPath);
 
-        GameObject root = new GameObject("UpgradeItem", typeof(RectTransform), typeof(Image), typeof(Button));
-        RectTransform rootRect = (RectTransform)root.transform;
-        rootRect.sizeDelta = new Vector2(300f, 110f);
-        root.GetComponent<Image>().color = cardColor;
+        try
+        {
+            UpgradeItemView view = root.GetComponent<UpgradeItemView>();
 
-        GameObject title = CreateText("Title", font, 34, TextAnchor.UpperLeft, new Vector2(-140f, 12f), new Vector2(20f, 98f));
-        title.transform.SetParent(root.transform, false);
+            if (view == null)
+            {
+                view = root.AddComponent<UpgradeItemView>();
+            }
 
-        GameObject state = CreateText("State", font, 30, TextAnchor.UpperLeft, new Vector2(-140f, 12f), new Vector2(20f, 52f));
-        state.transform.SetParent(root.transform, false);
+            SerializedObject serialized = new SerializedObject(view);
 
-        GameObject price = CreateText("Price", font, 34, TextAnchor.UpperRight, new Vector2(20f, 12f), new Vector2(160f, 44f));
-        price.transform.SetParent(root.transform, false);
-        price.AddComponent<IntValueView>();
+            if (serialized.FindProperty("_icon").objectReferenceValue != null)
+            {
+                return AssetDatabase.LoadAssetAtPath<GameObject>(UpgradeCardPrefabPath);
+            }
 
-        UpgradeItemView view = root.AddComponent<UpgradeItemView>();
-        SerializedObject serialized = new SerializedObject(view);
-        serialized.FindProperty("_titleText").objectReferenceValue = title.GetComponent<TMP_Text>();
-        serialized.FindProperty("_stateText").objectReferenceValue = state.GetComponent<TMP_Text>();
-        serialized.FindProperty("_priceView").objectReferenceValue = price.GetComponent<IntValueView>();
-        serialized.ApplyModifiedPropertiesWithoutUndo();
-
-        PrefabUtility.SaveAsPrefabAsset(root, UpgradeCardPrefabPath);
-        UnityEngine.Object.DestroyImmediate(root);
+            BuildUpgradeCardLayout(root);
+            PrefabUtility.SaveAsPrefabAsset(root, UpgradeCardPrefabPath);
+        }
+        finally
+        {
+            PrefabUtility.UnloadPrefabContents(root);
+        }
 
         return AssetDatabase.LoadAssetAtPath<GameObject>(UpgradeCardPrefabPath);
     }
 
-    private static GameObject CreateSectorCardPrefab()
+    // The hand-styled UpgradePlate is the canonical upgrade card. Only missing
+    // references are filled here — the user's layout is never rebuilt.
+    private static GameObject EnsureUpgradePlateWired()
     {
-        if (AssetDatabase.LoadAssetAtPath<GameObject>(SectorCardPrefabPath) != null)
+        GameObject plate = AssetDatabase.LoadAssetAtPath<GameObject>(UpgradePlatePrefabPath);
+
+        if (plate == null || plate.GetComponent<UpgradeItemView>() == null)
         {
-            return AssetDatabase.LoadAssetAtPath<GameObject>(SectorCardPrefabPath);
+            return null;
         }
 
+        GameObject root = PrefabUtility.LoadPrefabContents(UpgradePlatePrefabPath);
+
+        try
+        {
+            UpgradeItemView view = root.GetComponent<UpgradeItemView>();
+            SerializedObject serialized = new SerializedObject(view);
+            bool changed = false;
+
+            changed |= AssignCardReference(serialized, "_icon", FindCardIcon(root.transform));
+            changed |= AssignCardReference(serialized, "_stepText", FindCardText(root.transform, "StepText", "Step"));
+            changed |= AssignCardReference(serialized, "_titleText", FindCardText(root.transform, "TitleText", "Title"));
+            changed |= AssignCardReference(serialized, "_effectText", FindCardText(root.transform, "EffectText", "Effect"));
+            changed |= AssignCardReference(serialized, "_priceText", FindCardPriceText(root.transform));
+
+            if (changed == true)
+            {
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                PrefabUtility.SaveAsPrefabAsset(root, UpgradePlatePrefabPath);
+                Debug.Log("[MadSlimeContentSetup] UpgradePlate missing references wired");
+            }
+        }
+        finally
+        {
+            PrefabUtility.UnloadPrefabContents(root);
+        }
+
+        return plate;
+    }
+
+    private static bool AssignCardReference(SerializedObject serialized, string property, UnityEngine.Object target)
+    {
+        if (target == null)
+        {
+            return false;
+        }
+
+        SerializedProperty propertyField = serialized.FindProperty(property);
+
+        if (propertyField == null || propertyField.objectReferenceValue != null)
+        {
+            return false;
+        }
+
+        propertyField.objectReferenceValue = target;
+
+        return true;
+    }
+
+    private static Image FindCardIcon(Transform root)
+    {
+        foreach (Image image in root.GetComponentsInChildren<Image>(true))
+        {
+            if (image.gameObject.name != "Icon")
+            {
+                continue;
+            }
+
+            Transform parent = image.transform.parent;
+
+            if (parent != null && parent.name == "Money")
+            {
+                continue;
+            }
+
+            return image;
+        }
+
+        return null;
+    }
+
+    private static TMP_Text FindCardText(Transform root, string primaryName, string fallbackName)
+    {
+        foreach (TMP_Text text in root.GetComponentsInChildren<TMP_Text>(true))
+        {
+            if (text.gameObject.name == primaryName || text.gameObject.name == fallbackName)
+            {
+                return text;
+            }
+        }
+
+        return null;
+    }
+
+    private static TMP_Text FindCardPriceText(Transform root)
+    {
+        foreach (TMP_Text text in root.GetComponentsInChildren<TMP_Text>(true))
+        {
+            Transform parent = text.transform.parent;
+
+            if (parent != null && parent.name == "Money")
+            {
+                return text;
+            }
+        }
+
+        return FindCardText(root, "Price", "PriceText");
+    }
+
+    private static void BuildUpgradeCardLayout(GameObject root)
+    {
         TMP_FontAsset font = LoadFont();
 
-        GameObject root = new GameObject("RouletteSectorCard", typeof(RectTransform), typeof(Image));
-        RectTransform rootRect = (RectTransform)root.transform;
-        rootRect.sizeDelta = new Vector2(150f, 150f);
         root.GetComponent<Image>().color = Color.white;
+
+        RectTransform rootRect = (RectTransform)root.transform;
+        rootRect.sizeDelta = new Vector2(980f, 220f);
+
+        for (int i = root.transform.childCount - 1; i >= 0; i--)
+        {
+            UnityEngine.Object.DestroyImmediate(root.transform.GetChild(i).gameObject);
+        }
 
         GameObject icon = new GameObject("Icon", typeof(RectTransform), typeof(Image));
         icon.transform.SetParent(root.transform, false);
+
         RectTransform iconRect = (RectTransform)icon.transform;
         iconRect.anchorMin = new Vector2(0.5f, 0.5f);
         iconRect.anchorMax = new Vector2(0.5f, 0.5f);
-        iconRect.sizeDelta = new Vector2(90f, 90f);
+        iconRect.anchoredPosition = new Vector2(-375f, 0f);
+        iconRect.sizeDelta = new Vector2(180f, 180f);
 
-        GameObject label = CreateText("Label", font, 34, TextAnchor.MiddleCenter, new Vector2(0f, -55f), new Vector2(140f, 40f));
-        label.transform.SetParent(root.transform, false);
+        GameObject step = CreateText("Step", font, 32, TextAnchor.MiddleCenter, new Vector2(-375f, -80f), new Vector2(220f, 44f));
+        step.transform.SetParent(root.transform, false);
 
-        RouletteSectorCard card = root.AddComponent<RouletteSectorCard>();
-        SerializedObject serialized = new SerializedObject(card);
-        serialized.FindProperty("_background").objectReferenceValue = root.GetComponent<Image>();
-        serialized.FindProperty("_icon").objectReferenceValue = icon.GetComponent<Image>();
-        serialized.FindProperty("_label").objectReferenceValue = label.GetComponent<TMP_Text>();
-        serialized.ApplyModifiedPropertiesWithoutUndo();
+        GameObject title = CreateText("Title", font, 44, TextAnchor.MiddleLeft, new Vector2(30f, 55f), new Vector2(600f, 60f));
+        title.transform.SetParent(root.transform, false);
 
-        PrefabUtility.SaveAsPrefabAsset(root, SectorCardPrefabPath);
-        UnityEngine.Object.DestroyImmediate(root);
+        GameObject effect = CreateText("Effect", font, 34, TextAnchor.MiddleLeft, new Vector2(30f, -10f), new Vector2(620f, 55f));
+        effect.transform.SetParent(root.transform, false);
+
+        GameObject price = CreateText("Price", font, 44, TextAnchor.MiddleCenter, new Vector2(340f, 0f), new Vector2(280f, 90f));
+        price.transform.SetParent(root.transform, false);
+
+        UpgradeItemView view = root.GetComponent<UpgradeItemView>();
+        SerializedObject viewSerialized = new SerializedObject(view);
+        viewSerialized.FindProperty("_icon").objectReferenceValue = icon.GetComponent<Image>();
+        viewSerialized.FindProperty("_stepText").objectReferenceValue = step.GetComponent<TMP_Text>();
+        viewSerialized.FindProperty("_titleText").objectReferenceValue = title.GetComponent<TMP_Text>();
+        viewSerialized.FindProperty("_effectText").objectReferenceValue = effect.GetComponent<TMP_Text>();
+        viewSerialized.FindProperty("_priceText").objectReferenceValue = price.GetComponent<TMP_Text>();
+        viewSerialized.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    internal static GameObject CreateSectorCardPrefab()
+    {
+        if (AssetDatabase.LoadAssetAtPath<GameObject>(SectorCardPrefabPath) == null)
+        {
+            GameObject created = new GameObject("RouletteSectorCard", typeof(RectTransform), typeof(Image));
+            created.GetComponent<Image>().color = Color.white;
+
+            GameObject icon = new GameObject("Icon", typeof(RectTransform), typeof(Image));
+            icon.transform.SetParent(created.transform, false);
+
+            GameObject label = CreateText("Label", LoadFont(), 34, TextAnchor.MiddleCenter, Vector2.zero, Vector2.zero);
+            label.transform.SetParent(created.transform, false);
+
+            RouletteSectorCard card = created.AddComponent<RouletteSectorCard>();
+            SerializedObject serialized = new SerializedObject(card);
+            serialized.FindProperty("_background").objectReferenceValue = created.GetComponent<Image>();
+            serialized.FindProperty("_icon").objectReferenceValue = icon.GetComponent<Image>();
+            serialized.FindProperty("_label").objectReferenceValue = label.GetComponent<TMP_Text>();
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+
+            PrefabUtility.SaveAsPrefabAsset(created, SectorCardPrefabPath);
+            UnityEngine.Object.DestroyImmediate(created);
+        }
+
+        return RepairSectorCardLayout();
+    }
+
+    private static GameObject RepairSectorCardLayout()
+    {
+        GameObject root = PrefabUtility.LoadPrefabContents(SectorCardPrefabPath);
+
+        try
+        {
+            RectTransform rootRect = (RectTransform)root.transform;
+            rootRect.sizeDelta = new Vector2(150f, 150f);
+
+            Transform icon = root.transform.Find("Icon");
+
+            if (icon == null)
+            {
+                throw new InvalidOperationException("RouletteSectorCard prefab has no Icon child.");
+            }
+
+            RectTransform iconRect = (RectTransform)icon;
+            iconRect.anchorMin = new Vector2(0.5f, 0.5f);
+            iconRect.anchorMax = new Vector2(0.5f, 0.5f);
+            iconRect.anchoredPosition = new Vector2(0f, 20f);
+            iconRect.sizeDelta = new Vector2(140f, 140f);
+
+            Transform label = root.transform.Find("Label");
+
+            if (label == null)
+            {
+                throw new InvalidOperationException("RouletteSectorCard prefab has no Label child.");
+            }
+
+            RectTransform labelRect = (RectTransform)label;
+            labelRect.anchorMin = new Vector2(0.5f, 0.5f);
+            labelRect.anchorMax = new Vector2(0.5f, 0.5f);
+            labelRect.anchoredPosition = new Vector2(0f, -100f);
+            labelRect.sizeDelta = new Vector2(700f, 56f);
+
+            PrefabUtility.SaveAsPrefabAsset(root, SectorCardPrefabPath);
+        }
+        finally
+        {
+            PrefabUtility.UnloadPrefabContents(root);
+        }
 
         return AssetDatabase.LoadAssetAtPath<GameObject>(SectorCardPrefabPath);
     }
 
-    private static GameObject CreateRouletteViewPrefab(GameObject sectorCardPrefab)
+    internal static GameObject CreateRouletteViewPrefab(GameObject sectorCardPrefab)
     {
-        if (AssetDatabase.LoadAssetAtPath<GameObject>(RouletteViewPrefabPath) != null)
+        GameObject root = PrefabUtility.LoadPrefabContents(RouletteViewPrefabPath);
+
+        try
         {
-            return AssetDatabase.LoadAssetAtPath<GameObject>(RouletteViewPrefabPath);
+            RemoveMissingScriptsRecursive(root.transform);
+            RemoveChildByName(root.transform, "Wheel");
+
+            RouletteView view = root.GetComponent<RouletteView>();
+
+            if (view == null)
+            {
+                throw new InvalidOperationException("RouletteView prefab has no RouletteView component.");
+            }
+
+            Transform reel = root.transform.Find("Reel");
+
+            if (reel == null)
+            {
+                GameObject created = CreateReelSkeleton(sectorCardPrefab);
+                created.transform.SetParent(root.transform, false);
+                created.transform.SetAsFirstSibling();
+                reel = created.transform;
+            }
+
+            MoveCenterMarkerIntoViewport(reel);
+
+            RectTransform rootRect = (RectTransform)root.transform;
+            rootRect.sizeDelta = new Vector2(1080f, 1920f);
+
+            SerializedObject serialized = new SerializedObject(view);
+            serialized.FindProperty("_reel").objectReferenceValue = reel.GetComponent<RouletteReel>();
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+
+            PrefabUtility.SaveAsPrefabAsset(root, RouletteViewPrefabPath);
+        }
+        finally
+        {
+            PrefabUtility.UnloadPrefabContents(root);
         }
 
-        TMP_FontAsset font = LoadFont();
+        return AssetDatabase.LoadAssetAtPath<GameObject>(RouletteViewPrefabPath);
+    }
 
-        GameObject root = new GameObject("RouletteView", typeof(RectTransform));
-        RectTransform rootRect = (RectTransform)root.transform;
-        rootRect.sizeDelta = new Vector2(1080f, 1920f);
+    private static void MoveCenterMarkerIntoViewport(Transform reel)
+    {
+        Transform viewport = reel.Find("Viewport");
 
-        GameObject wheelObject = new GameObject("Wheel", typeof(RectTransform));
-        wheelObject.transform.SetParent(root.transform, false);
-        RectTransform wheelRect = (RectTransform)wheelObject.transform;
-        wheelRect.anchorMin = new Vector2(0.5f, 0.5f);
-        wheelRect.anchorMax = new Vector2(0.5f, 0.5f);
-        wheelRect.sizeDelta = new Vector2(900f, 900f);
-        wheelRect.anchoredPosition = new Vector2(0f, 200f);
+        if (viewport == null)
+        {
+            return;
+        }
 
-        GameObject result = CreateText("Result", font, 56, TextAnchor.MiddleCenter, new Vector2(0f, -420f), new Vector2(900f, 120f));
-        result.transform.SetParent(root.transform, false);
-        result.GetComponent<TMP_Text>().color = Color.white;
+        MoveChildIfMissing(reel, viewport, "CenterBand");
+        MoveChildIfMissing(reel, viewport, "CenterLine");
+        MoveChildIfMissing(reel, viewport, "CenterLine");
+    }
 
-        GameObject cost = CreateText("Cost", font, 48, TextAnchor.MiddleCenter, new Vector2(0f, -520f), new Vector2(400f, 70f));
-        cost.transform.SetParent(root.transform, false);
-        cost.GetComponent<TMP_Text>().color = Color.white;
+    private static void MoveChildIfMissing(Transform parent, Transform newParent, string childName)
+    {
+        Transform child = parent.Find(childName);
 
-        GameObject freeTimer = CreateText("FreeTimer", font, 40, TextAnchor.MiddleCenter, new Vector2(-280f, -640f), new Vector2(420f, 60f));
-        freeTimer.transform.SetParent(root.transform, false);
-        freeTimer.GetComponent<TMP_Text>().color = Color.white;
+        if (child != null)
+        {
+            child.SetParent(newParent, false);
+        }
+    }
 
-        GameObject adSpins = CreateText("AdSpins", font, 40, TextAnchor.MiddleCenter, new Vector2(280f, -640f), new Vector2(420f, 60f));
-        adSpins.transform.SetParent(root.transform, false);
-        adSpins.GetComponent<TMP_Text>().color = Color.white;
+    private static GameObject CreateReelSkeleton(GameObject sectorCardPrefab)
+    {
+        GameObject reel = new GameObject("Reel", typeof(RectTransform));
+        RectTransform reelRect = (RectTransform)reel.transform;
+        reelRect.anchorMin = new Vector2(0.5f, 0.5f);
+        reelRect.anchorMax = new Vector2(0.5f, 0.5f);
+        reelRect.pivot = new Vector2(0.5f, 0.5f);
+        reelRect.anchoredPosition = new Vector2(0f, 330f);
+        reelRect.sizeDelta = new Vector2(780f, 780f);
+        reelRect.localScale = Vector3.one;
 
-        Button freeButton = CreateButton("FreeButton", font, new Vector2(-280f, -760f), new Vector2(420f, 140f), Color.green);
-        freeButton.transform.SetParent(root.transform, false);
+        GameObject viewport = new GameObject("Viewport", typeof(RectTransform), typeof(RectMask2D));
+        viewport.transform.SetParent(reel.transform, false);
 
-        Button adButton = CreateButton("AdButton", font, new Vector2(280f, -760f), new Vector2(420f, 140f), new Color(0.9f, 0.6f, 0.1f));
-        adButton.transform.SetParent(root.transform, false);
+        RectTransform viewportRect = (RectTransform)viewport.transform;
+        viewportRect.anchorMin = Vector2.zero;
+        viewportRect.anchorMax = Vector2.one;
+        viewportRect.pivot = new Vector2(0.5f, 0.5f);
+        viewportRect.sizeDelta = Vector2.zero;
 
-        Button coinsButton = CreateButton("CoinsButton", font, new Vector2(0f, -920f), new Vector2(700f, 140f), new Color(0.2f, 0.5f, 0.9f));
-        coinsButton.transform.SetParent(root.transform, false);
+        GameObject content = new GameObject("Content", typeof(RectTransform));
+        content.transform.SetParent(viewport.transform, false);
 
-        RouletteWheel wheel = root.AddComponent<RouletteWheel>();
-        SerializedObject wheelSerialized = new SerializedObject(wheel);
-        wheelSerialized.FindProperty("_wheelContainer").objectReferenceValue = wheelRect;
-        wheelSerialized.FindProperty("_sectorCardPrefab").objectReferenceValue = sectorCardPrefab.GetComponent<RouletteSectorCard>();
-        wheelSerialized.FindProperty("_radius").floatValue = 340f;
-        wheelSerialized.ApplyModifiedPropertiesWithoutUndo();
+        RectTransform contentRect = (RectTransform)content.transform;
+        contentRect.anchorMin = Vector2.zero;
+        contentRect.anchorMax = Vector2.one;
+        contentRect.pivot = new Vector2(0.5f, 0.5f);
+        contentRect.sizeDelta = Vector2.zero;
 
-        RouletteView view = root.AddComponent<RouletteView>();
-        SerializedObject serialized = new SerializedObject(view);
-        serialized.FindProperty("_wheel").objectReferenceValue = wheel;
-        serialized.FindProperty("_freeButton").objectReferenceValue = freeButton;
-        serialized.FindProperty("_adButton").objectReferenceValue = adButton;
-        serialized.FindProperty("_coinsButton").objectReferenceValue = coinsButton;
-        serialized.FindProperty("_freeTimerText").objectReferenceValue = freeTimer.GetComponent<TMP_Text>();
-        serialized.FindProperty("_adSpinsText").objectReferenceValue = adSpins.GetComponent<TMP_Text>();
-        serialized.FindProperty("_costText").objectReferenceValue = cost.GetComponent<TMP_Text>();
-        serialized.FindProperty("_resultText").objectReferenceValue = result.GetComponent<TMP_Text>();
+        RouletteReel reelComponent = reel.AddComponent<RouletteReel>();
+        SerializedObject serialized = new SerializedObject(reelComponent);
+        serialized.FindProperty("_viewport").objectReferenceValue = viewportRect;
+        serialized.FindProperty("_content").objectReferenceValue = contentRect;
+        serialized.FindProperty("_cardPrefab").objectReferenceValue = sectorCardPrefab.GetComponent<RouletteSectorCard>();
         serialized.ApplyModifiedPropertiesWithoutUndo();
 
-        EnsureClickSound(freeButton.gameObject);
-        EnsureClickSound(adButton.gameObject);
-        EnsureClickSound(coinsButton.gameObject);
+        CreateCenterMarker(reelRect);
 
-        PrefabUtility.SaveAsPrefabAsset(root, RouletteViewPrefabPath);
-        UnityEngine.Object.DestroyImmediate(root);
+        return reel;
+    }
 
-        return AssetDatabase.LoadAssetAtPath<GameObject>(RouletteViewPrefabPath);
+    private static void CreateCenterMarker(RectTransform reelRect)
+    {
+        GameObject band = new GameObject("CenterBand", typeof(RectTransform), typeof(Image));
+        band.transform.SetParent(reelRect, false);
+
+        Image bandImage = band.GetComponent<Image>();
+        bandImage.color = new Color(0f, 0f, 0f, 0.16f);
+        bandImage.raycastTarget = false;
+
+        RectTransform bandRect = (RectTransform)band.transform;
+        bandRect.anchorMin = new Vector2(0.5f, 0.5f);
+        bandRect.anchorMax = new Vector2(0.5f, 0.5f);
+        bandRect.anchoredPosition = Vector2.zero;
+        bandRect.sizeDelta = new Vector2(780f, 260f);
+
+        CreateReelLine(reelRect, 130f);
+        CreateReelLine(reelRect, -130f);
+    }
+
+    private static void CreateReelLine(RectTransform reelRect, float offsetY)
+    {
+        GameObject line = new GameObject("CenterLine", typeof(RectTransform), typeof(Image));
+        line.transform.SetParent(reelRect, false);
+
+        Image lineImage = line.GetComponent<Image>();
+        lineImage.color = new Color(1f, 1f, 1f, 0.4f);
+        lineImage.raycastTarget = false;
+
+        RectTransform lineRect = (RectTransform)line.transform;
+        lineRect.anchorMin = new Vector2(0.5f, 0.5f);
+        lineRect.anchorMax = new Vector2(0.5f, 0.5f);
+        lineRect.anchoredPosition = new Vector2(0f, offsetY);
+        lineRect.sizeDelta = new Vector2(780f, 6f);
+    }
+
+    private static void RemoveMissingScriptsRecursive(Transform parent)
+    {
+        GameObjectUtility.RemoveMonoBehavioursWithMissingScript(parent.gameObject);
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            RemoveMissingScriptsRecursive(parent.GetChild(i));
+        }
     }
 
     private static void DeleteLegacyRouletteWindowPrefab()
@@ -546,6 +1092,18 @@ public static class MadSlimeContentSetup
         }
     }
 
+    private static SfxClip LoadUiClickClip()
+    {
+        SfxClip clip = AssetDatabase.LoadAssetAtPath<SfxClip>(UIClickClipPath);
+
+        if (clip == null)
+        {
+            throw new InvalidOperationException("UI Click SfxClip asset not found.");
+        }
+
+        return clip;
+    }
+
     private static void EnsureClickSound(GameObject buttonObject)
     {
         if (buttonObject.GetComponent<UIButtonSound>() != null)
@@ -553,12 +1111,7 @@ public static class MadSlimeContentSetup
             return;
         }
 
-        SfxClip clip = AssetDatabase.LoadAssetAtPath<SfxClip>(UIClickClipPath);
-
-        if (clip == null)
-        {
-            throw new InvalidOperationException("UI Click SfxClip asset not found.");
-        }
+        SfxClip clip = LoadUiClickClip();
 
         UIButtonSound sound = buttonObject.AddComponent<UIButtonSound>();
         SerializedObject serialized = new SerializedObject(sound);
@@ -643,7 +1196,6 @@ public static class MadSlimeContentSetup
         }
 
         MovementDeformer deformer = player.GetComponentInChildren<MovementDeformer>(true);
-        CollectBurstSpawner burst = player.GetComponentInChildren<CollectBurstSpawner>(true);
         AdrenalineBoost adrenaline = player.GetComponentInChildren<AdrenalineBoost>(true);
 
         SkinApplier skinApplier = player.GetComponentInChildren<SkinApplier>(true);
@@ -675,15 +1227,6 @@ public static class MadSlimeContentSetup
         applierSerialized.FindProperty("_skinsContainer").objectReferenceValue = deformer.transform;
         applierSerialized.ApplyModifiedPropertiesWithoutUndo();
 
-        if (burst == null)
-        {
-            burst = player.gameObject.AddComponent<CollectBurstSpawner>();
-        }
-
-        SerializedObject burstSerialized = new SerializedObject(burst);
-        burstSerialized.FindProperty("_burstPrefab").objectReferenceValue = burstPrefab;
-        burstSerialized.ApplyModifiedPropertiesWithoutUndo();
-
         if (adrenaline == null)
         {
             adrenaline = player.gameObject.AddComponent<AdrenalineBoost>();
@@ -698,7 +1241,6 @@ public static class MadSlimeContentSetup
 
         SerializedObject scopeSerialized = new SerializedObject(scope);
         scopeSerialized.FindProperty("_movementDeformer").objectReferenceValue = deformer;
-        scopeSerialized.FindProperty("_collectBurstSpawner").objectReferenceValue = burst;
         scopeSerialized.FindProperty("_adrenalineBoost").objectReferenceValue = adrenaline;
         scopeSerialized.ApplyModifiedPropertiesWithoutUndo();
 
@@ -744,23 +1286,43 @@ public static class MadSlimeContentSetup
 
         if (scope == null)
         {
-            throw new InvalidOperationException("Shop scene has no ShopLifetimeScope.");
+            throw new InvalidOperationException("NewShop scene has no ShopLifetimeScope.");
         }
 
+        GameObject shopCanvas = FindSceneRoot("ShopCanvas");
+
+        if (shopCanvas == null)
+        {
+            throw new InvalidOperationException("NewShop scene has no ShopCanvas.");
+        }
+
+        GameObject systemsRoot = scope.gameObject;
         UpgradeItemViewFactory upgradeFactory = UnityEngine.Object.FindAnyObjectByType<UpgradeItemViewFactory>(FindObjectsInactive.Include);
 
         if (upgradeFactory == null)
         {
-            GameObject shopRoot = UnityEngine.Object.FindAnyObjectByType<Shop>(FindObjectsInactive.Include).gameObject;
-            upgradeFactory = shopRoot.AddComponent<UpgradeItemViewFactory>();
+            upgradeFactory = systemsRoot.AddComponent<UpgradeItemViewFactory>();
+        }
+
+        GameObject cardPrefab = EnsureUpgradePlateWired() ?? EnsureUpgradeCardPrefab();
+
+        SerializedObject factorySerialized = new SerializedObject(upgradeFactory);
+        SerializedProperty cardPrefabProperty = factorySerialized.FindProperty("_upgradeItemViewPrefab");
+        UpgradeItemView currentCard = cardPrefabProperty.objectReferenceValue as UpgradeItemView;
+        bool pointsAtScaffold = currentCard != null &&
+            AssetDatabase.GetAssetPath(currentCard) == UpgradeCardPrefabPath;
+
+        if (currentCard == null || pointsAtScaffold == true)
+        {
+            cardPrefabProperty.objectReferenceValue = cardPrefab.GetComponent<UpgradeItemView>();
+            factorySerialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
         AdScheduler adScheduler = UnityEngine.Object.FindAnyObjectByType<AdScheduler>(FindObjectsInactive.Include);
 
         if (adScheduler == null)
         {
-            GameObject shopRoot = UnityEngine.Object.FindAnyObjectByType<Shop>(FindObjectsInactive.Include).gameObject;
-            adScheduler = shopRoot.AddComponent<AdScheduler>();
+            adScheduler = systemsRoot.AddComponent<AdScheduler>();
         }
 
         SerializedObject adSerialized = new SerializedObject(adScheduler);
@@ -771,26 +1333,36 @@ public static class MadSlimeContentSetup
 
         if (rouletteService == null)
         {
-            GameObject shopRoot = UnityEngine.Object.FindAnyObjectByType<Shop>(FindObjectsInactive.Include).gameObject;
-            rouletteService = shopRoot.AddComponent<RouletteService>();
+            rouletteService = systemsRoot.AddComponent<RouletteService>();
         }
 
         SerializedObject rouletteSerialized = new SerializedObject(rouletteService);
         rouletteSerialized.FindProperty("_config").objectReferenceValue = LoadRouletteConfig();
         rouletteSerialized.ApplyModifiedPropertiesWithoutUndo();
 
+        Wallet wallet = UnityEngine.Object.FindAnyObjectByType<Wallet>(FindObjectsInactive.Include);
+
+        if (wallet == null)
+        {
+            wallet = systemsRoot.AddComponent<Wallet>();
+        }
+
+        ModelPlacer modelPlacer = UnityEngine.Object.FindAnyObjectByType<ModelPlacer>(FindObjectsInactive.Include);
+
+        if (modelPlacer == null)
+        {
+            modelPlacer = systemsRoot.AddComponent<ModelPlacer>();
+        }
+
         RouletteView rouletteView = UnityEngine.Object.FindAnyObjectByType<RouletteView>(FindObjectsInactive.Include);
 
         if (rouletteView == null)
         {
-            throw new InvalidOperationException("Shop scene has no RouletteView. Run the shop prefab setup first.");
+            rouletteView = CreateShopRouletteInstance(shopCanvas.transform);
         }
 
-        SerializedObject scopeSerialized = new SerializedObject(scope);
-        scopeSerialized.FindProperty("_upgradeItemViewFactory").objectReferenceValue = upgradeFactory;
-        scopeSerialized.FindProperty("_rouletteService").objectReferenceValue = rouletteService;
-        scopeSerialized.FindProperty("_rouletteView").objectReferenceValue = rouletteView;
-        scopeSerialized.FindProperty("_adScheduler").objectReferenceValue = adScheduler;
+        MoveRouletteViewToPage(rouletteView, shopCanvas.transform);
+        WireModelPlacer(modelPlacer, shopCanvas.transform);
 
         Pauser pauser = UnityEngine.Object.FindAnyObjectByType<Pauser>(FindObjectsInactive.Include);
 
@@ -800,11 +1372,356 @@ public static class MadSlimeContentSetup
             pauser = pauserObject.AddComponent<Pauser>();
         }
 
+        ShopPanel shopPanel = UnityEngine.Object.FindAnyObjectByType<ShopPanel>(FindObjectsInactive.Include);
+
+        if (shopPanel == null)
+        {
+            throw new InvalidOperationException("NewShop scene has no ShopPanel.");
+        }
+
+        ShopContent shopContent = LoadShopContent();
+        CleanShopPages(shopCanvas.transform);
+        GameObject separatorPrefab = EnsurePerkSeparatorPrefab();
+        GameObject userSeparator = EnsureUserPerkSeparatorWired();
+
+        if (userSeparator != null)
+        {
+            separatorPrefab = userSeparator;
+        }
+
+        Button closeButton = FindChildButton(shopCanvas.transform, "CloseButton");
+        ShopCloseButton shopCloseButton = null;
+
+        if (closeButton != null)
+        {
+            shopCloseButton = closeButton.GetComponent<ShopCloseButton>();
+
+            if (shopCloseButton == null)
+            {
+                shopCloseButton = closeButton.gameObject.AddComponent<ShopCloseButton>();
+            }
+
+            SerializedObject closeButtonSerialized = new SerializedObject(shopCloseButton);
+            closeButtonSerialized.FindProperty("_shopPanel").objectReferenceValue = shopPanel;
+            closeButtonSerialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+        else
+        {
+            Debug.LogWarning("[MadSlimeContentSetup] NewShop has no CloseButton — close wiring skipped.");
+        }
+
+        SerializedObject panelSerialized = new SerializedObject(shopPanel);
+        panelSerialized.FindProperty("_factory").objectReferenceValue = UnityEngine.Object.FindAnyObjectByType<ShopItemViewFactory>(FindObjectsInactive.Include);
+        panelSerialized.FindProperty("_upgradeFactory").objectReferenceValue = upgradeFactory;
+        panelSerialized.FindProperty("_rouletteView").objectReferenceValue = rouletteView;
+        panelSerialized.FindProperty("_shopContent").objectReferenceValue = shopContent;
+        panelSerialized.FindProperty("_perkSeparatorPrefab").objectReferenceValue = separatorPrefab;
+        panelSerialized.FindProperty("_upgradesPage").objectReferenceValue = FindDeep(shopCanvas.transform, "UpgradesPage").gameObject;
+        panelSerialized.FindProperty("_allSkinsPage").objectReferenceValue = FindDeep(shopCanvas.transform, "SkinsPage").gameObject;
+        panelSerialized.FindProperty("_roulettePage").objectReferenceValue = FindDeep(shopCanvas.transform, "RoulettePage").gameObject;
+
+        SerializedProperty rouletteTabProperty = panelSerialized.FindProperty("_rouletteTabButton");
+
+        if (rouletteTabProperty.objectReferenceValue == null)
+        {
+            Button rouletteButton = FindChildButton(shopCanvas.transform, "RouletteButton");
+
+            if (rouletteButton != null)
+            {
+                rouletteTabProperty.objectReferenceValue = rouletteButton;
+            }
+        }
+
+        panelSerialized.ApplyModifiedPropertiesWithoutUndo();
+
+        SerializedObject scopeSerialized = new SerializedObject(scope);
+        scopeSerialized.FindProperty("_shopPanel").objectReferenceValue = shopPanel;
+        scopeSerialized.FindProperty("_shopItemViewFactory").objectReferenceValue = UnityEngine.Object.FindAnyObjectByType<ShopItemViewFactory>(FindObjectsInactive.Include);
+        scopeSerialized.FindProperty("_upgradeItemViewFactory").objectReferenceValue = upgradeFactory;
+        scopeSerialized.FindProperty("_modelPlacer").objectReferenceValue = modelPlacer;
+        scopeSerialized.FindProperty("_rouletteService").objectReferenceValue = rouletteService;
+        scopeSerialized.FindProperty("_rouletteView").objectReferenceValue = rouletteView;
+        scopeSerialized.FindProperty("_adScheduler").objectReferenceValue = adScheduler;
+        scopeSerialized.FindProperty("_wallet").objectReferenceValue = wallet;
         scopeSerialized.FindProperty("_pauser").objectReferenceValue = pauser;
+        scopeSerialized.FindProperty("_shopCloseButton").objectReferenceValue = shopCloseButton;
+
+        ShopMusic shopMusic = UnityEngine.Object.FindAnyObjectByType<ShopMusic>(FindObjectsInactive.Include);
+
+        if (shopMusic == null)
+        {
+            shopMusic = systemsRoot.AddComponent<ShopMusic>();
+        }
+
+        SfxClip musicShopClip = AssetDatabase.LoadAssetAtPath<SfxClip>(MusicShopClipPath);
+
+        if (musicShopClip == null)
+        {
+            throw new InvalidOperationException("Music Shop SfxClip asset not found.");
+        }
+
+        SerializedObject musicSerialized = new SerializedObject(shopMusic);
+        musicSerialized.FindProperty("_musicTrack").objectReferenceValue = musicShopClip;
+        musicSerialized.ApplyModifiedPropertiesWithoutUndo();
+        scopeSerialized.FindProperty("_shopMusic").objectReferenceValue = shopMusic;
         scopeSerialized.ApplyModifiedPropertiesWithoutUndo();
 
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+    }
+
+    private static void MoveRouletteViewToPage(RouletteView rouletteView, Transform shopCanvas)
+    {
+        Transform page = FindDeep(shopCanvas, "RoulettePage");
+
+        if (page == null)
+        {
+            throw new InvalidOperationException("NewShop scene has no RoulettePage under ShopCanvas.");
+        }
+
+        if (rouletteView.transform.parent == page)
+        {
+            return;
+        }
+
+        rouletteView.transform.SetParent(page, false);
+
+        RectTransform viewRect = (RectTransform)rouletteView.transform;
+        viewRect.anchorMin = new Vector2(0.5f, 0.5f);
+        viewRect.anchorMax = new Vector2(0.5f, 0.5f);
+        viewRect.pivot = new Vector2(0.5f, 0.5f);
+        viewRect.anchoredPosition = Vector2.zero;
+        viewRect.localScale = Vector3.one;
+    }
+
+    private static void WireModelPlacer(ModelPlacer modelPlacer, Transform shopCanvas)
+    {
+        SerializedObject serialized = new SerializedObject(modelPlacer);
+
+        if (serialized.FindProperty("_modelsParent").objectReferenceValue != null
+            && serialized.FindProperty("_camera").objectReferenceValue != null)
+        {
+            return;
+        }
+
+        Transform skinRoot = FindDeep(shopCanvas, "SkinRoot");
+        Transform skinCamera = FindDeep(shopCanvas, "SkinCamera");
+
+        if (skinRoot == null || skinCamera == null)
+        {
+            Debug.LogWarning("[MadSlimeContentSetup] NewShop has no SkinRoot/SkinCamera — ModelPlacer wiring skipped.");
+            return;
+        }
+
+        serialized.FindProperty("_modelsParent").objectReferenceValue = skinRoot;
+        serialized.FindProperty("_camera").objectReferenceValue = skinCamera.GetComponent<Camera>();
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static void CleanShopPages(Transform shopCanvas)
+    {
+        Transform upgradesPage = FindDeep(shopCanvas, "UpgradesPage");
+
+        if (upgradesPage != null)
+        {
+            CleanPageViewports(upgradesPage);
+        }
+
+        Transform skinsPage = FindDeep(shopCanvas, "SkinsPage");
+
+        if (skinsPage != null)
+        {
+            CleanPageViewports(skinsPage);
+        }
+    }
+
+    private static void CleanPageViewports(Transform page)
+    {
+        Transform viewport = FindDeep(page, "Viewport");
+
+        if (viewport == null)
+        {
+            return;
+        }
+
+        RemoveChildByName(viewport, "UpgradesGrid");
+
+        Transform content = FindDeep(viewport, "Content");
+
+        if (content != null && page.name == "UpgradesPage")
+        {
+            ApplyUpgradesListLayout(content);
+        }
+    }
+
+    private static void ApplyUpgradesListLayout(Transform content)
+    {
+        VerticalLayoutGroup vertical = content.GetComponent<VerticalLayoutGroup>();
+
+        if (vertical == null)
+        {
+            GridLayoutGroup grid = content.GetComponent<GridLayoutGroup>();
+
+            if (grid != null)
+            {
+                UnityEngine.Object.DestroyImmediate(grid);
+            }
+
+            vertical = content.gameObject.AddComponent<VerticalLayoutGroup>();
+
+            SerializedObject fresh = new SerializedObject(vertical);
+            fresh.FindProperty("m_Spacing").vector2Value = new Vector2(0f, 24f);
+            fresh.FindProperty("m_ChildAlignment").intValue = (int)TextAnchor.UpperCenter;
+            fresh.FindProperty("m_ChildForceExpandHeight").boolValue = false;
+            fresh.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        // One card per row: the list owns the width regardless of the card's own
+        // anchors and preferred size, the card keeps its authored height.
+        SerializedObject serialized = new SerializedObject(vertical);
+        serialized.FindProperty("m_ChildControlWidth").boolValue = true;
+        serialized.FindProperty("m_ChildControlHeight").boolValue = false;
+        serialized.FindProperty("m_ChildForceExpandWidth").boolValue = true;
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+
+        // Top-stretch anchors: the viewport owns the width, the fitter owns the height.
+        RectTransform contentRect = (RectTransform)content;
+        contentRect.anchorMin = new Vector2(0f, 1f);
+        contentRect.anchorMax = new Vector2(1f, 1f);
+        contentRect.anchoredPosition = new Vector2(0f, 0f);
+        contentRect.sizeDelta = new Vector2(0f, 0f);
+
+        ContentSizeFitter fitter = content.GetComponent<ContentSizeFitter>();
+
+        if (fitter == null)
+        {
+            fitter = content.gameObject.AddComponent<ContentSizeFitter>();
+        }
+
+        SerializedObject fitterSerialized = new SerializedObject(fitter);
+        fitterSerialized.FindProperty("m_HorizontalFit").intValue = 0;
+        fitterSerialized.FindProperty("m_VerticalFit").intValue = 2;
+        fitterSerialized.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static GameObject EnsurePerkSeparatorPrefab()
+    {
+        GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(PerkSeparatorPrefabPath);
+
+        if (existing != null)
+        {
+            return existing;
+        }
+
+        TMP_FontAsset font = LoadFont();
+
+        GameObject root = new GameObject("PerkSeparator", typeof(RectTransform), typeof(Image));
+        RectTransform rootRect = (RectTransform)root.transform;
+        rootRect.sizeDelta = new Vector2(980f, 90f);
+        root.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.35f);
+
+        GameObject label = CreateText("Text", font, 36, TextAnchor.MiddleCenter, Vector2.zero, new Vector2(900f, 70f));
+        label.transform.SetParent(root.transform, false);
+        label.GetComponent<TMP_Text>().color = new Color(0.2f, 0.2f, 0.2f);
+
+        LocalizedText localized = label.AddComponent<LocalizedText>();
+        SerializedObject localizedSerialized = new SerializedObject(localized);
+        localizedSerialized.FindProperty("_key").stringValue = "shop_one_time";
+        localizedSerialized.ApplyModifiedPropertiesWithoutUndo();
+
+        PrefabUtility.SaveAsPrefabAsset(root, PerkSeparatorPrefabPath);
+        UnityEngine.Object.DestroyImmediate(root);
+
+        return AssetDatabase.LoadAssetAtPath<GameObject>(PerkSeparatorPrefabPath);
+    }
+
+    // The hand-styled separator takes priority over the scaffold; only the
+    // localization component is ensured here, the layout is never touched.
+    private static GameObject EnsureUserPerkSeparatorWired()
+    {
+        GameObject separator = AssetDatabase.LoadAssetAtPath<GameObject>(PerkSeparatorUserPrefabPath);
+
+        if (separator == null)
+        {
+            return null;
+        }
+
+        GameObject root = PrefabUtility.LoadPrefabContents(PerkSeparatorUserPrefabPath);
+
+        try
+        {
+            TMP_Text text = root.GetComponentInChildren<TMP_Text>(true);
+
+            if (text == null)
+            {
+                return null;
+            }
+
+            LocalizedText localized = text.GetComponent<LocalizedText>();
+            bool changed = false;
+
+            if (localized == null)
+            {
+                localized = text.gameObject.AddComponent<LocalizedText>();
+                changed = true;
+            }
+
+            SerializedObject localizedSerialized = new SerializedObject(localized);
+
+            if (localizedSerialized.FindProperty("_key").stringValue != "shop_one_time")
+            {
+                localizedSerialized.FindProperty("_key").stringValue = "shop_one_time";
+                localizedSerialized.ApplyModifiedPropertiesWithoutUndo();
+                changed = true;
+            }
+
+            if (changed == true)
+            {
+                PrefabUtility.SaveAsPrefabAsset(root, PerkSeparatorUserPrefabPath);
+                Debug.Log("[MadSlimeContentSetup] PerkSeporator localization wired");
+            }
+        }
+        finally
+        {
+            PrefabUtility.UnloadPrefabContents(root);
+        }
+
+        return separator;
+    }
+
+    private static RouletteView CreateShopRouletteInstance(Transform shopCanvas)
+    {
+        GameObject viewPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(RouletteViewPrefabPath);
+
+        if (viewPrefab == null)
+        {
+            throw new InvalidOperationException("RouletteView prefab not found. Run the prefab setup first.");
+        }
+
+        GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(viewPrefab, shopCanvas);
+        RectTransform instanceRect = (RectTransform)instance.transform;
+
+        instanceRect.anchorMin = new Vector2(0.5f, 0.5f);
+        instanceRect.anchorMax = new Vector2(0.5f, 0.5f);
+        instanceRect.pivot = new Vector2(0.5f, 0.5f);
+        instanceRect.anchoredPosition = Vector2.zero;
+        instanceRect.localScale = Vector3.one;
+
+        return instance.GetComponent<RouletteView>();
+    }
+
+    private static ShopContent LoadShopContent()
+    {
+        const string path = "Assets/MadSlime/Scriptables/Shop/ShopContent.asset";
+
+        ShopContent content = AssetDatabase.LoadAssetAtPath<ShopContent>(path);
+
+        if (content == null)
+        {
+            throw new InvalidOperationException("ShopContent asset not found.");
+        }
+
+        return content;
     }
 
     private static void SetupMenuScene()
@@ -1005,162 +1922,6 @@ public static class MadSlimeContentSetup
         return config;
     }
 
-    private static void SetupShopPrefab(GameObject upgradeCardPrefab, GameObject rouletteViewPrefab)
-    {
-        GameObject root = PrefabUtility.LoadPrefabContents(ShopPrefabPath);
-
-        try
-        {
-            ShopPanel panel = root.GetComponentInChildren<ShopPanel>(true);
-            Shop shop = root.GetComponentInChildren<Shop>(true);
-            UpgradeItemViewFactory upgradeFactory = root.GetComponentInChildren<UpgradeItemViewFactory>(true);
-
-            if (panel == null || shop == null)
-            {
-                throw new InvalidOperationException(
-                    $"Shop prefab is missing components. root='{root.name}' " +
-                    $"ShopPanel={(panel != null ? "ok" : "NULL")} " +
-                    $"Shop={(shop != null ? "ok" : "NULL")}");
-            }
-
-            if (upgradeFactory == null)
-            {
-                upgradeFactory = panel.gameObject.AddComponent<UpgradeItemViewFactory>();
-            }
-
-            SerializedObject factorySerialized = new SerializedObject(upgradeFactory);
-            factorySerialized.FindProperty("_upgradeItemViewPrefab").objectReferenceValue = upgradeCardPrefab.GetComponent<UpgradeItemView>();
-            factorySerialized.ApplyModifiedPropertiesWithoutUndo();
-
-            Transform itemsParent = (Transform)new SerializedObject(panel).FindProperty("_itemsParent").objectReferenceValue;
-
-            if (itemsParent == null)
-            {
-                throw new InvalidOperationException("ShopPanel._itemsParent is not assigned.");
-            }
-
-            RectTransform upgradesParent = FindOrCreateRectChild(itemsParent.parent, "UpgradesGrid", (RectTransform)itemsParent);
-            RectTransform sourceRect = (RectTransform)itemsParent;
-            upgradesParent.anchorMin = sourceRect.anchorMin;
-            upgradesParent.anchorMax = sourceRect.anchorMax;
-            upgradesParent.pivot = sourceRect.pivot;
-            upgradesParent.anchoredPosition = sourceRect.anchoredPosition;
-            upgradesParent.sizeDelta = sourceRect.sizeDelta;
-            upgradesParent.offsetMin = sourceRect.offsetMin;
-            upgradesParent.offsetMax = sourceRect.offsetMax;
-            GridLayoutGroup grid = upgradesParent.GetComponent<GridLayoutGroup>();
-
-            if (grid == null)
-            {
-                grid = upgradesParent.gameObject.AddComponent<GridLayoutGroup>();
-            }
-
-            GridLayoutGroup skinGrid = itemsParent.GetComponent<GridLayoutGroup>();
-
-            if (skinGrid != null)
-            {
-                grid.cellSize = skinGrid.cellSize;
-                grid.spacing = skinGrid.spacing;
-                grid.padding = skinGrid.padding;
-                grid.constraint = skinGrid.constraint;
-                grid.constraintCount = skinGrid.constraintCount;
-            }
-
-            upgradesParent.gameObject.SetActive(false);
-
-            TMP_FontAsset font = LoadFont();
-
-            RectTransform tabs = FindOrCreateRectChild(root.transform, "Tabs", null);
-            tabs.anchorMin = new Vector2(0.5f, 1f);
-            tabs.anchorMax = new Vector2(0.5f, 1f);
-            tabs.pivot = new Vector2(0.5f, 1f);
-            tabs.anchoredPosition = new Vector2(0f, -40f);
-            tabs.sizeDelta = new Vector2(900f, 110f);
-
-            Transform legacySkinsTab = tabs.Find("SkinsTab");
-
-            if (legacySkinsTab != null)
-            {
-                legacySkinsTab.name = "AllSkinsTab";
-            }
-
-            Transform legacyRouletteTab = tabs.Find("RouletteTab");
-
-            if (legacyRouletteTab != null)
-            {
-                legacyRouletteTab.name = "SkinsTab";
-            }
-
-            Button upgradesTab = EnsureTabButton(tabs, "UpgradesTab", "tab_upgrades", font, new Vector2(-300f, 0f));
-            Button skinsTab = EnsureTabButton(tabs, "SkinsTab", "tab_skins", font, new Vector2(0f, 0f));
-            Button allSkinsTab = EnsureTabButton(tabs, "AllSkinsTab", "tab_all_skins", font, new Vector2(300f, 0f));
-
-            ForceLocalized(upgradesTab.transform, "tab_upgrades");
-            ForceLocalized(skinsTab.transform, "tab_skins");
-            ForceLocalized(allSkinsTab.transform, "tab_all_skins");
-
-            EnsureClickSound(upgradesTab.gameObject);
-            EnsureClickSound(skinsTab.gameObject);
-            EnsureClickSound(allSkinsTab.gameObject);
-
-            RemoveChildByName(root.transform, "SkinsRoulette");
-            RemoveRootVestigeComponents(root);
-
-            RectTransform roulettePage = FindOrCreateRectChild(itemsParent.parent, "RoulettePage", (RectTransform)itemsParent);
-            roulettePage.anchorMin = ((RectTransform)itemsParent).anchorMin;
-            roulettePage.anchorMax = ((RectTransform)itemsParent).anchorMax;
-            roulettePage.pivot = ((RectTransform)itemsParent).pivot;
-            roulettePage.anchoredPosition = ((RectTransform)itemsParent).anchoredPosition;
-            roulettePage.sizeDelta = ((RectTransform)itemsParent).sizeDelta;
-
-            RouletteView rouletteView = EnsureRouletteView(roulettePage, rouletteViewPrefab);
-
-            roulettePage.gameObject.SetActive(true);
-            ((RectTransform)itemsParent).gameObject.SetActive(false);
-
-            RemoveDuplicateChildren(roulettePage, "RouletteView", rouletteView.transform);
-
-            SerializedObject panelSerialized = new SerializedObject(panel);
-            panelSerialized.FindProperty("_upgradesParent").objectReferenceValue = upgradesParent;
-            panelSerialized.FindProperty("_rouletteParent").objectReferenceValue = roulettePage;
-            panelSerialized.FindProperty("_upgradeFactory").objectReferenceValue = upgradeFactory;
-            panelSerialized.FindProperty("_upgradesTabButton").objectReferenceValue = upgradesTab;
-            panelSerialized.FindProperty("_skinsTabButton").objectReferenceValue = skinsTab;
-            panelSerialized.FindProperty("_allSkinsTabButton").objectReferenceValue = allSkinsTab;
-            panelSerialized.FindProperty("_rouletteView").objectReferenceValue = rouletteView;
-            panelSerialized.ApplyModifiedPropertiesWithoutUndo();
-
-            SetupSkinCardPrefab();
-
-            PrefabUtility.SaveAsPrefabAsset(root, ShopPrefabPath);
-        }
-        finally
-        {
-            PrefabUtility.UnloadPrefabContents(root);
-        }
-    }
-
-    private static RouletteView EnsureRouletteView(RectTransform page, GameObject viewPrefab)
-    {
-        RouletteView existing = page.GetComponentInChildren<RouletteView>(true);
-
-        if (existing != null)
-        {
-            return existing;
-        }
-
-        GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(viewPrefab);
-        instance.transform.SetParent(page, false);
-
-        RectTransform instanceRect = (RectTransform)instance.transform;
-        instanceRect.anchorMin = new Vector2(0.5f, 0.5f);
-        instanceRect.anchorMax = new Vector2(0.5f, 0.5f);
-        instanceRect.anchoredPosition = Vector2.zero;
-        instanceRect.localScale = Vector3.one;
-
-        return instance.GetComponent<RouletteView>();
-    }
-
     private static void ForceLocalized(Transform buttonTransform, string key)
     {
         TMP_Text text = buttonTransform.GetComponentInChildren<TMP_Text>(true);
@@ -1189,30 +1950,6 @@ public static class MadSlimeContentSetup
         if (child != null)
         {
             UnityEngine.Object.DestroyImmediate(child.gameObject);
-        }
-    }
-
-    private static void RemoveRootVestigeComponents(GameObject root)
-    {
-        UIButtonSound vestigialSound = root.GetComponent<UIButtonSound>();
-
-        if (vestigialSound != null)
-        {
-            UnityEngine.Object.DestroyImmediate(vestigialSound);
-        }
-
-        Button vestigialButton = root.GetComponent<Button>();
-
-        if (vestigialButton != null)
-        {
-            UnityEngine.Object.DestroyImmediate(vestigialButton);
-        }
-
-        AudioSource vestigialSource = root.GetComponent<AudioSource>();
-
-        if (vestigialSource != null)
-        {
-            UnityEngine.Object.DestroyImmediate(vestigialSource);
         }
     }
 
@@ -1363,7 +2100,7 @@ public static class MadSlimeContentSetup
         TextMeshProUGUI text = textObject.GetComponent<TextMeshProUGUI>();
         text.font = font;
         text.fontSize = fontSize;
-        text.alignment = (TextAlignmentOptions)anchor;
+        text.alignment = ConvertAnchor(anchor);
         text.text = name;
         text.color = Color.white;
         text.raycastTarget = false;
@@ -1375,6 +2112,47 @@ public static class MadSlimeContentSetup
         rect.sizeDelta = size;
 
         return textObject;
+    }
+
+    // A direct (TextAlignmentOptions)anchor cast is wrong: the numeric values of
+    // TextAnchor and TextAlignmentOptions do not match (MiddleCenter lands on TopRight).
+    private static TextAlignmentOptions ConvertAnchor(TextAnchor anchor)
+    {
+        switch (anchor)
+        {
+            case TextAnchor.UpperLeft:
+                return TextAlignmentOptions.TopLeft;
+
+            case TextAnchor.UpperCenter:
+                return TextAlignmentOptions.Top;
+
+            case TextAnchor.UpperRight:
+                return TextAlignmentOptions.TopRight;
+
+            case TextAnchor.MiddleLeft:
+                return TextAlignmentOptions.Left;
+
+            case TextAnchor.MiddleCenter:
+                return TextAlignmentOptions.Center;
+
+            case TextAnchor.MiddleRight:
+                return TextAlignmentOptions.Right;
+
+            case TextAnchor.LowerLeft:
+                return TextAlignmentOptions.BottomLeft;
+
+            case TextAnchor.LowerCenter:
+                return TextAlignmentOptions.Bottom;
+
+            case TextAnchor.LowerRight:
+                return TextAlignmentOptions.BottomRight;
+
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(anchor),
+                    anchor,
+                    "CreateText received an unknown text anchor.");
+        }
     }
 
     private static Button CreateButton(string name, TMP_FontAsset font, Vector2 position, Vector2 size, Color color)
@@ -1414,66 +2192,11 @@ public static class MadSlimeContentSetup
         serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 
-    private static RectTransform FindOrCreateRectChild(Transform parent, string name, RectTransform sizeSource)
-    {
-        Transform existing = parent.Find(name);
-
-        if (existing != null)
-        {
-            return (RectTransform)existing;
-        }
-
-        GameObject child = new GameObject(name, typeof(RectTransform));
-        RectTransform rect = (RectTransform)child.transform;
-        rect.SetParent(parent, false);
-        rect.anchorMin = new Vector2(0.5f, 0.5f);
-        rect.anchorMax = new Vector2(0.5f, 0.5f);
-        rect.localScale = Vector3.one;
-
-        if (sizeSource != null)
-        {
-            RectTransform sourceRect = (RectTransform)sizeSource;
-            rect.anchoredPosition = sourceRect.anchoredPosition + new Vector2(0f, 130f);
-            rect.sizeDelta = sourceRect.sizeDelta;
-        }
-
-        return rect;
-    }
-
-    private static Button EnsureTabButton(Transform parent, string name, string key, TMP_FontAsset font, Vector2 position)
-    {
-        Transform existing = parent.Find(name);
-
-        if (existing != null)
-        {
-            return existing.GetComponent<Button>();
-        }
-
-        Button button = CreateButton(name, font, position, new Vector2(280f, 100f), new Color(0.25f, 0.35f, 0.55f));
-        button.transform.SetParent(parent, false);
-        SetLocalized(button.transform, key, font);
-
-        return button;
-    }
-
     private static Button FindChildButton(Transform parent, string name)
     {
         Transform found = FindDeep(parent, name);
 
         return found != null ? found.GetComponent<Button>() : null;
-    }
-
-    private static void RemoveDuplicateChildren(Transform parent, string name, Transform keep)
-    {
-        for (int i = parent.childCount - 1; i >= 0; i--)
-        {
-            Transform child = parent.GetChild(i);
-
-            if (child != keep && child.name.StartsWith(name) == true)
-            {
-                UnityEngine.Object.DestroyImmediate(child.gameObject);
-            }
-        }
     }
 
     private static Transform FindDeep(Transform parent, string name)

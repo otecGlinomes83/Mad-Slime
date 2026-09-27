@@ -13,6 +13,7 @@ namespace Game
         public ItemPool()
         {
             GameObject rootObject = new GameObject("PooledItems");
+            Object.DontDestroyOnLoad(rootObject);
             _root = rootObject.transform;
         }
 

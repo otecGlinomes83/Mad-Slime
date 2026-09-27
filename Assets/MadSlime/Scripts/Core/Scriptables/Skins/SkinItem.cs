@@ -12,6 +12,9 @@ namespace Skins
         [field: Tooltip("Иконка скина в магазине.")]
         [field: SerializeField] public Sprite Icon { get; private set; }
 
+        [field: Tooltip("Редкость скина: задаёт цвет плашки и вес выпадения в скин-рулетке.")]
+        [field: SerializeField] public SkinRarity Rarity { get; private set; }
+
         [field: SerializeField, Range(0, 10000), Tooltip("Цена в монетах. 0 = выдаётся бесплатно.")]
         public int Price { get; private set; }
 
