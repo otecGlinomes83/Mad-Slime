@@ -4,15 +4,9 @@
     "Language": "ru",
     "musicVolume": 0.18175870180130006,
     "sfxVolume": 0.5040962100028992,
-    "Balance": 9991899,
+    "Balance": 9999999,
     "SelectedSkinType": 0,
-    "_openSkins": [
-        0,
-        1,
-        2,
-        3,
-        4
-    ],
+    "_openSkins": [0],
     "SpeedLevel": 0,
     "AppetiteLevel": 0,
     "TasteLevel": 0,
@@ -20,7 +14,7 @@
     "PurchasedPerks": [],
     "LastFreeSpinUnixTime": 0,
     "RouletteAdSpinTimes": [],
-    "SkinSpinCount": 9,
+    "SkinSpinCount": 0,
     "PreviousScene": "Menu",
-    "idSave": 311
+    "idSave": 353
 }

@@ -57,6 +57,7 @@ public static class MadSlimeContentSetup
         DeleteLegacyRouletteWindowPrefab();
         EnsureRarityLocalization();
         EnsureUpgradeLocalization();
+        EnsureWinPopupLocalization();
         FixFontAtlasReadability();
 
         SetupProjectScope(upgradesConfig);
@@ -417,6 +418,26 @@ public static class MadSlimeContentSetup
         InsertLocaleEntryIfMissing(entries, "perk_adrenaline_desc", "Ускорение в конце раунда", "Speed boost at the end of the round", "Rauntun sonunda hızlanma");
         InsertLocaleEntryIfMissing(entries, "perk_ambitions_desc", "Старт на тир выше", "Start one tier higher", "Bir kademeden yüksek başla");
         InsertLocaleEntryIfMissing(entries, "shop_one_time", "ОДНОРАЗОВЫЕ ПОКУПКИ", "ONE-TIME BUYS", "TEK SEFERLİK SATIN ALIMLAR");
+
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(table);
+    }
+
+    private static void EnsureWinPopupLocalization()
+    {
+        const string path = "Assets/MadSlime/Scriptables/Localization/Localization.asset";
+
+        LocalizationTable table = AssetDatabase.LoadAssetAtPath<LocalizationTable>(path);
+
+        if (table == null)
+        {
+            throw new InvalidOperationException("Localization asset not found.");
+        }
+
+        SerializedObject serialized = new SerializedObject(table);
+        SerializedProperty entries = serialized.FindProperty("_entries");
+
+        InsertLocaleEntryIfMissing(entries, "roulette_take", "ЗАБРАТЬ", "TAKE", "AL");
 
         serialized.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(table);
@@ -867,7 +888,7 @@ public static class MadSlimeContentSetup
             GameObject icon = new GameObject("Icon", typeof(RectTransform), typeof(Image));
             icon.transform.SetParent(created.transform, false);
 
-            GameObject label = CreateText("Label", LoadFont(), 34, TextAnchor.MiddleCenter, Vector2.zero, Vector2.zero);
+            GameObject label = CreateText("Label", LoadFont(), 22, TextAnchor.MiddleCenter, Vector2.zero, Vector2.zero);
             label.transform.SetParent(created.transform, false);
 
             RouletteSectorCard card = created.AddComponent<RouletteSectorCard>();
@@ -881,43 +902,51 @@ public static class MadSlimeContentSetup
             UnityEngine.Object.DestroyImmediate(created);
         }
 
-        return RepairSectorCardLayout();
+        ApplySectorCardLayout();
+
+        return AssetDatabase.LoadAssetAtPath<GameObject>(SectorCardPrefabPath);
     }
 
-    private static GameObject RepairSectorCardLayout()
+    // Sector card layout by owner request (2026-09-29): the skin icon is primary
+    // and always visible; the rarity text is a narrow strip along the bottom edge
+    // and may never overlap the icon.
+    private static void ApplySectorCardLayout()
     {
         GameObject root = PrefabUtility.LoadPrefabContents(SectorCardPrefabPath);
 
         try
         {
-            RectTransform rootRect = (RectTransform)root.transform;
-            rootRect.sizeDelta = new Vector2(150f, 150f);
-
             Transform icon = root.transform.Find("Icon");
+            Transform label = root.transform.Find("Label");
 
-            if (icon == null)
+            if (icon == null || label == null)
             {
-                throw new InvalidOperationException("RouletteSectorCard prefab has no Icon child.");
+                throw new InvalidOperationException("RouletteSectorCard prefab has no Icon or Label child.");
             }
 
             RectTransform iconRect = (RectTransform)icon;
             iconRect.anchorMin = new Vector2(0.5f, 0.5f);
             iconRect.anchorMax = new Vector2(0.5f, 0.5f);
-            iconRect.anchoredPosition = new Vector2(0f, 20f);
-            iconRect.sizeDelta = new Vector2(140f, 140f);
-
-            Transform label = root.transform.Find("Label");
-
-            if (label == null)
-            {
-                throw new InvalidOperationException("RouletteSectorCard prefab has no Label child.");
-            }
+            iconRect.pivot = new Vector2(0.5f, 0.5f);
+            iconRect.anchoredPosition = new Vector2(0f, 9f);
+            iconRect.sizeDelta = new Vector2(130f, 130f);
 
             RectTransform labelRect = (RectTransform)label;
-            labelRect.anchorMin = new Vector2(0.5f, 0.5f);
-            labelRect.anchorMax = new Vector2(0.5f, 0.5f);
-            labelRect.anchoredPosition = new Vector2(0f, -100f);
-            labelRect.sizeDelta = new Vector2(700f, 56f);
+            labelRect.anchorMin = new Vector2(0f, 0f);
+            labelRect.anchorMax = new Vector2(1f, 0f);
+            labelRect.pivot = new Vector2(0.5f, 0f);
+            labelRect.anchoredPosition = new Vector2(0f, 6f);
+            labelRect.sizeDelta = new Vector2(0f, 30f);
+
+            TextMeshProUGUI labelText = label.GetComponent<TextMeshProUGUI>();
+
+            if (labelText == null)
+            {
+                throw new InvalidOperationException("RouletteSectorCard Label has no TextMeshProUGUI.");
+            }
+
+            labelText.fontSize = 22;
+            labelText.alignment = ConvertAnchor(TextAnchor.MiddleCenter);
 
             PrefabUtility.SaveAsPrefabAsset(root, SectorCardPrefabPath);
         }
@@ -925,8 +954,6 @@ public static class MadSlimeContentSetup
         {
             PrefabUtility.UnloadPrefabContents(root);
         }
-
-        return AssetDatabase.LoadAssetAtPath<GameObject>(SectorCardPrefabPath);
     }
 
     internal static GameObject CreateRouletteViewPrefab(GameObject sectorCardPrefab)
@@ -957,12 +984,14 @@ public static class MadSlimeContentSetup
 
             MoveCenterMarkerIntoViewport(reel);
 
-            RectTransform rootRect = (RectTransform)root.transform;
-            rootRect.sizeDelta = new Vector2(1080f, 1920f);
-
+            // The window size and the whole look belong to the owner — the setup
+            // only fills in what is physically missing, never resizes.
             SerializedObject serialized = new SerializedObject(view);
             serialized.FindProperty("_reel").objectReferenceValue = reel.GetComponent<RouletteReel>();
             serialized.ApplyModifiedPropertiesWithoutUndo();
+
+            WireReelCenterZone(reel);
+            EnsureWinPopup(root, view);
 
             PrefabUtility.SaveAsPrefabAsset(root, RouletteViewPrefabPath);
         }
@@ -996,6 +1025,40 @@ public static class MadSlimeContentSetup
         {
             child.SetParent(newParent, false);
         }
+    }
+
+    private static void WireReelCenterZone(Transform reel)
+    {
+        RouletteReel reelComponent = reel.GetComponent<RouletteReel>();
+
+        if (reelComponent == null)
+        {
+            throw new InvalidOperationException("The reel has no RouletteReel component.");
+        }
+
+        SerializedObject serialized = new SerializedObject(reelComponent);
+        SerializedProperty centerZone = serialized.FindProperty("_centerZone");
+
+        if (centerZone.objectReferenceValue == null)
+        {
+            Transform centerBand = reel.Find("Viewport/CenterBand");
+
+            if (centerBand != null)
+            {
+                centerZone.objectReferenceValue = (RectTransform)centerBand;
+            }
+        }
+
+        // Legacy even-grid default: the count now means extra cells beside the
+        // center one and must be even.
+        SerializedProperty rowCount = serialized.FindProperty("_visibleRowCount");
+
+        if (rowCount.intValue == 3)
+        {
+            rowCount.intValue = 2;
+        }
+
+        serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 
     private static GameObject CreateReelSkeleton(GameObject sectorCardPrefab)
@@ -1090,6 +1153,157 @@ public static class MadSlimeContentSetup
         {
             AssetDatabase.DeleteAsset(RouletteWindowPrefabPath);
         }
+    }
+
+    private static void EnsureWinPopup(GameObject root, RouletteView view)
+    {
+        Transform popup = root.transform.Find("WinPopup");
+
+        // Migration: the stage camera and light must live under ModelSlot so the
+        // whole stage moves together and the light lands in the camera's culling mask.
+        if (popup != null && popup.Find("ModelSlot/StageCamera") == null)
+        {
+            UnityEngine.Object.DestroyImmediate(popup.gameObject);
+            popup = null;
+        }
+
+        if (popup == null)
+        {
+            popup = BuildWinPopup(root.transform).transform;
+        }
+
+        SerializedObject serialized = new SerializedObject(view);
+        serialized.FindProperty("_winPopup").objectReferenceValue = popup.GetComponent<RouletteWinPopup>();
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static GameObject BuildWinPopup(Transform parent)
+    {
+        TMP_FontAsset font = LoadFont();
+
+        GameObject popupRoot = new GameObject("WinPopup", typeof(RectTransform), typeof(RouletteWinPopup));
+        popupRoot.transform.SetParent(parent, false);
+
+        RectTransform popupRect = (RectTransform)popupRoot.transform;
+        popupRect.anchorMin = Vector2.zero;
+        popupRect.anchorMax = Vector2.one;
+        popupRect.pivot = new Vector2(0.5f, 0.5f);
+        popupRect.anchoredPosition = Vector2.zero;
+        popupRect.sizeDelta = Vector2.zero;
+        popupRect.localScale = Vector3.one;
+
+        GameObject fade = new GameObject("Fade", typeof(RectTransform), typeof(Image));
+        fade.transform.SetParent(popupRoot.transform, false);
+
+        RectTransform fadeRect = (RectTransform)fade.transform;
+        fadeRect.anchorMin = Vector2.zero;
+        fadeRect.anchorMax = Vector2.one;
+        fadeRect.pivot = new Vector2(0.5f, 0.5f);
+        fadeRect.anchoredPosition = Vector2.zero;
+        fadeRect.sizeDelta = Vector2.zero;
+
+        Image fadeImage = fade.GetComponent<Image>();
+        fadeImage.color = new Color(0f, 0f, 0f, 0.85f);
+        fadeImage.raycastTarget = true;
+
+        GameObject window = new GameObject("Window", typeof(RectTransform), typeof(Image));
+        window.transform.SetParent(popupRoot.transform, false);
+
+        RectTransform windowRect = (RectTransform)window.transform;
+        windowRect.anchorMin = new Vector2(0.5f, 0.5f);
+        windowRect.anchorMax = new Vector2(0.5f, 0.5f);
+        windowRect.pivot = new Vector2(0.5f, 0.5f);
+        windowRect.anchoredPosition = Vector2.zero;
+        windowRect.sizeDelta = new Vector2(680f, 880f);
+
+        window.GetComponent<Image>().color = new Color(0.13f, 0.13f, 0.17f, 1f);
+
+        GameObject prizeArea = new GameObject("PrizeArea", typeof(RectTransform), typeof(RawImage));
+        prizeArea.transform.SetParent(window.transform, false);
+
+        RectTransform prizeRect = (RectTransform)prizeArea.transform;
+        prizeRect.anchorMin = new Vector2(0.5f, 0.5f);
+        prizeRect.anchorMax = new Vector2(0.5f, 0.5f);
+        prizeRect.pivot = new Vector2(0.5f, 0.5f);
+        prizeRect.anchoredPosition = new Vector2(0f, 105f);
+        prizeRect.sizeDelta = new Vector2(560f, 470f);
+
+        RawImage prizeRawImage = prizeArea.GetComponent<RawImage>();
+        prizeRawImage.raycastTarget = false;
+        prizeRawImage.color = Color.white;
+
+        GameObject coinsLabel = CreateText("CoinsLabel", font, 96, TextAnchor.MiddleCenter, new Vector2(0f, 105f), new Vector2(560f, 160f));
+        coinsLabel.transform.SetParent(window.transform, false);
+        coinsLabel.GetComponent<TMP_Text>().color = new Color(1f, 0.8f, 0.3f, 1f);
+
+        GameObject rarityPlate = new GameObject("RarityPlate", typeof(RectTransform), typeof(Image));
+        rarityPlate.transform.SetParent(window.transform, false);
+
+        RectTransform rarityRect = (RectTransform)rarityPlate.transform;
+        rarityRect.anchorMin = new Vector2(0.5f, 0.5f);
+        rarityRect.anchorMax = new Vector2(0.5f, 0.5f);
+        rarityRect.pivot = new Vector2(0.5f, 0.5f);
+        rarityRect.anchoredPosition = new Vector2(0f, -245f);
+        rarityRect.sizeDelta = new Vector2(440f, 96f);
+
+        rarityPlate.GetComponent<Image>().raycastTarget = false;
+
+        GameObject rarityLabel = CreateText("Label", font, 40, TextAnchor.MiddleCenter, Vector2.zero, new Vector2(400f, 72f));
+        rarityLabel.transform.SetParent(rarityPlate.transform, false);
+
+        Button takeButton = CreateButton("TakeButton", font, new Vector2(0f, -375f), new Vector2(360f, 116f), new Color(0.75f, 0.45f, 0.1f));
+        takeButton.transform.SetParent(window.transform, false);
+        SetLocalized(takeButton.transform, "roulette_take", font);
+        EnsureClickSound(takeButton.gameObject);
+
+        GameObject stage = new GameObject("Stage");
+        stage.transform.SetParent(popupRoot.transform, false);
+
+        GameObject modelSlot = new GameObject("ModelSlot");
+        modelSlot.transform.SetParent(stage.transform, false);
+
+        GameObject cameraObject = new GameObject("StageCamera", typeof(Camera));
+        cameraObject.transform.SetParent(modelSlot.transform, false);
+        cameraObject.transform.localPosition = new Vector3(0f, 0f, -12f);
+
+        Camera stageCamera = cameraObject.GetComponent<Camera>();
+        stageCamera.orthographic = true;
+        stageCamera.orthographicSize = 5f;
+        stageCamera.clearFlags = CameraClearFlags.SolidColor;
+        stageCamera.backgroundColor = new Color(0f, 0f, 0f, 0f);
+        stageCamera.nearClipPlane = 0.3f;
+        stageCamera.farClipPlane = 100f;
+        stageCamera.cullingMask = 0;
+
+        GameObject lightObject = new GameObject("StageLight", typeof(Light));
+        lightObject.transform.SetParent(modelSlot.transform, false);
+        lightObject.transform.localPosition = new Vector3(0f, 8f, -8f);
+        lightObject.transform.localRotation = Quaternion.Euler(45f, 0f, 0f);
+
+        Light stageLight = lightObject.GetComponent<Light>();
+        stageLight.type = LightType.Spot;
+        stageLight.color = new Color(1f, 0.96f, 0.9f, 1f);
+        stageLight.intensity = 1.1f;
+        stageLight.range = 40f;
+        stageLight.spotAngle = 50f;
+        stageLight.shadows = LightShadows.None;
+
+        RouletteWinPopup popup = popupRoot.GetComponent<RouletteWinPopup>();
+        SerializedObject popupSerialized = new SerializedObject(popup);
+        popupSerialized.FindProperty("_window").objectReferenceValue = windowRect;
+        popupSerialized.FindProperty("_fade").objectReferenceValue = fadeImage;
+        popupSerialized.FindProperty("_prizeArea").objectReferenceValue = prizeRawImage;
+        popupSerialized.FindProperty("_coinsLabel").objectReferenceValue = coinsLabel.GetComponent<TMP_Text>();
+        popupSerialized.FindProperty("_rarityPlate").objectReferenceValue = rarityPlate;
+        popupSerialized.FindProperty("_rarityLabel").objectReferenceValue = rarityLabel.GetComponent<TMP_Text>();
+        popupSerialized.FindProperty("_takeButton").objectReferenceValue = takeButton;
+        popupSerialized.FindProperty("_stageCamera").objectReferenceValue = stageCamera;
+        popupSerialized.FindProperty("_modelSlot").objectReferenceValue = modelSlot.transform;
+        popupSerialized.ApplyModifiedPropertiesWithoutUndo();
+
+        popupRoot.SetActive(false);
+
+        return popupRoot;
     }
 
     private static SfxClip LoadUiClickClip()
@@ -1362,6 +1576,7 @@ public static class MadSlimeContentSetup
         }
 
         MoveRouletteViewToPage(rouletteView, shopCanvas.transform);
+        RemoveObsoleteRouletteResult(shopCanvas.transform);
         WireModelPlacer(modelPlacer, shopCanvas.transform);
 
         Pauser pauser = UnityEngine.Object.FindAnyObjectByType<Pauser>(FindObjectsInactive.Include);
@@ -1468,6 +1683,25 @@ public static class MadSlimeContentSetup
 
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+    }
+
+    // The result text is gone from the roulette flow — the win popup replaced it.
+    // Scene-side leftovers (owner-made "Result" object under RoulettePage) are removed here.
+    private static void RemoveObsoleteRouletteResult(Transform shopCanvas)
+    {
+        Transform page = FindDeep(shopCanvas, "RoulettePage");
+
+        if (page == null)
+        {
+            return;
+        }
+
+        Transform result = FindDeep(page, "Result");
+
+        if (result != null && result.GetComponent<TextMeshProUGUI>() != null)
+        {
+            UnityEngine.Object.DestroyImmediate(result.gameObject);
+        }
     }
 
     private static void MoveRouletteViewToPage(RouletteView rouletteView, Transform shopCanvas)

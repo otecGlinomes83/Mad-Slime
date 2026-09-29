@@ -78,8 +78,32 @@ namespace Scriptables
         [Tooltip("Насколько сжимаются поперечные оси при вытягивании. 0.5 = половина от величины вытягивания.")]
         [SerializeField, Range(0f, 1f)] private float _deformSqueeze = 0.55f;
 
-        [Tooltip("Плавность деформации (с). Больше = желейнее, меньше = резче.")]
-        [SerializeField, Min(0.01f)] private float _deformSmoothTime = 0.08f;
+        [Header("Crawl")]
+        [Tooltip("Форма вытягивания за цикл ползка: X — фаза цикла (0–1), Y — доля от Deform Max Stretch (можно ниже нуля — вжим вдоль движения). Значение в нуле должно совпадать со значением в единице, иначе цикл щёлкает на стыке.")]
+        [SerializeField] private AnimationCurve _crawlStretchCurve = new AnimationCurve(
+            new Keyframe(0f, 0.2f),
+            new Keyframe(0.3f, 1f),
+            new Keyframe(0.65f, 0.35f),
+            new Keyframe(1f, 0.2f));
+
+        [Tooltip("Множитель скорости за цикл ползка: X — фаза цикла (0–1), Y — множитель (1 = обычная скорость). Держи среднее по циклу около единицы, иначе уедет фактическая скорость. Значение в нуле должно совпадать со значением в единице.")]
+        [SerializeField] private AnimationCurve _crawlThrustCurve = new AnimationCurve(
+            new Keyframe(0f, 1f),
+            new Keyframe(0.3f, 1.45f),
+            new Keyframe(0.65f, 0.6f),
+            new Keyframe(1f, 1f));
+
+        [Tooltip("Базовая длина шага ползка: сколько метров пути занимает полный цикл.")]
+        [SerializeField, Min(0f)] private float _crawlStride = 3f;
+
+        [Tooltip("Прирост длины шага на единицу скорости (с). Шаг = база + скорость × значение. Чем больше, тем ближе частота ползка к константе на больших тирах (предел частоты = 1 / значение).")]
+        [SerializeField, Min(0f)] private float _stridePerSpeed = 0.28f;
+
+        [Tooltip("Глубина рывка: насколько сильно скорость пульсирует внутри цикла. 0 = ровная скорость, остаётся только анимация ползка; 1 = максимальные рывки.")]
+        [SerializeField, Range(0f, 1f)] private float _crawlThrustDepth = 0.55f;
+
+        [Tooltip("Плавность включения и затухания цикла ползка (с). Больше = мягче старт и остановка.")]
+        [SerializeField, Min(0.01f)] private float _crawlRampTime = 0.15f;
 
         [Header("Growth")]
         [Tooltip("Стартовая масса слайма в начале уровня.")]
@@ -109,7 +133,12 @@ namespace Scriptables
         public float DeformMaxStretch => _deformMaxStretch;
         public float SmokeSpeedThreshold => _smokeSpeedThreshold;
         public float DeformSqueeze => _deformSqueeze;
-        public float DeformSmoothTime => _deformSmoothTime;
+        public AnimationCurve CrawlStretchCurve => _crawlStretchCurve;
+        public AnimationCurve CrawlThrustCurve => _crawlThrustCurve;
+        public float CrawlStride => _crawlStride;
+        public float StridePerSpeed => _stridePerSpeed;
+        public float CrawlThrustDepth => _crawlThrustDepth;
+        public float CrawlRampTime => _crawlRampTime;
         public int StartMass => _startMass;
         public IReadOnlyList<PlayerTierThreshold> Thresholds => _thresholds;
     }

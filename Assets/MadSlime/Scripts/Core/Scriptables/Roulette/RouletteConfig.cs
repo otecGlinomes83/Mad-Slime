@@ -68,6 +68,9 @@ namespace Roulette
         [Tooltip("Крутизна торможения: 2 — мягкий разгон и плавный выбег, 5 — классика слотов, 8+ — резкий старт и долгое затухание.")]
         [SerializeField, Min(1f)] private float _spinEasePower = 5f;
 
+        [Tooltip("Пауза ленты на выпавшем призе до попапа выигрыша (с).")]
+        [SerializeField, Min(0.1f)] private float _winDwellSeconds = 0.7f;
+
         [Header("Reel Sounds")]
         [Tooltip("Тик при пролёте карточки. Пусто — лента молчит.")]
         [SerializeField] private SfxClip _stepClip;
@@ -97,6 +100,7 @@ namespace Roulette
         public float SpinDuration => _spinDuration;
 
         public float SpinEasePower => _spinEasePower;
+        public float WinDwellSeconds => _winDwellSeconds;
         public SfxClip StepClip => _stepClip;
         public SfxClip SpinStartClip => _spinStartClip;
         public SfxClip WinClip => _winClip;

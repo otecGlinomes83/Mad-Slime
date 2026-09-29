@@ -60,6 +60,7 @@ MonoBehaviour:
   _maxTurns: 5
   _spinDuration: 3.2
   _spinEasePower: 5
+  _winDwellSeconds: 0.7
   _stepClip: {fileID: 11400000, guid: d2ed719930b13b41b820abb33e340ce0, type: 2}
   _spinStartClip: {fileID: 0}
   _winClip: {fileID: 0}

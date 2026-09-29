@@ -246,3 +246,7 @@ MonoBehaviour:
     _ru: "\u041E\u0414\u041D\u041E\u0420\u0410\u0417\u041E\u0412\u042B\u0415 \u041F\u041E\u041A\u0423\u041F\u041A\u0418"
     _en: ONE-TIME BUYS
     _tr: "TEK SEFERL\u0130K SATIN ALIMLAR"
+  - _key: roulette_take
+    _ru: "\u0417\u0410\u0411\u0420\u0410\u0422\u042C"
+    _en: TAKE
+    _tr: AL

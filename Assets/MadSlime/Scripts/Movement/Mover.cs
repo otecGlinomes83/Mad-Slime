@@ -1,5 +1,7 @@
 using System;
+using Scriptables;
 using UnityEngine;
+using VContainer;
 
 namespace Movement
 {
@@ -19,15 +21,59 @@ namespace Movement
         private Vector3 _velocityRef;
         private float _currentSpeed;
         private float _speedMultiplier = 1f;
+        private PlayerConfig _playerConfig;
+        private float _crawlPhase;
+        private float _crawlStrength;
+        private float _crawlStrengthVelocityRef;
+        private bool _isCrawlInputActive;
 
         public Vector3 Velocity => _currentVelocity;
 
         public float CurrentSpeed => _currentSpeed;
 
+        public float CrawlPhase => _crawlPhase;
+
+        public float CrawlStrength => _crawlStrength;
+
         private void Awake()
         {
             _playerCollider = GetComponent<CapsuleCollider>();
             _currentSpeed = _defaultSpeed;
+        }
+
+        [Inject]
+        public void Construct(PlayerConfig playerConfig)
+        {
+            if (playerConfig == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PlayerConfig was not injected. Check that GameLifetimeScope registers Mover and PlayerConfig.");
+            }
+
+            ValidateCrawlConfig(playerConfig);
+
+            _playerConfig = playerConfig;
+        }
+
+        private static void ValidateCrawlConfig(PlayerConfig playerConfig)
+        {
+            if (playerConfig.CrawlStretchCurve == null || playerConfig.CrawlStretchCurve.length == 0)
+            {
+                throw new InvalidOperationException(
+                    "PlayerConfig has an empty CrawlStretchCurve. Add keyframes to the Crawl section.");
+            }
+
+            if (playerConfig.CrawlThrustCurve == null || playerConfig.CrawlThrustCurve.length == 0)
+            {
+                throw new InvalidOperationException(
+                    "PlayerConfig has an empty CrawlThrustCurve. Add keyframes to the Crawl section.");
+            }
+
+            if (playerConfig.CrawlStride <= 0f && playerConfig.StridePerSpeed <= 0f)
+            {
+                throw new InvalidOperationException(
+                    "PlayerConfig: CrawlStride and StridePerSpeed are both zero, the crawl cycle can never advance.");
+            }
         }
 
         public void SetDefaultSpeed(float speed)
@@ -85,14 +131,20 @@ namespace Movement
                     $"{name}: Move is called before SetBounds. Drag the Mover into the _mover field of LevelGenerator.");
             }
 
-            if (direction.sqrMagnitude < MoveThreshold * MoveThreshold)
+            bool hasInput = direction.sqrMagnitude >= MoveThreshold * MoveThreshold;
+
+            UpdateCrawlStrength(hasInput, Time.deltaTime);
+
+            if (hasInput == false)
             {
                 DecayVelocity();
                 return;
             }
 
             direction = direction.normalized;
-            Vector3 targetVelocity = direction * _currentSpeed;
+
+            float crawlVelocityScale = GetCrawlVelocityScale();
+            Vector3 targetVelocity = direction * (_currentSpeed * crawlVelocityScale);
 
             _currentVelocity = Vector3.SmoothDamp
             (
@@ -103,6 +155,8 @@ namespace Movement
             );
 
             transform.position += _currentVelocity * Time.deltaTime;
+
+            AdvanceCrawlPhase(_currentVelocity.magnitude * Time.deltaTime);
 
             ClampToBounds();
         }
@@ -125,7 +179,71 @@ namespace Movement
 
             transform.position += _currentVelocity * Time.deltaTime;
 
+            AdvanceCrawlPhase(_currentVelocity.magnitude * Time.deltaTime);
+
             ClampToBounds();
+        }
+
+        private void UpdateCrawlStrength(bool hasInput, float deltaTime)
+        {
+            if (hasInput != _isCrawlInputActive)
+            {
+                _isCrawlInputActive = hasInput;
+
+                if (hasInput == true)
+                {
+                    _crawlPhase = 0f;
+                    _crawlStrengthVelocityRef = 0f;
+                }
+            }
+
+            float targetStrength;
+
+            if (hasInput == true)
+            {
+                targetStrength = 1f;
+            }
+            else
+            {
+                targetStrength = 0f;
+            }
+
+            _crawlStrength = Mathf.Clamp01
+            (
+                Mathf.SmoothDamp
+                (
+                    _crawlStrength,
+                    targetStrength,
+                    ref _crawlStrengthVelocityRef,
+                    _playerConfig.CrawlRampTime,
+                    Mathf.Infinity,
+                    deltaTime
+                )
+            );
+        }
+
+        private float GetCrawlVelocityScale()
+        {
+            float thrust = _playerConfig.CrawlThrustCurve.Evaluate(_crawlPhase);
+
+            return 1f + _playerConfig.CrawlThrustDepth * (thrust - 1f) * _crawlStrength;
+        }
+
+        private void AdvanceCrawlPhase(float distance)
+        {
+            if (distance <= 0f)
+            {
+                return;
+            }
+
+            float stride = _playerConfig.CrawlStride + _currentSpeed * _playerConfig.StridePerSpeed;
+
+            if (stride <= 0f)
+            {
+                return;
+            }
+
+            _crawlPhase = (_crawlPhase + distance / stride) % 1f;
         }
 
         private void ClampToBounds()

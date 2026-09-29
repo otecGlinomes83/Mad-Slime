@@ -14,11 +14,16 @@ namespace Roulette
     {
         private const float MinTickIntervalSeconds = 0.06f;
         private const int LoopNormalizationTurns = 64;
+        private const float SnapZone = 0.3f;
+        private const float WinPunchStrength = 0.06f;
 
         [SerializeField] private RectTransform _viewport;
         [SerializeField] private RectTransform _content;
+        [SerializeField, Tooltip("Центральная зона ленты: её высота задаёт размер главной ячейки и линии-разделители.")]
+        private RectTransform _centerZone;
         [SerializeField] private RouletteSectorCard _cardPrefab;
-        [SerializeField, Min(1)] private int _visibleRowCount = 3;
+        [SerializeField, Min(2), Tooltip("Сколько ячеек видно помимо центральной. Чётное: половина сверху, половина снизу.")]
+        private int _visibleRowCount = 2;
 
         private readonly List<RouletteSectorCard> _cards = new List<RouletteSectorCard>();
         private readonly List<RouletteSectorView> _entries = new List<RouletteSectorView>();
@@ -26,7 +31,10 @@ namespace Roulette
 
         private RouletteConfig _config;
         private SfxPlayer _sfxPlayer;
-        private float _cardHeight;
+        private float _cardWidth;
+        private float _centerHeight;
+        private float _sideHeight;
+        private float _baseCardHeight;
         private float _position;
         private int _lastTickIndex;
         private float _lastTickTime;
@@ -54,16 +62,45 @@ namespace Roulette
                     $"{name}: RouletteReel.Setup was not called. Pass the RouletteConfig before building.");
             }
 
-            if (_viewport == null || _content == null || _cardPrefab == null)
+            if (_viewport == null || _content == null || _centerZone == null || _cardPrefab == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: a reel part is not assigned. Drag the Viewport, Content and the RouletteSectorCard prefab into the fields.");
+                    $"{name}: a reel part is not assigned. Drag the Viewport, Content, CenterBand and the RouletteSectorCard prefab into the fields.");
             }
 
             if (entries == null || entries.Count == 0)
             {
                 throw new InvalidOperationException(
                     $"{name}: RouletteReel.Build requires at least one entry.");
+            }
+
+            if (_visibleRowCount % 2 != 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Visible Row Count must be even — it splits in half above and below the center cell. " +
+                    $"Current value: {_visibleRowCount}.");
+            }
+
+            float viewportHeight = _viewport.rect.height;
+            _centerHeight = _centerZone.rect.height;
+
+            if (_centerHeight <= 0f || _centerHeight >= viewportHeight)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: the CenterBand height must be inside the Viewport — it defines the center cell. " +
+                    $"CenterBand: {_centerHeight:0}, Viewport: {viewportHeight:0}.");
+            }
+
+            _cardWidth = _viewport.rect.width;
+            _sideHeight = (viewportHeight - _centerHeight) / _visibleRowCount;
+
+            RectTransform cardPrefabRect = (RectTransform)_cardPrefab.transform;
+            _baseCardHeight = cardPrefabRect.rect.height;
+
+            if (_baseCardHeight <= 0f)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: the sector card prefab root has zero height. Author it at the center cell size.");
             }
 
             _entries.Clear();
@@ -144,7 +181,6 @@ namespace Roulette
                 return;
             }
 
-            _cardHeight = _viewport.rect.height / _visibleRowCount;
             int cardCount = _visibleRowCount + 2;
 
             for (int i = 0; i < cardCount; i++)
@@ -156,8 +192,9 @@ namespace Roulette
                 cardTransform.anchorMax = new Vector2(0.5f, 0.5f);
                 cardTransform.pivot = new Vector2(0.5f, 0.5f);
                 cardTransform.anchoredPosition = Vector2.zero;
-                cardTransform.sizeDelta = new Vector2(_cardHeight, _cardHeight);
                 cardTransform.localScale = Vector3.one;
+
+                ApplyCardPhase(cardTransform, 0f);
 
                 _cards.Add(card);
                 _cardEntryIndices.Add(-1);
@@ -238,11 +275,51 @@ namespace Roulette
                     _cardEntryIndices[k] = entryIndex;
                 }
 
-                RectTransform cardTransform = (RectTransform)card.transform;
-                Vector2 anchoredPosition = cardTransform.anchoredPosition;
-                anchoredPosition.y = (baseIndex + k - _position) * _cardHeight;
-                cardTransform.anchoredPosition = anchoredPosition;
+                ApplyCardPhase((RectTransform)card.transform, baseIndex + k - _position);
             }
+        }
+
+        // Cells morph along the reel: a full-size cell inside the center zone,
+        // tucked cells filling the remaining strips above and below. The whole
+        // card scales uniformly — icon and text shrink and grow with the plate —
+        // while the rect is stretched by 1/scale horizontally, so the plate keeps
+        // rendering at the full window width. Distance is measured in cell steps
+        // from the center slot; at whole distances every card sits flush inside
+        // its strip, so the viewport never clips anything. Growth is compressed
+        // into the last SnapZone of a step, so a cell travels at strip size and
+        // pops into the center slot instead of easing under a lens.
+        private void ApplyCardPhase(RectTransform cardTransform, float delta)
+        {
+            float direction = Mathf.Approximately(delta, 0f) ? 0f : Mathf.Sign(delta);
+            float distance = Mathf.Abs(delta);
+            float scale = CellHeight(distance) / _baseCardHeight;
+
+            Vector2 anchoredPosition = cardTransform.anchoredPosition;
+            anchoredPosition.y = direction * SlotY(distance);
+            cardTransform.anchoredPosition = anchoredPosition;
+
+            cardTransform.sizeDelta = new Vector2(_cardWidth / scale, _baseCardHeight);
+            cardTransform.localScale = new Vector3(scale, scale, 1f);
+        }
+
+        private float SlotY(float distance)
+        {
+            float firstStripOffset = (_centerHeight + _sideHeight) * 0.5f;
+
+            if (distance <= 1f)
+            {
+                return distance * firstStripOffset;
+            }
+
+            return firstStripOffset + (distance - 1f) * _sideHeight;
+        }
+
+        private float CellHeight(float distance)
+        {
+            float blendInput = Mathf.Clamp01(1f - distance / SnapZone);
+            float blend = blendInput * blendInput * (3f - 2f * blendInput);
+
+            return _sideHeight + (_centerHeight - _sideHeight) * blend;
         }
 
         private void ApplyPosition(float value)
@@ -299,8 +376,47 @@ namespace Roulette
             _position = _pendingTargetIndex + entryTotal * Mathf.RoundToInt((_position - _pendingTargetIndex) / entryTotal);
 
             Reposition();
+            PunchCenterCard();
+            HoldWinAsync().Forget();
+        }
+
+        public void ReleaseHold()
+        {
+            if (_isSpinning == false)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RouletteReel.ReleaseHold was called while the reel holds no win.");
+            }
 
             _isSpinning = false;
+        }
+
+        private void PunchCenterCard()
+        {
+            float punchDuration = Mathf.Min(_config.WinDwellSeconds, 0.5f);
+
+            ((RectTransform)_cards[1].transform)
+                .DOPunchScale(new Vector3(WinPunchStrength, WinPunchStrength, 0f), punchDuration, 4, 0.5f)
+                .SetTarget(this)
+                .SetLink(gameObject, LinkBehaviour.KillOnDisable);
+        }
+
+        private async UniTaskVoid HoldWinAsync()
+        {
+            CancellationToken cancellationToken = this.GetCancellationTokenOnDestroy();
+
+            try
+            {
+                await UniTask.Delay(
+                    TimeSpan.FromSeconds(_config.WinDwellSeconds),
+                    DelayType.Realtime,
+                    PlayerLoopTiming.Update,
+                    cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
 
             Action completed = _spinCompleted;
             _spinCompleted = null;

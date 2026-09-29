@@ -1,9 +1,9 @@
 using Audio;
 using Game;
+using Scriptables;
 using Skins;
 using System;
 using System.Collections.Generic;
-using Scriptables;
 using TMPro;
 using UI.Animations;
 using UnityEngine;
@@ -27,7 +27,7 @@ namespace Roulette
         [SerializeField] private TMP_Text _spinPriceText;
         [SerializeField] private Button _adButton;
         [SerializeField] private TMP_Text _adButtonText;
-        [SerializeField] private TMP_Text _resultText;
+        [SerializeField] private RouletteWinPopup _winPopup;
 
         [SerializeField] private GameObject _screenRoot;
         [SerializeField] private Button _closeButton;
@@ -85,16 +85,22 @@ namespace Roulette
                     $"{name}: Reel is not assigned. Drag a RouletteReel into the _reel field.");
             }
 
-            if (_spinButton == null || _adButton == null)
+            if (_spinButton == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: a button is not assigned. Drag the Spin and Ad buttons into the fields.");
+                    $"{name}: SpinButton is not assigned. Drag the spin Button into the _spinButton field.");
             }
 
-            if (_spinPriceText == null || _adButtonText == null || _resultText == null)
+            if (_spinPriceText == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: a text is not assigned. Drag the SpinPrice, AdText and Result texts into the fields.");
+                    $"{name}: SpinPrice is not assigned. Drag the price TMP_Text into the _spinPriceText field.");
+            }
+
+            if (_winPopup == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: WinPopup is not assigned. Drag the RouletteWinPopup child into the _winPopup field.");
             }
 
             _mode = mode;
@@ -108,16 +114,22 @@ namespace Roulette
                 }
             }
 
-            _reel.Setup(_service.Config, _sfxPlayer);
-            _resultText.gameObject.SetActive(false);
+            if (_mode == Mode.Main && (_adButton == null || _adButtonText == null))
+            {
+                throw new InvalidOperationException(
+                    $"{name}: the Main roulette needs the Ad button. Drag it and its text into _adButton/_adButtonText.");
+            }
 
-            if (_mode == Mode.Skins)
+            _reel.Setup(_service.Config, _sfxPlayer);
+
+            if (_mode == Mode.Skins && _adButton != null)
             {
                 _adButton.gameObject.SetActive(false);
             }
 
             _spinButton.onClick.AddListener(OnSpinClicked);
             _adButton.onClick.AddListener(OnAdClicked);
+            _winPopup.Closed += OnWinPopupClosed;
 
             if (_closeButton != null)
             {
@@ -150,7 +162,13 @@ namespace Roulette
             }
 
             _spinButton.onClick.RemoveListener(OnSpinClicked);
-            _adButton.onClick.RemoveListener(OnAdClicked);
+
+            if (_adButton != null)
+            {
+                _adButton.onClick.RemoveListener(OnAdClicked);
+            }
+
+            _winPopup.Closed -= OnWinPopupClosed;
 
             if (_closeButton != null)
             {
@@ -299,7 +317,6 @@ namespace Roulette
         {
             _pendingIndex = PickTargetIndex();
 
-            _resultText.gameObject.SetActive(false);
             RefreshButtons();
 
             _reel.Spin(_pendingIndex, _reel.EntryCount, OnReelSpinCompleted);
@@ -330,40 +347,53 @@ namespace Roulette
 
                 if (sector.RewardType == RouletteSector.RewardKind.Coins)
                 {
-                    _service.GrantCoins(sector.Coins);
-                    ShowResult(string.Format(Localization.Get("roulette_won_coins"), sector.Coins));
-                }
-                else if (_service.IsSkinOpen(sector.Skin) == true)
-                {
-                    _service.GrantCoins(_service.Config.DuplicateCoinsCompensation);
-                    ShowResult(string.Format(
-                        Localization.Get("roulette_won_coins"),
-                        _service.Config.DuplicateCoinsCompensation));
-                }
-                else
-                {
-                    _service.GrantSkin(sector.Skin);
-                    ShowResult(Localization.Get("roulette_won_skin"));
+                    GrantCoinsAndShow(sector.Coins);
+                    return;
                 }
 
-                RefreshButtons();
+                if (_service.IsSkinOpen(sector.Skin) == true)
+                {
+                    GrantCoinsAndShow(_service.Config.DuplicateCoinsCompensation);
+                    return;
+                }
+
+                _service.GrantSkin(sector.Skin);
+                _winPopup.ShowSkin(
+                    sector.Skin,
+                    Localization.Get(GetRarityKey(sector.Skin.Rarity)),
+                    _service.GetRarityColor(sector.Skin.Rarity));
                 return;
             }
 
             if (_allSkinsCollected == true)
             {
-                _service.GrantCoins(_service.Config.DuplicateCoinsCompensation);
-                ShowResult(string.Format(
-                    Localization.Get("roulette_won_coins"),
-                    _service.Config.DuplicateCoinsCompensation));
-                RefreshButtons();
+                GrantCoinsAndShow(_service.Config.DuplicateCoinsCompensation);
                 return;
             }
 
-            _service.GrantSkin(_sectorPool[targetIndex]);
-            ShowResult(Localization.Get("roulette_won_skin"));
+            SkinItem skin = _sectorPool[targetIndex];
+            _service.GrantSkin(skin);
+            _winPopup.ShowSkin(
+                skin,
+                Localization.Get(GetRarityKey(skin.Rarity)),
+                _service.GetRarityColor(skin.Rarity));
+        }
 
-            BuildReel();
+        private void GrantCoinsAndShow(int amount)
+        {
+            _service.GrantCoins(amount);
+            _winPopup.ShowCoins(amount);
+        }
+
+        private void OnWinPopupClosed()
+        {
+            _reel.ReleaseHold();
+
+            if (_mode == Mode.Skins && _allSkinsCollected == false)
+            {
+                BuildReel();
+            }
+
             RefreshButtons();
         }
 
@@ -377,12 +407,6 @@ namespace Roulette
             }
 
             _sfxPlayer.PlayUi(winClip);
-        }
-
-        private void ShowResult(string message)
-        {
-            _resultText.text = message;
-            _resultText.gameObject.SetActive(true);
         }
 
         private void RefreshButtons()

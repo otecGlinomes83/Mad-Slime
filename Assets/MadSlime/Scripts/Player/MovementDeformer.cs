@@ -10,10 +10,11 @@ namespace Player
     {
         [SerializeField] private PlayerConfig _config;
 
+        private const float RestStrengthEpsilon = 0.001f;
+
         private Mover _mover;
         private Vector3 _baseScale;
-        private float _stretchVelocityRef;
-        private float _stretch;
+        private bool _isAtRestScale;
 
         [Inject]
         public void Construct(PlayerConfig config, Mover mover)
@@ -37,26 +38,33 @@ namespace Player
             }
 
             _baseScale = transform.localScale;
+            _isAtRestScale = true;
         }
 
         private void Update()
         {
-            float normalizedSpeed = 0f;
+            float strength = _mover.CrawlStrength;
 
-            if (_mover.CurrentSpeed > 0f)
+            if (strength <= RestStrengthEpsilon)
             {
-                normalizedSpeed = Mathf.Clamp01(_mover.Velocity.magnitude / _mover.CurrentSpeed);
+                if (_isAtRestScale == false)
+                {
+                    _isAtRestScale = true;
+                    transform.localScale = _baseScale;
+                }
+
+                return;
             }
 
-            float targetStretch = normalizedSpeed * _config.DeformMaxStretch;
-            _stretch = Mathf.SmoothDamp(_stretch, targetStretch, ref _stretchVelocityRef, _config.DeformSmoothTime);
+            _isAtRestScale = false;
 
-            float squeeze = 1f - _stretch * _config.DeformSqueeze;
+            float stretch = strength * _config.DeformMaxStretch * _config.CrawlStretchCurve.Evaluate(_mover.CrawlPhase);
+            float squeeze = 1f - stretch * _config.DeformSqueeze;
 
             transform.localScale = new Vector3(
                 _baseScale.x * squeeze,
                 _baseScale.y * squeeze,
-                _baseScale.z * (1f + _stretch));
+                _baseScale.z * (1f + stretch));
         }
     }
 }
