@@ -41,7 +41,6 @@ MonoBehaviour:
     _coins: 0
     _skin: {fileID: 11400000, guid: a16873fd4e416564cb6438502a43e5a9, type: 2}
     _weight: 0.15
-  _mainSpinCost: 100
   _exclusiveSkins:
   - {fileID: 11400000, guid: 1f6233159a9e97cf79427226bfc28d31, type: 2}
   - {fileID: 11400000, guid: a16873fd4e416564cb6438502a43e5a9, type: 2}
@@ -51,7 +50,7 @@ MonoBehaviour:
   _rarityTable: {fileID: 11400000, guid: 8d1c7cb302a74805e9f7c0823ae73ed6, type: 2}
   _adSpinWindowSeconds: 1800
   _adSpinsPerWindow: 3
-  _freeSpinCooldownSeconds: 900
+  _freeSpinCooldownSeconds: 1800
   _idleStepInterval: 1.1
   _idleStepDuration: 0.18
   _windBackCards: 0.6

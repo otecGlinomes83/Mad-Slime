@@ -28,6 +28,10 @@ namespace Roulette
         [SerializeField] private TMP_Text _spinPriceText;
         [SerializeField] private Button _adButton;
         [SerializeField] private TMP_Text _adButtonText;
+        [SerializeField, Tooltip("Иконка секретного сектора ежедневной рулетки: какой скин выпадет, игрок не видит до попапа.")]
+        private Sprite _secretIcon;
+        [SerializeField, Tooltip("Цвет плашки секретного сектора (одинаков для всех секторов со скином).")]
+        private Color _secretColor = new Color(0.24f, 0.22f, 0.31f, 1f);
         [SerializeField] private RouletteWinPopup _winPopupPrefab;
 
         [SerializeField] private GameObject _screenRoot;
@@ -40,10 +44,14 @@ namespace Roulette
         private Mode _mode;
         private List<SkinItem> _skinSource;
         private List<SkinItem> _sectorPool;
+        private readonly List<SkinItem> _entrySkins = new List<SkinItem>();
+        private readonly List<int> _entrySectorIndices = new List<int>();
         private bool _allSkinsCollected;
         private bool _isInitialized;
         private bool _lastFreeReady;
         private int _lastAdSpinsLeft = -1;
+        private int _lastFreeRemainSeconds = -1;
+        private int _lastSkinSpinCost = -1;
         private int _pendingIndex;
 
         public bool IsSpinning => _reel.IsSpinning;
@@ -140,7 +148,13 @@ namespace Roulette
             }
 
             _spinButton.onClick.AddListener(OnSpinClicked);
-            _adButton.onClick.AddListener(OnAdClicked);
+
+            // В режиме Skins кнопка рекламы необязательна: гвард симметричен
+            // проверке в OnDestroy.
+            if (_adButton != null)
+            {
+                _adButton.onClick.AddListener(OnAdClicked);
+            }
 
             if (_closeButton != null)
             {
@@ -197,7 +211,7 @@ namespace Roulette
 
         private void Update()
         {
-            if (_isInitialized == true && _mode == Mode.Main)
+            if (_isInitialized == true)
             {
                 RefreshButtons();
             }
@@ -216,57 +230,107 @@ namespace Roulette
             closed?.Invoke();
         }
 
+        // Лента не должна работать на коротком списке: соседние карточки
+        // повторяются и наезжают друг на друга. Поэтому список растягивается
+        // до MinimumEntryCount, повторяя существующие записи по кругу, а
+        // параллельные списки хранят, какая запись (сектор или скин) стоит
+        // за каждой ячейкой ленты.
         private void BuildReel()
         {
             List<RouletteSectorView> views = new List<RouletteSectorView>();
+            _entrySkins.Clear();
+            _entrySectorIndices.Clear();
 
             if (_mode == Mode.Main)
             {
-                foreach (RouletteSector sector in _service.Config.Sectors)
+                IReadOnlyList<RouletteSector> sectors = _service.Config.Sectors;
+
+                if (sectors.Count == 0)
                 {
+                    throw new InvalidOperationException(
+                        $"{name}: RouletteConfig '{_service.Config.name}' has no sectors.");
+                }
+
+                int entryCount = Mathf.Max(sectors.Count, _reel.MinimumEntryCount);
+
+                for (int i = 0; i < entryCount; i++)
+                {
+                    RouletteSector sector = sectors[i % sectors.Count];
+                    _entrySectorIndices.Add(i % sectors.Count);
+
                     if (sector.RewardType == RouletteSector.RewardKind.Coins)
                     {
                         views.Add(new RouletteSectorView($"×{sector.Coins}", null, CoinEntryColor));
                     }
                     else
                     {
+                        // Скин-сектор показывается «секретом»: иконка и плашка
+                        // одинаковые, выпавший скин раскрывается только в попапе.
                         views.Add(new RouletteSectorView(
-                            Localization.Get(GetRarityKey(sector.Skin.Rarity)),
-                            sector.Skin.Icon,
-                            _service.GetRarityColor(sector.Skin.Rarity)));
+                            Localization.Get("roulette_secret"),
+                            _secretIcon,
+                            _secretColor));
                     }
                 }
             }
             else
             {
                 List<SkinItem> pool = _service.CollectAvailableSkinPool(_skinSource);
+
+                // Эксклюзивные (сверхредкие) скины выпадают только из денежной
+                // рулетки в главном меню (дейли-ревард) — из скин-рулетки исключены.
+                for (int i = pool.Count - 1; i >= 0; i--)
+                {
+                    if (IsExclusive(pool[i]) == true)
+                    {
+                        pool.RemoveAt(i);
+                    }
+                }
+
                 _service.SortByRarityAscending(pool);
                 _allSkinsCollected = pool.Count == 0;
                 _sectorPool = new List<SkinItem>(pool);
 
-                if (_allSkinsCollected == true)
+                // Пустой пул: крутим вхолостую нельзя — показываем все скины,
+                // но покупка (крутка за монеты) запрещена в RefreshButtons.
+                List<SkinItem> source = pool.Count > 0 ? pool : AllSkinsSorted();
+                int entryCount = Mathf.Max(source.Count, _reel.MinimumEntryCount);
+
+                for (int i = 0; i < entryCount; i++)
                 {
-                    for (int i = 0; i < 6; i++)
-                    {
-                        views.Add(new RouletteSectorView(
-                            $"×{_service.Config.DuplicateCoinsCompensation}",
-                            null,
-                            CoinEntryColor));
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pool.Count; i++)
-                    {
-                        views.Add(new RouletteSectorView(
-                            Localization.Get(GetRarityKey(pool[i].Rarity)),
-                            pool[i].Icon,
-                            _service.GetRarityColor(pool[i].Rarity)));
-                    }
+                    SkinItem skin = source[i % source.Count];
+                    _entrySkins.Add(skin);
+                    views.Add(new RouletteSectorView(
+                        Localization.Get(GetRarityKey(skin.Rarity)),
+                        skin.Icon,
+                        _service.GetRarityColor(skin.Rarity)));
                 }
             }
 
             _reel.Build(views);
+        }
+
+        private List<SkinItem> AllSkinsSorted()
+        {
+            List<SkinItem> all = new List<SkinItem>(_skinSource);
+            _service.SortByRarityAscending(all);
+
+            return all;
+        }
+
+        private bool IsExclusive(SkinItem item)
+        {
+            IReadOnlyList<SkinItem> exclusives = _service.Config.ExclusiveSkins;
+
+            for (int i = 0; i < exclusives.Count; i++)
+            {
+                if (exclusives[i] == item)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void OnSpinClicked()
@@ -280,19 +344,18 @@ namespace Roulette
             {
                 long now = GetNowUnixTime();
 
+                // Дейли-рулетка крутится только бесплатно по кулдауну или за рекламу.
                 if (_service.CanSpinFree(now) == true)
                 {
                     _service.RegisterFreeSpin(now);
                     SpinReel();
-                    return;
                 }
 
-                if (_service.CanSpinForCoins() == true)
-                {
-                    _service.PayMainSpin();
-                    SpinReel();
-                }
+                return;
+            }
 
+            if (_allSkinsCollected == true)
+            {
                 return;
             }
 
@@ -343,10 +406,14 @@ namespace Roulette
         {
             if (_mode == Mode.Skins)
             {
-                return _service.PickSkinIndex(_sectorPool);
+                int poolIndex = _service.PickSkinIndex(_sectorPool);
+
+                return _entrySkins.IndexOf(_sectorPool[poolIndex]);
             }
 
-            return _service.PickMainSectorIndex();
+            int sectorIndex = _service.PickMainSectorIndex();
+
+            return _entrySectorIndices.IndexOf(sectorIndex);
         }
 
         private void OnReelSpinCompleted()
@@ -385,7 +452,7 @@ namespace Roulette
                 return;
             }
 
-            SkinItem skin = _sectorPool[targetIndex];
+            SkinItem skin = _entrySkins[targetIndex];
             _service.GrantSkin(skin);
             ShowSkinPopup(skin);
         }
@@ -445,11 +512,15 @@ namespace Roulette
             {
                 bool freeReady = _service.CanSpinFree(now);
                 int adSpinsLeft = _service.GetAdSpinsLeft(now);
+                int freeRemainSeconds = _service.GetFreeSpinRemainSeconds(now);
 
-                if (freeReady != _lastFreeReady || adSpinsLeft != _lastAdSpinsLeft)
+                if (freeReady != _lastFreeReady
+                    || adSpinsLeft != _lastAdSpinsLeft
+                    || freeRemainSeconds != _lastFreeRemainSeconds)
                 {
                     _lastFreeReady = freeReady;
                     _lastAdSpinsLeft = adSpinsLeft;
+                    _lastFreeRemainSeconds = freeRemainSeconds;
 
                     if (freeReady == true)
                     {
@@ -457,7 +528,8 @@ namespace Roulette
                     }
                     else
                     {
-                        _spinPriceText.text = $"{_service.MainSpinCost}";
+                        // Пока бесплатная крутка на кулдауне — показываем таймер до неё.
+                        _spinPriceText.text = $"{freeRemainSeconds / 60}:{freeRemainSeconds % 60:00}";
                     }
 
                     _adButtonText.text = string.Format(
@@ -465,15 +537,23 @@ namespace Roulette
                         adSpinsLeft);
                 }
 
-                _spinButton.interactable = spinning == false
-                    && (freeReady == true || _service.CanSpinForCoins() == true);
+                _spinButton.interactable = spinning == false && freeReady == true;
                 _adButton.interactable = spinning == false && _service.CanSpinForAd(now);
 
                 return;
             }
 
-            _spinPriceText.text = $"{_service.GetSkinSpinCost()}";
-            _spinButton.interactable = spinning == false && _service.CanSpinSkinsForCoins();
+            int spinCost = _service.GetSkinSpinCost();
+
+            if (spinCost != _lastSkinSpinCost)
+            {
+                _lastSkinSpinCost = spinCost;
+                _spinPriceText.text = $"{spinCost}";
+            }
+
+            _spinButton.interactable = spinning == false
+                && _allSkinsCollected == false
+                && _service.CanSpinSkinsForCoins();
         }
 
         private static string GetRarityKey(SkinRarity rarity)

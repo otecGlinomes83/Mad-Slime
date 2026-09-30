@@ -96,9 +96,19 @@ namespace UI
             }
         }
 
+        private static bool s_dailyShownThisSession;
+
         private void Start()
         {
             _musicPlayer.Play(_musicTrack);
+
+            // Дейли-ревард показывается один раз за сессию игры (при старте
+            // приложения), а не при каждом возврате в главное меню.
+            if (s_dailyShownThisSession == false)
+            {
+                s_dailyShownThisSession = true;
+                ShowDailyRoulette();
+            }
         }
 
         private void OnEnable()
@@ -156,6 +166,11 @@ namespace UI
         }
 
         private void OnDailyClicked()
+        {
+            ShowDailyRoulette();
+        }
+
+        private void ShowDailyRoulette()
         {
             _uiSpawner.Show(_dailyRoulette, UiLayer.Popup);
         }

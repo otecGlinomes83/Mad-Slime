@@ -23,6 +23,7 @@ namespace Upgrades
         public float AdrenalineSpeedMultiplier => _config.AdrenalineSpeedMultiplier;
         public float AdrenalineThresholdFraction => _config.AdrenalineThresholdFraction;
         public Color HighlightColor => _config.HighlightColor;
+        public float HighlightThickness => _config.HighlightThickness;
 
         [Inject]
         public void Construct(PlayerProgress progress)

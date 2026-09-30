@@ -312,13 +312,16 @@ namespace Skins
 
         private void OnSkinItemClick(ShopItemView view)
         {
+            // Закрытый скин тоже показываем в превью, но не выбираем его:
+            // галочка остаётся на надетом скине.
+            _modelPlacer.SetModel(view.Model);
+            _modelPlacer.PlayWalk();
+
             if (view.IsLock == true)
             {
                 return;
             }
 
-            _modelPlacer.SetModel(view.Model);
-            _modelPlacer.PlayWalk();
             ApplySelection(view);
             SelectPersist(view.SkinItem);
         }
@@ -436,8 +439,15 @@ namespace Skins
 
         private void Clear()
         {
+            // При выгрузке сцены виды бывают уже уничтожены движком — гварды
+            // обязательны, иначе MissingReferenceException в OnDisable.
             foreach (ShopItemView view in _shopItems)
             {
+                if (view == null)
+                {
+                    continue;
+                }
+
                 view.Click -= OnSkinItemClick;
                 Destroy(view.gameObject);
             }
@@ -446,6 +456,11 @@ namespace Skins
 
             foreach (UpgradeItemView view in _upgradeItems)
             {
+                if (view == null)
+                {
+                    continue;
+                }
+
                 view.Click -= OnUpgradeItemClick;
                 Destroy(view.gameObject);
             }

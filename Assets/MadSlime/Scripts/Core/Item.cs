@@ -12,7 +12,8 @@ namespace Items
         private const float SolidOpacity = 1f;
 
         private static readonly int OpacityId = Shader.PropertyToID("_Opacity");
-        private static readonly int ColorId = Shader.PropertyToID("_Color");
+        private static readonly int OutlineColorId = Shader.PropertyToID("_OutlineColor");
+        private static readonly int OutlineThicknessId = Shader.PropertyToID("_Thickness");
 
         [SerializeField] private ItemDefinition _definition;
         [SerializeField] private Collider _collider;
@@ -25,7 +26,7 @@ namespace Items
         private Vector3 _defaultScale;
         private Material[][] _originalMaterials;
         private Material[][] _ghostMaterials;
-        private Material[][] _highlightMaterials;
+        private Material[][] _outlineMaterials;
         private MaterialPropertyBlock _propertyBlock;
         private Tween _fadeTween;
         private float _ghostTargetOpacity;
@@ -33,6 +34,7 @@ namespace Items
         private bool _isGhost;
         private bool _isHighlighted;
         private Color _highlightColor;
+        private float _highlightThickness;
 
         public ItemDefinition Definition => _definition;
         public Transform Self => transform;
@@ -99,7 +101,7 @@ namespace Items
 
             _originalMaterials = new Material[_renderers.Length][];
             _ghostMaterials = new Material[_renderers.Length][];
-            _highlightMaterials = new Material[_renderers.Length][];
+            _outlineMaterials = new Material[_renderers.Length][];
 
             for (int i = 0; i < _renderers.Length; i++)
             {
@@ -107,7 +109,7 @@ namespace Items
 
                 _originalMaterials[i] = originalSet;
                 _ghostMaterials[i] = BuildMaterialSet(_ghostMaterial, originalSet.Length);
-                _highlightMaterials[i] = BuildMaterialSet(_highlightMaterial, originalSet.Length);
+                _outlineMaterials[i] = BuildOutlineSet(_highlightMaterial, originalSet);
             }
 
             _propertyBlock = new MaterialPropertyBlock();
@@ -156,7 +158,7 @@ namespace Items
                 .OnComplete(OnFadeCompleted);
         }
 
-        public void SetHighlighted(bool isHighlighted, Color color)
+        public void SetHighlighted(bool isHighlighted, Color color, float thickness)
         {
             if (_isHighlighted == isHighlighted)
             {
@@ -166,11 +168,12 @@ namespace Items
             if (isHighlighted == true && _highlightMaterial == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: HighlightMaterial is not assigned. Drag the quota highlight material into the _highlightMaterial field.");
+                    $"{name}: HighlightMaterial is not assigned. Drag the quota outline material into the _highlightMaterial field.");
             }
 
             _isHighlighted = isHighlighted;
             _highlightColor = color;
+            _highlightThickness = thickness;
 
             if (_isGhost == true)
             {
@@ -219,14 +222,17 @@ namespace Items
         {
             if (_isHighlighted == true)
             {
-                _propertyBlock.SetColor(ColorId, _highlightColor);
+                // Аутлайн идёт последним слотом поверх родных материалов:
+                // предмет сохраняет текстуры, обводка рисуется вокруг силуэта.
+                _propertyBlock.SetColor(OutlineColorId, _highlightColor);
+                _propertyBlock.SetFloat(OutlineThicknessId, _highlightThickness);
 
                 for (int i = 0; i < _renderers.Length; i++)
                 {
                     _renderers[i].SetPropertyBlock(_propertyBlock);
                 }
 
-                SwapMaterials(_highlightMaterials);
+                SwapMaterials(_outlineMaterials);
             }
             else
             {
@@ -261,6 +267,20 @@ namespace Items
             {
                 set[i] = material;
             }
+
+            return set;
+        }
+
+        private Material[] BuildOutlineSet(Material outlineMaterial, Material[] originalSet)
+        {
+            Material[] set = new Material[originalSet.Length + 1];
+
+            for (int i = 0; i < originalSet.Length; i++)
+            {
+                set[i] = originalSet[i];
+            }
+
+            set[originalSet.Length] = outlineMaterial;
 
             return set;
         }

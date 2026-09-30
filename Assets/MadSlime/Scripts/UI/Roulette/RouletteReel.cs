@@ -48,6 +48,11 @@ namespace Roulette
 
         public int EntryCount => _entries.Count;
 
+        // Ниже этого числа записей соседние карточки неизбежно повторяются и
+        // наезжают друг на друга — лента работает криво. Вызывающий код обязан
+        // растянуть список до этого размера (Build дотягивает сам как страховку).
+        public int MinimumEntryCount => _visibleRowCount + 2;
+
         public void Setup(RouletteConfig config, SfxPlayer sfxPlayer)
         {
             _config = config;
@@ -108,6 +113,13 @@ namespace Roulette
             for (int i = 0; i < entries.Count; i++)
             {
                 _entries.Add(entries[i]);
+            }
+
+            // Страховка: если список короче минимального, дотягиваем его,
+            // повторяя существующие записи по кругу.
+            for (int i = entries.Count; _entries.Count < _visibleRowCount + 2; i++)
+            {
+                _entries.Add(entries[i % entries.Count]);
             }
 
             EnsureCards();

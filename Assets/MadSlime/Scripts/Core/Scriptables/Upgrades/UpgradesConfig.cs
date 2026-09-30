@@ -14,8 +14,11 @@ namespace Upgrades
         [SerializeField] private List<PerkEntry> _perks = new List<PerkEntry>();
 
         [Header("Smell")]
-        [Tooltip("Цвет подсветки квотовых предметов (Улучшенный нюх).")]
+        [Tooltip("Цвет аутлайна квотовых предметов (Улучшенный нюх).")]
         [SerializeField] private Color _highlightColor = new Color(1f, 0.85f, 0.2f, 1f);
+
+        [Tooltip("Толщина аутлайна квотовых предметов — доля высоты экрана (0.012 ≈ 13px на 1080p).")]
+        [SerializeField, Min(0f)] private float _highlightThickness = 0.012f;
 
         [Header("Adrenaline")]
         [Tooltip("Доля таймера, ниже которой включается Адреналин. 0.25 = последние 25% времени.")]
@@ -27,6 +30,7 @@ namespace Upgrades
         public IReadOnlyList<UpgradeEntry> Upgrades => _upgrades;
         public IReadOnlyList<PerkEntry> Perks => _perks;
         public Color HighlightColor => _highlightColor;
+        public float HighlightThickness => _highlightThickness;
         public float AdrenalineThresholdFraction => _adrenalineThresholdFraction;
         public float AdrenalineSpeedMultiplier => _adrenalineSpeedMultiplier;
 

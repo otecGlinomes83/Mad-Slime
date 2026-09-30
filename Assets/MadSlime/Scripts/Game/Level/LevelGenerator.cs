@@ -385,12 +385,13 @@ namespace Game
             }
 
             Color highlightColor = _upgrades.HighlightColor;
+            float highlightThickness = _upgrades.HighlightThickness;
 
             for (int i = 0; i < _spawnedItems.Count; i++)
             {
                 Item item = _spawnedItems[i];
 
-                item.SetHighlighted(IsQuotaDefinition(quota, item.Definition), highlightColor);
+                item.SetHighlighted(IsQuotaDefinition(quota, item.Definition), highlightColor, highlightThickness);
             }
         }
 

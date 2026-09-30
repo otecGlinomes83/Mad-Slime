@@ -483,6 +483,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _window: {fileID: 3710797944998397801}
+  _background: {fileID: 6345186018607247159}
+  _coinsBackgroundColor: {r: 0.13, g: 0.13, b: 0.17, a: 1}
+  _backgroundDarkening: 0.35
   _fade: {fileID: 2412729764536591183}
   _prizeArea: {fileID: 1120513982389754156}
   _coinsLabel: {fileID: 4675943599706010430}

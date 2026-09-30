@@ -9,6 +9,8 @@ namespace Skins
 
         [SerializeField] private float _rotationSpeed = 45f;
         [SerializeField] private float _padding = 0.85f;
+        [SerializeField, Tooltip("Подъём модели над центром экрана после подгонки.")]
+        private float _lift = 0f;
         [SerializeField] private Transform _modelsParent;
         [SerializeField] private Camera _camera;
 
@@ -68,7 +70,9 @@ namespace Skins
                     $"{name}: Model '{model.name}' has no SkinModel component. Add a SkinModel component to the model prefab root.");
             }
 
-            FaceCamera();
+            // Каждый префаб скина запечён со своим наклоном (у Slime -90°X, у Pacman +90°Y).
+            // Поверх него добавляется только поворот лицом к камере.
+            FaceCamera(_currentModel.transform.rotation);
             FitToCamera(skinModel);
         }
 
@@ -82,7 +86,7 @@ namespace Skins
             _currentAnimator.SetTrigger("Walk");
         }
 
-        private void FaceCamera()
+        private void FaceCamera(Quaternion baseRotation)
         {
             Vector3 toCamera = _camera.transform.position - _currentModel.transform.position;
             toCamera.y = 0f;
@@ -93,21 +97,19 @@ namespace Skins
                     $"{name}: the preview camera is directly above the spawn point. Move the camera so the model can face it.");
             }
 
-            Quaternion lookRotation = Quaternion.LookRotation(toCamera.normalized, Vector3.up);
-            _currentModel.transform.rotation = lookRotation * Quaternion.Euler(0f, FaceTurnDegrees, 0f);
+            float yaw = Mathf.Atan2(toCamera.x, toCamera.z) * Mathf.Rad2Deg;
+            _currentModel.transform.rotation =
+                Quaternion.Euler(0f, yaw + FaceTurnDegrees, 0f) * baseRotation;
         }
 
         private void FitToCamera(SkinModel skinModel)
         {
-            _rotationAnchor = _modelsParent.position;
-
             Bounds worldBounds = GetAccurateWorldBounds(skinModel);
-            Vector3 centerOffset = _modelsParent.position - worldBounds.center;
-            _currentModel.transform.position += centerOffset;
+            Vector3 anchor = GetViewCenter(worldBounds.center) + Vector3.up * _lift;
+            _currentModel.transform.position += anchor - worldBounds.center;
+            _rotationAnchor = anchor;
 
-            Bounds localBounds = ComputeLocalBounds(skinModel.Renderer);
-
-            float maxVerticalExtent = Mathf.Max(localBounds.extents.y, localBounds.extents.x / _camera.aspect);
+            float maxVerticalExtent = Mathf.Max(worldBounds.extents.y, worldBounds.extents.x / _camera.aspect);
 
             if (maxVerticalExtent <= 0f)
             {
@@ -115,6 +117,17 @@ namespace Skins
             }
 
             _camera.orthographicSize = Mathf.Max(0.1f, maxVerticalExtent / _padding);
+        }
+
+        // Точка на луче взгляда камеры на глубине position — центр кадра.
+        // Центрируем модель в неё, чтобы превью стояло ровно по середине экрана,
+        // как бы ни была повёрнута или смещена камера превью.
+        private Vector3 GetViewCenter(Vector3 position)
+        {
+            Vector3 forward = _camera.transform.forward;
+            float depth = Vector3.Dot(position - _camera.transform.position, forward);
+
+            return _camera.transform.position + forward * depth;
         }
 
         private Bounds GetAccurateWorldBounds(SkinModel skinModel)
@@ -152,16 +165,6 @@ namespace Skins
             }
 
             return worldBounds;
-        }
-
-        private Bounds ComputeLocalBounds(Renderer renderer)
-        {
-            Vector3 localMin = _modelsParent.InverseTransformPoint(renderer.bounds.min);
-            Vector3 localMax = _modelsParent.InverseTransformPoint(renderer.bounds.max);
-            Vector3 localCenter = (localMin + localMax) * 0.5f;
-            Vector3 localSize = localMax - localMin;
-
-            return new Bounds(localCenter, localSize);
         }
     }
 }

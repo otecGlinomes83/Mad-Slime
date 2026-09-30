@@ -79,14 +79,24 @@ namespace Skins
         {
             IsLock = true;
             _lockImage.gameObject.SetActive(IsLock);
-            _priceView.Hide();
+
+            if (_priceView != null)
+            {
+                _priceView.Hide();
+            }
         }
 
         public void Unlock()
         {
             IsLock = false;
             _lockImage.gameObject.SetActive(IsLock);
-            _priceView.Hide();
+
+            // Цена в каноническом префабе не проложена (скины не покупаются
+            // поштучно) — показывать нечего, гвард обязателен.
+            if (_priceView != null)
+            {
+                _priceView.Hide();
+            }
         }
 
         public void Select()

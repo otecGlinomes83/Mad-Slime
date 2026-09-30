@@ -250,3 +250,7 @@ MonoBehaviour:
     _ru: "\u0417\u0410\u0411\u0420\u0410\u0422\u042C"
     _en: TAKE
     _tr: AL
+  - _key: roulette_secret
+    _ru: "\u0421\u0415\u041A\u0420\u0415\u0422\u041D\u041E"
+    _en: SECRET
+    _tr: "G\u0130ZL\u0130"

@@ -19,10 +19,17 @@ namespace Roulette
         private static readonly Vector3 StagePosition = new Vector3(0f, CameraHeight, 0f);
 
         [SerializeField] private RectTransform _window;
+        [SerializeField, Tooltip("Фон окна. Перекрашивается в цвет редкости скина, при монетах — в Coins Background Color.")]
+        private Image _background;
+        [SerializeField, Tooltip("Цвет фона окна под выпавшие монеты (и до первого показа).")]
+        private Color _coinsBackgroundColor = new Color(0.13f, 0.13f, 0.17f, 1f);
+        [SerializeField, Range(0f, 1f), Tooltip("Насколько затемнять цвет редкости для фона. 0 — чистый цвет редкости.")]
+        private float _backgroundDarkening = 0.35f;
         [SerializeField] private Image _fade;
         [SerializeField] private RawImage _prizeArea;
         [SerializeField] private TMP_Text _coinsLabel;
-        [SerializeField] private GameObject _rarityPlate;
+        [SerializeField, Tooltip("Плашка редкости под скином: красится в цвет редкости (Image на объекте), Label внутри — надпись.")]
+        private GameObject _rarityPlate;
         [SerializeField] private TMP_Text _rarityLabel;
         [SerializeField] private Button _takeButton;
         [SerializeField] private Camera _stageCamera;
@@ -39,12 +46,12 @@ namespace Roulette
 
         private void Awake()
         {
-            if (_window == null || _fade == null || _prizeArea == null || _coinsLabel == null
+            if (_window == null || _background == null || _fade == null || _prizeArea == null || _coinsLabel == null
                 || _rarityPlate == null || _rarityLabel == null || _takeButton == null
                 || _stageCamera == null || _modelSlot == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: a win popup part is not assigned. Drag the Window, Fade, PrizeArea, CoinsLabel, " +
+                    $"{name}: a win popup part is not assigned. Drag the Window, Background, Fade, PrizeArea, CoinsLabel, " +
                     "RarityPlate, RarityLabel, TakeButton, StageCamera and ModelSlot into the fields.");
             }
 
@@ -115,6 +122,7 @@ namespace Roulette
             _takeButton.interactable = true;
             PositionStage();
 
+            _background.color = _coinsBackgroundColor;
             _fade.color = new Color(0f, 0f, 0f, FadeAlpha);
 
             UiAnimations.ScaleIn(_window, UiAnimations.WindowScaleInDuration);
@@ -150,6 +158,8 @@ namespace Roulette
             _prizeArea.gameObject.SetActive(true);
             _coinsLabel.gameObject.SetActive(false);
 
+            _background.color = Darken(rarityColor);
+
             _rarityPlate.SetActive(true);
             _rarityPlateImage.color = rarityColor;
             _rarityLabel.text = rarityLabel;
@@ -172,6 +182,11 @@ namespace Roulette
             _coinsLabel.text = $"×{amount}";
 
             _rarityPlate.SetActive(false);
+        }
+
+        private Color Darken(Color color)
+        {
+            return Color.Lerp(color, Color.black, _backgroundDarkening);
         }
 
         private void PositionStage()

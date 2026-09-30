@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Scriptables;
 using Skins;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Roulette
 {
@@ -10,18 +11,19 @@ namespace Roulette
     public sealed class RouletteConfig : ScriptableObject
     {
         [Header("Main Roulette")]
-        [Tooltip("Секторы основной рулетки: монеты и эксклюзивные скины. Вес сектора задаёт его шанс.")]
+        [Tooltip("Секторы ежедневной рулетки: монеты и эксклюзивные скины. Вес сектора задаёт его шанс.")]
         [SerializeField] private List<RouletteSector> _sectors = new List<RouletteSector>();
 
-        [Tooltip("Цена платной крутки основной рулетки (константа).")]
-        [SerializeField, Min(0)] private int _mainSpinCost = 100;
-
-        [Tooltip("Эксклюзивные скины: нельзя купить, можно только выиграть. Показываются в магазине.")]
+        [Tooltip("Эксклюзивные скины: достаются только из этой рулетки, в скин-рулетке магазина не выпадают.")]
         [SerializeField] private List<SkinItem> _exclusiveSkins = new List<SkinItem>();
 
         [Header("Skin Roulette")]
-        [Tooltip("Базовая цена крутки скин-рулетки.")]
-        [SerializeField, Min(0)] private int _skinSpinBaseCost = 300;
+        [Tooltip("Минимальный порог цены крутки скин-рулетки: с неё цена стартует и ниже не опускается.")]
+        [FormerlySerializedAs("_skinSpinBaseCost")]
+        [SerializeField, Min(0)] private int _skinSpinMinCost = 300;
+
+        [Tooltip("Максимальный порог цены крутки скин-рулетки. 0 — без предела.")]
+        [SerializeField, Min(0)] private int _skinSpinMaxCost = 0;
 
         [Tooltip("Насколько дорожает каждая следующая крутка скин-рулетки. Цена не сбрасывается никогда.")]
         [SerializeField, Min(0)] private int _skinSpinCostStep = 150;
@@ -40,8 +42,8 @@ namespace Roulette
         [Tooltip("Сколько круток за рекламу разрешено внутри окна.")]
         [SerializeField, Min(1)] private int _adSpinsPerWindow = 3;
 
-        [Tooltip("Период бесплатной крутки (с). 900 = раз в 15 минут.")]
-        [SerializeField, Min(60)] private int _freeSpinCooldownSeconds = 900;
+        [Tooltip("Период бесплатной крутки (с). 1800 = раз в 30 минут.")]
+        [SerializeField, Min(60)] private int _freeSpinCooldownSeconds = 1800;
 
         [Header("Reel Motion")]
         [Tooltip("Пауза между холостыми шагами ленты (с).")]
@@ -82,9 +84,9 @@ namespace Roulette
         [SerializeField] private SfxClip _winClip;
 
         public IReadOnlyList<RouletteSector> Sectors => _sectors;
-        public int MainSpinCost => _mainSpinCost;
         public IReadOnlyList<SkinItem> ExclusiveSkins => _exclusiveSkins;
-        public int SkinSpinBaseCost => _skinSpinBaseCost;
+        public int SkinSpinMinCost => _skinSpinMinCost;
+        public int SkinSpinMaxCost => _skinSpinMaxCost;
         public int SkinSpinCostStep => _skinSpinCostStep;
         public int DuplicateCoinsCompensation => _duplicateCoinsCompensation;
         public SkinRarityTable RarityTable => _rarityTable;

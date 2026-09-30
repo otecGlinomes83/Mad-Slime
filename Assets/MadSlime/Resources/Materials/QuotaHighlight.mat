@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: QuotaHighlight
-  m_Shader: {fileID: 10755, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 02a0fe9b26dc2c914924b8a8d98be53b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -24,7 +24,9 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _Thickness: 0.012
     m_Colors:
     - _Color: {r: 1, g: 0.85, b: 0.2, a: 1}
+    - _OutlineColor: {r: 1, g: 0.85, b: 0.2, a: 1}
   m_BuildTextureStacks: []

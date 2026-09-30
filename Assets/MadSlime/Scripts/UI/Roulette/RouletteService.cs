@@ -83,15 +83,42 @@ namespace Roulette
                         $"{name}: RouletteConfig '{_config.name}' sector {i} is of type Coins but pays zero coins.");
                 }
             }
+
+            float totalWeight = 0f;
+
+            for (int i = 0; i < _config.Sectors.Count; i++)
+            {
+                totalWeight += _config.Sectors[i].Weight;
+            }
+
+            if (totalWeight <= 0f)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RouletteConfig '{_config.name}' sectors have zero total weight — nothing can drop.");
+            }
+
+            if (_config.DuplicateCoinsCompensation <= 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RouletteConfig '{_config.name}' has DuplicateCoinsCompensation <= 0. " +
+                    "Wallet.Add requires a positive amount.");
+            }
         }
 
         public RouletteConfig Config => _config;
 
-        public int MainSpinCost => _config.MainSpinCost;
-
         public int GetSkinSpinCost()
         {
-            return _config.SkinSpinBaseCost + _config.SkinSpinCostStep * _progress.SkinSpinCount;
+            // Старт с минимального порога, дальше — шаг за крутку без сброса;
+            // максимальный порог (если задан) ограничивает сверху.
+            int cost = _config.SkinSpinMinCost + _config.SkinSpinCostStep * _progress.SkinSpinCount;
+
+            if (_config.SkinSpinMaxCost > 0 && cost > _config.SkinSpinMaxCost)
+            {
+                cost = _config.SkinSpinMaxCost;
+            }
+
+            return cost;
         }
 
         public bool CanSpinFree(long nowUnixTime)
@@ -139,22 +166,6 @@ namespace Roulette
 
             _progress.RouletteAdSpinTimes.Add(nowUnixTime);
             _progress.Save();
-        }
-
-        public bool CanSpinForCoins()
-        {
-            return _wallet.Balance >= _config.MainSpinCost;
-        }
-
-        public void PayMainSpin()
-        {
-            if (_wallet.Balance < _config.MainSpinCost)
-            {
-                throw new InvalidOperationException(
-                    $"RouletteService: balance {_wallet.Balance} is less than the main spin cost {_config.MainSpinCost}.");
-            }
-
-            _wallet.Spend(_config.MainSpinCost);
         }
 
         public bool CanSpinSkinsForCoins()
