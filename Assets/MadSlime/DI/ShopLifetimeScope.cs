@@ -3,6 +3,7 @@ using Game;
 using Roulette;
 using Skins;
 using System;
+using UI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -44,6 +45,7 @@ namespace DI
             builder.RegisterComponent(_rouletteService);
             builder.RegisterComponent(_rouletteView);
             builder.RegisterComponent(_adScheduler);
+            builder.Register<UiSpawner>(Lifetime.Scoped);
             builder.RegisterBuildCallback(InjectSceneButtonSounds);
             builder.RegisterComponent(_wallet);
             builder.RegisterComponent(_pauser);

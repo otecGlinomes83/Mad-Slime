@@ -3,7 +3,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
-using VContainer.Unity;
 
 namespace UI
 {
@@ -12,22 +11,22 @@ namespace UI
         [SerializeField] private Button _pauseButton;
         [SerializeField] private PauseMenu _pauseMenuPrefab;
 
-        private IObjectResolver _resolver;
+        private UiSpawner _uiSpawner;
         private GameplaySessionHandler _sessionHandler;
 
         [Inject]
-        public void Construct(IObjectResolver resolver, GameplaySessionHandler sessionHandler)
+        public void Construct(UiSpawner uiSpawner, GameplaySessionHandler sessionHandler)
         {
-            _resolver = resolver;
+            _uiSpawner = uiSpawner;
             _sessionHandler = sessionHandler;
         }
 
         private void Awake()
         {
-            if (_resolver == null)
+            if (_uiSpawner == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Resolver was not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
+                    $"{name}: UiSpawner was not injected. Check that GameLifetimeScope registers UiSpawner and GameplayUIFabric.");
             }
 
             if (_sessionHandler == null)
@@ -55,7 +54,7 @@ namespace UI
 
         private void SpawnPauseMenu()
         {
-            PauseMenu pauseMenu = _resolver.Instantiate(_pauseMenuPrefab);
+            PauseMenu pauseMenu = _uiSpawner.Spawn(_pauseMenuPrefab, UiLayer.Popup);
             pauseMenu.Initialize(true, menuAction: _sessionHandler.ExitToMenu);
         }
     }

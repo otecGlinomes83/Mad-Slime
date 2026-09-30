@@ -20,21 +20,30 @@ namespace UI.Animations
         private LevelProgress _levelProgress;
         private Timer _timer;
         private PlayerInputReader _inputReader;
+        private UiSpawner _uiSpawner;
         private bool _isSessionStarted;
         private bool _isSubscribed;
 
         [Inject]
-        public void Construct(LevelProgress levelProgress, Timer timer, PlayerInputReader inputReader)
+        public void Construct(LevelProgress levelProgress, Timer timer, PlayerInputReader inputReader,
+            UiSpawner uiSpawner)
         {
             _levelProgress = levelProgress;
             _timer = timer;
             _inputReader = inputReader;
+            _uiSpawner = uiSpawner;
         }
 
         private void Awake()
         {
             ValidateTargets(_sceneStartTargets, "SceneStartTargets");
             ValidateTargets(_sessionStartTargets, "SessionStartTargets");
+
+            if (_uiSpawner == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: UiSpawner was not injected. Check that GameLifetimeScope registers UiSpawner and UiEnableScheduler.");
+            }
 
             if (_levelProgress == null)
             {
@@ -115,7 +124,8 @@ namespace UI.Animations
                         );
                     }
 
-                    targets[i].Target.SetActive(true);
+                    UiEnableAnimation animation = targets[i].Target.GetComponent<UiEnableAnimation>();
+                    _uiSpawner.Show(animation);
                 }
             }
             catch (OperationCanceledException)
@@ -136,15 +146,7 @@ namespace UI.Animations
                 }
 
                 UiEnableAnimation animation = target.GetComponent<UiEnableAnimation>();
-
-                if (animation != null)
-                {
-                    animation.PlayOutro();
-                }
-                else
-                {
-                    target.SetActive(false);
-                }
+                animation.Hide();
             }
         }
 
@@ -162,6 +164,12 @@ namespace UI.Animations
                 {
                     throw new InvalidOperationException(
                         $"{name}: {fieldName} element {i} is empty. Assign a GameObject to every slot.");
+                }
+
+                if (targets[i].Target.TryGetComponent(out UiEnableAnimation _) == false)
+                {
+                    throw new InvalidOperationException(
+                        $"{name}: {fieldName} element {i} has no UiEnableAnimation. Run Mad Slime → Setup Game FX or add the component to the target.");
                 }
             }
         }

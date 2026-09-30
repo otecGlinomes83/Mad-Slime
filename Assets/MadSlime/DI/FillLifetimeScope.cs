@@ -53,6 +53,7 @@ namespace DI
             ValidateAssigned(_flyingCubeArrivalSound, nameof(_flyingCubeArrivalSound));
 
             builder.RegisterInstance(_fillConfig);
+            builder.Register<UiSpawner>(Lifetime.Scoped);
             builder.RegisterComponent(_fillSessionHandler);
             builder.RegisterComponent(_fillOrchestrator);
             builder.RegisterComponent(_gridBuilder);

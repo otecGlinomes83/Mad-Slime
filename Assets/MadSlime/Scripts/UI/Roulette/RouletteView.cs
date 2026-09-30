@@ -5,6 +5,7 @@ using Skins;
 using System;
 using System.Collections.Generic;
 using TMPro;
+using UI;
 using UI.Animations;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +13,7 @@ using VContainer;
 
 namespace Roulette
 {
-    public sealed class RouletteView : MonoBehaviour
+    public sealed class RouletteView : MonoBehaviour, IShowable
     {
         public enum Mode
         {
@@ -27,7 +28,7 @@ namespace Roulette
         [SerializeField] private TMP_Text _spinPriceText;
         [SerializeField] private Button _adButton;
         [SerializeField] private TMP_Text _adButtonText;
-        [SerializeField] private RouletteWinPopup _winPopup;
+        [SerializeField] private RouletteWinPopup _winPopupPrefab;
 
         [SerializeField] private GameObject _screenRoot;
         [SerializeField] private Button _closeButton;
@@ -35,6 +36,7 @@ namespace Roulette
         private RouletteService _service;
         private AdScheduler _adScheduler;
         private SfxPlayer _sfxPlayer;
+        private UiSpawner _uiSpawner;
         private Mode _mode;
         private List<SkinItem> _skinSource;
         private List<SkinItem> _sectorPool;
@@ -46,12 +48,16 @@ namespace Roulette
 
         public bool IsSpinning => _reel.IsSpinning;
 
+        public event Action Closed;
+
         [Inject]
-        public void Construct(RouletteService service, AdScheduler adScheduler, SfxPlayer sfxPlayer)
+        public void Construct(RouletteService service, AdScheduler adScheduler, SfxPlayer sfxPlayer,
+            UiSpawner uiSpawner)
         {
             _service = service;
             _adScheduler = adScheduler;
             _sfxPlayer = sfxPlayer;
+            _uiSpawner = uiSpawner;
         }
 
         public void Initialize(Mode mode, IEnumerable<SkinItem> skinSource)
@@ -79,6 +85,12 @@ namespace Roulette
                     $"{name}: SfxPlayer was not injected. Check that ProjectLifetimeScope registers SfxPlayer.");
             }
 
+            if (_uiSpawner == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: UiSpawner was not injected. Check that the scene LifetimeScope registers UiSpawner and RouletteView.");
+            }
+
             if (_reel == null)
             {
                 throw new InvalidOperationException(
@@ -97,10 +109,10 @@ namespace Roulette
                     $"{name}: SpinPrice is not assigned. Drag the price TMP_Text into the _spinPriceText field.");
             }
 
-            if (_winPopup == null)
+            if (_winPopupPrefab == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: WinPopup is not assigned. Drag the RouletteWinPopup child into the _winPopup field.");
+                    $"{name}: WinPopup prefab is not assigned. Drag the RouletteWinPopup prefab into the _winPopupPrefab field.");
             }
 
             _mode = mode;
@@ -129,7 +141,6 @@ namespace Roulette
 
             _spinButton.onClick.AddListener(OnSpinClicked);
             _adButton.onClick.AddListener(OnAdClicked);
-            _winPopup.Closed += OnWinPopupClosed;
 
             if (_closeButton != null)
             {
@@ -142,16 +153,26 @@ namespace Roulette
             _isInitialized = true;
         }
 
-        public void Open()
+        public void Show()
         {
             if (_screenRoot == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: this RouletteView is not a screen. Assign the _screenRoot object to open it.");
+                    $"{name}: this RouletteView is not a screen. Assign the _screenRoot object to show it.");
             }
 
             Initialize(Mode.Main, null);
             _screenRoot.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            if (_reel.IsSpinning == true)
+            {
+                return;
+            }
+
+            UiAnimations.ScaleOut((RectTransform)_screenRoot.transform, UiAnimations.WindowScaleOutDuration, HideScreenRoot);
         }
 
         private void OnDestroy()
@@ -167,8 +188,6 @@ namespace Roulette
             {
                 _adButton.onClick.RemoveListener(OnAdClicked);
             }
-
-            _winPopup.Closed -= OnWinPopupClosed;
 
             if (_closeButton != null)
             {
@@ -186,17 +205,15 @@ namespace Roulette
 
         private void OnCloseClicked()
         {
-            if (_reel.IsSpinning == true)
-            {
-                return;
-            }
-
-            UiAnimations.ScaleOut((RectTransform)_screenRoot.transform, UiAnimations.WindowScaleOutDuration, HideScreenRoot);
+            Hide();
         }
 
         private void HideScreenRoot()
         {
             _screenRoot.SetActive(false);
+
+            Action closed = Closed;
+            closed?.Invoke();
         }
 
         private void BuildReel()
@@ -358,10 +375,7 @@ namespace Roulette
                 }
 
                 _service.GrantSkin(sector.Skin);
-                _winPopup.ShowSkin(
-                    sector.Skin,
-                    Localization.Get(GetRarityKey(sector.Skin.Rarity)),
-                    _service.GetRarityColor(sector.Skin.Rarity));
+                ShowSkinPopup(sector.Skin);
                 return;
             }
 
@@ -373,16 +387,29 @@ namespace Roulette
 
             SkinItem skin = _sectorPool[targetIndex];
             _service.GrantSkin(skin);
-            _winPopup.ShowSkin(
+            ShowSkinPopup(skin);
+        }
+
+        private void ShowSkinPopup(SkinItem skin)
+        {
+            RouletteWinPopup winPopup = CreateWinPopup();
+            winPopup.ShowSkin(
                 skin,
                 Localization.Get(GetRarityKey(skin.Rarity)),
                 _service.GetRarityColor(skin.Rarity));
         }
 
+        private RouletteWinPopup CreateWinPopup()
+        {
+            return _uiSpawner.Spawn(_winPopupPrefab, UiLayer.Popup, OnWinPopupClosed);
+        }
+
         private void GrantCoinsAndShow(int amount)
         {
             _service.GrantCoins(amount);
-            _winPopup.ShowCoins(amount);
+
+            RouletteWinPopup winPopup = CreateWinPopup();
+            winPopup.ShowCoins(amount);
         }
 
         private void OnWinPopupClosed()

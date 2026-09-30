@@ -5,16 +5,16 @@ namespace Skins
 {
     public sealed class ModelPlacer : MonoBehaviour
     {
+        private const float FaceTurnDegrees = 45f;
+
         [SerializeField] private float _rotationSpeed = 45f;
         [SerializeField] private float _padding = 0.85f;
-        [SerializeField] private float _lift = 0f;
         [SerializeField] private Transform _modelsParent;
         [SerializeField] private Camera _camera;
 
         private readonly Vector3[] _localCorners = new Vector3[8];
 
         private GameObject _currentModel;
-        private SkinModel _currentSkinModel;
         private Animator _currentAnimator;
         private Vector3 _rotationAnchor;
 
@@ -62,13 +62,14 @@ namespace Skins
             _currentModel = Instantiate(model, _modelsParent);
             _currentModel.TryGetComponent(out _currentAnimator);
 
-            if (_currentModel.TryGetComponent(out _currentSkinModel) == false)
+            if (_currentModel.TryGetComponent(out SkinModel skinModel) == false)
             {
                 throw new InvalidOperationException(
                     $"{name}: Model '{model.name}' has no SkinModel component. Add a SkinModel component to the model prefab root.");
             }
 
-            FitToCamera(_currentSkinModel);
+            FaceCamera();
+            FitToCamera(skinModel);
         }
 
         public void PlayWalk()
@@ -81,15 +82,28 @@ namespace Skins
             _currentAnimator.SetTrigger("Walk");
         }
 
+        private void FaceCamera()
+        {
+            Vector3 toCamera = _camera.transform.position - _currentModel.transform.position;
+            toCamera.y = 0f;
+
+            if (toCamera.sqrMagnitude <= 0f)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: the preview camera is directly above the spawn point. Move the camera so the model can face it.");
+            }
+
+            Quaternion lookRotation = Quaternion.LookRotation(toCamera.normalized, Vector3.up);
+            _currentModel.transform.rotation = lookRotation * Quaternion.Euler(0f, FaceTurnDegrees, 0f);
+        }
+
         private void FitToCamera(SkinModel skinModel)
         {
-            Bounds worldBounds = GetAccurateWorldBounds(skinModel);
+            _rotationAnchor = _modelsParent.position;
 
+            Bounds worldBounds = GetAccurateWorldBounds(skinModel);
             Vector3 centerOffset = _modelsParent.position - worldBounds.center;
             _currentModel.transform.position += centerOffset;
-            _currentModel.transform.position += new Vector3(0f, _lift, 0f);
-
-            _rotationAnchor = _modelsParent.position + new Vector3(0f, _lift, 0f);
 
             Bounds localBounds = ComputeLocalBounds(skinModel.Renderer);
 

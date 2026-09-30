@@ -15,8 +15,6 @@ namespace UI
 
         public void Initialize(bool isMenuButtonNeeded, Action menuAction = null)
         {
-            base.Initialize();
-
             if (_closeButton == null)
             {
                 throw new InvalidOperationException(

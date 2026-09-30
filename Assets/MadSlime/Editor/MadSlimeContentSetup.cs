@@ -15,6 +15,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Upgrades;
 using UI;
+using UI.Animations;
 
 public static class MadSlimeContentSetup
 {
@@ -36,6 +37,7 @@ public static class MadSlimeContentSetup
     private const string CrownSkinPath = "Assets/MadSlime/Scriptables/Skins/Crown.asset";
     private const string PhantomSkinPath = "Assets/MadSlime/Scriptables/Skins/Phantom.asset";
     private const string FailMenuPrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab";
+    private const string WinPopupPrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/WinPopup.prefab";
     private const string GameScenePath = "Assets/MadSlime/Scenes/Game.unity";
     private const string FontPath = "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset";
 
@@ -986,12 +988,16 @@ public static class MadSlimeContentSetup
 
             // The window size and the whole look belong to the owner — the setup
             // only fills in what is physically missing, never resizes.
+            GameObject winPopupPrefab = EnsureWinPopupPrefab();
+
             SerializedObject serialized = new SerializedObject(view);
             serialized.FindProperty("_reel").objectReferenceValue = reel.GetComponent<RouletteReel>();
+            serialized.FindProperty("_winPopupPrefab").objectReferenceValue = winPopupPrefab.GetComponent<RouletteWinPopup>();
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
             WireReelCenterZone(reel);
-            EnsureWinPopup(root, view);
+            RemoveLegacyWinPopupChild(root);
+            EnsureRootCanvas(root);
 
             PrefabUtility.SaveAsPrefabAsset(root, RouletteViewPrefabPath);
         }
@@ -1155,34 +1161,66 @@ public static class MadSlimeContentSetup
         }
     }
 
-    private static void EnsureWinPopup(GameObject root, RouletteView view)
+    private static void RemoveLegacyWinPopupChild(GameObject root)
     {
         Transform popup = root.transform.Find("WinPopup");
 
-        // Migration: the stage camera and light must live under ModelSlot so the
-        // whole stage moves together and the light lands in the camera's culling mask.
-        if (popup != null && popup.Find("ModelSlot/StageCamera") == null)
+        if (popup != null)
         {
             UnityEngine.Object.DestroyImmediate(popup.gameObject);
-            popup = null;
         }
-
-        if (popup == null)
-        {
-            popup = BuildWinPopup(root.transform).transform;
-        }
-
-        SerializedObject serialized = new SerializedObject(view);
-        serialized.FindProperty("_winPopup").objectReferenceValue = popup.GetComponent<RouletteWinPopup>();
-        serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 
-    private static GameObject BuildWinPopup(Transform parent)
+    private static void EnsureRootCanvas(GameObject root)
+    {
+        if (root.TryGetComponent(out Canvas _) == false)
+        {
+            root.AddComponent<Canvas>();
+        }
+
+        if (root.TryGetComponent(out GraphicRaycaster _) == false)
+        {
+            root.AddComponent<GraphicRaycaster>();
+        }
+    }
+
+    private static GameObject EnsureWinPopupPrefab()
+    {
+        GameObject existing = AssetDatabase.LoadAssetAtPath<GameObject>(WinPopupPrefabPath);
+
+        if (existing != null)
+        {
+            return existing;
+        }
+
+        GameObject popupRoot = BuildWinPopup();
+
+        popupRoot.SetActive(false);
+        PrefabUtility.SaveAsPrefabAsset(popupRoot, WinPopupPrefabPath);
+        UnityEngine.Object.DestroyImmediate(popupRoot);
+
+        return AssetDatabase.LoadAssetAtPath<GameObject>(WinPopupPrefabPath);
+    }
+
+    private static GameObject BuildWinPopup()
     {
         TMP_FontAsset font = LoadFont();
 
-        GameObject popupRoot = new GameObject("WinPopup", typeof(RectTransform), typeof(RouletteWinPopup));
-        popupRoot.transform.SetParent(parent, false);
+        GameObject popupRoot = new GameObject(
+            "WinPopup",
+            typeof(RectTransform),
+            typeof(Canvas),
+            typeof(CanvasScaler),
+            typeof(GraphicRaycaster),
+            typeof(RouletteWinPopup));
+
+        Canvas popupCanvas = popupRoot.GetComponent<Canvas>();
+        popupCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+        CanvasScaler popupScaler = popupRoot.GetComponent<CanvasScaler>();
+        popupScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        popupScaler.referenceResolution = new Vector2(1080f, 1920f);
+        popupScaler.matchWidthOrHeight = 0.5f;
 
         RectTransform popupRect = (RectTransform)popupRoot.transform;
         popupRect.anchorMin = Vector2.zero;
@@ -1458,6 +1496,9 @@ public static class MadSlimeContentSetup
         scopeSerialized.FindProperty("_adrenalineBoost").objectReferenceValue = adrenaline;
         scopeSerialized.ApplyModifiedPropertiesWithoutUndo();
 
+        EnsureUiEnableAnimations();
+        ApplyUiLayers();
+
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
     }
@@ -1485,6 +1526,8 @@ public static class MadSlimeContentSetup
         SerializedObject serialized = new SerializedObject(fillDebug);
         serialized.FindProperty("_fillProgressLabel").objectReferenceValue = progress.gameObject;
         serialized.ApplyModifiedPropertiesWithoutUndo();
+
+        ApplyUiLayers();
 
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
@@ -1680,6 +1723,8 @@ public static class MadSlimeContentSetup
         musicSerialized.ApplyModifiedPropertiesWithoutUndo();
         scopeSerialized.FindProperty("_shopMusic").objectReferenceValue = shopMusic;
         scopeSerialized.ApplyModifiedPropertiesWithoutUndo();
+
+        ApplyUiLayers();
 
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
@@ -2080,6 +2125,8 @@ public static class MadSlimeContentSetup
         scopeSerialized.FindProperty("_pauser").objectReferenceValue = pauser;
         scopeSerialized.ApplyModifiedPropertiesWithoutUndo();
 
+        ApplyUiLayers();
+
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
     }
@@ -2099,6 +2146,84 @@ public static class MadSlimeContentSetup
         return null;
     }
 
+    private static void ApplyUiLayers()
+    {
+        Canvas[] canvases = UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+        for (int i = 0; i < canvases.Length; i++)
+        {
+            Canvas canvas = canvases[i];
+            UiLayer? layer = ResolveUiLayer(canvas.gameObject.name);
+
+            if (layer.HasValue == false)
+            {
+                continue;
+            }
+
+            canvas.sortingOrder = (int)layer.Value;
+        }
+    }
+
+    private static UiLayer? ResolveUiLayer(string objectName)
+    {
+        switch (objectName)
+        {
+            case "JoystickCanvas":
+            case "GrothBarCanvas":
+            case "QuotaCanvas":
+            case "GameTimerCanvas":
+            case "LevelLabelUI":
+            case "FillProgress":
+            case "FillTapZone":
+            case "MenuCanvas":
+            case "ShopCanvas":
+                return UiLayer.Hud;
+
+            case "PauseButtonCanvas":
+                return UiLayer.Buttons;
+
+            case "DailyRouletteScreen":
+                return UiLayer.Popup;
+
+            default:
+                return null;
+        }
+    }
+
+    private static void EnsureUiEnableAnimations()
+    {
+        UiEnableScheduler scheduler = UnityEngine.Object.FindAnyObjectByType<UiEnableScheduler>(FindObjectsInactive.Include);
+
+        if (scheduler == null)
+        {
+            return;
+        }
+
+        SerializedObject serialized = new SerializedObject(scheduler);
+        EnsureTargetAnimations(serialized.FindProperty("_sceneStartTargets"));
+        EnsureTargetAnimations(serialized.FindProperty("_sessionStartTargets"));
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static void EnsureTargetAnimations(SerializedProperty targetsProperty)
+    {
+        for (int i = 0; i < targetsProperty.arraySize; i++)
+        {
+            SerializedProperty element = targetsProperty.GetArrayElementAtIndex(i);
+            GameObject target = element.FindPropertyRelative("_target").objectReferenceValue as GameObject;
+
+            if (target == null)
+            {
+                throw new InvalidOperationException("UiEnableScheduler target list contains an empty slot.");
+            }
+
+            if (target.TryGetComponent(out UiEnableAnimation _) == false)
+            {
+                target.AddComponent<UiEnableAnimation>();
+            }
+        }
+    }
+
     private static GameObject CreateDailyRouletteScreen(GameObject rouletteViewPrefab, TMP_FontAsset font)
     {
         GameObject screen = new GameObject(
@@ -2109,7 +2234,7 @@ public static class MadSlimeContentSetup
 
         Canvas canvas = screen.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 20;
+        canvas.sortingOrder = (int)UiLayer.Popup;
 
         CanvasScaler scaler = screen.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;

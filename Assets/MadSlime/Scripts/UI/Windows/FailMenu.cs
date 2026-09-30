@@ -18,8 +18,6 @@ namespace UI
 
         public void Initialize(int moneyCount, Action rescueAction, bool canRescue, Action restartAction, Action menuAction)
         {
-            base.Initialize();
-
             if (_restartButton == null)
             {
                 throw new InvalidOperationException(

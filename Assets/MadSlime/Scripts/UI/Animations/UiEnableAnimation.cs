@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UI.Animations
 {
-    public sealed class UiEnableAnimation : MonoBehaviour
+    public sealed class UiEnableAnimation : MonoBehaviour, IShowable
     {
         [SerializeField] private UiAppearMode _mode = UiAppearMode.Scale;
 
@@ -17,14 +17,16 @@ namespace UI.Animations
         private Vector3 _enabledScale;
         private Tween _currentTween;
 
+        public event Action Closed;
+
         private void Awake()
         {
             _rect = transform as RectTransform;
 
-            if (_rect == null)
+            if (_mode != UiAppearMode.Scale && _rect == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: UiEnableAnimation requires a RectTransform on the same GameObject.");
+                    $"{name}: UiAppearMode.{_mode} requires a RectTransform on the same GameObject. Use the Scale mode for plain Transforms.");
             }
 
             CaptureEnabledState();
@@ -45,11 +47,24 @@ namespace UI.Animations
             KillCurrentTween();
         }
 
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            PlayOutro();
+        }
+
         public void PlayOutro()
         {
             if (_mode == UiAppearMode.None)
             {
                 gameObject.SetActive(false);
+
+                Action closed = Closed;
+                closed?.Invoke();
                 return;
             }
 
@@ -76,9 +91,9 @@ namespace UI.Animations
 
             if (_mode == UiAppearMode.Scale)
             {
-                _rect.localScale = Vector3.zero;
+                transform.localScale = Vector3.zero;
 
-                _currentTween = _rect.DOScale(_enabledScale, _duration)
+                _currentTween = transform.DOScale(_enabledScale, _duration)
                     .SetEase(Ease.OutBack)
                     .SetUpdate(true);
             }
@@ -106,12 +121,19 @@ namespace UI.Animations
             _currentTween = null;
             ApplyEnabledState();
             gameObject.SetActive(false);
+
+            Action closed = Closed;
+            closed?.Invoke();
         }
 
         private void ApplyEnabledState()
         {
-            _rect.anchoredPosition = _enabledPosition;
-            _rect.localScale = _enabledScale;
+            if (_rect != null)
+            {
+                _rect.anchoredPosition = _enabledPosition;
+            }
+
+            transform.localScale = _enabledScale;
         }
 
         private Tween CreateMoveTween(Vector2 to, float duration, Ease ease)
@@ -153,8 +175,12 @@ namespace UI.Animations
 
         private void CaptureEnabledState()
         {
-            _enabledPosition = _rect.anchoredPosition;
-            _enabledScale = _rect.localScale;
+            if (_rect != null)
+            {
+                _enabledPosition = _rect.anchoredPosition;
+            }
+
+            _enabledScale = transform.localScale;
         }
 
         private void KillCurrentTween()

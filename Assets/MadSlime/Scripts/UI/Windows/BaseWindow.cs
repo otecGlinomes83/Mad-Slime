@@ -7,9 +7,11 @@ using VContainer.Unity;
 
 namespace UI
 {
-    public class BaseWindow : MonoBehaviour
+    public class BaseWindow : MonoBehaviour, IShowable
     {
         protected Pauser Pauser { get; private set; }
+
+        public event Action Closed;
 
         [Inject]
         public void Construct(Pauser pauser)
@@ -17,16 +19,21 @@ namespace UI
             Pauser = pauser;
         }
 
-        public virtual void Initialize()
+        public void Show()
         {
             if (Pauser == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Pauser was not injected. The window prefab must be instantiated through the DI container (IObjectResolver.Instantiate).");
+                    $"{name}: Pauser was not injected. The window prefab must be shown through the DI container (UiSpawner.Spawn).");
             }
 
             Pauser.RequestPause();
             UiAnimations.ScaleIn((RectTransform)transform, UiAnimations.WindowScaleInDuration);
+        }
+
+        public void Hide()
+        {
+            CloseAnimated();
         }
 
         protected void CloseAnimated()
@@ -41,6 +48,9 @@ namespace UI
 
         private void DestroyWindow()
         {
+            Action closed = Closed;
+            closed?.Invoke();
+
             Destroy(gameObject);
         }
     }

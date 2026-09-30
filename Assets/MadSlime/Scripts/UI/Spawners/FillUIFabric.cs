@@ -4,7 +4,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
-using VContainer.Unity;
 
 namespace UI
 {
@@ -18,7 +17,7 @@ namespace UI
 
         [SerializeField] private YandexConfig _yandexConfig;
 
-        private IObjectResolver _resolver;
+        private UiSpawner _uiSpawner;
         private FillSessionHandler _sessionHandler;
         private Wallet _wallet;
         private AdScheduler _adScheduler;
@@ -26,10 +25,10 @@ namespace UI
         private int _lastRewardAmount;
 
         [Inject]
-        public void Construct(IObjectResolver resolver, FillSessionHandler sessionHandler, Wallet wallet,
+        public void Construct(UiSpawner uiSpawner, FillSessionHandler sessionHandler, Wallet wallet,
             AdScheduler adScheduler)
         {
-            _resolver = resolver;
+            _uiSpawner = uiSpawner;
             _sessionHandler = sessionHandler;
             _wallet = wallet;
             _adScheduler = adScheduler;
@@ -37,10 +36,10 @@ namespace UI
 
         private void Awake()
         {
-            if (_resolver == null)
+            if (_uiSpawner == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Resolver was not injected. FillLifetimeScope must be the first object in the scene hierarchy.");
+                    $"{name}: UiSpawner was not injected. Check that FillLifetimeScope registers UiSpawner and FillUIFabric.");
             }
 
             if (_sessionHandler == null)
@@ -94,7 +93,7 @@ namespace UI
         {
             _lastRewardAmount = rewardAmount;
 
-            WinMenu winMenu = _resolver.Instantiate(_winMenuPrefab);
+            WinMenu winMenu = _uiSpawner.Spawn(_winMenuPrefab, UiLayer.Popup);
             winMenu.Initialize(
                 rewardAmount,
                 _sessionHandler.LoadNextLevel,
@@ -104,13 +103,18 @@ namespace UI
 
         private void OnGameFailed(int rewardAmount)
         {
-            _activeFailMenu = _resolver.Instantiate(_failMenuPrefab);
+            _activeFailMenu = _uiSpawner.Spawn(_failMenuPrefab, UiLayer.Popup, OnFailMenuClosed);
             _activeFailMenu.Initialize(
                 rewardAmount,
                 RequestFillRescue,
                 _sessionHandler.CanRescueFill,
                 OnRestartFromFail,
                 _sessionHandler.ExitToMenu);
+        }
+
+        private void OnFailMenuClosed()
+        {
+            _activeFailMenu = null;
         }
 
         private void RequestFillRescue()
@@ -126,7 +130,6 @@ namespace UI
             if (_activeFailMenu != null)
             {
                 _activeFailMenu.Dismiss();
-                _activeFailMenu = null;
             }
 
             _sessionHandler.RescueFill();
@@ -157,7 +160,7 @@ namespace UI
 
         private void OnPauseButtonClick()
         {
-            PauseMenu pauseMenu = _resolver.Instantiate(_pauseMenuPrefab);
+            PauseMenu pauseMenu = _uiSpawner.Spawn(_pauseMenuPrefab, UiLayer.Popup);
             pauseMenu.Initialize(false);
         }
     }

@@ -18,8 +18,6 @@ namespace UI
 
         public void Initialize(int moneyCount, Action nextLevelAction, Action doubleRewardAction, Action menuAction)
         {
-            base.Initialize();
-
             if (_nextLevelButton == null)
             {
                 throw new InvalidOperationException(

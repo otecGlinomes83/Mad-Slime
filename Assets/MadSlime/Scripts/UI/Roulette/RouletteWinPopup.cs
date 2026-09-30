@@ -1,13 +1,14 @@
 using System;
 using Skins;
 using TMPro;
+using UI;
 using UI.Animations;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Roulette
 {
-    public sealed class RouletteWinPopup : MonoBehaviour
+    public sealed class RouletteWinPopup : MonoBehaviour, IShowable
     {
         private const float FadeAlpha = 0.85f;
         private const int TextureSize = 512;
@@ -107,8 +108,33 @@ namespace Roulette
             _texture = null;
         }
 
+        public void Show()
+        {
+            gameObject.SetActive(true);
+
+            _takeButton.interactable = true;
+            PositionStage();
+
+            _fade.color = new Color(0f, 0f, 0f, FadeAlpha);
+
+            UiAnimations.ScaleIn(_window, UiAnimations.WindowScaleInDuration);
+        }
+
+        public void Hide()
+        {
+            _takeButton.interactable = false;
+
+            UiAnimations.ScaleOut(_window, UiAnimations.WindowScaleOutDuration, HideAndDestroy);
+        }
+
         public void ShowSkin(SkinItem skin, string rarityLabel, Color rarityColor)
         {
+            if (gameObject.activeSelf == false)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: ShowSkin requires a shown popup. Spawn the popup through UiSpawner first.");
+            }
+
             if (skin == null)
             {
                 throw new ArgumentNullException(nameof(skin),
@@ -120,8 +146,6 @@ namespace Roulette
                 throw new InvalidOperationException(
                     $"{name}: SkinItem '{skin.name}' has no model prefab. Assign the Model in the skin asset.");
             }
-
-            PrepareShow();
 
             _prizeArea.gameObject.SetActive(true);
             _coinsLabel.gameObject.SetActive(false);
@@ -135,7 +159,11 @@ namespace Roulette
 
         public void ShowCoins(int amount)
         {
-            PrepareShow();
+            if (gameObject.activeSelf == false)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: ShowCoins requires a shown popup. Spawn the popup through UiSpawner first.");
+            }
 
             _prizeArea.gameObject.SetActive(false);
             ClearModel();
@@ -144,18 +172,6 @@ namespace Roulette
             _coinsLabel.text = $"×{amount}";
 
             _rarityPlate.SetActive(false);
-        }
-
-        private void PrepareShow()
-        {
-            gameObject.SetActive(true);
-
-            _takeButton.interactable = true;
-            PositionStage();
-
-            _fade.color = new Color(0f, 0f, 0f, FadeAlpha);
-
-            UiAnimations.ScaleIn(_window, UiAnimations.WindowScaleInDuration);
         }
 
         private void PositionStage()
@@ -214,18 +230,17 @@ namespace Roulette
 
         private void OnTakeClicked()
         {
-            _takeButton.interactable = false;
-
-            UiAnimations.ScaleOut(_window, UiAnimations.WindowScaleOutDuration, HidePopup);
+            Hide();
         }
 
-        private void HidePopup()
+        private void HideAndDestroy()
         {
-            gameObject.SetActive(false);
             ClearModel();
 
             Action closed = Closed;
             closed?.Invoke();
+
+            Destroy(gameObject);
         }
 
         private void ClearModel()

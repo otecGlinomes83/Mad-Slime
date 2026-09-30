@@ -91,6 +91,7 @@ namespace DI
 
             builder.RegisterInstance(_playerConfig);
             builder.Register<QuotaGenerator>(Lifetime.Scoped);
+            builder.Register<UiSpawner>(Lifetime.Scoped);
 
             builder.RegisterComponent(_levelGenerator);
             builder.RegisterComponent(_player);

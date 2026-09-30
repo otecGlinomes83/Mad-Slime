@@ -31,10 +31,8 @@ namespace UI
             _leaderboardService = leaderboardService;
         }
 
-        public override void Initialize()
+        public void Initialize()
         {
-            base.Initialize();
-
             if (_closeButton == null)
             {
                 throw new InvalidOperationException(
@@ -62,7 +60,7 @@ namespace UI
             if (_progress == null || _leaderboardService == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: dependencies were not injected. The window prefab must be instantiated through the DI container (IObjectResolver.Instantiate).");
+                    $"{name}: dependencies were not injected. The window prefab must be shown through the DI container (UiSpawner.Spawn).");
             }
 
             _closeButton.onClick.AddListener(Close);

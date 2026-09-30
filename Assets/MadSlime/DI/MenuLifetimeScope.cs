@@ -37,6 +37,8 @@ namespace DI
             builder.RegisterComponent(_wallet);
             builder.RegisterComponent(_pauser);
 
+            builder.Register<UiSpawner>(Lifetime.Scoped);
+
             builder.RegisterBuildCallback(InjectSceneButtonSounds);
         }
 

@@ -370,7 +370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e2861a847cc9904c90e11aaf3760e83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sfxClip: {fileID: 0}
+  _sfxClip: {fileID: 11400000, guid: bd352983b1b28d9aa9367c1812a9b2f2, type: 2}
   _thresholdSeconds: 20
 --- !u!82 &292377140
 AudioSource:
@@ -616,7 +616,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: -1
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &566941589
 GameObject:
@@ -1356,7 +1356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 290571bf9b16d7cb18a796738886083e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mode: 2
+  _mode: 3
   _duration: 0.3
   _slideOffset: 340
 --- !u!114 &1306941302
@@ -2666,6 +2666,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4713544579381441721}
   - component: {fileID: 1306941302}
+  - component: {fileID: 4713544579381441722}
   m_Layer: 0
   m_Name: QuotaUI
   m_TagString: Untagged
@@ -3021,6 +3022,21 @@ RectTransform:
   m_AnchoredPosition: {x: 150, y: 221}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4713544579381441722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2658334064367966358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 290571bf9b16d7cb18a796738886083e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mode: 1
+  _duration: 0.3
+  _slideOffset: 140
 --- !u!1 &4801891008915828649
 GameObject:
   m_ObjectHideFlags: 0

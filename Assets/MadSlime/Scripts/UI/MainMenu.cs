@@ -7,7 +7,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
-using VContainer.Unity;
 
 namespace UI
 {
@@ -27,22 +26,22 @@ namespace UI
         private MusicPlayer _musicPlayer;
         private Pauser _pauser;
         private GameDirector _gameDirector;
-        private IObjectResolver _resolver;
+        private UiSpawner _uiSpawner;
         private bool _isSubscribed;
 
         [Inject]
         public void Construct(GameDirector gameDirector, Pauser pauser,
-            MusicPlayer musicPlayer, IObjectResolver resolver)
+            MusicPlayer musicPlayer, UiSpawner uiSpawner)
         {
             _gameDirector = gameDirector;
             _pauser = pauser;
             _musicPlayer = musicPlayer;
-            _resolver = resolver;
+            _uiSpawner = uiSpawner;
         }
 
         private void Awake()
         {
-            if (_gameDirector == null || _pauser == null || _musicPlayer == null || _resolver == null)
+            if (_gameDirector == null || _pauser == null || _musicPlayer == null || _uiSpawner == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: dependencies were not injected. MenuLifetimeScope must be the first object in the scene hierarchy.");
@@ -136,7 +135,7 @@ namespace UI
 
         private void OnSettingsClicked()
         {
-            PauseMenu pauseMenu = _resolver.Instantiate(_pauseMenu);
+            PauseMenu pauseMenu = _uiSpawner.Spawn(_pauseMenu, UiLayer.Popup);
             pauseMenu.Initialize(false);
         }
 
@@ -152,13 +151,13 @@ namespace UI
 
         private void OnLeaderboardClicked()
         {
-            LeaderboardMenu leaderboardMenu = _resolver.Instantiate(_leaderboardMenuPrefab);
+            LeaderboardMenu leaderboardMenu = _uiSpawner.Spawn(_leaderboardMenuPrefab, UiLayer.Popup);
             leaderboardMenu.Initialize();
         }
 
         private void OnDailyClicked()
         {
-            _dailyRoulette.Open();
+            _uiSpawner.Show(_dailyRoulette, UiLayer.Popup);
         }
 
         private async UniTaskVoid NavigateTo(SceneId targetSceneId)

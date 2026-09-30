@@ -1,12 +1,16 @@
 {
-    "CurrentLevel": 1,
-    "MaxLevel": 1,
+    "CurrentLevel": 2,
+    "MaxLevel": 2,
     "Language": "ru",
-    "musicVolume": 0.18175870180130006,
-    "sfxVolume": 0.5040962100028992,
-    "Balance": 9999999,
-    "SelectedSkinType": 0,
-    "_openSkins": [0],
+    "musicVolume": 0.05197669938206673,
+    "sfxVolume": 0.07576362788677216,
+    "Balance": 9999349,
+    "SelectedSkinType": 1,
+    "_openSkins": [
+        0,
+        2,
+        1
+    ],
     "SpeedLevel": 0,
     "AppetiteLevel": 0,
     "TasteLevel": 0,
@@ -14,7 +18,7 @@
     "PurchasedPerks": [],
     "LastFreeSpinUnixTime": 0,
     "RouletteAdSpinTimes": [],
-    "SkinSpinCount": 0,
+    "SkinSpinCount": 2,
     "PreviousScene": "Menu",
-    "idSave": 353
+    "idSave": 403
 }
