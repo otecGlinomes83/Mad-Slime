@@ -294,6 +294,13 @@ namespace Roulette
                 // Пустой пул: крутим вхолостую нельзя — показываем все скины,
                 // но покупка (крутка за монеты) запрещена в RefreshButtons.
                 List<SkinItem> source = pool.Count > 0 ? pool : AllSkinsSorted();
+
+                if (source.Count == 0)
+                {
+                    throw new InvalidOperationException(
+                        $"{name}: no skins to show — the skin source list is empty. Check ShopContent.");
+                }
+
                 int entryCount = Mathf.Max(source.Count, _reel.MinimumEntryCount);
 
                 for (int i = 0; i < entryCount; i++)

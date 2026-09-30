@@ -186,7 +186,12 @@ namespace Roulette
 
         private Color Darken(Color color)
         {
-            return Color.Lerp(color, Color.black, _backgroundDarkening);
+            // Альфу не трогаем: Lerp к чёрному иначе приглушает окно до
+            // полупрозрачности (чёрный несёт a=0).
+            Color darkened = Color.Lerp(color, Color.black, _backgroundDarkening);
+            darkened.a = color.a;
+
+            return darkened;
         }
 
         private void PositionStage()

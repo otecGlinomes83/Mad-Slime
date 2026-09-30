@@ -4,7 +4,7 @@
 // 3) Menu.unity: у DailyRouletteScreen появляются StartMoney/StartAD и
 //    провоживаются поля RouletteView (_spinButton/_spinPriceText/_adButton/_adButtonText),
 //    без которых ежедневная рулетка в главном меню не инициализируется.
-// Запуск: меню "Mad Slime/Apply Roulette & Popup Fixes" или
+// Запуск только через batchmode:
 // batchmode -executeMethod MadSlimeUiFixup.RunAll
 public static class MadSlimeUiFixup
 {
@@ -17,6 +17,7 @@ public static class MadSlimeUiFixup
     private const string RouletteViewPrefabPath = "Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab";
     private const string SecretIconPath = "Assets/Hyper_Casual_UI/Sprites/Icons/lock.png";
     private const string LocalizationTablePath = "Assets/MadSlime/Scriptables/Localization/Localization.asset";
+    private const string UiClickClipPath = "Assets/MadSlime/Scriptables/Audio/UI Click.asset";
 
     private static readonly UnityEngine.Vector2 SpinButtonSize = new UnityEngine.Vector2(302.45f, 130.42f);
     private static readonly UnityEngine.Vector2 SpinButtonPosition = new UnityEngine.Vector2(-212f, -304f);
@@ -213,6 +214,13 @@ public static class MadSlimeUiFixup
         if (localized == null)
         {
             TMPro.TMP_Text label = dailyObject.GetComponentInChildren<TMPro.TMP_Text>(true);
+
+            if (label == null)
+            {
+                throw new System.InvalidOperationException(
+                    "Menu scene: the DailyButton clone has neither LocalizedText nor TMP_Text to localize.");
+            }
+
             localized = label.gameObject.AddComponent<UI.LocalizedText>();
         }
 
@@ -572,16 +580,19 @@ public static class MadSlimeUiFixup
         Upgrades.UpgradesConfig config =
             UnityEditor.AssetDatabase.LoadAssetAtPath<Upgrades.UpgradesConfig>(UpgradesConfigPath);
 
+        if (config == null)
+        {
+            throw new System.InvalidOperationException(
+                $"UpgradesConfig not found at '{UpgradesConfigPath}'.");
+        }
+
         if (material.shader != shader)
         {
             material.shader = shader;
         }
 
-        if (config != null)
-        {
-            material.SetColor("_OutlineColor", config.HighlightColor);
-            material.SetFloat("_Thickness", config.HighlightThickness);
-        }
+        material.SetColor("_OutlineColor", config.HighlightColor);
+        material.SetFloat("_Thickness", config.HighlightThickness);
 
         UnityEditor.EditorUtility.SetDirty(material);
     }
@@ -653,13 +664,20 @@ public static class MadSlimeUiFixup
         EnsureClickSound(spinButton.gameObject);
         EnsureClickSound(adButton.gameObject);
 
+        TMPro.TMP_Text spinText = spinButton.GetComponentInChildren<TMPro.TMP_Text>(true);
+        TMPro.TMP_Text adText = adButton.GetComponentInChildren<TMPro.TMP_Text>(true);
+
+        if (spinText == null || adText == null)
+        {
+            throw new System.InvalidOperationException(
+                "Menu scene: StartMoney/StartAD lost their TMP text children — restore them before wiring.");
+        }
+
         UnityEditor.SerializedObject serialized = new UnityEditor.SerializedObject(rouletteView);
         serialized.FindProperty("_spinButton").objectReferenceValue = spinButton;
-        serialized.FindProperty("_spinPriceText").objectReferenceValue =
-            spinButton.GetComponentInChildren<TMPro.TMP_Text>(true);
+        serialized.FindProperty("_spinPriceText").objectReferenceValue = spinText;
         serialized.FindProperty("_adButton").objectReferenceValue = adButton;
-        serialized.FindProperty("_adButtonText").objectReferenceValue =
-            adButton.GetComponentInChildren<TMPro.TMP_Text>(true);
+        serialized.FindProperty("_adButtonText").objectReferenceValue = adText;
         serialized.ApplyModifiedPropertiesWithoutUndo();
 
         UnityEditor.EditorUtility.SetDirty(rouletteView);
@@ -761,7 +779,7 @@ public static class MadSlimeUiFixup
         }
 
         Scriptables.SfxClip clip = UnityEditor.AssetDatabase.LoadAssetAtPath<Scriptables.SfxClip>(
-            "Assets/MadSlime/Scriptables/Audio/UI Click.asset");
+            UiClickClipPath);
 
         if (clip == null)
         {

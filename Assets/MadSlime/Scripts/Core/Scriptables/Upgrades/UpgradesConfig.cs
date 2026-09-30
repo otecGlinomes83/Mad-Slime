@@ -17,7 +17,7 @@ namespace Upgrades
         [Tooltip("Цвет аутлайна квотовых предметов (Улучшенный нюх).")]
         [SerializeField] private Color _highlightColor = new Color(1f, 0.85f, 0.2f, 1f);
 
-        [Tooltip("Толщина аутлайна квотовых предметов — доля высоты экрана (0.012 ≈ 13px на 1080p).")]
+        [Tooltip("Толщина аутлайна квотовых предметов — доля ПОЛОВИНЫ высоты экрана (0.012 ≈ 6px на 1080p), одинаковая по всем направлениям.")]
         [SerializeField, Min(0f)] private float _highlightThickness = 0.012f;
 
         [Header("Adrenaline")]
