@@ -1,0 +1,355 @@
+# Правила для AI: Unity C# Gameplay Programming
+
+Это инструкции для нейросети, помогающей мне писать код. Следовать строго.
+
+---
+
+## Кто я
+
+- Senior Unity gameplay programmer
+- Пишу production-ready C# код для геймплейных систем
+- Знаю что делаю — объяснения и расшаркивания не нужны
+- Общаюсь на русском, код — на английском
+- Прямой стиль, без расшаркиваний
+
+## Стиль общения
+
+- **Терсе, без воды.** Никаких "great idea!", "you're right!", "let me help you".
+- **Не объяснять код**, если не попросил явно. Сделал — показал — всё.
+- **Не предлагать улучшения** "на будущее" или "ещё можно сделать". Только то, что просил.
+- **Если задал уточняющий вопрос и я его скипнул — НЕ предполагай ответ, жди явного ответа от меня.**
+- **Не создавать левых файлов**: README, документация, прогресс-логи — только если попросил.
+- Прямой тон, без излишней вежливости.
+
+## Перед тем как кодить
+
+1. Если задача нетривиальная — короткий план, затем по шагам
+2. Если что-то непонятно — задай конкретный вопрос с вариантами выбора
+3. Если знание Unity API неточное — ищи в актуальной доке, не выдумывай
+4. Не лезь в файлы, которые не относятся к задаче
+5. **Если просят что-то сделать или поменять — сначала поищи это в коде (grep/glob). Если уже существует — уточни у пользователя, не создавай дубль.** Пример: «сделай кошелёк» → сначала `grep "class Wallet"`, не плодить параллельные реализации.
+
+---
+
+## C# Базовые правила
+
+### Запрещено
+
+- `var` — всегда явные типы
+- LINQ если создаёт аллокации или ухудшает читаемость
+- Reflection
+- `UnityEvent` — только C# `Action<T>` события
+- Анонимные lambda при подписке на события (`+= () => ...`)
+- `static` классы/состояние, если не критично
+- `GameObject.Find`, `Transform.Find`, `FindObjectOfType`
+- Service Locator паттерн
+- Singleton — только если явно попросил
+- Создавать классы с именами `Manager`, `Handler`, `Utility`, `Helper` (если ответственность не очевидна)
+- Создавать интерфейсы "на будущее"
+- Глубокие иерархии наследования
+- Магические абстракции
+- Hidden side effects
+- Комментарии в коде. Никогда.
+- Тернарный оператор (`condition ? a : b`) — писать обычным `if/else`, явнее.
+
+### Обязательно
+
+- Композиция > наследование
+- 1 класс = 1 ответственность
+- Короткие сфокусированные методы
+- Early returns вместо вложенных if
+- Поток выполнения сверху вниз — код читается линейно
+- YAGNI, KISS, DRY, SOLID — прагматично, без догматизма
+- Явные зависимости через Setup-метод, конструктор или SerializeField
+- Простые FSM где есть состояния
+
+---
+
+## Naming Conventions
+
+| Что | Стиль | Пример |
+|---|---|---|
+| Private field | `_fieldName` | `_mover`, `_collider` |
+| Private static | `s_fieldName` | `s_instance` |
+| Constants | `PascalCase` | `BufferSize`, `MaxHealth` |
+| Methods | `PascalCase` | `Move`, `OnEnable` |
+| Events | `PascalCase` | `Collected`, `Damaged` |
+| Local vars | `camelCase` | `elapsedTime`, `hitsCount` |
+| Arguments | `camelCase` | `targetPosition`, `pullSpeed` |
+| Interfaces | `IInterfaceName` | `ICollectable`, `IAttractable` |
+| Bool fields/properties | `_isSomething` / `IsSomething` | `_isCollected`, `_isSetupFinished` |
+
+### Имена переменных
+
+- **Никаких однобуквенных имён.** Не `t`, не `smooth`, не `c`, включая «математические» `p`, `x`, `z` (офсеты называть `offsetX`/`offsetZ`, индексы — `propIndex` и т.п.).
+- Исключение: `i`, `j` как счётчики простых for-циклов.
+- Имена должны быть описательными: `progress`, `smoothedProgress`, `elapsedTime`, `hitCollider`, `cancellationToken`.
+
+### Имя файла = имя класса
+
+- Файл называется так же, как основной класс в нём. Рассинхрон — смертник: переименовывать файл вместе с `.meta` (GUID сохраняется → ассеты не ломаются).
+
+### Граница static-нейминга
+
+- `const` и `static readonly` — это константы → `PascalCase` (`BufferSize`, `OpacityId`, `LanguageOrder`).
+- Mutable `static` поле → `s_fieldName` (`s_table`, `s_language`), даже если оно приватное или в editor-коде.
+
+### Имена под контрактом — не переименовывать
+
+- Поля `SavesYG` — имена = JSON-ключи живых сейвов. Исторические `_openSkins`, `musicVolume`, `sfxVolume` не приводить к канону — сломает сохранения игроков.
+- Поля внешних JSON-DTO (`YandexAdsBridge.LeaderboardPayload` / `LeaderboardEntry`) — имена = ключи внешнего API (`JsonUtility.FromJson`).
+- Автоген (`PlayerInputActions.cs`) — вне правил вообще.
+
+---
+
+## Форматирование
+
+- **Соблюдать [Microsoft C# coding conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions).** Это базовая линия стиля.
+- **Никаких однострочных методов и блоков.** Каждое тело метода/свойства/if/else/цикла — на отдельных строках, с фигурными скобками на новой строке. Никогда не писать `public void Foo() { Bar(); }` — это хуйня в одну строку, так не пишем никогда.
+- **Открывающая фигурная скобка всегда на новой строке.**
+- Всегда braces для if/else/loops (даже однострочных).
+- Логические блоки разделяются пустыми строками.
+- Удалять unused using-директивы.
+- **Один файл = один класс.**
+- Сравнение с false через `== false`, не `!`:
+
+```csharp
+if (collectable.IsActive == false)
+{
+    return;
+}
+```
+
+- Тип Collider, не Collider2D по умолчанию (3D игра).
+
+---
+
+## Архитектура
+
+- **SRP — святое.** Если класс делает две вещи — разделяй.
+- Маленькие геймплейные компоненты лучше одного "толстого".
+- Явные зависимости (SerializeField для редактора, Setup для рантайма).
+- Прозрачный execution flow > "умная" архитектура.
+- **Не создавать абстракции до того, как они реально нужны.**
+- Интерфейсы — только если есть реальная причина (полиморфизм, разные реализации).
+- Пассивные объекты (data) отдельно от активных систем (behavior).
+
+### Пример правильного разделения
+
+- `CollectableDetector` — только детект через OverlapSphere, шлёт событие
+- `Collector` — реагирует на событие, делает анимацию и сбор
+- `SimpleCollectable` — пассивные данные коллектабла (Mass, Collect/Release)
+
+---
+
+## События (C# Action)
+
+- Только `event Action<T>`. **Никогда UnityEvent.**
+- Всегда отписываться в `OnDisable` (или `OnDestroy` если уместнее).
+- **Никогда анонимные лямбды:**
+
+```csharp
+// ПЛОХО:
+_detector.Detected += (collectable, transform) => { ... };
+
+// ХОРОШО:
+private void OnEnable()
+{
+    _detector.Detected += OnCollectableDetected;
+}
+
+private void OnDisable()
+{
+    _detector.Detected -= OnCollectableDetected;
+}
+
+private void OnCollectableDetected(ICollectable collectable, Transform collectableTransform)
+{
+    // ...
+}
+```
+
+---
+
+## Unity-Specific
+
+- `TryGetComponent` вместо `GetComponent` + null check
+- TextMeshPro вместо legacy Text
+- Coroutines для простых timed gameplay (но предпочтительно UniTask)
+- ScriptableObject только если оправдан (конфиги, данные)
+- **Минимизировать аллокации в Update**
+- Избегать лишних Update-методов
+- `SerializeField` только для значений, которые настраивает дизайнер
+- НЕ exposить public fields, если не нужно
+- `[RequireComponent]` где есть жёсткая зависимость от компонента на том же GO
+- `sealed class` для классов, которые не наследуются
+- `OverlapSphereNonAlloc` вместо `OverlapSphere` (нет аллокаций)
+- Кэшировать buffer-массивы для NonAlloc-методов
+
+---
+
+## Async — UniTask
+
+UniTask — предпочтительный async-инструмент. Не Task, не корутины для сложного.
+
+### Канонический паттерн с cancellation
+
+```csharp
+private async UniTaskVoid SomethingAsync()
+{
+    CancellationToken cancellationToken = this.GetCancellationTokenOnDestroy();
+
+    try
+    {
+        await DoWorkAsync(cancellationToken);
+    }
+    catch (OperationCanceledException)
+    {
+        return;
+    }
+
+    DoFinalize();
+}
+
+private async UniTask DoWorkAsync(CancellationToken cancellationToken)
+{
+    while (someCondition)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+    }
+}
+```
+
+### Правила UniTask
+
+- Fire-and-forget — `.Forget()`
+- Возвращаемый тип fire-and-forget методов — `UniTaskVoid`
+- Cancellation через `this.GetCancellationTokenOnDestroy()` для авто-отмены при уничтожении
+- `OperationCanceledException` ловить явно
+- `UniTask.Yield(PlayerLoopTiming.Update, cancellationToken)` вместо `yield return null`
+
+### Coroutines (если уж нужны)
+
+- Кэшировать YieldInstruction:
+
+```csharp
+private static readonly WaitForSeconds OneSecondWait = new WaitForSeconds(1f);
+```
+
+---
+
+## Канонический пример класса
+
+```csharp
+public class Player : MonoBehaviour
+{
+    private Mover _mover;
+    private Rotator _rotator;
+    private PlayerInputHandler _inputHandler;
+
+    private bool _isSetupFinished;
+
+    private void Update()
+    {
+        if (_isSetupFinished == false)
+        {
+            return;
+        }
+
+        _rotator.Rotate(_inputHandler.MouseDelta);
+        _mover.Move(_inputHandler.MoveDirection);
+    }
+
+    public void Setup(Mover mover, Rotator rotator, PlayerInputHandler inputHandler)
+    {
+        _mover = mover;
+        _rotator = rotator;
+        _inputHandler = inputHandler;
+
+        _isSetupFinished = true;
+    }
+}
+```
+
+---
+
+## Чек-лист перед отдачей кода
+
+1. Нет `var` — всё с явными типами
+2. Нет комментариев
+3. Нет анонимных лямбд при `+=`
+4. Все события отписываются
+5. Имена переменных описательные (не `t`, не `smooth`, не `c`)
+6. `== false` вместо `!`
+7. Braces на новой строке, везде используются
+8. Пустые строки между логическими блоками
+9. `sealed` где уместно
+10. `[SerializeField] private` для редактора, не публичные поля
+11. `TryGetComponent` вместо `GetComponent` + null check
+12. SRP — класс делает одну вещь
+13. Нет лишних абстракций / интерфейсов / managers
+14. Нет лишних using-директив
+15. Один класс в одном файле
+16. **Нет однострочных тел методов / if-блоков / свойств.** Каждое тело — многострочное, скобки на отдельных строках. Никаких `public void Foo() { Bar(); }`.
+17. Соответствие Microsoft C# coding conventions
+
+---
+
+## Если AI не знает как сделать
+
+1. **Не выдумывать Unity API.** Не существует — спросить или поискать актуальную доку.
+2. **Не предполагать ответы на скипнутые вопросы.** Жди явного ответа.
+3. При сложной задаче — короткий план, реализация по шагам.
+4. Если разработка идёт долго — можно вести progress.txt в рабочей папке, но без спама.
+
+---
+
+## Поведенческий итог
+
+1. Делай быстро, делай минимально
+2. Не делай ничего "на потом"
+3. Не объясняй то, о чём не спросил
+4. Не комментируй код
+5. Если скипнул вопрос — жди ответа
+6. Уважай SRP, KISS, YAGNI
+7. Один класс — одна ответственность — один файл
+8. **Не пиши хуйню в одну строку.** Метод, свойство, if — это многострочный блок. Нарушение — повод переделать.
+
+---
+
+# Дополнительные правила поведения AI
+
+1. **Не соглашайся автоматически.** Если решение плохое, переусложнённое, нарушает архитектуру или создаёт технический долг — скажи прямо и предложи лучший путь.
+
+2. **Не пиши код, пока не попросили.** По умолчанию помогай думать: ответственность классов, архитектура, flow данных, декомпозиция, SOLID, масштабирование.
+
+3. **Если показываю код — сначала анализируй.** Не переписывай всё без причины.
+
+4. **Если можно упростить — упрощай.**
+
+5. **Не навязывай паттерны.** Каждый паттерн должен решать реальную проблему.
+
+6. **Перед кодом думай:**
+   - Какая ответственность класса?
+   - Кто владеет состоянием?
+   - Кто инициирует действие?
+   - Где источник истины?
+   - Как это масштабируется?
+   - Можно ли сделать проще?
+   - Не создаётся ли лишняя связанность?
+
+7. **При разборе класса объясняй:** ответственность, входы, выходы, зависимости, жизненный цикл, возможные проблемы.
+
+8. **Unity 2022.3 LTS.** Предпочитай простые MonoBehaviour решения, если они достаточны. Не тащи ECS, DI, event bus, service locator без причины.
+
+9. **Mobile-first производительность:** избегай GC allocation, NonAlloc API, никакого LINQ в Update.
+
+10. **Текстовый стиль:** короткие предложения, без воды, без корпоративного стиля, без мотивационной чуши. Пиши прямо. Если ответ плохой — говори это.
+
+11. **Обучай, а не заменяй мышление.** Помогай думать, а не решай всё автоматически.
+
+12. **Копируй текущий кодстайл проекта.** Перед написанием нового кода в существующем модуле — посмотри соседние файлы: нейминг, форматирование, паттерны (имена, неймспейсы, структура папок, разделение ответственности, идиомы). Следуй тому, как написано в проекте. Не навязывай «свой» стиль. Глобальные правила (нет `var`, нет комментариев, `== false`, `sealed` где уместно, и т.д.) — остаются в силе поверх стиля проекта.
+
+13. **Перед каждым ответом перечитывай `AI_RULES.md` и `AI_CONTEXT.md`.** Без исключений. Свежий контекст сессии — там, в `AI_CONTEXT.md`.
