@@ -4,21 +4,31 @@ using UnityEngine;
 namespace Skins
 {
     [CreateAssetMenu(menuName = "Mad Slime/Shop Item", fileName = "NewShopItem")]
-    public class SkinItem : ScriptableObject
+    public sealed class SkinItem : ScriptableObject
     {
-        [field: Tooltip("Модель скина, инстансится на игрока при выборе.")]
-        [field: SerializeField] public GameObject Model { get; private set; }
+        [Tooltip("Модель скина, инстансится на игрока при выборе.")]
+        [SerializeField] private GameObject _model;
 
-        [field: Tooltip("Иконка скина в магазине.")]
-        [field: SerializeField] public Sprite Icon { get; private set; }
+        [Tooltip("Иконка скина в магазине.")]
+        [SerializeField] private Sprite _icon;
 
-        [field: Tooltip("Редкость скина: задаёт цвет плашки и вес выпадения в скин-рулетке.")]
-        [field: SerializeField] public SkinRarity Rarity { get; private set; }
+        [Tooltip("Редкость скина: задаёт цвет плашки и вес выпадения в скин-рулетке.")]
+        [SerializeField] private SkinRarity _rarity;
 
-        [field: SerializeField, Range(0, 10000), Tooltip("Цена в монетах. 0 = выдаётся бесплатно.")]
-        public int Price { get; private set; }
+        [Tooltip("Цена в монетах. 0 = выдаётся бесплатно.")]
+        [SerializeField, Range(0, 10000)] private int _price;
 
-        [field: Tooltip("Уникальный тип скина; дубли в ShopContent запрещены.")]
-        [field: SerializeField] public PlayerSkins SkinType { get; private set; }
+        [Tooltip("Уникальный тип скина; дубли в ShopContent запрещены.")]
+        [SerializeField] private PlayerSkins _skinType;
+
+        public GameObject Model => _model;
+
+        public Sprite Icon => _icon;
+
+        public SkinRarity Rarity => _rarity;
+
+        public int Price => _price;
+
+        public PlayerSkins SkinType => _skinType;
     }
 }

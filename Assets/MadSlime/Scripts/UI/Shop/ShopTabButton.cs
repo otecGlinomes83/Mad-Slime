@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Skins
+namespace Shop
 {
     [RequireComponent(typeof(Button))]
     public sealed class ShopTabButton : MonoBehaviour

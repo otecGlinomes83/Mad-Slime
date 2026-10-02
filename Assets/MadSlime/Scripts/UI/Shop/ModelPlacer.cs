@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Skins
+namespace Shop
 {
     public sealed class ModelPlacer : MonoBehaviour
     {
@@ -70,8 +70,6 @@ namespace Skins
                     $"{name}: Model '{model.name}' has no SkinModel component. Add a SkinModel component to the model prefab root.");
             }
 
-            // Каждый префаб скина запечён со своим наклоном (у Slime -90°X, у Pacman +90°Y).
-            // Поверх него добавляется только поворот лицом к камере.
             FaceCamera(_currentModel.transform.rotation);
             FitToCamera(skinModel);
         }
@@ -83,7 +81,7 @@ namespace Skins
                 return;
             }
 
-            _currentAnimator.SetTrigger("Walk");
+            _currentAnimator.SetTrigger(SkinModel.WalkTrigger);
         }
 
         private void FaceCamera(Quaternion baseRotation)
@@ -119,9 +117,6 @@ namespace Skins
             _camera.orthographicSize = Mathf.Max(0.1f, maxVerticalExtent / _padding);
         }
 
-        // Точка на луче взгляда камеры на глубине position — центр кадра.
-        // Центрируем модель в неё, чтобы превью стояло ровно по середине экрана,
-        // как бы ни была повёрнута или смещена камера превью.
         private Vector3 GetViewCenter(Vector3 position)
         {
             Vector3 forward = _camera.transform.forward;

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e79f510ee66e4552921654b4409ab2d9, type: 3}
   m_Name: Tung
   m_EditorClassIdentifier: 
-  <Model>k__BackingField: {fileID: 8492548268188994972, guid: ff4c4a591acfe954d8032ed657a87b78, type: 3}
-  <Icon>k__BackingField: {fileID: 21300000, guid: a667f31e128b0c7469727c3c09bb744b, type: 3}
-  <Rarity>k__BackingField: 1
-  <Price>k__BackingField: 1500
-  <SkinType>k__BackingField: 2
+  _model: {fileID: 8492548268188994972, guid: ff4c4a591acfe954d8032ed657a87b78, type: 3}
+  _icon: {fileID: 21300000, guid: a667f31e128b0c7469727c3c09bb744b, type: 3}
+  _rarity: 1
+  _price: 1500
+  _skinType: 2

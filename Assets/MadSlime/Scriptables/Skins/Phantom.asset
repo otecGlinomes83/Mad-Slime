@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e79f510ee66e4552921654b4409ab2d9, type: 3}
   m_Name: Phantom
   m_EditorClassIdentifier: 
-  <Model>k__BackingField: {fileID: 4985999236574877249, guid: f66f5eaf9007e7241a3c0f213d74f003, type: 3}
-  <Icon>k__BackingField: {fileID: 21300000, guid: f1535fb2ec3010a4c87675a7ebda11b1, type: 3}
-  <Rarity>k__BackingField: 3
-  <Price>k__BackingField: 0
-  <SkinType>k__BackingField: 4
+  _model: {fileID: 4985999236574877249, guid: f66f5eaf9007e7241a3c0f213d74f003, type: 3}
+  _icon: {fileID: 21300000, guid: f1535fb2ec3010a4c87675a7ebda11b1, type: 3}
+  _rarity: 3
+  _price: 0
+  _skinType: 4

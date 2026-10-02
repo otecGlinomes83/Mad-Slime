@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
-namespace Skins
+namespace Shop
 {
     [RequireComponent(typeof(Button))]
     public sealed class ShopCloseButton : MonoBehaviour
@@ -13,12 +13,14 @@ namespace Skins
         [SerializeField] private ShopPanel _shopPanel;
 
         private GameDirector _gameDirector;
+        private Pauser _pauser;
         private Button _button;
 
         [Inject]
-        public void Construct(GameDirector gameDirector)
+        public void Construct(GameDirector gameDirector, Pauser pauser)
         {
             _gameDirector = gameDirector;
+            _pauser = pauser;
         }
 
         private void Awake()
@@ -33,6 +35,12 @@ namespace Skins
             {
                 throw new InvalidOperationException(
                     $"{name}: GameDirector was not injected. Check that ShopLifetimeScope registers ShopCloseButton.");
+            }
+
+            if (_pauser == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Pauser was not injected. Check that ShopLifetimeScope registers the Pauser component and ShopCloseButton.");
             }
 
             _button = GetComponent<Button>();
@@ -66,6 +74,8 @@ namespace Skins
             {
                 targetSceneId = SceneId.Menu;
             }
+
+            _pauser.ResetToPlay();
 
             await _gameDirector.LoadAsync(targetSceneId);
         }

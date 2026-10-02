@@ -1,12 +1,14 @@
 using System;
 using UnityEngine;
 
-namespace Skins
+namespace Shop
 {
     [RequireComponent(typeof(MeshRenderer))]
     [RequireComponent(typeof(MeshFilter))]
     public sealed class SkinModel : MonoBehaviour
     {
+        public const string WalkTrigger = "Walk";
+
         private MeshRenderer _renderer;
         private MeshFilter _meshFilter;
 

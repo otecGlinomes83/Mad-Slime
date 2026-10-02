@@ -5,11 +5,12 @@ using Player;
 using Roulette;
 using TMPro;
 using Upgrades;
+using Skins;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
-namespace Skins
+namespace Shop
 {
     public sealed class ShopPanel : MonoBehaviour
     {
@@ -85,8 +86,6 @@ namespace Skins
             ShowRouletteTab();
         }
 
-        // При входе в магазин превью сразу показывает надетый скин и крутится,
-        // как после клика по его плашке.
         private void ShowEquippedSkin()
         {
             SkinItem equipped = FindSkin(_progress.SelectedSkin);
@@ -355,8 +354,6 @@ namespace Skins
 
         private void OnSkinItemClick(ShopItemView view)
         {
-            // Закрытый скин тоже показываем в превью, но не выбираем его:
-            // галочка остаётся на надетом скине.
             _modelPlacer.SetModel(view.Model);
             _modelPlacer.PlayWalk();
 
@@ -482,8 +479,6 @@ namespace Skins
 
         private void Clear()
         {
-            // При выгрузке сцены виды бывают уже уничтожены движком — гварды
-            // обязательны, иначе MissingReferenceException в OnDisable.
             foreach (ShopItemView view in _shopItems)
             {
                 if (view == null)

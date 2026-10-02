@@ -1,9 +1,10 @@
 using System;
 using UI;
+using Skins;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Skins
+namespace Shop
 {
     [RequireComponent(typeof(Image))]
     [RequireComponent(typeof(Button))]
@@ -91,8 +92,6 @@ namespace Skins
             IsLock = false;
             _lockImage.gameObject.SetActive(IsLock);
 
-            // Цена в каноническом префабе не проложена (скины не покупаются
-            // поштучно) — показывать нечего, гвард обязателен.
             if (_priceView != null)
             {
                 _priceView.Hide();

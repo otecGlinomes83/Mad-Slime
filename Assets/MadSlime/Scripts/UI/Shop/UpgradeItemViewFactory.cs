@@ -4,7 +4,7 @@ using Upgrades;
 using VContainer;
 using VContainer.Unity;
 
-namespace Skins
+namespace Shop
 {
     public sealed class UpgradeItemViewFactory : MonoBehaviour
     {

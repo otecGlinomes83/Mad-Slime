@@ -1,4 +1,5 @@
 using System;
+using Shop;
 using Skins;
 using TMPro;
 using UI;
@@ -268,8 +269,6 @@ namespace Roulette
 
         private Color Darken(Color color)
         {
-            // Альфу не трогаем: Lerp к чёрному иначе приглушает окно до
-            // полупрозрачности (чёрный несёт a=0).
             Color darkened = Color.Lerp(color, Color.black, _backgroundDarkening);
             darkened.a = color.a;
 
@@ -296,7 +295,7 @@ namespace Roulette
 
             if (_currentModel.TryGetComponent(out _currentAnimator) == true)
             {
-                _currentAnimator.SetTrigger("Walk");
+                _currentAnimator.SetTrigger(SkinModel.WalkTrigger);
             }
 
             FitCamera(skinModel);

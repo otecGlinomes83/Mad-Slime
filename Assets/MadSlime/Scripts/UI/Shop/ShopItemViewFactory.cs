@@ -1,9 +1,10 @@
+using Skins;
 using System;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace Skins
+namespace Shop
 {
     public sealed class ShopItemViewFactory : MonoBehaviour
     {

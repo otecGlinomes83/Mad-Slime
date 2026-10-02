@@ -6,12 +6,15 @@ using Upgrades;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Skins
+namespace Shop
 {
     [RequireComponent(typeof(Image))]
     [RequireComponent(typeof(Button))]
     public sealed class UpgradeItemView : MonoBehaviour
     {
+        private const float MillionsPriceThreshold = 1000000f;
+        private const float ThousandsPriceThreshold = 1000f;
+
         [SerializeField] private Image _icon;
         [SerializeField] private TMP_Text _stepText;
         [SerializeField] private TMP_Text _titleText;
@@ -153,14 +156,14 @@ namespace Skins
 
         private static string FormatPrice(int amount)
         {
-            if (amount >= 1000000)
+            if (amount >= MillionsPriceThreshold)
             {
-                return FormatFraction(amount / 1000000f) + "m";
+                return FormatFraction(amount / MillionsPriceThreshold) + "m";
             }
 
-            if (amount >= 1000)
+            if (amount >= ThousandsPriceThreshold)
             {
-                return FormatFraction(amount / 1000f) + "k";
+                return FormatFraction(amount / ThousandsPriceThreshold) + "k";
             }
 
             return amount.ToString(CultureInfo.InvariantCulture);

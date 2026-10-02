@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Player;
+using Skins;
 using UnityEngine;
 
-namespace Skins
+namespace Shop
 {
     [CreateAssetMenu(menuName = "Mad Slime/Shop Content", fileName = "NewShopContent")]
-    public class ShopContent : ScriptableObject
+    public sealed class ShopContent : ScriptableObject
     {
         [Tooltip("Список скинов, доступных в магазине. Дубли по SkinType запрещены.")]
         [SerializeField] private List<SkinItem> _skinItems;

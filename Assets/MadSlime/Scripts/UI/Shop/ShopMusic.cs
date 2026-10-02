@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using VContainer;
 
-namespace Skins
+namespace Shop
 {
     public sealed class ShopMusic : MonoBehaviour
     {
