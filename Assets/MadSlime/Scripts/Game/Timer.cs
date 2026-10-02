@@ -60,27 +60,6 @@ namespace Game
             _isRunning = false;
         }
 
-        public void Continue()
-        {
-            if (_isSetupFinished == false)
-            {
-                throw new InvalidOperationException("Timer.Continue called before Setup. Call Setup(duration) first.");
-            }
-
-            if (_isRunning == true)
-            {
-                throw new InvalidOperationException("Timer is already running.");
-            }
-
-            if (_remaining <= 0f)
-            {
-                throw new InvalidOperationException(
-                    "Timer cannot be continued because remaining time is zero. Call Setup to reset duration.");
-            }
-
-            StartInternal();
-        }
-
         private void StartInternal()
         {
             CancellationToken destroyToken = this.GetCancellationTokenOnDestroy();

@@ -136,16 +136,12 @@ namespace Roulette
 
         public bool CanSpinForAd(long nowUnixTime)
         {
-            PruneAdSpins(nowUnixTime);
-
-            return _progress.RouletteAdSpinTimes.Count < _config.AdSpinsPerWindow;
+            return CountAdSpinsInWindow(nowUnixTime) < _config.AdSpinsPerWindow;
         }
 
         public int GetAdSpinsLeft(long nowUnixTime)
         {
-            PruneAdSpins(nowUnixTime);
-
-            return _config.AdSpinsPerWindow - _progress.RouletteAdSpinTimes.Count;
+            return _config.AdSpinsPerWindow - CountAdSpinsInWindow(nowUnixTime);
         }
 
         public void RegisterFreeSpin(long nowUnixTime)
@@ -380,7 +376,7 @@ namespace Roulette
                 $"RouletteService: failed to pick a skin of rarity '{rarity}' from a pool of {pool.Count} skins.");
         }
 
-        private void PruneAdSpins(long nowUnixTime)
+        public void PruneAdSpins(long nowUnixTime)
         {
             List<long> spinTimes = _progress.RouletteAdSpinTimes;
             long windowStart = nowUnixTime - _config.AdSpinWindowSeconds;
@@ -392,6 +388,23 @@ namespace Roulette
                     spinTimes.RemoveAt(i);
                 }
             }
+        }
+
+        private int CountAdSpinsInWindow(long nowUnixTime)
+        {
+            List<long> spinTimes = _progress.RouletteAdSpinTimes;
+            long windowStart = nowUnixTime - _config.AdSpinWindowSeconds;
+            int count = 0;
+
+            for (int i = 0; i < spinTimes.Count; i++)
+            {
+                if (spinTimes[i] >= windowStart)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
     }
 }

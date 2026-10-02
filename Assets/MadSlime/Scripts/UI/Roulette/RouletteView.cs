@@ -142,6 +142,8 @@ namespace Roulette
 
             _reel.Setup(_service.Config, _sfxPlayer);
 
+            _service.PruneAdSpins(GetNowUnixTime());
+
             if (_mode == Mode.Skins && _adButton != null)
             {
                 _adButton.gameObject.SetActive(false);

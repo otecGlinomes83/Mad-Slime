@@ -11,6 +11,13 @@ namespace Game
 {
     public sealed class GameplaySessionHandler : MonoBehaviour
     {
+        private enum SessionState
+        {
+            WaitingForStart,
+            Running,
+            Finished
+        }
+
         [SerializeField] private SfxClip _musicTrack;
 
         [Tooltip("Пауза перед переходом в Fill после конца сессии: игрок видит, что игра закончилась.")]
@@ -26,9 +33,7 @@ namespace Game
         private Pauser _pauser;
         private IGameplayReporter _gameplayReporter;
 
-        private bool _isStarted;
-        private bool _isFinished;
-        private bool _isSubscribed;
+        private SessionState _state = SessionState.WaitingForStart;
 
         [Inject]
         public void Construct(LevelConfigResolver configResolver, PlayerProgress progress, LevelProgress levelProgress,
@@ -88,49 +93,29 @@ namespace Game
         {
             if (_levelProgress == null)
             {
-                return;
-            }
-
-            SubscribeSession();
-        }
-
-        private void Start()
-        {
-            if (_levelProgress == null)
-            {
                 throw new InvalidOperationException(
                     $"{name}: LevelProgress was not injected. Check that GameLifetimeScope is configured and Player is registered.");
             }
 
+            _inputReader.MovementKeyPressed += OnMovementKeyPressed;
+            _timer.Finished += OnTimeOut;
+            _levelProgress.QuotaCompleted += OnQuotaCompleted;
+        }
+
+        private void Start()
+        {
             _musicPlayer.Play(_musicTrack);
-            SubscribeSession();
         }
 
         private void OnDisable()
         {
-            _isSubscribed = false;
-
-            _inputReader.MovementKeyPressed -= Begin;
+            _inputReader.MovementKeyPressed -= OnMovementKeyPressed;
             _timer.Finished -= OnTimeOut;
 
             if (_levelProgress != null)
             {
                 _levelProgress.QuotaCompleted -= OnQuotaCompleted;
             }
-        }
-
-        private void SubscribeSession()
-        {
-            if (_isSubscribed == true)
-            {
-                return;
-            }
-
-            _isSubscribed = true;
-
-            _inputReader.MovementKeyPressed += Begin;
-            _timer.Finished += OnTimeOut;
-            _levelProgress.QuotaCompleted += OnQuotaCompleted;
         }
 
         public void ExitToMenu()
@@ -141,7 +126,7 @@ namespace Game
 
         private void StopGameplay()
         {
-            if (_isStarted == false)
+            if (_state != SessionState.Running)
             {
                 return;
             }
@@ -149,14 +134,12 @@ namespace Game
             _gameplayReporter.ReportStop();
         }
 
-        private void Begin()
+        private void OnMovementKeyPressed()
         {
-            if (_isStarted == true || _isFinished == true)
+            if (TryTransitTo(SessionState.Running) == false)
             {
                 return;
             }
-
-            _isStarted = true;
 
             _pauser.RequestResume();
             _timer.StartCount();
@@ -165,31 +148,42 @@ namespace Game
 
         private void OnTimeOut()
         {
-            if (_isFinished == true)
+            if (TryTransitTo(SessionState.Finished) == false)
             {
                 return;
             }
 
-            _isFinished = true;
-            FinishGame("timeout");
+            FinishGame();
         }
 
         private void OnQuotaCompleted()
         {
-            if (_isFinished == true)
+            if (TryTransitTo(SessionState.Finished) == false)
             {
                 return;
             }
 
-            _isFinished = true;
-            FinishGame("quota completed");
+            FinishGame();
         }
 
-        private void FinishGame(string reason)
+        private bool TryTransitTo(SessionState targetState)
         {
-            Debug.Log(
-                $"[Game] finished: {reason} | Level={_progress.CurrentLevel} Quota {_levelProgress.CollectedQuotaCount}/{_levelProgress.TotalQuotaTarget} Fill={_levelProgress.FillPercent:0.00}");
+            if (_state == SessionState.Finished)
+            {
+                return false;
+            }
 
+            if (targetState <= _state)
+            {
+                return false;
+            }
+
+            _state = targetState;
+            return true;
+        }
+
+        private void FinishGame()
+        {
             _timer.Stop();
             _gameplayReporter.ReportStop();
             _pauser.RequestPause();

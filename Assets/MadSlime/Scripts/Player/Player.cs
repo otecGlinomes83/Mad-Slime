@@ -82,7 +82,6 @@ namespace Player
             _rotator = GetComponent<Rotator>();
             _playerTier = GetComponent<PlayerTier>();
 
-            _mover.SetDefaultSpeed(_playerConfig.BaseMoveSpeed * _upgrades.SpeedMultiplier);
             _mover.SetSmoothTime(_playerConfig.MoveSmoothTime);
             _rotator.SetSpeed(_playerConfig.RotationSpeed);
         }
