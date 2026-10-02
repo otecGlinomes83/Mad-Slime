@@ -96,17 +96,12 @@ namespace UI
             }
         }
 
-        private static bool s_dailyShownThisSession;
-
         private void Start()
         {
             _musicPlayer.Play(_musicTrack);
 
-            // Дейли-ревард показывается один раз за сессию игры (при старте
-            // приложения), а не при каждом возврате в главное меню.
-            if (s_dailyShownThisSession == false)
+            if (_gameDirector.TryMarkDailyShown() == true)
             {
-                s_dailyShownThisSession = true;
                 ShowDailyRoulette();
             }
         }
@@ -181,6 +176,8 @@ namespace UI
             {
                 return;
             }
+
+            _pauser.ResetToPlay();
 
             await _gameDirector.LoadAsync(targetSceneId);
         }

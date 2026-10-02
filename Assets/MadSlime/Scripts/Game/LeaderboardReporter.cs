@@ -43,7 +43,6 @@ namespace Game
         {
             if (_leaderboardService.IsAuthorized == false)
             {
-                Debug.Log("Leaderboard: player is not authorized, score is not reported.");
                 return;
             }
 

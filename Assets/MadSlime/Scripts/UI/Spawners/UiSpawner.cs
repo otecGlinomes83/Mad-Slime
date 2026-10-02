@@ -86,26 +86,37 @@ namespace UI
             canvas.sortingOrder = (int)layer;
         }
 
-        private static void SubscribeClosed(IShowable showable, Action onClosed)
+        private static void SubscribeClosed(Component showable, Action onClosed)
         {
             if (onClosed == null)
             {
                 return;
             }
 
-            new ClosedRelay(showable, onClosed);
+            ClosedRelay relay = showable.gameObject.AddComponent<ClosedRelay>();
+            relay.Initialize((IShowable)showable, onClosed);
         }
 
-        private sealed class ClosedRelay
+        private sealed class ClosedRelay : MonoBehaviour
         {
-            private readonly IShowable _showable;
-            private readonly Action _onClosed;
+            private IShowable _showable;
+            private Action _onClosed;
 
-            public ClosedRelay(IShowable showable, Action onClosed)
+            public void Initialize(IShowable showable, Action onClosed)
             {
                 _showable = showable;
                 _onClosed = onClosed;
                 _showable.Closed += OnShowableClosed;
+            }
+
+            private void OnDestroy()
+            {
+                if (_showable == null)
+                {
+                    return;
+                }
+
+                _showable.Closed -= OnShowableClosed;
             }
 
             private void OnShowableClosed()

@@ -151,8 +151,6 @@ namespace Roulette
 
             _spinButton.onClick.AddListener(OnSpinClicked);
 
-            // В режиме Skins кнопка рекламы необязательна: гвард симметричен
-            // проверке в OnDestroy.
             if (_adButton != null)
             {
                 _adButton.onClick.AddListener(OnAdClicked);
@@ -232,11 +230,6 @@ namespace Roulette
             closed?.Invoke();
         }
 
-        // Лента не должна работать на коротком списке: соседние карточки
-        // повторяются и наезжают друг на друга. Поэтому список растягивается
-        // до MinimumEntryCount, повторяя существующие записи по кругу, а
-        // параллельные списки хранят, какая запись (сектор или скин) стоит
-        // за каждой ячейкой ленты.
         private void BuildReel()
         {
             List<RouletteSectorView> views = new List<RouletteSectorView>();
@@ -266,8 +259,6 @@ namespace Roulette
                     }
                     else
                     {
-                        // Скин-сектор показывается «секретом»: иконка и плашка
-                        // одинаковые, выпавший скин раскрывается только в попапе.
                         views.Add(new RouletteSectorView(
                             Localization.Get("roulette_secret"),
                             _secretIcon,
@@ -279,8 +270,6 @@ namespace Roulette
             {
                 List<SkinItem> pool = _service.CollectAvailableSkinPool(_skinSource);
 
-                // Эксклюзивные (сверхредкие) скины выпадают только из денежной
-                // рулетки в главном меню (дейли-ревард) — из скин-рулетки исключены.
                 for (int i = pool.Count - 1; i >= 0; i--)
                 {
                     if (IsExclusive(pool[i]) == true)
@@ -293,9 +282,16 @@ namespace Roulette
                 _allSkinsCollected = pool.Count == 0;
                 _sectorPool = new List<SkinItem>(pool);
 
-                // Пустой пул: крутим вхолостую нельзя — показываем все скины,
-                // но покупка (крутка за монеты) запрещена в RefreshButtons.
-                List<SkinItem> source = pool.Count > 0 ? pool : AllSkinsSorted();
+                List<SkinItem> source;
+
+                if (pool.Count > 0)
+                {
+                    source = pool;
+                }
+                else
+                {
+                    source = AllSkinsSorted();
+                }
 
                 if (source.Count == 0)
                 {
@@ -353,7 +349,6 @@ namespace Roulette
             {
                 long now = GetNowUnixTime();
 
-                // Дейли-рулетка крутится только бесплатно по кулдауну или за рекламу.
                 if (_service.CanSpinFree(now) == true)
                 {
                     _service.RegisterFreeSpin(now);
@@ -537,8 +532,9 @@ namespace Roulette
                     }
                     else
                     {
-                        // Пока бесплатная крутка на кулдауне — показываем таймер до неё.
-                        _spinPriceText.text = $"{freeRemainSeconds / 60}:{freeRemainSeconds % 60:00}";
+                        int minutes = freeRemainSeconds / 60;
+                        int seconds = freeRemainSeconds % 60;
+                        _spinPriceText.text = $"{minutes}:{seconds:00}";
                     }
 
                     _adButtonText.text = string.Format(

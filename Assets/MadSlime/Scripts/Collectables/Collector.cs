@@ -71,11 +71,9 @@ namespace Collectables
         {
             if (item.Definition == null)
             {
-                Debug.LogError(
+                throw new InvalidOperationException(
                     $"{name}: detected item '{item.name}' has no Definition assigned. " +
-                    "Assign a definition to its prefab or delete the item from the scene.",
-                    item.gameObject);
-                return;
+                    "Assign a definition to its prefab or delete the item from the scene.");
             }
 
             if (item.Definition.Tier > _tierHolder.CurrentTier + _upgrades.AmbitionTierOffset)

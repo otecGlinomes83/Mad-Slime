@@ -44,17 +44,7 @@ namespace DI
 
         private void InjectSceneButtonSounds(IObjectResolver container)
         {
-            GameObject[] sceneRoots = gameObject.scene.GetRootGameObjects();
-
-            for (int rootIndex = 0; rootIndex < sceneRoots.Length; rootIndex++)
-            {
-                UIButtonSound[] buttonSounds = sceneRoots[rootIndex].GetComponentsInChildren<UIButtonSound>(true);
-
-                for (int soundIndex = 0; soundIndex < buttonSounds.Length; soundIndex++)
-                {
-                    container.Inject(buttonSounds[soundIndex]);
-                }
-            }
+            UiButtonSoundInjector.InjectInScene(container, gameObject.scene);
         }
 
         private void ValidateAssigned(object dependency, string fieldName)

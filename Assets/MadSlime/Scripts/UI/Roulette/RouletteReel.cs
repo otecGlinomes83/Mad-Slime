@@ -16,6 +16,9 @@ namespace Roulette
         private const int LoopNormalizationTurns = 64;
         private const float SnapZone = 0.3f;
         private const float WinPunchStrength = 0.06f;
+        private const float MaxWinPunchDurationSeconds = 0.5f;
+        private const int WinPunchVibrato = 4;
+        private const float WinPunchElasticity = 0.5f;
 
         [SerializeField] private RectTransform _viewport;
         [SerializeField] private RectTransform _content;
@@ -48,9 +51,6 @@ namespace Roulette
 
         public int EntryCount => _entries.Count;
 
-        // Ниже этого числа записей соседние карточки неизбежно повторяются и
-        // наезжают друг на друга — лента работает криво. Вызывающий код обязан
-        // растянуть список до этого размера (Build дотягивает сам как страховку).
         public int MinimumEntryCount => _visibleRowCount + 2;
 
         public void Setup(RouletteConfig config, SfxPlayer sfxPlayer)
@@ -115,8 +115,6 @@ namespace Roulette
                 _entries.Add(entries[i]);
             }
 
-            // Страховка: если список короче минимального, дотягиваем его,
-            // повторяя существующие записи по кругу.
             for (int i = entries.Count; _entries.Count < _visibleRowCount + 2; i++)
             {
                 _entries.Add(entries[i % entries.Count]);
@@ -291,18 +289,19 @@ namespace Roulette
             }
         }
 
-        // Cells morph along the reel: a full-size cell inside the center zone,
-        // tucked cells filling the remaining strips above and below. The whole
-        // card scales uniformly — icon and text shrink and grow with the plate —
-        // while the rect is stretched by 1/scale horizontally, so the plate keeps
-        // rendering at the full window width. Distance is measured in cell steps
-        // from the center slot; at whole distances every card sits flush inside
-        // its strip, so the viewport never clips anything. Growth is compressed
-        // into the last SnapZone of a step, so a cell travels at strip size and
-        // pops into the center slot instead of easing under a lens.
         private void ApplyCardPhase(RectTransform cardTransform, float delta)
         {
-            float direction = Mathf.Approximately(delta, 0f) ? 0f : Mathf.Sign(delta);
+            float direction;
+
+            if (Mathf.Approximately(delta, 0f) == true)
+            {
+                direction = 0f;
+            }
+            else
+            {
+                direction = Mathf.Sign(delta);
+            }
+
             float distance = Mathf.Abs(delta);
             float scale = CellHeight(distance) / _baseCardHeight;
 
@@ -405,10 +404,10 @@ namespace Roulette
 
         private void PunchCenterCard()
         {
-            float punchDuration = Mathf.Min(_config.WinDwellSeconds, 0.5f);
+            float punchDuration = Mathf.Min(_config.WinDwellSeconds, MaxWinPunchDurationSeconds);
 
             ((RectTransform)_cards[1].transform)
-                .DOPunchScale(new Vector3(WinPunchStrength, WinPunchStrength, 0f), punchDuration, 4, 0.5f)
+                .DOPunchScale(new Vector3(WinPunchStrength, WinPunchStrength, 0f), punchDuration, WinPunchVibrato, WinPunchElasticity)
                 .SetTarget(this)
                 .SetLink(gameObject, LinkBehaviour.KillOnDisable);
         }

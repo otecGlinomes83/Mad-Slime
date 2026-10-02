@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Items;
+using Object = UnityEngine.Object;
 using UnityEngine;
 
 namespace Game
@@ -22,8 +24,8 @@ namespace Game
         {
             if (prefab.gameObject.activeSelf == false)
             {
-                Debug.LogWarning(
-                    $"ItemPool: prefab '{prefab.name}' is disabled on the asset. Instantiated items will be invisible.");
+                throw new InvalidOperationException(
+                    $"ItemPool: prefab '{prefab.name}' is disabled on the asset. Enable the prefab or remove it from the level setup.");
             }
 
             if (_pooledByPrefab.TryGetValue(prefab, out List<Item> pooled) && pooled.Count > 0)

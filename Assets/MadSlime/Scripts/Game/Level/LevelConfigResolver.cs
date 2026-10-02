@@ -1,6 +1,5 @@
 using System;
 using Scriptables;
-using UnityEngine;
 
 namespace Game
 {
@@ -29,26 +28,14 @@ namespace Game
 
             LevelConfig matched = FindRangeConfig(levelNumber);
 
-            if (IsPlayable(matched) == true)
-            {
-                return matched;
-            }
-
-            Debug.LogWarning(
-                $"LevelsCatalog '{_catalog.name}': level {levelNumber} resolved to " +
-                $"'{(matched == null ? "<missing asset>" : matched.name)}' but it is not playable " +
-                $"({DescribeProblem(matched)}). Falling back to the first playable config.");
-
-            LevelConfig fallback = FindFirstPlayable();
-
-            if (fallback == null)
+            if (IsPlayable(matched) == false)
             {
                 throw new InvalidOperationException(
-                    $"LevelsCatalog '{_catalog.name}': no playable configs at all — every LevelConfig is missing " +
-                    "a PropSet or its PropSet has no baked variants. Assign a PropSet and run Mad Slime → Prop Factory.");
+                    $"LevelsCatalog '{_catalog.name}': level {levelNumber} resolved to a config that is not playable — " +
+                    $"{DescribeProblem(matched)}. Fix the config of this range and run Mad Slime → Prop Factory if needed.");
             }
 
-            return fallback;
+            return matched;
         }
 
         private LevelConfig FindRangeConfig(int levelNumber)
@@ -62,19 +49,6 @@ namespace Game
             }
 
             return _catalog.Ranges[_catalog.Ranges.Count - 1].Config;
-        }
-
-        private LevelConfig FindFirstPlayable()
-        {
-            for (int i = 0; i < _catalog.Ranges.Count; i++)
-            {
-                if (IsPlayable(_catalog.Ranges[i].Config) == true)
-                {
-                    return _catalog.Ranges[i].Config;
-                }
-            }
-
-            return null;
         }
 
         private static bool IsPlayable(LevelConfig config)

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
@@ -5,7 +6,7 @@ using VContainer.Unity;
 
 namespace Game
 {
-    public sealed class SessionStateLogger : IStartable
+    public sealed class SessionStateLogger : IStartable, IDisposable
     {
         private readonly PlayerProgress _progress;
         private readonly LevelProgress _levelProgress;
@@ -22,6 +23,11 @@ namespace Game
             LogState("session start");
 
             SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        public void Dispose()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

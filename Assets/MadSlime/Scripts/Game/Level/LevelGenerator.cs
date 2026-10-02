@@ -141,9 +141,6 @@ namespace Game
 
             List<QuotaEntry> quota = _quotaGenerator.Generate(_spawnedCounts, config);
             _levelProgress.Reset(quota);
-
-            Debug.Log(
-                $"{name}: level {_progress.CurrentLevel} from '{config.name}', layout '{layout.name}': spawned {GetTotalSpawnedCount()} items, quota types {quota.Count}.");
         }
 
         private LayoutSet PickLayout()
@@ -160,35 +157,27 @@ namespace Game
                     $"{name}: LayoutsLibrary '{_layoutsLibrary.name}' is empty. Add at least one LayoutSet.");
             }
 
-            List<LayoutSet> playable = new List<LayoutSet>(_layoutsLibrary.Layouts.Count);
-
-            foreach (LayoutSet layout in _layoutsLibrary.Layouts)
+            for (int i = 0; i < _layoutsLibrary.Layouts.Count; i++)
             {
-                if (layout == null)
-                {
-                    Debug.LogWarning(
-                        $"{name}: LayoutsLibrary '{_layoutsLibrary.name}' has an empty slot, skipped.");
-                    continue;
-                }
-
-                if (layout.Zones.Count == 0)
-                {
-                    Debug.LogWarning(
-                        $"{name}: LayoutSet '{layout.name}' has no zones, skipped. Add zones to it or remove it from the library.");
-                    continue;
-                }
-
-                playable.Add(layout);
+                ValidateLayout(_layoutsLibrary.Layouts[i]);
             }
 
-            if (playable.Count == 0)
+            return _layoutsLibrary.Layouts[Random.Range(0, _layoutsLibrary.Layouts.Count)];
+        }
+
+        private void ValidateLayout(LayoutSet layout)
+        {
+            if (layout == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: LayoutsLibrary '{_layoutsLibrary.name}' has no playable layouts — all are empty or zone-less. " +
-                    "Fill at least one LayoutSet with zones.");
+                    $"{name}: LayoutsLibrary '{_layoutsLibrary.name}' has an empty slot. Remove the empty slot or assign a LayoutSet asset.");
             }
 
-            return playable[Random.Range(0, playable.Count)];
+            if (layout.Zones.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: LayoutSet '{layout.name}' has no zones. Add zones to it or remove it from the library.");
+            }
         }
 
         private void AssignTiers(LevelConfig config)
@@ -279,9 +268,9 @@ namespace Game
 
                 if (_zonePool.Count == 0)
                 {
-                    Debug.LogWarning(
-                        $"{name}: zone {i} ({zone.Shape}) skipped: no props assigned to tiers {zone.MinTier}-{zone.MaxTier} on this run.");
-                    continue;
+                    throw new InvalidOperationException(
+                        $"{name}: zone {i} ({zone.Shape}) of layout '{layout.name}' has no props in tiers {zone.MinTier}-{zone.MaxTier} " +
+                        $"for level config '{config.name}'. Align the zone tier range with the config or add props of these tiers.");
                 }
 
                 float spacing = ZoneLayoutPlanner.ResolveSpacing(zone, layout, _zoneRadii);
@@ -393,18 +382,6 @@ namespace Game
             {
                 _spawnedCounts[definition] = 1;
             }
-        }
-
-        private int GetTotalSpawnedCount()
-        {
-            int total = 0;
-
-            foreach (KeyValuePair<ItemDefinition, int> pair in _spawnedCounts)
-            {
-                total += pair.Value;
-            }
-
-            return total;
         }
 
         private Vector3 ClampToMap(Vector3 localPosition, float margin)

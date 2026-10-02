@@ -153,14 +153,10 @@ namespace Game
 
             if (config.Theme == null || config.Theme.FillShapeTexture == null)
             {
-                Debug.LogWarning(
-                    $"[Fill] LevelConfig '{config.name}' has no Theme or FillShapeTexture. GridBuilder keeps its scene-authored texture.");
                 return;
             }
 
             _gridBuilder.SetShapeTexture(config.Theme.FillShapeTexture);
-
-            Debug.Log($"[Fill] theme '{config.Theme.name}' applied, fill texture '{config.Theme.FillShapeTexture.name}'.");
         }
 
         public void LoadNextLevel()
@@ -223,6 +219,8 @@ namespace Game
             {
                 return;
             }
+
+            _pauser.ResetToPlay();
 
             await _gameDirector.LoadAsync(targetSceneId);
         }

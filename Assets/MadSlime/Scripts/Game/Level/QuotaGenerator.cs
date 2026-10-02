@@ -41,7 +41,6 @@ namespace Game
 
                 if (target > spawned)
                 {
-                    Debug.LogWarning($"[Quota] {definition.name}: quota reduced from {target} to {spawned} — not enough items spawned.");
                     target = spawned;
                 }
 

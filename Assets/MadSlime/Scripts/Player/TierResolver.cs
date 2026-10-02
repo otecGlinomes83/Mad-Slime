@@ -59,12 +59,7 @@ namespace Player
                 }
             }
 
-            if (_sortedByMass.Count > 0)
-            {
-                return _sortedByMass[0].Speed;
-            }
-
-            return 4f;
+            return _sortedByMass[0].Speed;
         }
 
         public float GetTierProgress(int mass)

@@ -27,10 +27,6 @@ namespace Scriptables
         [Tooltip("Определение, присваиваемое варианту: иконка и тир.")]
         [SerializeField] private ItemDefinition _definition;
 
-        public PropVariant()
-        {
-        }
-
         public PropVariant(Item prefab, ItemDefinition definition)
         {
             _prefab = prefab;

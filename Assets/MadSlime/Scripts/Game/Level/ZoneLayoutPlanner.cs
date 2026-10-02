@@ -40,21 +40,23 @@ namespace Game
         {
             _positions.Clear();
 
-            if (zone.Shape == SpawnShape.Grid)
+            switch (zone.Shape)
             {
-                CollectGrid(center, zone.Count, spacing);
-            }
-            else if (zone.Shape == SpawnShape.CircleGrid)
-            {
-                CollectCircleGrid(center, zone.Count, spacing);
-            }
-            else if (zone.Shape == SpawnShape.Circle)
-            {
-                CollectCircle(center, zone.Radius, zone.Count);
-            }
-            else
-            {
-                CollectScatter(zone, center, spacing, layout);
+                case SpawnShape.Grid:
+                    CollectGrid(center, zone.Count, spacing);
+                    break;
+
+                case SpawnShape.CircleGrid:
+                    CollectCircleGrid(center, zone.Count, spacing);
+                    break;
+
+                case SpawnShape.Circle:
+                    CollectCircle(center, zone.Radius, zone.Count);
+                    break;
+
+                default:
+                    CollectScatter(zone, center, spacing, layout);
+                    break;
             }
         }
 

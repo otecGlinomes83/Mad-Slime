@@ -37,7 +37,6 @@ public static class PlayerDataResetTool
         json = ReplaceNumber(json, "LastFreeSpinUnixTime", 0);
         json = ReplaceArray(json, "RouletteAdSpinTimes", "[]");
         json = ReplaceNumber(json, "SkinSpinCount", 0);
-        json = ReplaceString(json, "PreviousScene", "Menu");
 
         File.WriteAllText(EditorSavesPath, json);
         AssetDatabase.Refresh();
@@ -62,19 +61,6 @@ public static class PlayerDataResetTool
     {
         string pattern = "\"" + field + "\":\\s*\\[[^\\]]*\\]";
         string replacement = "\"" + field + "\": " + value;
-
-        if (System.Text.RegularExpressions.Regex.IsMatch(json, pattern) == false)
-        {
-            throw new InvalidOperationException($"Field '{field}' not found in editor saves.");
-        }
-
-        return System.Text.RegularExpressions.Regex.Replace(json, pattern, replacement);
-    }
-
-    private static string ReplaceString(string json, string field, string value)
-    {
-        string pattern = "\"" + field + "\":\\s*\"[^\"]*\"";
-        string replacement = "\"" + field + "\": \"" + value + "\"";
 
         if (System.Text.RegularExpressions.Regex.IsMatch(json, pattern) == false)
         {

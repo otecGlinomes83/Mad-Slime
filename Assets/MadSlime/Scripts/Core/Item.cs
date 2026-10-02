@@ -28,7 +28,6 @@ namespace Items
         private Material[][] _ghostMaterials;
         private Material[][] _outlineMaterials;
         private MaterialPropertyBlock _propertyBlock;
-        private Tween _fadeTween;
         private float _ghostTargetOpacity;
         private float _currentOpacity;
         private bool _isGhost;
@@ -157,7 +156,7 @@ namespace Items
 
             DOTween.Kill(this);
 
-            _fadeTween = DOTween.To(ReadOpacity, ApplyOpacity, targetOpacity, _ghostFadeConfig.FadeDuration)
+            DOTween.To(ReadOpacity, ApplyOpacity, targetOpacity, _ghostFadeConfig.FadeDuration)
                 .SetEase(_ghostFadeConfig.Ease)
                 .SetTarget(this)
                 .SetLink(gameObject, LinkBehaviour.KillOnDisable)

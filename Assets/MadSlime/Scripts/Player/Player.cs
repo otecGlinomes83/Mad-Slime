@@ -15,6 +15,8 @@ namespace Player
     [RequireComponent(typeof(PlayerTier))]
     public sealed class Player : MonoBehaviour
     {
+        private const float QuotaFillWeight = 1f;
+
         private Mover _mover;
         private Rotator _rotator;
         private PlayerTier _playerTier;
@@ -112,10 +114,30 @@ namespace Player
             }
 
             bool isQuota = _levelProgress.IsQuotaItem(item.Definition);
-            float massMultiplier = isQuota == true ? _upgrades.QuotaMassMultiplier : _upgrades.MassMultiplier;
+
+            float massMultiplier;
+
+            if (isQuota == true)
+            {
+                massMultiplier = _upgrades.QuotaMassMultiplier;
+            }
+            else
+            {
+                massMultiplier = _upgrades.MassMultiplier;
+            }
+
             int mass = Mathf.Max(1, Mathf.RoundToInt(_tierTable.Get(item.Definition.Tier).Mass * massMultiplier));
 
-            float fillWeight = isQuota == true ? 1f : _upgrades.ForeignFillMultiplier;
+            float fillWeight;
+
+            if (isQuota == true)
+            {
+                fillWeight = QuotaFillWeight;
+            }
+            else
+            {
+                fillWeight = _upgrades.ForeignFillMultiplier;
+            }
 
             _levelProgress.RegisterCollected(item.Definition, fillWeight);
             _playerTier.Add(mass);

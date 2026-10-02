@@ -29,7 +29,5 @@ namespace YG
         public long LastFreeSpinUnixTime;
         public List<long> RouletteAdSpinTimes = new List<long>();
         public int SkinSpinCount;
-
-        public string PreviousScene;
     }
 }

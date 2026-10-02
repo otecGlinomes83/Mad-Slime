@@ -1,3 +1,4 @@
+using Game;
 using UnityEngine;
 using VContainer;
 
@@ -5,10 +6,10 @@ namespace ShapeFill
 {
     public sealed class FillCounter : MonoBehaviour
     {
-        private Game.LevelProgress _levelProgress;
+        private LevelProgress _levelProgress;
 
         [Inject]
-        public void Construct(Game.LevelProgress levelProgress)
+        public void Construct(LevelProgress levelProgress)
         {
             _levelProgress = levelProgress;
         }

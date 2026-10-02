@@ -5,6 +5,8 @@ namespace ShapeFill
 {
     public sealed class CubeSpawner : MonoBehaviour
     {
+        private static readonly int ColorId = Shader.PropertyToID("_Color");
+
         [SerializeField] private FlyingCube _cubePrefab;
         [SerializeField] private Transform _cubesParent;
 
@@ -47,7 +49,7 @@ namespace ShapeFill
                 return;
             }
 
-            _propertyBlock.SetColor(Shader.PropertyToID("_Color"), color);
+            _propertyBlock.SetColor(ColorId, color);
             cubeRenderer.SetPropertyBlock(_propertyBlock);
         }
     }

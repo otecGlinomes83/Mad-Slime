@@ -220,6 +220,8 @@ namespace Game
                 return;
             }
 
+            _pauser.ResetToPlay();
+
             await _gameDirector.LoadAsync(targetSceneId);
         }
     }

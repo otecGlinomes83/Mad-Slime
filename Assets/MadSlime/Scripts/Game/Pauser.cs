@@ -48,5 +48,15 @@ namespace Game
                 Time.timeScale = 1f;
             }
         }
+
+        public void ResetToPlay()
+        {
+            _pauseRequestCount = 0;
+
+            if (_adsService.IsPauseGame == false)
+            {
+                Time.timeScale = 1f;
+            }
+        }
     }
 }

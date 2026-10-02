@@ -109,8 +109,6 @@ namespace Roulette
 
         public int GetSkinSpinCost()
         {
-            // Старт с минимального порога, дальше — шаг за крутку без сброса;
-            // максимальный порог (если задан) ограничивает сверху.
             int cost = _config.SkinSpinMinCost + _config.SkinSpinCostStep * _progress.SkinSpinCount;
 
             if (_config.SkinSpinMaxCost > 0 && cost > _config.SkinSpinMaxCost)

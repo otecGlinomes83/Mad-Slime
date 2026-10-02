@@ -1,4 +1,3 @@
-using Core;
 using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -11,12 +10,11 @@ namespace Game
     {
         private const float ActivationProgressThreshold = 0.9f;
 
-        private readonly IAdsService _adsService;
-
         private SceneId _currentSceneId;
         private SceneId _previousSceneId;
         private bool _isInitialized;
         private bool _isTransitioning;
+        private bool _isDailyShownThisSession;
 
         public SceneId CurrentSceneId
         {
@@ -38,9 +36,15 @@ namespace Game
 
         public bool IsTransitioning => _isTransitioning;
 
-        public GameDirector(IAdsService adsService)
+        public bool TryMarkDailyShown()
         {
-            _adsService = adsService;
+            if (_isDailyShownThisSession == true)
+            {
+                return false;
+            }
+
+            _isDailyShownThisSession = true;
+            return true;
         }
 
         public void EnsureInitialized()
@@ -100,11 +104,6 @@ namespace Game
             if (sourceScene.isLoaded == true)
             {
                 DisableOutgoingSystems(sourceScene);
-            }
-
-            if (_adsService.IsPauseGame == false)
-            {
-                Time.timeScale = 1f;
             }
 
             string targetSceneName = GetSceneName(targetSceneId);

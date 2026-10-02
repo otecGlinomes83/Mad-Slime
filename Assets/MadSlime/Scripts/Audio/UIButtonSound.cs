@@ -22,8 +22,6 @@ namespace Audio
 
         private void Awake()
         {
-            _button = GetComponent<Button>();
-
             if (_sfxPlayer == null)
             {
                 throw new InvalidOperationException(
@@ -36,7 +34,7 @@ namespace Audio
                     $"{name}: SfxClip is not assigned. Drag a SfxClip asset into the _sfxClip field.");
             }
 
-            if (_button == null)
+            if (TryGetComponent(out _button) == false)
             {
                 throw new InvalidOperationException(
                     $"{name}: Button component is missing. UIButtonSound requires the Button component on the same object.");

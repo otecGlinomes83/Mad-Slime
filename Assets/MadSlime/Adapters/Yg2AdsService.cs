@@ -4,7 +4,7 @@ using YG;
 
 namespace Adapters
 {
-    public sealed class Yg2AdsService : IAdsService
+    public sealed class Yg2AdsService : IAdsService, IDisposable
     {
         public event Action RewardedOpened;
 
@@ -24,6 +24,14 @@ namespace Adapters
             YG2.onRewardAdv += OnRewardReceived;
             YG2.onCloseRewardedAdv += OnRewardedClosed;
             YG2.onErrorRewardedAdv += OnRewardedError;
+        }
+
+        public void Dispose()
+        {
+            YG2.onOpenRewardedAdv -= OnRewardedOpened;
+            YG2.onRewardAdv -= OnRewardReceived;
+            YG2.onCloseRewardedAdv -= OnRewardedClosed;
+            YG2.onErrorRewardedAdv -= OnRewardedError;
         }
 
         public void ShowRewarded(string rewardId)
