@@ -254,3 +254,11 @@ MonoBehaviour:
     _ru: "\u0421\u0415\u041A\u0420\u0415\u0422\u041D\u041E"
     _en: SECRET
     _tr: "G\u0130ZL\u0130"
+  - _key: menu_settings
+    _ru: "\u041D\u0410\u0421\u0422\u0420\u041E\u0419\u041A\u0418"
+    _en: SETTINGS
+    _tr: AYARLAR
+  - _key: leaderboard_title
+    _ru: "\u0420\u0415\u0419\u0422\u0418\u041D\u0413"
+    _en: LEADERBOARD
+    _tr: SIRALAMA
