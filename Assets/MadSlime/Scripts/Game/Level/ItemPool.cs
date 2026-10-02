@@ -8,6 +8,7 @@ namespace Game
     {
         private readonly Dictionary<Item, List<Item>> _pooledByPrefab = new Dictionary<Item, List<Item>>();
         private readonly Dictionary<Item, Item> _prefabByInstance = new Dictionary<Item, Item>();
+        private readonly List<Item> _destroyedInstances = new List<Item>();
         private readonly Transform _root;
 
         public ItemPool()
@@ -58,6 +59,24 @@ namespace Game
 
             item.transform.SetParent(_root, false);
             pooled.Add(item);
+        }
+
+        public void ClearDestroyed()
+        {
+            _destroyedInstances.Clear();
+
+            foreach (KeyValuePair<Item, Item> pair in _prefabByInstance)
+            {
+                if (pair.Key == null)
+                {
+                    _destroyedInstances.Add(pair.Key);
+                }
+            }
+
+            for (int i = 0; i < _destroyedInstances.Count; i++)
+            {
+                _prefabByInstance.Remove(_destroyedInstances[i]);
+            }
         }
     }
 }

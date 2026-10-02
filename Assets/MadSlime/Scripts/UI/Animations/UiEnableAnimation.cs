@@ -70,13 +70,14 @@ namespace UI.Animations
 
             KillCurrentTween();
 
-            _currentTween = CreateMoveTween(OutPositionFor(_mode), _duration, Ease.InCubic);
-
             if (_mode == UiAppearMode.Scale)
             {
                 _currentTween = transform.DOScale(Vector3.zero, _duration)
-                    .SetEase(Ease.InBack)
-                    .SetUpdate(true);
+                    .SetEase(Ease.InBack);
+            }
+            else
+            {
+                _currentTween = CreateMoveTween(OutPositionFor(_mode), _duration, Ease.InCubic);
             }
 
             _currentTween

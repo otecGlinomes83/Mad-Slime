@@ -125,6 +125,7 @@ namespace Game
 
         private void Generate()
         {
+            _itemPool.ClearDestroyed();
             LevelConfig config = _configResolver.GetConfigFor(_progress.CurrentLevel);
             LayoutSet layout = PickLayout();
 

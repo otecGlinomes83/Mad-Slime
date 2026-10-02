@@ -151,7 +151,7 @@ namespace Skins
             _localCorners[0] = center + new Vector3(-extents.x, -extents.y, -extents.z);
             _localCorners[1] = center + new Vector3(+extents.x, -extents.y, -extents.z);
             _localCorners[2] = center + new Vector3(-extents.x, +extents.y, -extents.z);
-            _localCorners[3] = center + new Vector3(+extents.x, -extents.y, -extents.z);
+            _localCorners[3] = center + new Vector3(+extents.x, +extents.y, -extents.z);
             _localCorners[4] = center + new Vector3(-extents.x, -extents.y, +extents.z);
             _localCorners[5] = center + new Vector3(+extents.x, -extents.y, +extents.z);
             _localCorners[6] = center + new Vector3(-extents.x, +extents.y, +extents.z);

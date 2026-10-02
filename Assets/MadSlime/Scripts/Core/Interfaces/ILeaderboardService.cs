@@ -12,6 +12,8 @@ namespace Core
 
         event Action<LeaderboardSnapshot> EntriesReceived;
 
+        event Action EntriesFailed;
+
         void SetScore(string leaderboardName, int score);
 
         void RequestEntries(string leaderboardName, int topCount, int aroundCount, string photoSize);

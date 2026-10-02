@@ -66,6 +66,7 @@ namespace UI
             _closeButton.onClick.AddListener(Close);
             _authButton.onClick.AddListener(OnAuthClicked);
             _leaderboardService.EntriesReceived += OnLeaderboardReceived;
+            _leaderboardService.EntriesFailed += OnLeaderboardFailed;
             _progress.Ready += OnSdkDataReceived;
 
             RefreshAuthView();
@@ -77,6 +78,7 @@ namespace UI
             _closeButton?.onClick.RemoveListener(Close);
             _authButton?.onClick.RemoveListener(OnAuthClicked);
             _leaderboardService.EntriesReceived -= OnLeaderboardReceived;
+            _leaderboardService.EntriesFailed -= OnLeaderboardFailed;
             _progress.Ready -= OnSdkDataReceived;
 
             base.OnDisable();
@@ -86,6 +88,11 @@ namespace UI
         {
             _entriesText.text = Localization.Get("leaderboard_loading");
             _leaderboardService.RequestEntries(_config.LeaderboardName, TopCount, AroundCount, PhotoSize);
+        }
+
+        private void OnLeaderboardFailed()
+        {
+            _entriesText.text = Localization.Get("leaderboard_error");
         }
 
         private void OnLeaderboardReceived(LeaderboardSnapshot snapshot)
