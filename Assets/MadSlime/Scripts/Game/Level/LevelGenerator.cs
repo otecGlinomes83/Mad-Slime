@@ -5,7 +5,6 @@ using Quota;
 using Scriptables;
 using Skills;
 using UnityEngine;
-using Upgrades;
 using VContainer;
 using Random = UnityEngine.Random;
 
@@ -32,7 +31,7 @@ namespace Game
         private LayoutsLibrary _layoutsLibrary;
         private Movement.Mover _mover;
         private Collectables.Collector _collector;
-        private PlayerUpgrades _upgrades;
+        private Collectables.AttractableDetector _attractableDetector;
         private Bounds _floorBounds;
 
         public Bounds FloorBounds
@@ -48,10 +47,12 @@ namespace Game
             }
         }
 
+        public IReadOnlyList<Item> SpawnedItems => _spawnedItems;
+
         [Inject]
         public void Construct(LevelConfigResolver configResolver, PlayerProgress progress, LevelProgress levelProgress,
             ItemPool itemPool, QuotaGenerator quotaGenerator, TierTable tierTable, LayoutsLibrary layoutsLibrary,
-            Movement.Mover mover, Collectables.Collector collector, PlayerUpgrades upgrades)
+            Movement.Mover mover, Collectables.Collector collector, Collectables.AttractableDetector attractableDetector)
         {
             _configResolver = configResolver;
             _progress = progress;
@@ -62,7 +63,7 @@ namespace Game
             _layoutsLibrary = layoutsLibrary;
             _mover = mover;
             _collector = collector;
-            _upgrades = upgrades;
+            _attractableDetector = attractableDetector;
         }
 
         private void Awake()
@@ -95,6 +96,12 @@ namespace Game
             {
                 throw new InvalidOperationException(
                     $"{name}: Collector was not injected. Check that GameLifetimeScope registers Collector and LevelGenerator.");
+            }
+
+            if (_attractableDetector == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: AttractableDetector was not injected. Check that GameLifetimeScope registers AttractableDetector and LevelGenerator.");
             }
 
             Generate();
@@ -133,8 +140,6 @@ namespace Game
 
             List<QuotaEntry> quota = _quotaGenerator.Generate(_spawnedCounts, config);
             _levelProgress.Reset(quota);
-
-            ApplySmellHighlight(quota);
 
             Debug.Log(
                 $"{name}: level {_progress.CurrentLevel} from '{config.name}', layout '{layout.name}': spawned {GetTotalSpawnedCount()} items, quota types {quota.Count}.");
@@ -375,37 +380,6 @@ namespace Game
             }
 
             _floorRenderer.sharedMaterial = config.Theme.FloorMaterial;
-        }
-
-        private void ApplySmellHighlight(List<QuotaEntry> quota)
-        {
-            if (_upgrades.HasSmell == false)
-            {
-                return;
-            }
-
-            Color highlightColor = _upgrades.HighlightColor;
-            float highlightThickness = _upgrades.HighlightThickness;
-
-            for (int i = 0; i < _spawnedItems.Count; i++)
-            {
-                Item item = _spawnedItems[i];
-
-                item.SetHighlighted(IsQuotaDefinition(quota, item.Definition), highlightColor, highlightThickness);
-            }
-        }
-
-        private static bool IsQuotaDefinition(List<QuotaEntry> quota, ItemDefinition definition)
-        {
-            for (int i = 0; i < quota.Count; i++)
-            {
-                if (quota[i].Definition == definition)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private void CountSpawned(ItemDefinition definition)

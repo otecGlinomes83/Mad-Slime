@@ -67,7 +67,7 @@ namespace UI
 
         private void OnCubeArrived(FlyingCube cube)
         {
-            int percent = Mathf.RoundToInt(_shapeFiller.FillFraction * 100f);
+            int percent = Mathf.RoundToInt(_shapeFiller.FormFillFraction * 100f);
 
             if (percent == _lastPercent)
             {

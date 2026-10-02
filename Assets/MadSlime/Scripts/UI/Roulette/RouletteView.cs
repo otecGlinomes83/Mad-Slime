@@ -469,7 +469,7 @@ namespace Roulette
             RouletteWinPopup winPopup = CreateWinPopup();
             winPopup.ShowSkin(
                 skin,
-                Localization.Get(GetRarityKey(skin.Rarity)),
+                skin.Rarity,
                 _service.GetRarityColor(skin.Rarity));
         }
 

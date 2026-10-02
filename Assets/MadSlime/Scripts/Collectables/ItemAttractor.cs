@@ -5,6 +5,7 @@ using System;
 using UnityEngine;
 using Upgrades;
 using VContainer;
+using Game;
 
 namespace Collectables
 {
@@ -18,15 +19,17 @@ namespace Collectables
         private AttractableDetector _detector;
         private ItemDetector _collectDetector;
         private PlayerUpgrades _upgrades;
+        private Pauser _pauser;
 
         [Inject]
         public void Construct(PlayerTier playerTier, AttractableDetector detector, ItemDetector collectDetector,
-            PlayerUpgrades upgrades)
+            PlayerUpgrades upgrades, Pauser pauser)
         {
             _playerTier = playerTier;
             _detector = detector;
             _collectDetector = collectDetector;
             _upgrades = upgrades;
+            _pauser = pauser;
         }
 
         private void Awake()
@@ -82,6 +85,12 @@ namespace Collectables
                     $"{name}: AttractConfig '{_config.name}' has OrbitStrength < 0. " +
                     "It is the sideways swirl speed as a fraction of the pull speed, so it must be 0 or greater. 0 = straight line.");
             }
+
+            if (_pauser == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Pauser was not injected. Check that GameLifetimeScope registers Pauser and ItemAttractor.");
+            }
         }
 
         private void OnEnable()
@@ -96,6 +105,11 @@ namespace Collectables
 
         private void OnAttractableDetected(IAttractable attractable)
         {
+            if (_pauser.IsPaused == true)
+            {
+                return;
+            }
+
             if (attractable.Tier > _playerTier.CurrentTier + _upgrades.AmbitionTierOffset)
             {
                 return;

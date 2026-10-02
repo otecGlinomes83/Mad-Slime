@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Game;
 using Items;
 using Player;
 using UnityEngine;
@@ -14,17 +15,19 @@ namespace Collectables
         private ItemDetector _detector;
         private Absorber _absorber;
         private PlayerUpgrades _upgrades;
+        private Pauser _pauser;
 
         public event Action<Items.Item> ItemCollected;
 
         [Inject]
         public void Construct(PlayerTier tierHolder, ItemDetector detector, Absorber absorber,
-            PlayerUpgrades upgrades)
+            PlayerUpgrades upgrades, Pauser pauser)
         {
             _tierHolder = tierHolder;
             _detector = detector;
             _absorber = absorber;
             _upgrades = upgrades;
+            _pauser = pauser;
         }
 
         private void Awake()
@@ -45,6 +48,12 @@ namespace Collectables
             {
                 throw new InvalidOperationException(
                     $"{name}: Absorber was not injected. Check that GameLifetimeScope registers Absorber and Collector.");
+            }
+
+            if (_pauser == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Pauser was not injected. Check that GameLifetimeScope registers Pauser and Collector.");
             }
         }
 
@@ -70,6 +79,11 @@ namespace Collectables
             }
 
             if (item.Definition.Tier > _tierHolder.CurrentTier + _upgrades.AmbitionTierOffset)
+            {
+                return;
+            }
+
+            if (_pauser.IsPaused == true)
             {
                 return;
             }

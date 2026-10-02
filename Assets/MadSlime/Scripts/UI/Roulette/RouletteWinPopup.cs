@@ -28,9 +28,17 @@ namespace Roulette
         [SerializeField] private Image _fade;
         [SerializeField] private RawImage _prizeArea;
         [SerializeField] private TMP_Text _coinsLabel;
-        [SerializeField, Tooltip("Плашка редкости под скином: красится в цвет редкости (Image на объекте), Label внутри — надпись.")]
+        [SerializeField, Tooltip("Старая плашка редкости: больше не рисуется, поле — якорь позиции rank-лейбла.")]
         private GameObject _rarityPlate;
-        [SerializeField] private TMP_Text _rarityLabel;
+        [SerializeField, Tooltip("Rank-лейблы GUI Kit с запечённым текстом: вариант под редкость скина.")]
+        private GameObject _rankLabelNormal;
+        [SerializeField] private GameObject _rankLabelRare;
+        [SerializeField] private GameObject _rankLabelEpic;
+        [SerializeField] private GameObject _rankLabelLegendary;
+        [SerializeField, Tooltip("UI-партикл (Fx_Rotate из GUI Kit) под призом: показывается и со скином, и с монетами.")]
+        private ParticleSystem _rotateFx;
+        [SerializeField, Min(0f), Tooltip("Множитель масштаба Fx_Rotate: ассет авторован под канвас GUI Kit, множителем подгоняется под окно.")]
+        private float _rotateFxScale = 1f;
         [SerializeField] private Button _takeButton;
         [SerializeField] private Camera _stageCamera;
         [SerializeField] private Transform _modelSlot;
@@ -39,7 +47,6 @@ namespace Roulette
         private RenderTexture _texture;
         private GameObject _currentModel;
         private Animator _currentAnimator;
-        private Image _rarityPlateImage;
         private Vector3 _rotationAnchor;
 
         public event Action Closed;
@@ -47,19 +54,32 @@ namespace Roulette
         private void Awake()
         {
             if (_window == null || _background == null || _fade == null || _prizeArea == null || _coinsLabel == null
-                || _rarityPlate == null || _rarityLabel == null || _takeButton == null
-                || _stageCamera == null || _modelSlot == null)
+                || _rarityPlate == null || _takeButton == null || _stageCamera == null || _modelSlot == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: a win popup part is not assigned. Drag the Window, Background, Fade, PrizeArea, CoinsLabel, " +
-                    "RarityPlate, RarityLabel, TakeButton, StageCamera and ModelSlot into the fields.");
+                    "RarityPlate, TakeButton, StageCamera and ModelSlot into the fields.");
             }
 
-            if (_rarityPlate.TryGetComponent(out _rarityPlateImage) == false)
+            if (_rankLabelNormal == null || _rankLabelRare == null || _rankLabelEpic == null || _rankLabelLegendary == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: the rarity plate has no Image. Add an Image to the RarityPlate object.");
+                    $"{name}: a rank label is not assigned. Drag the Rank_Label prefabs (GUI Kit: Normal, Rare, Epic, Legendary) into the fields.");
             }
+
+            if (_rotateFx == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RotateFx is not assigned. Drag the Fx_Rotate prefab (GUI Kit) into the _rotateFx field.");
+            }
+
+            if (_rotateFx.transform is RectTransform == false)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RotateFx must be a UI prefab with a RectTransform root. Check that the Fx_Rotate prefab is dragged in.");
+            }
+
+            _rarityPlate.SetActive(false);
 
             int modelLayer = LayerMask.NameToLayer(ModelLayerName);
 
@@ -135,7 +155,7 @@ namespace Roulette
             UiAnimations.ScaleOut(_window, UiAnimations.WindowScaleOutDuration, HideAndDestroy);
         }
 
-        public void ShowSkin(SkinItem skin, string rarityLabel, Color rarityColor)
+        public void ShowSkin(SkinItem skin, SkinRarity rarity, Color rarityColor)
         {
             if (gameObject.activeSelf == false)
             {
@@ -160,9 +180,8 @@ namespace Roulette
 
             _background.color = Darken(rarityColor);
 
-            _rarityPlate.SetActive(true);
-            _rarityPlateImage.color = rarityColor;
-            _rarityLabel.text = rarityLabel;
+            ShowRankLabel(rarity);
+            ShowRotateFx();
 
             SetModel(skin);
         }
@@ -181,7 +200,70 @@ namespace Roulette
             _coinsLabel.gameObject.SetActive(true);
             _coinsLabel.text = $"×{amount}";
 
-            _rarityPlate.SetActive(false);
+            ShowRotateFx();
+        }
+
+        private void ShowRankLabel(SkinRarity rarity)
+        {
+            GameObject prefab = GetRankLabelPrefab(rarity);
+
+            InstantiateAt((RectTransform)_rarityPlate.transform, prefab, 1f);
+        }
+
+        private void ShowRotateFx()
+        {
+            GameObject instance = InstantiateAt(
+                (RectTransform)_prizeArea.transform,
+                _rotateFx.gameObject,
+                _rotateFxScale);
+            ParticleSystem fx = instance.GetComponent<ParticleSystem>();
+
+            if (fx.isPlaying == false)
+            {
+                fx.Play();
+            }
+        }
+
+        private GameObject InstantiateAt(RectTransform anchor, GameObject prefab, float scaleMultiplier)
+        {
+            GameObject instance = Instantiate(prefab, anchor.parent);
+
+            if (instance.transform is RectTransform rect == false)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: prefab '{prefab.name}' has no RectTransform root. Rank labels and rotate fx must be UI prefabs.");
+            }
+
+            rect.anchorMin = anchor.anchorMin;
+            rect.anchorMax = anchor.anchorMax;
+            rect.anchoredPosition = anchor.anchoredPosition;
+            rect.pivot = anchor.pivot;
+            rect.sizeDelta = anchor.sizeDelta;
+            rect.localRotation = anchor.localRotation;
+            rect.localScale = Vector3.Scale(
+                prefab.transform.localScale,
+                new Vector3(scaleMultiplier, scaleMultiplier, scaleMultiplier));
+            rect.SetSiblingIndex(anchor.GetSiblingIndex());
+
+            return instance;
+        }
+
+        private GameObject GetRankLabelPrefab(SkinRarity rarity)
+        {
+            switch (rarity)
+            {
+                case SkinRarity.Rare:
+                    return _rankLabelRare;
+
+                case SkinRarity.Epic:
+                    return _rankLabelEpic;
+
+                case SkinRarity.Legendary:
+                    return _rankLabelLegendary;
+
+                default:
+                    return _rankLabelNormal;
+            }
         }
 
         private Color Darken(Color color)

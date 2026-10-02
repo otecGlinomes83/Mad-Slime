@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game;
+using Player;
 using Roulette;
 using TMPro;
 using Upgrades;
@@ -80,7 +81,38 @@ namespace Skins
             }
 
             Initialize(_shopContent.SkinItems, _rouletteService.Config.ExclusiveSkins);
+            ShowEquippedSkin();
             ShowRouletteTab();
+        }
+
+        // При входе в магазин превью сразу показывает надетый скин и крутится,
+        // как после клика по его плашке.
+        private void ShowEquippedSkin()
+        {
+            SkinItem equipped = FindSkin(_progress.SelectedSkin);
+
+            if (equipped == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: the selected skin '{_progress.SelectedSkin}' is missing from ShopContent. " +
+                    "Add it to SkinItems so the preview can show the equipped skin.");
+            }
+
+            _modelPlacer.SetModel(equipped.Model);
+            _modelPlacer.PlayWalk();
+        }
+
+        private SkinItem FindSkin(PlayerSkins skinType)
+        {
+            foreach (SkinItem item in _skinItems)
+            {
+                if (item != null && item.SkinType == skinType)
+                {
+                    return item;
+                }
+            }
+
+            return null;
         }
 
         public void Initialize(IEnumerable<SkinItem> skinItems, IEnumerable<SkinItem> exclusiveSkins)
@@ -188,6 +220,7 @@ namespace Skins
 
             SetPageActive(_upgradesPage, _allSkinsPage, _roulettePage);
             PopulateUpgrades();
+            SelectTabButton(_upgradesTabButton);
         }
 
         public void ShowRouletteTab()
@@ -198,6 +231,7 @@ namespace Skins
             }
 
             SetPageActive(_roulettePage, _allSkinsPage, _upgradesPage);
+            SelectTabButton(_rouletteTabButton);
         }
 
         public void ShowAllSkinsTab()
@@ -209,6 +243,7 @@ namespace Skins
 
             SetPageActive(_allSkinsPage, _upgradesPage, _roulettePage);
             PopulateSkins();
+            SelectTabButton(_allSkinsTabButton);
         }
 
         private bool CanSwitchTab()
@@ -221,6 +256,14 @@ namespace Skins
             activePage.SetActive(true);
             pageA.SetActive(false);
             pageB.SetActive(false);
+        }
+
+        private static void SelectTabButton(Button tabButton)
+        {
+            if (tabButton != null && tabButton.TryGetComponent(out ShopTabButton tab) == true)
+            {
+                tab.Select();
+            }
         }
 
         private void FillSkinList(IEnumerable<SkinItem> source, bool isExclusive = false)

@@ -28,7 +28,6 @@ namespace DI
         [SerializeField] private ScalePunch _scalePunch;
         [SerializeField] private LevelScaler _levelScaler;
         [SerializeField] private MovementDeformer _movementDeformer;
-        [SerializeField] private SpeedSmoke _speedSmoke;
         [SerializeField] private UiEnableScheduler _uiEnableScheduler;
         [SerializeField] private AdrenalineBoost _adrenalineBoost;
         [SerializeField] private GameplaySessionHandler _sessionHandler;
@@ -40,6 +39,7 @@ namespace DI
         [SerializeField] private GameplayUIFabric _gameplayUIFabric;
         [SerializeField] private PlayerPickupSound _playerPickupSound;
         [SerializeField] private TierUpSound _tierUpSound;
+        [SerializeField] private TierUpFx _tierUpFx;
         [SerializeField] private TimerTickSound _timerTickSound;
         [SerializeField] private GrowthBarView _growthBarView;
         [SerializeField] private TimerUI _timerUI;
@@ -49,6 +49,7 @@ namespace DI
         [SerializeField] private AttractableDetector _attractableDetector;
         [SerializeField] private ItemAttractor _itemAttractor;
         [SerializeField] private ItemGhostToggler _itemGhostToggler;
+        [SerializeField] private QuotaItemHighlighter _quotaItemHighlighter;
         [SerializeField] private Pauser _pauser;
         [SerializeField] private Timer _timer;
         [SerializeField] private PlayerInputReader _inputReader;
@@ -64,7 +65,6 @@ namespace DI
             ValidateAssigned(_scalePunch, nameof(_scalePunch));
             ValidateAssigned(_levelScaler, nameof(_levelScaler));
             ValidateAssigned(_movementDeformer, nameof(_movementDeformer));
-            ValidateAssigned(_speedSmoke, nameof(_speedSmoke));
             ValidateAssigned(_uiEnableScheduler, nameof(_uiEnableScheduler));
             ValidateAssigned(_adrenalineBoost, nameof(_adrenalineBoost));
             ValidateAssigned(_sessionHandler, nameof(_sessionHandler));
@@ -76,6 +76,7 @@ namespace DI
             ValidateAssigned(_gameplayUIFabric, nameof(_gameplayUIFabric));
             ValidateAssigned(_playerPickupSound, nameof(_playerPickupSound));
             ValidateAssigned(_tierUpSound, nameof(_tierUpSound));
+            ValidateAssigned(_tierUpFx, nameof(_tierUpFx));
             ValidateAssigned(_timerTickSound, nameof(_timerTickSound));
             ValidateAssigned(_growthBarView, nameof(_growthBarView));
             ValidateAssigned(_timerUI, nameof(_timerUI));
@@ -85,6 +86,7 @@ namespace DI
             ValidateAssigned(_attractableDetector, nameof(_attractableDetector));
             ValidateAssigned(_itemAttractor, nameof(_itemAttractor));
             ValidateAssigned(_itemGhostToggler, nameof(_itemGhostToggler));
+            ValidateAssigned(_quotaItemHighlighter, nameof(_quotaItemHighlighter));
             ValidateAssigned(_pauser, nameof(_pauser));
             ValidateAssigned(_timer, nameof(_timer));
             ValidateAssigned(_inputReader, nameof(_inputReader));
@@ -101,7 +103,6 @@ namespace DI
             builder.RegisterComponent(_scalePunch);
             builder.RegisterComponent(_levelScaler);
             builder.RegisterComponent(_movementDeformer);
-            builder.RegisterComponent(_speedSmoke);
             builder.RegisterComponent(_uiEnableScheduler);
             builder.RegisterComponent(_adrenalineBoost);
             builder.RegisterComponent(_sessionHandler);
@@ -113,6 +114,7 @@ namespace DI
             builder.RegisterComponent(_gameplayUIFabric);
             builder.RegisterComponent(_playerPickupSound);
             builder.RegisterComponent(_tierUpSound);
+            builder.RegisterComponent(_tierUpFx);
             builder.RegisterComponent(_timerTickSound);
             builder.RegisterComponent(_growthBarView);
             builder.RegisterComponent(_timerUI);
@@ -122,6 +124,7 @@ namespace DI
             builder.RegisterComponent(_attractableDetector);
             builder.RegisterComponent(_itemAttractor);
             builder.RegisterComponent(_itemGhostToggler);
+            builder.RegisterComponent(_quotaItemHighlighter);
             builder.RegisterBuildCallback(InjectSceneButtonSounds);
             builder.RegisterComponent(_pauser);
             builder.RegisterComponent(_timer);

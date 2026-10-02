@@ -12,8 +12,8 @@ namespace Items
         private const float SolidOpacity = 1f;
 
         private static readonly int OpacityId = Shader.PropertyToID("_Opacity");
-        private static readonly int OutlineColorId = Shader.PropertyToID("_OutlineColor");
-        private static readonly int OutlineThicknessId = Shader.PropertyToID("_Thickness");
+        private static readonly int OutlineColorId = Shader.PropertyToID("_OtlColor");
+        private static readonly int OutlineWidthId = Shader.PropertyToID("_OtlWidth");
 
         [SerializeField] private ItemDefinition _definition;
         [SerializeField] private Collider _collider;
@@ -34,7 +34,7 @@ namespace Items
         private bool _isGhost;
         private bool _isHighlighted;
         private Color _highlightColor;
-        private float _highlightThickness;
+        private float _outlineWidth;
 
         public ItemDefinition Definition => _definition;
         public Transform Self => transform;
@@ -78,6 +78,12 @@ namespace Items
             {
                 throw new InvalidOperationException(
                     $"{name}: GhostFadeConfig is not assigned. Drag a GhostFadeConfig asset into the _ghostFadeConfig field.");
+            }
+
+            if (_highlightMaterial != null && _highlightMaterial.HasProperty(OutlineColorId) == false)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: HighlightMaterial has no _OtlColor property. Drag a Material with the MadSlime/ItemOutlineSToon shader into the _highlightMaterial field.");
             }
 
             if (_ghostFadeConfig.FadeDuration <= 0f)
@@ -158,7 +164,7 @@ namespace Items
                 .OnComplete(OnFadeCompleted);
         }
 
-        public void SetHighlighted(bool isHighlighted, Color color, float thickness)
+        public void SetHighlighted(bool isHighlighted, Color color, float width)
         {
             if (_isHighlighted == isHighlighted)
             {
@@ -173,7 +179,7 @@ namespace Items
 
             _isHighlighted = isHighlighted;
             _highlightColor = color;
-            _highlightThickness = thickness;
+            _outlineWidth = width;
 
             if (_isGhost == true)
             {
@@ -222,10 +228,8 @@ namespace Items
         {
             if (_isHighlighted == true)
             {
-                // Аутлайн идёт последним слотом поверх родных материалов:
-                // предмет сохраняет текстуры, обводка рисуется вокруг силуэта.
                 _propertyBlock.SetColor(OutlineColorId, _highlightColor);
-                _propertyBlock.SetFloat(OutlineThicknessId, _highlightThickness);
+                _propertyBlock.SetFloat(OutlineWidthId, _outlineWidth);
 
                 for (int i = 0; i < _renderers.Length; i++)
                 {

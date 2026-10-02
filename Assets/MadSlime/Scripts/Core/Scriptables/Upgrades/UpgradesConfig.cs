@@ -14,25 +14,23 @@ namespace Upgrades
         [SerializeField] private List<PerkEntry> _perks = new List<PerkEntry>();
 
         [Header("Smell")]
-        [Tooltip("Цвет аутлайна квотовых предметов (Улучшенный нюх).")]
+        [Tooltip("Цвет аутлайна квотовых предметов (Улучшенный нюх). Уходит в _OtlColor шейдера MadSlime/ItemOutlineSToon.")]
         [SerializeField] private Color _highlightColor = new Color(1f, 0.85f, 0.2f, 1f);
 
-        [Tooltip("Толщина аутлайна квотовых предметов — доля ПОЛОВИНЫ высоты экрана (0.012 ≈ 6px на 1080p), одинаковая по всем направлениям.")]
-        [SerializeField, Min(0f)] private float _highlightThickness = 0.012f;
+        [Tooltip("Ширина аутлайна квотовых предметов — значение _OtlWidth шейдера ItemOutlineSToon: " +
+            "силуэт раздувается по нормалям на 0.008 * ширина * масштаб предмета. " +
+            "1 ≈ едва заметная линия, 5 ≈ жирная обводка. Настраивать ТУТ: материал QuotaHighlight перекрывается из конфига.")]
+        [SerializeField, Min(0f)] private float _outlineWidth = 4f;
 
         [Header("Adrenaline")]
         [Tooltip("Доля таймера, ниже которой включается Адреналин. 0.25 = последние 25% времени.")]
         [SerializeField, Range(0.01f, 0.9f)] private float _adrenalineThresholdFraction = 0.25f;
 
-        [Tooltip("Множитель скорости под Адреналином.")]
-        [SerializeField, Min(1f)] private float _adrenalineSpeedMultiplier = 1.4f;
-
         public IReadOnlyList<UpgradeEntry> Upgrades => _upgrades;
         public IReadOnlyList<PerkEntry> Perks => _perks;
         public Color HighlightColor => _highlightColor;
-        public float HighlightThickness => _highlightThickness;
+        public float OutlineWidth => _outlineWidth;
         public float AdrenalineThresholdFraction => _adrenalineThresholdFraction;
-        public float AdrenalineSpeedMultiplier => _adrenalineSpeedMultiplier;
 
         public UpgradeEntry GetUpgrade(UpgradeType type)
         {
@@ -78,8 +76,9 @@ namespace Upgrades
         [Tooltip("Насколько дороже каждая следующая ступень.")]
         [SerializeField, Min(0)] private int _costStep = 150;
 
-        [Tooltip("Прирост эффекта за ступень (доля от 1). 0.1 = +10% за ступень.")]
-        [SerializeField, Min(0f)] private float _valuePerStep = 0.1f;
+        [Tooltip("Прирост эффекта за КАЖДУЮ ступень отдельно (доля от 1), по порядку. " +
+            "Число значений обязано совпадать с MaxSteps.")]
+        [SerializeField, Min(0f)] private List<float> _stepValues = new List<float>();
 
         [Tooltip("Максимальное число ступеней.")]
         [SerializeField, Min(1)] private int _maxSteps = 5;
@@ -88,12 +87,24 @@ namespace Upgrades
         public Sprite Icon => _icon;
         public int BaseCost => _baseCost;
         public int CostStep => _costStep;
-        public float ValuePerStep => _valuePerStep;
+        public IReadOnlyList<float> StepValues => _stepValues;
         public int MaxSteps => _maxSteps;
 
         public int GetCost(int currentLevel)
         {
             return _baseCost + _costStep * currentLevel;
+        }
+
+        public float GetTotalValue(int level)
+        {
+            float total = 0f;
+
+            for (int i = 0; i < level && i < _stepValues.Count; i++)
+            {
+                total += _stepValues[i];
+            }
+
+            return total;
         }
     }
 
@@ -109,8 +120,13 @@ namespace Upgrades
         [Tooltip("Цена. Одноразовые покупки стоят очень дорого.")]
         [SerializeField, Min(0)] private int _cost = 3000;
 
+        [Tooltip("Сколько даёт перк. Амбиции — прибавка к тиру притягиваемых предметов. " +
+            "Адреналин — множитель скорости. Нюх — значение не использует.")]
+        [SerializeField, Min(0f)] private float _value;
+
         public PerkType Type => _type;
         public Sprite Icon => _icon;
         public int Cost => _cost;
+        public float Value => _value;
     }
 }

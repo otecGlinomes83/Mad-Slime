@@ -55,6 +55,19 @@ namespace ShapeFill
             }
         }
 
+        public float FormFillFraction
+        {
+            get
+            {
+                if (RequiredFillCount <= 0)
+                {
+                    return 0f;
+                }
+
+                return Mathf.Clamp01(_arrivedCount / (float)RequiredFillCount);
+            }
+        }
+
         public event Action<float> FillCompleted;
 
         public event Action<FlyingCube> CubeArrived;

@@ -19,11 +19,24 @@ namespace Upgrades
         public bool HasSmell => IsPerkPurchased(PerkType.Smell);
         public bool HasAdrenaline => IsPerkPurchased(PerkType.Adrenaline);
         public bool HasAmbitions => IsPerkPurchased(PerkType.Ambitions);
-        public int AmbitionTierOffset => HasAmbitions ? 1 : 0;
-        public float AdrenalineSpeedMultiplier => _config.AdrenalineSpeedMultiplier;
+
+        public int AmbitionTierOffset
+        {
+            get
+            {
+                if (HasAmbitions == false)
+                {
+                    return 0;
+                }
+
+                return Mathf.RoundToInt(_config.GetPerk(PerkType.Ambitions).Value);
+            }
+        }
+
+        public float AdrenalineSpeedMultiplier => _config.GetPerk(PerkType.Adrenaline).Value;
         public float AdrenalineThresholdFraction => _config.AdrenalineThresholdFraction;
         public Color HighlightColor => _config.HighlightColor;
-        public float HighlightThickness => _config.HighlightThickness;
+        public float OutlineWidth => _config.OutlineWidth;
 
         [Inject]
         public void Construct(PlayerProgress progress)
@@ -48,6 +61,14 @@ namespace Upgrades
             for (int i = 0; i < _config.Upgrades.Count; i++)
             {
                 UpgradeEntry entry = _config.Upgrades[i];
+
+                if (entry.StepValues.Count != entry.MaxSteps)
+                {
+                    throw new InvalidOperationException(
+                        $"PlayerUpgrades: upgrade '{entry.Type}' in '{_config.name}' has {entry.StepValues.Count} " +
+                        $"step values, but MaxSteps is {entry.MaxSteps}. Fill one value per step.");
+                }
+
                 _progress.GetUpgradeLevel(entry.Type);
             }
 
@@ -137,21 +158,21 @@ namespace Upgrades
         {
             UpgradeEntry entry = _config.GetUpgrade(type);
 
-            return entry.ValuePerStep * (GetLevel(type) + 1);
+            return entry.GetTotalValue(GetLevel(type) + 1);
         }
 
         public float GetTotalValue(UpgradeType type)
         {
             UpgradeEntry entry = _config.GetUpgrade(type);
 
-            return entry.ValuePerStep * GetLevel(type);
+            return entry.GetTotalValue(GetLevel(type));
         }
 
         private float GetMultiplier(UpgradeType type)
         {
             UpgradeEntry entry = _config.GetUpgrade(type);
 
-            return 1f + entry.ValuePerStep * GetLevel(type);
+            return 1f + entry.GetTotalValue(GetLevel(type));
         }
     }
 }

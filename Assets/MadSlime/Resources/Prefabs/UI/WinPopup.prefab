@@ -490,7 +490,12 @@ MonoBehaviour:
   _prizeArea: {fileID: 1120513982389754156}
   _coinsLabel: {fileID: 4675943599706010430}
   _rarityPlate: {fileID: 6247308693520099786}
-  _rarityLabel: {fileID: 4156683664150096547}
+  _rankLabelNormal: {fileID: 6183324355866470421, guid: af0022e2847fd48b384b15dad61b798a, type: 3}
+  _rankLabelRare: {fileID: 1428498347553386019, guid: 1f9b5d7276d2c4a4aa98d22294073e91, type: 3}
+  _rankLabelEpic: {fileID: 7619366393875826926, guid: 81afffd3044ef4a3db91e9403a9636aa, type: 3}
+  _rankLabelLegendary: {fileID: 3283302757543214217, guid: f6262dcc4a8cb4fbbb7b5971c2cdbcd2, type: 3}
+  _rotateFx: {fileID: 1049085462108027016, guid: 160de3bad73ea44b6b354786584e0ad0, type: 3}
+  _rotateFxScale: 1
   _takeButton: {fileID: 57195868627159566}
   _stageCamera: {fileID: 5716285626593685534}
   _modelSlot: {fileID: 1110272189876296844}

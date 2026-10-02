@@ -1,23 +1,22 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Scriptables;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using VContainer;
-using Random = UnityEngine.Random;
 
 namespace ShapeFill
 {
     public sealed class FillFinale : MonoBehaviour
     {
+        [Tooltip("Префаб конфетти (ConfettiBlastRainbow из Epic Toon FX). Корневая система ассета зациклена — после первого прохода эмиссия гасится, выпавшие конфетти долетают сами.")]
         [SerializeField] private ParticleSystem _confetti;
 
         private FillConfig _config;
         private ShapeFillOrchestrator _orchestrator;
         private GridBuilder _gridBuilder;
-        private int _confettiCount;
-        private Camera _camera;
-        private float _startFov;
 
         [Inject]
         public void Construct(ShapeFillOrchestrator orchestrator, GridBuilder gridBuilder, FillConfig config)
@@ -50,26 +49,8 @@ namespace ShapeFill
             if (_confetti == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Confetti particle system is not assigned. Drag the confetti ParticleSystem into the _confetti field.");
+                    $"{name}: Confetti prefab is not assigned. Drag the ConfettiBlastRainbow prefab (Epic Toon FX) into the _confetti field.");
             }
-
-            ParticleSystem.EmissionModule emission = _confetti.emission;
-
-            if (emission.burstCount == 0)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Confetti burst is not set. Set Emission → Bursts on the particle system: its Count is the confetti amount.");
-            }
-
-            _confettiCount = Mathf.CeilToInt(emission.GetBurst(0).count.constant);
-
-            if (_confettiCount <= 0)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Confetti burst count is {_confettiCount}. Set a positive amount in Emission → Bursts.");
-            }
-
-            emission.SetBursts(Array.Empty<ParticleSystem.Burst>());
         }
 
         private void OnEnable()
@@ -102,34 +83,74 @@ namespace ShapeFill
                     $"{name}: Camera.main is not found. Tag the fill scene camera with the MainCamera tag.");
             }
 
-            _camera = mainCamera;
-            _startFov = _camera.fieldOfView;
-
-            EmitConfetti();
+            PlayConfettiAsync().Forget();
             PlayShapePunch();
-            PlayCameraKick();
+            PlayCameraKick(mainCamera);
         }
 
-        private void EmitConfetti()
+        private async UniTaskVoid PlayConfettiAsync()
+        {
+            CancellationToken cancellationToken = this.GetCancellationTokenOnDestroy();
+            ParticleSystem burst = Instantiate(_confetti, GetShapeCenter(), Quaternion.identity);
+
+            try
+            {
+                float duration = 0f;
+                float maxLifetime = 0f;
+
+                foreach (ParticleSystem system in burst.GetComponentsInChildren<ParticleSystem>(true))
+                {
+                    ParticleSystem.MainModule main = system.main;
+                    duration = Mathf.Max(duration, main.duration);
+                    maxLifetime = Mathf.Max(maxLifetime, main.startLifetime.constantMax);
+
+                    if (system.isPlaying == false)
+                    {
+                        system.Play();
+                    }
+                }
+
+                await UniTask.Delay(TimeSpan.FromSeconds(duration), cancellationToken: cancellationToken);
+
+                if (burst == null)
+                {
+                    return;
+                }
+
+                burst.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+
+                await UniTask.Delay(TimeSpan.FromSeconds(maxLifetime), cancellationToken: cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+            if (burst != null)
+            {
+                Destroy(burst.gameObject);
+            }
+        }
+
+        private Vector3 GetShapeCenter()
         {
             IReadOnlyList<Vector2Int> fillCells = _gridBuilder.FillCells;
 
             if (fillCells.Count == 0)
             {
-                return;
+                return _gridBuilder.transform.position;
             }
 
-            for (int i = 0; i < _confettiCount; i++)
+            Vector2 sum = Vector2.zero;
+
+            for (int i = 0; i < fillCells.Count; i++)
             {
-                Vector2Int cell = fillCells[Random.Range(0, fillCells.Count)];
-
-                ParticleSystem.EmitParams parameters = new ParticleSystem.EmitParams
-                {
-                    startColor = _gridBuilder.GetPixelColor(cell.x, cell.y)
-                };
-
-                _confetti.Emit(parameters, 1);
+                sum += fillCells[i];
             }
+
+            Vector2 center = sum / fillCells.Count;
+
+            return _gridBuilder.GridToWorld(Mathf.RoundToInt(center.x), Mathf.RoundToInt(center.y));
         }
 
         private void PlayShapePunch()
@@ -143,13 +164,15 @@ namespace ShapeFill
                 .SetLink(gameObject);
         }
 
-        private void PlayCameraKick()
+        private void PlayCameraKick(Camera camera)
         {
-            _camera.DOKill();
+            float startFov = camera.fieldOfView;
+
+            camera.DOKill();
 
             Sequence kick = DOTween.Sequence().SetLink(gameObject);
-            kick.Append(_camera.DOFieldOfView(_startFov + _config.FovKick, _config.FovDuration).SetEase(Ease.OutQuad));
-            kick.Append(_camera.DOFieldOfView(_startFov, _config.FovDuration).SetEase(Ease.InQuad));
+            kick.Append(camera.DOFieldOfView(startFov + _config.FovKick, _config.FovDuration).SetEase(Ease.OutQuad));
+            kick.Append(camera.DOFieldOfView(startFov, _config.FovDuration).SetEase(Ease.InQuad));
         }
     }
 }
