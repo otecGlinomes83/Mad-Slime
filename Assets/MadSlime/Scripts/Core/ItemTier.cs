@@ -5,6 +5,8 @@ namespace Skills
         Small,
         Medium,
         Large,
+        Huge,
+        Giant,
         Boss
     }
 }

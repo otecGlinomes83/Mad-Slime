@@ -115,8 +115,8 @@ MonoBehaviour:
     _count: 9
     _autoSpacing: 0
     _spacing: 13.3
-    _minTier: 3
-    _maxTier: 3
+    _minTier: 5
+    _maxTier: 5
   _allowMirroring: 0
   _autoSpacingFactor: 2.2
   _scatterDistanceFactor: 0.7

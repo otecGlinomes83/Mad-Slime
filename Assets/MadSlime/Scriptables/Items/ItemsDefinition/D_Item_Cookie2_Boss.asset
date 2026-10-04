@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _icon: {fileID: 21300000, guid: fa8480872650ada4d94935c96b7406fc, type: 3}
   _baseMass: 10000
-  _tier: 3
+  _tier: 5
