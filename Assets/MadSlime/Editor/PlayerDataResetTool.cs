@@ -29,6 +29,9 @@ public static class PlayerDataResetTool
         json = ReplaceNumber(json, "Balance", TestBalance);
         json = ReplaceNumber(json, "SelectedSkinType", 0);
         json = ReplaceArray(json, "_openSkins", "[0]");
+        json = ReplaceStringIfPresent(json, "SelectedSkinId", "");
+        json = ReplaceArrayIfPresent(json, "_openSkinIds", "[]");
+        json = ReplaceArrayIfPresent(json, "_showcaseSkinIds", "[]");
         json = ReplaceNumber(json, "SpeedLevel", 0);
         json = ReplaceNumber(json, "AppetiteLevel", 0);
         json = ReplaceNumber(json, "TasteLevel", 0);
@@ -65,6 +68,32 @@ public static class PlayerDataResetTool
         if (System.Text.RegularExpressions.Regex.IsMatch(json, pattern) == false)
         {
             throw new InvalidOperationException($"Field '{field}' not found in editor saves.");
+        }
+
+        return System.Text.RegularExpressions.Regex.Replace(json, pattern, replacement);
+    }
+
+    private static string ReplaceStringIfPresent(string json, string field, string value)
+    {
+        string pattern = "\"" + field + "\":\\s*\"[^\"]*\"";
+        string replacement = "\"" + field + "\": \"" + value + "\"";
+
+        if (System.Text.RegularExpressions.Regex.IsMatch(json, pattern) == false)
+        {
+            return json;
+        }
+
+        return System.Text.RegularExpressions.Regex.Replace(json, pattern, replacement);
+    }
+
+    private static string ReplaceArrayIfPresent(string json, string field, string value)
+    {
+        string pattern = "\"" + field + "\":\\s*\\[[^\\]]*\\]";
+        string replacement = "\"" + field + "\": " + value;
+
+        if (System.Text.RegularExpressions.Regex.IsMatch(json, pattern) == false)
+        {
+            return json;
         }
 
         return System.Text.RegularExpressions.Regex.Replace(json, pattern, replacement);
