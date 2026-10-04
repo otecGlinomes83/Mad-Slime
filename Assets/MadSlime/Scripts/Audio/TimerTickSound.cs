@@ -9,7 +9,6 @@ namespace Audio
     public sealed class TimerTickSound : MonoBehaviour
     {
         [SerializeField] private SfxClip _sfxClip;
-        [SerializeField] private float _thresholdSeconds = 20f;
 
         private SfxPlayer _sfxPlayer;
         private Timer _timer;
@@ -45,14 +44,16 @@ namespace Audio
 
         private void OnEnable()
         {
-            _timer.Ticked += OnTimerTicked;
+            _timer.FinalCountdownStarted += OnFinalCountdownStarted;
             _timer.Finished += OnTimerFinished;
+            _timer.Stopped += OnTimerStopped;
         }
 
         private void OnDisable()
         {
-            _timer.Ticked -= OnTimerTicked;
+            _timer.FinalCountdownStarted -= OnFinalCountdownStarted;
             _timer.Finished -= OnTimerFinished;
+            _timer.Stopped -= OnTimerStopped;
 
             if (_isTickingActive == true)
             {
@@ -61,33 +62,31 @@ namespace Audio
             }
         }
 
-        private void OnTimerTicked(float remaining)
+        private void OnFinalCountdownStarted()
         {
-            if (remaining > 0f && remaining <= _thresholdSeconds)
-            {
-                if (_isTickingActive == false)
-                {
-                    _sfxPlayer.StartLoop(_sfxClip);
-                    _isTickingActive = true;
-                }
-            }
-            else
-            {
-                if (_isTickingActive == true)
-                {
-                    _sfxPlayer.StopLoop();
-                    _isTickingActive = false;
-                }
-            }
+            _sfxPlayer.StartLoop(_sfxClip);
+            _isTickingActive = true;
         }
 
         private void OnTimerFinished()
         {
-            if (_isTickingActive == true)
+            StopTicking();
+        }
+
+        private void OnTimerStopped()
+        {
+            StopTicking();
+        }
+
+        private void StopTicking()
+        {
+            if (_isTickingActive == false)
             {
-                _sfxPlayer.StopLoop();
-                _isTickingActive = false;
+                return;
             }
+
+            _sfxPlayer.StopLoop();
+            _isTickingActive = false;
         }
     }
 }

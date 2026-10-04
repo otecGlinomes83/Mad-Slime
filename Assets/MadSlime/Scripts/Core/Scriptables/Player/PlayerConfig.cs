@@ -7,9 +7,6 @@ namespace Scriptables
     public sealed class PlayerConfig : ScriptableObject
     {
         [Header("Movement")]
-        [Tooltip("Базовая скорость движения слайма (юнитов/с). Действует на старте; после смены тира скорость берётся из порогов тиров.")]
-        [SerializeField, Min(0.1f)] private float _baseMoveSpeed = 4f;
-
         [Tooltip("Скорость поворота модели слайма в сторону движения (град/с).")]
         [SerializeField, Min(1f)] private float _rotationSpeed = 420f;
 
@@ -37,6 +34,9 @@ namespace Scriptables
 
         [Tooltip("Максимальная скорость вращения предмета (град/с). Оба поля в 0 = без вращения.")]
         [SerializeField, Min(0f)] private float _maxSpinSpeed = 540f;
+
+        [Tooltip("Порог скорости (юниты/с), выше которого слайм дымит. На поздних тирах скорость переваливает за порог. 0 = без дыма.")]
+        [SerializeField, Min(0f)] private float _smokeSpeedThreshold;
 
         [Tooltip("С какой доли пути предмет начинает сжиматься в ноль. 0.6 = последние 40% пути; 0.8 = доезжает целым и схлопывается у пасти.")]
         [SerializeField, Range(0.1f, 0.95f)] private float _shrinkStart = 0.6f;
@@ -108,7 +108,6 @@ namespace Scriptables
         [Tooltip("Пороги тиров: при какой массе открывается тир и что он даёт (масштаб, скорость, отъезд камеры).")]
         [SerializeField] private List<PlayerTierThreshold> _thresholds = new List<PlayerTierThreshold>();
 
-        public float BaseMoveSpeed => _baseMoveSpeed;
         public float RotationSpeed => _rotationSpeed;
         public float MoveSmoothTime => _moveSmoothTime;
         public float MinAbsorbDuration => _minAbsorbDuration;
@@ -118,6 +117,7 @@ namespace Scriptables
         public float MaxArcFraction => _maxArcFraction;
         public float MinSpinSpeed => _minSpinSpeed;
         public float MaxSpinSpeed => _maxSpinSpeed;
+        public float SmokeSpeedThreshold => _smokeSpeedThreshold;
         public float ShrinkStart => _shrinkStart;
         public float AbsorbEasePower => _absorbEasePower;
         public float SquashDuration => _squashDuration;

@@ -18,6 +18,7 @@ namespace DI
         [SerializeField] private AdScheduler _adScheduler;
         [SerializeField] private Wallet _wallet;
         [SerializeField] private Pauser _pauser;
+        [SerializeField] private LevelLabelUI _levelLabelUI;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -28,6 +29,7 @@ namespace DI
             ValidateAssigned(_adScheduler, nameof(_adScheduler));
             ValidateAssigned(_wallet, nameof(_wallet));
             ValidateAssigned(_pauser, nameof(_pauser));
+            ValidateAssigned(_levelLabelUI, nameof(_levelLabelUI));
 
             builder.RegisterComponent(_mainMenu);
             builder.RegisterComponent(_startup);
@@ -36,6 +38,7 @@ namespace DI
             builder.RegisterComponent(_adScheduler);
             builder.RegisterComponent(_wallet);
             builder.RegisterComponent(_pauser);
+            builder.RegisterComponent(_levelLabelUI);
 
             builder.Register<UiSpawner>(Lifetime.Scoped);
 
