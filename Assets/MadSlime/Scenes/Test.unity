@@ -602,11 +602,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
-  _tierResolver: {fileID: 0}
-  _playerTier: {fileID: 0}
-  _impulse: {fileID: 1809261852}
   _positionSmoothTime: 0.25
   _maxPositionSpeed: 50
+  _shakeFrequency: 25
+  _shakeAxes: {x: 1, y: 1}
 --- !u!114 &1809261852
 MonoBehaviour:
   m_ObjectHideFlags: 0

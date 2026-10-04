@@ -70,6 +70,14 @@ MonoBehaviour:
     _ru: "\u0411\u043E\u043B\u044C\u0448\u043E\u0439"
     _en: Large
     _tr: "B\xFCy\xFCk"
+  - _key: tier_Huge
+    _ru: "\u041E\u0433\u0440\u043E\u043C\u043D\u044B\u0439"
+    _en: Huge
+    _tr: Devasa
+  - _key: tier_Giant
+    _ru: "\u0413\u0438\u0433\u0430\u043D\u0442\u0441\u043A\u0438\u0439"
+    _en: Giant
+    _tr: Dev
   - _key: tier_Boss
     _ru: "\u0411\u043E\u0441\u0441"
     _en: Boss

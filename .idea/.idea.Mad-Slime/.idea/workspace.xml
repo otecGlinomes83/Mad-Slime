@@ -16,78 +16,89 @@
     <list default="true" id="32b22157-d486-449b-b3c9-7cbcbfbd921f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-SemiBold SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/300Mind/2D Game UI Kit/Fonts/Oswald-SemiBold SDF.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Editor/MadSlimeContentSetup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Editor/MadSlimeContentSetup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/Day 1.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/PREMIUM OFFER! popup.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hyper_Casual_UI/Sprites/Panel_Sprites/PREMIUM OFFER! popup.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Materials/QuotaHighlight.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Materials/QuotaHighlight.mat.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteSectorCard.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteSectorCard.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/SkinItem.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/Skins/SkinItem.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/WinPopup.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/UI/WinPopup.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Fill.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Fill.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Game.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Menu.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Menu.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Shop.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scenes/Shop.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Levels/LevelsCatalog.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Levels/LevelsCatalog.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Roulette/RouletteConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Roulette/RouletteConfig.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Upgrades/UpgradesConfig.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scriptables/Upgrades/UpgradesConfig.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Item.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Item.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/MadSlime.Core.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/MadSlime.Core.asmdef" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Roulette/RouletteConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Roulette/RouletteConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Upgrades/UpgradesConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Upgrades/UpgradesConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/ShapeFill/FillFinale.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/ShapeFill/FillFinale.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteReel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteReel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteSectorCard.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteSectorCard.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteSectorView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteSectorView.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteWinPopup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Roulette/RouletteWinPopup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/ModelPlacer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/ModelPlacer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/ShopPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/ShopPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/ShopTabButton.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/ShopTabButton.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/SkinModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/UI/Shop/SkinModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Shaders/ItemOutlineSToon.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Shaders/ItemOutlineSToon.shader.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Архитектура.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Архитектура.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/ГДД Mad Slime.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/ГДД Mad Slime.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Граф модулей.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Граф модулей.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/AdScheduler.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/AdScheduler.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/AdrenalineBoost.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/AdrenalineBoost.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/FillConfig.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/FillConfig.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/FillSessionHandler.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/FillSessionHandler.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/GameDirector.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/GameDirector.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/GameplaySessionHandler.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/GameplaySessionHandler.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/HUD.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/HUD.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Item и IAttractable.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Item и IAttractable.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/ItemPool.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/ItemPool.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/LeaderboardReporter.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/LeaderboardReporter.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/LevelConfigResolver.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/LevelConfigResolver.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/LevelGenerator.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/LevelGenerator.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/LevelProgress.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/LevelProgress.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/LevelScaler.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/LevelScaler.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/LocalizationService.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/LocalizationService.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/MadSlimeContentSetup.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/MadSlimeContentSetup.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/MainMenu.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/MainMenu.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Mover.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Mover.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Pauser.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Pauser.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Player.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Player.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/PlayerConfig.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/PlayerConfig.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/PlayerInputReader.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/PlayerInputReader.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/PlayerProgress.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/PlayerProgress.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/PlayerTier.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/PlayerTier.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/PlayerUpgrades.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/PlayerUpgrades.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/ProjectLifetimeScope.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/ProjectLifetimeScope.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/QuotaEntry.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/QuotaEntry.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/QuotaGenerator.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/QuotaGenerator.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/RewardConfig.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/RewardConfig.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Rewarder.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Rewarder.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/RouletteReel.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/RouletteReel.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/RouletteService.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/RouletteService.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/RouletteView.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/RouletteView.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/SavesYG.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/SavesYG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/SessionStateLogger.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/SessionStateLogger.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/ShapeFillOrchestrator.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/ShapeFillOrchestrator.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/ShopPanel.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/ShopPanel.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/SkinApplier.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/SkinApplier.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Startup.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Startup.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/TierTable.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/TierTable.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Timer.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Timer.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/UI-фабрики.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/UI-фабрики.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/UiAnimations.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/UiAnimations.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/UpgradesConfig.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/UpgradesConfig.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Wallet.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Wallet.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/YG2-адаптеры.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/YG2-адаптеры.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Аудио-подсистема.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Аудио-подсистема.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Детекция и сбор.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Детекция и сбор.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Заливка фигуры.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Заливка фигуры.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Интерфейсы Core (шов YG2).md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Интерфейсы Core (шов YG2).md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Камера.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Камера.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Конфиги скинов и рулетки.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Конфиги скинов и рулетки.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Конфиги уровней.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Конфиги уровней.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Локализация UI.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Локализация UI.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Мелкие UI-компоненты.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Мелкие UI-компоненты.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Мелкие конфиги Core.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Мелкие конфиги Core.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Окна.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Окна.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Скоупы сцен.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Скоупы сцен.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Модули/Эффекты игрока.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Модули/Эффекты игрока.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obsidian/Техдолг и баги.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Техдолг и баги.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Avocado_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Avocado_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Avocado_003.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Avocado_003.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Bar_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Bar_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Bottle_002.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Bottle_002.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Bowl_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Bowl_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Burger_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Burger_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Can_009.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Can_009.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Cheesecake_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Cheesecake_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Chili_002.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Chili_002.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Chips_008.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Chips_008.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Coffee_005.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Coffee_005.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Cookie_006.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Cookie_006.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Cookie_011.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Cookie_011.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Cookie_012.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Cookie_012.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Croissant_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Croissant_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Cup_003.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Cup_003.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Donut_002.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Donut_002.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Egg_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Egg_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Egg_002.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Egg_002.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Egg_003.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Egg_003.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Egg_004.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Egg_004.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Fish_004.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Fish_004.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Fork_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Fork_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Frame.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Frame.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Glass_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Glass_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Glass_004.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Glass_004.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Glass_005.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Glass_005.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Glass_008.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Glass_008.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Ice_cream_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Ice_cream_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Ice_cream_003.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Ice_cream_003.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Mushroom_002.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Mushroom_002.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Mushroom_004.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Mushroom_004.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Mushroom_006.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Mushroom_006.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Onion_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Onion_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Onion_003.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Onion_003.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Pastry_002.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Pastry_002.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Pepper_003.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Pepper_003.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Plate_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Plate_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Plate_007.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Plate_007.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Sandwich_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Sandwich_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Sandwich_002.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Sandwich_002.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Sandwich_003.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Sandwich_003.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Sasuage_003.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Sasuage_003.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Shrimp_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Shrimp_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Shrimp_002.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Shrimp_002.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Soda_002.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Soda_002.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Tea_003.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Tea_003.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Watermelon_001.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Watermelon_001.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Watermelon_002.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Watermelon_002.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Watermelon_003.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Watermelon_003.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Yogurt_002.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ithappy/Food_Free/Meshes/Yogurt_002.fbx.meta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,33 +195,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Notification.DisplayName-DoNotAsk-WindowsDefender&quot;: &quot;Microsoft Defender may affect IDE&quot;,
-    &quot;Notification.DoNotAsk-WindowsDefender&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;MadSlimeV2&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Notification.DisplayName-DoNotAsk-WindowsDefender": "Microsoft Defender may affect IDE",
+    "Notification.DoNotAsk-WindowsDefender": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "cidr.known.project.marker": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "copilot.chat.legacySessionMetadata.migrated": "true",
+    "git-widget-placeholder": "madslimeRefactoring",
+    "junie.onboarding.icon.badge.shown": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="$USER_HOME$/Unity/Hub/Editor/2022.3.62f2/Editor/unityhub-unity-editor-2022.3.62f2" />
