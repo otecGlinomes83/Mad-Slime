@@ -24,6 +24,7 @@ namespace Game
         [SerializeField] private LayoutSet _customLayout;
 
         private readonly List<float> _zoneRadii = new List<float>(16);
+        private readonly List<Vector3> _zonePoints = new List<Vector3>(64);
 
         public LevelGenerator LevelGenerator => _levelGenerator;
         public LayoutsLibrary Library => _library;
@@ -131,22 +132,33 @@ namespace Game
                 ZoneLayoutPlanner planner = new ZoneLayoutPlanner(new System.Random(layoutIndex * 7919 + i * 17 + 3));
                 planner.CollectPlacements(zone, center, spacing, layout, _zoneRadii, zone.SingleType);
 
+                _zonePoints.Clear();
+
+                for (int placementIndex = 0; placementIndex < planner.Placements.Count; placementIndex++)
+                {
+                    _zonePoints.Add(ClampToMap(planner.Placements[placementIndex].Position, spacing * 0.5f));
+                }
+
+                Vector3 worldCenter = transform.TransformPoint(new Vector3(center.x, 0f, center.y));
+
                 if (zone.Shape == SpawnShape.Grid)
                 {
-                    Vector2 halfExtents = GetPositionHalfExtents(planner.Positions);
-                    DrawRectOutline(center, halfExtents.x, halfExtents.y, tierColor);
+                    DrawPointsBounds(_zonePoints, tierColor);
                 }
                 else if (zone.Shape == SpawnShape.CircleGrid)
                 {
-                    float outerRadius = GetMaxRadialDistance(planner.Positions, center);
-                    DrawZoneOutline(center, outerRadius, tierColor);
+                    if (_zonePoints.Count > 0)
+                    {
+                        float outerRadius = GetMaxRadialDistance(_zonePoints, worldCenter);
+                        DrawZoneOutline(worldCenter, outerRadius, tierColor);
+                    }
                 }
                 else
                 {
-                    DrawZoneOutline(center, zone.Radius, tierColor);
+                    DrawZoneOutline(worldCenter, zone.Radius, tierColor);
                 }
 
-                DrawZoneDots(planner.Placements, _zoneRadii, tierColor);
+                DrawZoneDots(_zonePoints, planner.Placements, _zoneRadii, tierColor);
                 DrawZoneLabel(center, zone, layoutIndex, i, planner.Placements.Count);
             }
         }
@@ -178,46 +190,64 @@ namespace Game
             Gizmos.DrawWireSphere(transform.position, 0.4f);
         }
 
-        private static Vector2 GetPositionHalfExtents(IReadOnlyList<Vector3> positions)
-        {
-            float minX = float.MaxValue;
-            float maxX = float.MinValue;
-            float minZ = float.MaxValue;
-            float maxZ = float.MinValue;
-
-            for (int i = 0; i < positions.Count; i++)
-            {
-                minX = Mathf.Min(minX, positions[i].x);
-                maxX = Mathf.Max(maxX, positions[i].x);
-                minZ = Mathf.Min(minZ, positions[i].z);
-                maxZ = Mathf.Max(maxZ, positions[i].z);
-            }
-
-            return new Vector2((maxX - minX) * 0.5f + 0.3f, (maxZ - minZ) * 0.5f + 0.3f);
-        }
-
-        private static float GetMaxRadialDistance(IReadOnlyList<Vector3> positions, Vector2 center)
+        private static float GetMaxRadialDistance(IReadOnlyList<Vector3> points, Vector3 center)
         {
             float maxDistance = 0f;
 
-            for (int i = 0; i < positions.Count; i++)
+            for (int i = 0; i < points.Count; i++)
             {
-                float deltaX = positions[i].x - center.x;
-                float deltaZ = positions[i].z - center.y;
+                float deltaX = points[i].x - center.x;
+                float deltaZ = points[i].z - center.z;
                 maxDistance = Mathf.Max(maxDistance, Mathf.Sqrt(deltaX * deltaX + deltaZ * deltaZ));
             }
 
             return maxDistance;
         }
 
-        private void DrawRectOutline(Vector2 center, float halfX, float halfZ, Color color)
+        private Vector3 ClampToMap(Vector3 localPosition, float margin)
         {
-            Gizmos.color = color;
+            Vector3 worldPosition = transform.TransformPoint(localPosition);
+            Bounds floorBounds = _levelGenerator.FloorBounds;
 
-            Vector3 cornerA = transform.TransformPoint(new Vector3(center.x - halfX, 0f, center.y - halfZ));
-            Vector3 cornerB = transform.TransformPoint(new Vector3(center.x + halfX, 0f, center.y - halfZ));
-            Vector3 cornerC = transform.TransformPoint(new Vector3(center.x + halfX, 0f, center.y + halfZ));
-            Vector3 cornerD = transform.TransformPoint(new Vector3(center.x - halfX, 0f, center.y + halfZ));
+            if (floorBounds.size.x == 0f || floorBounds.size.z == 0f)
+            {
+                return worldPosition;
+            }
+
+            worldPosition.x = Mathf.Clamp(worldPosition.x, floorBounds.min.x + margin, floorBounds.max.x - margin);
+            worldPosition.z = Mathf.Clamp(worldPosition.z, floorBounds.min.z + margin, floorBounds.max.z - margin);
+
+            return worldPosition;
+        }
+
+        private void DrawPointsBounds(IReadOnlyList<Vector3> points, Color color)
+        {
+            if (points.Count == 0)
+            {
+                return;
+            }
+
+            float minX = points[0].x;
+            float maxX = points[0].x;
+            float minZ = points[0].z;
+            float maxZ = points[0].z;
+
+            for (int i = 1; i < points.Count; i++)
+            {
+                minX = Mathf.Min(minX, points[i].x);
+                maxX = Mathf.Max(maxX, points[i].x);
+                minZ = Mathf.Min(minZ, points[i].z);
+                maxZ = Mathf.Max(maxZ, points[i].z);
+            }
+
+            const float Padding = 0.3f;
+
+            Vector3 cornerA = new Vector3(minX - Padding, points[0].y, minZ - Padding);
+            Vector3 cornerB = new Vector3(maxX + Padding, points[0].y, minZ - Padding);
+            Vector3 cornerC = new Vector3(maxX + Padding, points[0].y, maxZ + Padding);
+            Vector3 cornerD = new Vector3(minX - Padding, points[0].y, maxZ + Padding);
+
+            Gizmos.color = color;
 
             Gizmos.DrawLine(cornerA, cornerB);
             Gizmos.DrawLine(cornerB, cornerC);
@@ -225,37 +255,37 @@ namespace Game
             Gizmos.DrawLine(cornerD, cornerA);
         }
 
-        private void DrawZoneOutline(Vector2 center, float radius, Color color)
+        private static void DrawZoneOutline(Vector3 center, float radius, Color color)
         {
             const int segments = 36;
 
             Gizmos.color = color;
 
-            Vector3 previousPoint = transform.TransformPoint(new Vector3(center.x + radius, 0f, center.y));
+            Vector3 previousPoint = new Vector3(center.x + radius, center.y, center.z);
 
             for (int i = 1; i <= segments; i++)
             {
                 float angle = 2f * Mathf.PI * i / segments;
                 float offsetX = center.x + Mathf.Cos(angle) * radius;
-                float offsetZ = center.y + Mathf.Sin(angle) * radius;
+                float offsetZ = center.z + Mathf.Sin(angle) * radius;
 
-                Vector3 nextPoint = transform.TransformPoint(new Vector3(offsetX, 0f, offsetZ));
+                Vector3 nextPoint = new Vector3(offsetX, center.y, offsetZ);
                 Gizmos.DrawLine(previousPoint, nextPoint);
                 previousPoint = nextPoint;
             }
         }
 
-        private void DrawZoneDots(IReadOnlyList<ZoneLayoutPlanner.Placement> placements, IReadOnlyList<float> poolRadii,
-            Color tierColor)
+        private void DrawZoneDots(IReadOnlyList<Vector3> points, IReadOnlyList<ZoneLayoutPlanner.Placement> placements,
+            IReadOnlyList<float> poolRadii, Color tierColor)
         {
             Gizmos.color = tierColor;
 
-            for (int i = 0; i < placements.Count; i++)
+            for (int i = 0; i < points.Count; i++)
             {
                 float itemRadius = poolRadii[placements[i].PoolIndex];
                 float dotRadius = Mathf.Clamp(itemRadius * 0.5f, 0.05f, 0.5f);
 
-                Gizmos.DrawSphere(transform.TransformPoint(placements[i].Position), dotRadius);
+                Gizmos.DrawSphere(points[i], dotRadius);
             }
         }
 

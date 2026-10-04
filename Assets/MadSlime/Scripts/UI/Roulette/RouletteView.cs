@@ -339,6 +339,11 @@ namespace Roulette
 
                 _entrySkins.Add(remaining[pickIndex]);
                 remaining.RemoveAt(pickIndex);
+
+                if (remaining.Count == 0)
+                {
+                    remaining.AddRange(source);
+                }
             }
         }
 

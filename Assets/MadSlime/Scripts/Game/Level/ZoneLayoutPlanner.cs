@@ -104,11 +104,21 @@ namespace Game
 
         private bool FitsInZone(SpawnZone zone, Vector2 center, float spacing, Vector3 position, float itemRadius)
         {
-            if (zone.Shape == SpawnShape.Grid)
+            switch (zone.Shape)
             {
-                return itemRadius <= spacing * 0.5f;
-            }
+                case SpawnShape.Grid:
+                    return itemRadius <= spacing * 0.5f;
 
+                case SpawnShape.Circle:
+                    return true;
+
+                default:
+                    return IsInsideRadius(zone, center, position, itemRadius);
+            }
+        }
+
+        private static bool IsInsideRadius(SpawnZone zone, Vector2 center, Vector3 position, float itemRadius)
+        {
             float offsetX = position.x - center.x;
             float offsetZ = position.z - center.y;
             float distance = Mathf.Sqrt(offsetX * offsetX + offsetZ * offsetZ);
