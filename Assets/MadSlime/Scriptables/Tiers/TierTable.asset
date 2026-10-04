@@ -17,11 +17,17 @@ MonoBehaviour:
     _scale: 13
     _mass: 2
   - _tier: 1
-    _scale: 40
+    _scale: 30
     _mass: 500
   - _tier: 2
-    _scale: 70
+    _scale: 50
     _mass: 2000
   - _tier: 3
+    _scale: 65
+    _mass: 3500
+  - _tier: 4
+    _scale: 80
+    _mass: 6000
+  - _tier: 5
     _scale: 100
     _mass: 10000

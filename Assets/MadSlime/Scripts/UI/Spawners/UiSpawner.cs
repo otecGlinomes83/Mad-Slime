@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -8,6 +9,7 @@ namespace UI
     public sealed class UiSpawner
     {
         private readonly IObjectResolver _resolver;
+        private readonly Dictionary<UiLayer, int> _nextOrders = new Dictionary<UiLayer, int>();
 
         public UiSpawner(IObjectResolver resolver)
         {
@@ -83,7 +85,19 @@ namespace UI
             }
 
             canvas.overrideSorting = true;
-            canvas.sortingOrder = (int)layer;
+            canvas.sortingOrder = TakeSortingOrder(layer);
+        }
+
+        private int TakeSortingOrder(UiLayer layer)
+        {
+            if (_nextOrders.TryGetValue(layer, out int nextOrder) == false)
+            {
+                nextOrder = (int)layer;
+            }
+
+            _nextOrders[layer] = nextOrder + 1;
+
+            return nextOrder;
         }
 
         private static void SubscribeClosed(Component showable, Action onClosed)

@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1801906b686afc47a4a6d209a08dfe0, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
-  _baseMoveSpeed: 4
   _rotationSpeed: 1260
   _moveSmoothTime: 0.12
   _minAbsorbDuration: 0.25
@@ -22,6 +21,7 @@ MonoBehaviour:
   _maxArcFraction: 0.325
   _minSpinSpeed: 520
   _maxSpinSpeed: 1080
+  _smokeSpeedThreshold: 30
   _shrinkStart: 0.2
   _absorbEasePower: 2
   _squashDuration: 0.3
@@ -62,10 +62,96 @@ MonoBehaviour:
   _pickupSoundMaxInterval: 0.1
   _pickupSoundMinPitch: 0.95
   _pickupSoundMaxPitch: 1.15
-  _smokeSpeedThreshold: 1
   _deformMaxStretch: 0.22
   _deformSqueeze: 0.55
-  _deformSmoothTime: 0.08
+  _crawlStretchCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.2
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.3
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.65
+      value: 0.35
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0.2
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _crawlThrustCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.3
+      value: 1.45
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.65
+      value: 0.6
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _crawlStride: 3
+  _stridePerSpeed: 0.28
+  _crawlThrustDepth: 0.55
+  _crawlRampTime: 0.15
   _startMass: 6
   _thresholds:
   - _tier: 0
@@ -84,7 +170,17 @@ MonoBehaviour:
     _speed: 18
     _cameraOffsetMultiplier: 2
   - _tier: 3
+    _requiredMass: 15000
+    _scaleMultiplier: 10
+    _speed: 21
+    _cameraOffsetMultiplier: 2.4
+  - _tier: 4
     _requiredMass: 40000
     _scaleMultiplier: 15
+    _speed: 23
+    _cameraOffsetMultiplier: 2.7
+  - _tier: 5
+    _requiredMass: 70000
+    _scaleMultiplier: 30
     _speed: 25
     _cameraOffsetMultiplier: 3

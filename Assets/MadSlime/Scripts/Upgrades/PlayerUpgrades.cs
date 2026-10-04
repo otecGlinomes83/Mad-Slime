@@ -34,7 +34,6 @@ namespace Upgrades
         }
 
         public float AdrenalineSpeedMultiplier => _config.GetPerk(PerkType.Adrenaline).Value;
-        public float AdrenalineThresholdFraction => _config.AdrenalineThresholdFraction;
         public Color HighlightColor => _config.HighlightColor;
         public float OutlineWidth => _config.OutlineWidth;
 

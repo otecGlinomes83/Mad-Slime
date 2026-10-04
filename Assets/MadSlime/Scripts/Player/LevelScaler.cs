@@ -1,10 +1,8 @@
 using Cysharp.Threading.Tasks;
-using Movement;
 using System;
 using System.Threading;
 using Skills;
 using UnityEngine;
-using Upgrades;
 using VContainer;
 
 namespace Player
@@ -21,8 +19,6 @@ namespace Player
 
         private PlayerTier _playerTier;
         private TierResolver _tierResolver;
-        private Mover _mover;
-        private PlayerUpgrades _upgrades;
 
         private float _baseControllerRadius;
         private float _baseControllerCenterY;
@@ -38,13 +34,10 @@ namespace Player
         private ItemTier _currentTier = ItemTier.Small;
 
         [Inject]
-        public void Construct(PlayerTier playerTier, TierResolver tierResolver, Mover mover,
-            PlayerUpgrades upgrades)
+        public void Construct(PlayerTier playerTier, TierResolver tierResolver)
         {
             _playerTier = playerTier;
             _tierResolver = tierResolver;
-            _mover = mover;
-            _upgrades = upgrades;
         }
 
         private void Awake()
@@ -76,12 +69,6 @@ namespace Player
                 throw new InvalidOperationException("LevelScaler requires _rootTransform to be assigned.");
             }
 
-            if (_mover == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Mover was not injected. Check that GameLifetimeScope registers Mover and LevelScaler.");
-            }
-
             if (_growDuration <= 0f)
             {
                 throw new InvalidOperationException("LevelScaler requires a positive _growDuration.");
@@ -102,7 +89,6 @@ namespace Player
             _targetMultiplier = _tierResolver.GetScaleFor(_currentTier);
             _currentMultiplier = _targetMultiplier;
 
-            _mover.SetDefaultSpeed(_tierResolver.GetSpeedFor(_currentTier) * _upgrades.SpeedMultiplier);
             ApplyMultiplier();
         }
 
@@ -127,7 +113,6 @@ namespace Player
 
             _currentTier = currentTier;
             _targetMultiplier = _tierResolver.GetScaleFor(_currentTier);
-            _mover.SetDefaultSpeed(_tierResolver.GetSpeedFor(_currentTier) * _upgrades.SpeedMultiplier);
 
             GrowAsync().Forget();
         }

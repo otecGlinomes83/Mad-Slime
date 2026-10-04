@@ -1,5 +1,4 @@
 using Game;
-using Movement;
 using System;
 using UnityEngine;
 using Upgrades;
@@ -10,16 +9,19 @@ namespace Player
     public sealed class AdrenalineBoost : MonoBehaviour
     {
         private Timer _timer;
-        private Mover _mover;
         private PlayerUpgrades _upgrades;
+        private PlayerSpeed _playerSpeed;
         private bool _isBoosted;
 
+        public event Action BoostStarted;
+        public event Action BoostEnded;
+
         [Inject]
-        public void Construct(Timer timer, Mover mover, PlayerUpgrades upgrades)
+        public void Construct(Timer timer, PlayerUpgrades upgrades, PlayerSpeed playerSpeed)
         {
             _timer = timer;
-            _mover = mover;
             _upgrades = upgrades;
+            _playerSpeed = playerSpeed;
         }
 
         private void Awake()
@@ -30,62 +32,54 @@ namespace Player
                     $"{name}: Timer was not injected. Check that GameLifetimeScope registers Timer and AdrenalineBoost.");
             }
 
-            if (_mover == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Mover was not injected. Check that GameLifetimeScope registers Mover and AdrenalineBoost.");
-            }
-
             if (_upgrades == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: PlayerUpgrades was not injected. Check that ProjectLifetimeScope registers PlayerUpgrades.");
             }
+
+            if (_playerSpeed == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: PlayerSpeed was not injected. Check that GameLifetimeScope registers PlayerSpeed and AdrenalineBoost.");
+            }
         }
 
         private void OnEnable()
         {
-            _timer.Ticked += OnTimerTicked;
+            _timer.FinalCountdownStarted += OnFinalCountdownStarted;
             _timer.Finished += OnTimerFinished;
+            _timer.Stopped += OnTimerStopped;
         }
 
         private void OnDisable()
         {
-            _timer.Ticked -= OnTimerTicked;
+            _timer.FinalCountdownStarted -= OnFinalCountdownStarted;
             _timer.Finished -= OnTimerFinished;
+            _timer.Stopped -= OnTimerStopped;
 
             ResetBoost();
         }
 
-        private void OnTimerTicked(float remaining)
+        private void OnFinalCountdownStarted()
         {
             if (_upgrades.HasAdrenaline == false)
             {
-                ResetBoost();
                 return;
             }
 
-            float threshold = _timer.Duration * _upgrades.AdrenalineThresholdFraction;
-            bool shouldBeBoosted = remaining > 0f && remaining <= threshold;
+            _isBoosted = true;
+            _playerSpeed.SetBoostMultiplier(_upgrades.AdrenalineSpeedMultiplier);
 
-            if (shouldBeBoosted == _isBoosted)
-            {
-                return;
-            }
-
-            _isBoosted = shouldBeBoosted;
-
-            if (shouldBeBoosted == true)
-            {
-                _mover.SetSpeedMultiplier(_upgrades.AdrenalineSpeedMultiplier);
-            }
-            else
-            {
-                _mover.SetSpeedMultiplier(1f);
-            }
+            BoostStarted?.Invoke();
         }
 
         private void OnTimerFinished()
+        {
+            ResetBoost();
+        }
+
+        private void OnTimerStopped()
         {
             ResetBoost();
         }
@@ -98,7 +92,9 @@ namespace Player
             }
 
             _isBoosted = false;
-            _mover.SetSpeedMultiplier(1f);
+            _playerSpeed.SetBoostMultiplier(1f);
+
+            BoostEnded?.Invoke();
         }
     }
 }

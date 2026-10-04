@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8670cb7a2d89198f876d1a7461a8a03, type: 3}
   m_Name: UpgradesConfig
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   _upgrades:
   - _type: 0
     _icon: {fileID: 21300000, guid: 0b8bec87f05ff374c98c140306c522b5, type: 3}
@@ -71,5 +71,5 @@ MonoBehaviour:
     _cost: 5000
     _value: 1
   _highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _outlineWidth: 4
+  _outlineWidth: 10
   _adrenalineThresholdFraction: 0.25

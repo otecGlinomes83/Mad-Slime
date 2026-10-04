@@ -8,7 +8,6 @@ namespace Movement
     [RequireComponent(typeof(CapsuleCollider))]
     public sealed class Mover : MonoBehaviour
     {
-        [SerializeField] private float _defaultSpeed = 4f;
         [SerializeField] private float _smoothTime = 0.12f;
 
         private const float MoveThreshold = 0.05f;
@@ -20,16 +19,11 @@ namespace Movement
         private Vector3 _currentVelocity;
         private Vector3 _velocityRef;
         private float _currentSpeed;
-        private float _speedMultiplier = 1f;
         private PlayerConfig _playerConfig;
         private float _crawlPhase;
         private float _crawlStrength;
         private float _crawlStrengthVelocityRef;
         private bool _isCrawlInputActive;
-
-        public Vector3 Velocity => _currentVelocity;
-
-        public float CurrentSpeed => _currentSpeed;
 
         public float CrawlPhase => _crawlPhase;
 
@@ -38,7 +32,6 @@ namespace Movement
         private void Awake()
         {
             _playerCollider = GetComponent<CapsuleCollider>();
-            _currentSpeed = _defaultSpeed;
         }
 
         [Inject]
@@ -76,28 +69,15 @@ namespace Movement
             }
         }
 
-        public void SetDefaultSpeed(float speed)
+        public void SetSpeed(float speed)
         {
             if (speed <= 0f)
             {
                 throw new ArgumentOutOfRangeException(nameof(speed),
-                    "Mover.SetDefaultSpeed requires a positive speed.");
+                    "Mover.SetSpeed requires a positive speed.");
             }
 
-            _defaultSpeed = speed;
-            _currentSpeed = speed * _speedMultiplier;
-        }
-
-        public void SetSpeedMultiplier(float multiplier)
-        {
-            if (multiplier <= 0f)
-            {
-                throw new ArgumentOutOfRangeException(nameof(multiplier),
-                    "Mover.SetSpeedMultiplier requires a positive multiplier.");
-            }
-
-            _speedMultiplier = multiplier;
-            _currentSpeed = _defaultSpeed * _speedMultiplier;
+            _currentSpeed = speed;
         }
 
         public void SetSmoothTime(float smoothTime)
@@ -129,6 +109,12 @@ namespace Movement
             {
                 throw new InvalidOperationException(
                     $"{name}: Move is called before SetBounds. Drag the Mover into the _mover field of LevelGenerator.");
+            }
+
+            if (_currentSpeed <= 0f)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: Move is called before PlayerSpeed set the speed. Add PlayerSpeed to the Player and register it in GameLifetimeScope.");
             }
 
             bool hasInput = direction.sqrMagnitude >= MoveThreshold * MoveThreshold;
