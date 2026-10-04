@@ -12,21 +12,18 @@ namespace Items
         private const float SolidOpacity = 1f;
 
         private static readonly int OpacityId = Shader.PropertyToID("_Opacity");
-        private static readonly int OutlineColorId = Shader.PropertyToID("_OtlColor");
-        private static readonly int OutlineWidthId = Shader.PropertyToID("_OtlWidth");
 
         [SerializeField] private ItemDefinition _definition;
         [SerializeField] private Collider _collider;
         [SerializeField] private Material _ghostMaterial;
-        [SerializeField] private Material _highlightMaterial;
         [SerializeField] private GhostFadeConfig _ghostFadeConfig;
 
         private Renderer[] _renderers;
+        private Outline[] _outlines;
 
         private Vector3 _defaultScale;
         private Material[][] _originalMaterials;
         private Material[][] _ghostMaterials;
-        private Material[][] _outlineMaterials;
         private MaterialPropertyBlock _propertyBlock;
         private float _ghostTargetOpacity;
         private float _currentOpacity;
@@ -79,12 +76,6 @@ namespace Items
                     $"{name}: GhostFadeConfig is not assigned. Drag a GhostFadeConfig asset into the _ghostFadeConfig field.");
             }
 
-            if (_highlightMaterial != null && _highlightMaterial.HasProperty(OutlineColorId) == false)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: HighlightMaterial has no _OtlColor property. Drag a Material with the MadSlime/ItemOutlineSToon shader into the _highlightMaterial field.");
-            }
-
             if (_ghostFadeConfig.FadeDuration <= 0f)
             {
                 throw new InvalidOperationException(
@@ -106,7 +97,6 @@ namespace Items
 
             _originalMaterials = new Material[_renderers.Length][];
             _ghostMaterials = new Material[_renderers.Length][];
-            _outlineMaterials = new Material[_renderers.Length][];
 
             for (int i = 0; i < _renderers.Length; i++)
             {
@@ -114,7 +104,21 @@ namespace Items
 
                 _originalMaterials[i] = originalSet;
                 _ghostMaterials[i] = BuildMaterialSet(_ghostMaterial, originalSet.Length);
-                _outlineMaterials[i] = BuildOutlineSet(_highlightMaterial, originalSet);
+            }
+
+            _outlines = new Outline[_renderers.Length];
+
+            for (int i = 0; i < _renderers.Length; i++)
+            {
+                Outline outline = _renderers[i].GetComponent<Outline>();
+
+                if (outline == null)
+                {
+                    outline = _renderers[i].gameObject.AddComponent<Outline>();
+                }
+
+                outline.enabled = false;
+                _outlines[i] = outline;
             }
 
             _propertyBlock = new MaterialPropertyBlock();
@@ -147,6 +151,7 @@ namespace Items
             if (isGhost)
             {
                 SwapMaterials(_ghostMaterials);
+                DisableOutlines();
                 targetOpacity = _ghostTargetOpacity;
             }
             else
@@ -170,12 +175,6 @@ namespace Items
                 return;
             }
 
-            if (isHighlighted == true && _highlightMaterial == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: HighlightMaterial is not assigned. Drag the quota outline material into the _highlightMaterial field.");
-            }
-
             _isHighlighted = isHighlighted;
             _highlightColor = color;
             _outlineWidth = width;
@@ -185,7 +184,7 @@ namespace Items
                 return;
             }
 
-            ApplySolidMaterials();
+            ApplyOutline();
         }
 
         public void Initialize(Vector3 position, float scale)
@@ -220,26 +219,25 @@ namespace Items
                 return;
             }
 
-            ApplySolidMaterials();
+            RestoreOriginalMaterials();
+            ApplyOutline();
         }
 
-        private void ApplySolidMaterials()
+        private void ApplyOutline()
         {
-            if (_isHighlighted == true)
+            for (int i = 0; i < _outlines.Length; i++)
             {
-                _propertyBlock.SetColor(OutlineColorId, _highlightColor);
-                _propertyBlock.SetFloat(OutlineWidthId, _outlineWidth);
-
-                for (int i = 0; i < _renderers.Length; i++)
-                {
-                    _renderers[i].SetPropertyBlock(_propertyBlock);
-                }
-
-                SwapMaterials(_outlineMaterials);
+                _outlines[i].OutlineColor = _highlightColor;
+                _outlines[i].OutlineWidth = _outlineWidth;
+                _outlines[i].enabled = _isHighlighted;
             }
-            else
+        }
+
+        private void DisableOutlines()
+        {
+            for (int i = 0; i < _outlines.Length; i++)
             {
-                RestoreOriginalMaterials();
+                _outlines[i].enabled = false;
             }
         }
 
@@ -274,20 +272,6 @@ namespace Items
             return set;
         }
 
-        private Material[] BuildOutlineSet(Material outlineMaterial, Material[] originalSet)
-        {
-            Material[] set = new Material[originalSet.Length + 1];
-
-            for (int i = 0; i < originalSet.Length; i++)
-            {
-                set[i] = originalSet[i];
-            }
-
-            set[originalSet.Length] = outlineMaterial;
-
-            return set;
-        }
-
         private void RestoreOriginalMaterials()
         {
             for (int i = 0; i < _renderers.Length; i++)
@@ -304,6 +288,7 @@ namespace Items
             _currentOpacity = SolidOpacity;
 
             DOTween.Kill(this);
+            DisableOutlines();
 
             for (int i = 0; i < _renderers.Length; i++)
             {
