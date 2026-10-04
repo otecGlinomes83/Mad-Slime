@@ -129,7 +129,7 @@ namespace Game
 
                 float spacing = ZoneLayoutPlanner.ResolveSpacing(zone, layout, _zoneRadii);
                 ZoneLayoutPlanner planner = new ZoneLayoutPlanner(new System.Random(layoutIndex * 7919 + i * 17 + 3));
-                planner.Collect(zone, center, spacing, layout);
+                planner.CollectPlacements(zone, center, spacing, layout, _zoneRadii, zone.SingleType);
 
                 if (zone.Shape == SpawnShape.Grid)
                 {
@@ -146,8 +146,8 @@ namespace Game
                     DrawZoneOutline(center, zone.Radius, tierColor);
                 }
 
-                DrawZoneDots(planner.Positions, tierColor, spacing);
-                DrawZoneLabel(center, zone, layoutIndex, i, planner.Positions.Count);
+                DrawZoneDots(planner.Placements, _zoneRadii, tierColor);
+                DrawZoneLabel(center, zone, layoutIndex, i, planner.Placements.Count);
             }
         }
 
@@ -245,22 +245,35 @@ namespace Game
             }
         }
 
-        private void DrawZoneDots(IReadOnlyList<Vector3> positions, Color tierColor, float spacing)
+        private void DrawZoneDots(IReadOnlyList<ZoneLayoutPlanner.Placement> placements, IReadOnlyList<float> poolRadii,
+            Color tierColor)
         {
-            float dotRadius = Mathf.Clamp(spacing * 0.2f, 0.1f, 0.5f);
-
             Gizmos.color = tierColor;
 
-            for (int i = 0; i < positions.Count; i++)
+            for (int i = 0; i < placements.Count; i++)
             {
-                Gizmos.DrawSphere(transform.TransformPoint(positions[i]), dotRadius);
+                float itemRadius = poolRadii[placements[i].PoolIndex];
+                float dotRadius = Mathf.Clamp(itemRadius * 0.5f, 0.05f, 0.5f);
+
+                Gizmos.DrawSphere(transform.TransformPoint(placements[i].Position), dotRadius);
             }
         }
 
         private void DrawZoneLabel(Vector2 center, SpawnZone zone, int layoutIndex, int zoneIndex, int positionsCount)
         {
             string tierRange = $"{zone.MinTier}-{zone.MaxTier}";
-            string labelText = $"L{layoutIndex} / Zone {zoneIndex}: {zone.Shape} x{positionsCount} {tierRange}";
+            string typeMark;
+
+            if (zone.SingleType == true)
+            {
+                typeMark = " single";
+            }
+            else
+            {
+                typeMark = string.Empty;
+            }
+
+            string labelText = $"L{layoutIndex} / Zone {zoneIndex}: {zone.Shape} x{positionsCount} {tierRange}{typeMark}";
 
             Vector3 labelPosition = transform.TransformPoint(new Vector3(center.x, 0f, center.y)) + Vector3.up;
 
@@ -282,6 +295,16 @@ namespace Game
             if (tier == ItemTier.Large)
             {
                 return new Color(1f, 0.5f, 0f);
+            }
+
+            if (tier == ItemTier.Huge)
+            {
+                return new Color(1f, 0.2f, 0.2f);
+            }
+
+            if (tier == ItemTier.Giant)
+            {
+                return new Color(0.8f, 0.2f, 1f);
             }
 
             return Color.magenta;

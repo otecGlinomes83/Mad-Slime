@@ -10,6 +10,7 @@ namespace Game
         private const double FullCircleRadians = Math.PI * 2.0;
 
         private readonly List<Vector3> _positions = new List<Vector3>(64);
+        private readonly List<Placement> _placements = new List<Placement>(64);
         private readonly System.Random _random;
 
         public ZoneLayoutPlanner(System.Random random)
@@ -18,6 +19,8 @@ namespace Game
         }
 
         public IReadOnlyList<Vector3> Positions => _positions;
+
+        public IReadOnlyList<Placement> Placements => _placements;
 
         public static float ResolveSpacing(SpawnZone zone, LayoutSet layout, IReadOnlyList<float> zoneRadii)
         {
@@ -58,6 +61,72 @@ namespace Game
                     CollectScatter(zone, center, spacing, layout);
                     break;
             }
+        }
+
+        public void CollectPlacements(SpawnZone zone, Vector2 center, float spacing, LayoutSet layout,
+            IReadOnlyList<float> poolRadii, bool singleType)
+        {
+            Collect(zone, center, spacing, layout);
+
+            _placements.Clear();
+
+            if (poolRadii.Count == 0)
+            {
+                return;
+            }
+
+            int singleIndex = -1;
+
+            if (singleType == true)
+            {
+                singleIndex = _random.Next(poolRadii.Count);
+            }
+
+            for (int i = 0; i < _positions.Count; i++)
+            {
+                int poolIndex;
+
+                if (singleIndex >= 0)
+                {
+                    poolIndex = singleIndex;
+                }
+                else
+                {
+                    poolIndex = _random.Next(poolRadii.Count);
+                }
+
+                if (FitsInZone(zone, center, spacing, _positions[i], poolRadii[poolIndex]) == true)
+                {
+                    _placements.Add(new Placement(_positions[i], poolIndex));
+                }
+            }
+        }
+
+        private bool FitsInZone(SpawnZone zone, Vector2 center, float spacing, Vector3 position, float itemRadius)
+        {
+            if (zone.Shape == SpawnShape.Grid)
+            {
+                return itemRadius <= spacing * 0.5f;
+            }
+
+            float offsetX = position.x - center.x;
+            float offsetZ = position.z - center.y;
+            float distance = Mathf.Sqrt(offsetX * offsetX + offsetZ * offsetZ);
+
+            return distance + itemRadius <= zone.Radius;
+        }
+
+        public readonly struct Placement
+        {
+            public Placement(Vector3 position, int poolIndex)
+            {
+                Position = position;
+                PoolIndex = poolIndex;
+            }
+
+            public Vector3 Position { get; }
+
+            public int PoolIndex { get; }
         }
 
         private void CollectGrid(Vector2 center, int count, float spacing)

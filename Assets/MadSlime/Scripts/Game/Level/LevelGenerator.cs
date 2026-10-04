@@ -287,17 +287,18 @@ namespace Game
                     center.y = -center.y;
                 }
 
-                _layoutPlanner.Collect(zone, center, spacing, layout);
+                _layoutPlanner.CollectPlacements(zone, center, spacing, layout, _zoneRadii, zone.SingleType);
 
-                for (int j = 0; j < _layoutPlanner.Positions.Count; j++)
+                for (int j = 0; j < _layoutPlanner.Placements.Count; j++)
                 {
-                    Item prefab = _zonePool[Random.Range(0, _zonePool.Count)];
+                    ZoneLayoutPlanner.Placement placement = _layoutPlanner.Placements[j];
+                    Item prefab = _zonePool[placement.PoolIndex];
                     ItemDefinition definition = _assignedVariants[prefab];
                     float scale = _tierTable.Get(definition.Tier).Scale;
 
                     Item item = _itemPool.Get(prefab);
                     item.SetDefinition(definition);
-                    item.Initialize(ClampToMap(_layoutPlanner.Positions[j], spacing * 0.5f), scale);
+                    item.Initialize(ClampToMap(placement.Position, spacing * 0.5f), scale);
                     item.transform.SetParent(_itemsRoot, true);
                     _spawnedItems.Add(item);
 

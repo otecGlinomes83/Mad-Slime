@@ -74,6 +74,10 @@ namespace Scriptables
         [Tooltip("Задержка перед окном победы после полного заполнения (с). Должно вмещать конфетти и цикл отъезда камеры.")]
         [SerializeField, Min(0f)] private float _winDelay = 1.3f;
 
+        [Header("Sounds")]
+        [Tooltip("Звук финала филла (puff/конфетти) в момент запуска конфетти. Пусто — без звука.")]
+        [SerializeField] private SfxClip _finaleClip;
+
         public float FillDelay => _fillDelay;
         public float SpawnInterval => _spawnInterval;
         public float FlightDuration => _flightDuration;
@@ -94,5 +98,6 @@ namespace Scriptables
         public float FovKick => _fovKick;
         public float FovDuration => _fovDuration;
         public float WinDelay => _winDelay;
+        public SfxClip FinaleClip => _finaleClip;
     }
 }

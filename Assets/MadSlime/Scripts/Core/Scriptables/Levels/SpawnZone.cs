@@ -30,6 +30,9 @@ namespace Scriptables
         [Tooltip("Максимальный тир предметов в зоне.")]
         [SerializeField] private ItemTier _maxTier = ItemTier.Small;
 
+        [Tooltip("Вкл — вся зона заполняется одним случайным предметом из пула зоны.")]
+        [SerializeField] private bool _singleType = false;
+
         public SpawnShape Shape => _shape;
         public Vector2 Center => _center;
         public float Radius => _radius;
@@ -38,5 +41,6 @@ namespace Scriptables
         public float Spacing => _spacing;
         public ItemTier MinTier => _minTier;
         public ItemTier MaxTier => _maxTier;
+        public bool SingleType => _singleType;
     }
 }
