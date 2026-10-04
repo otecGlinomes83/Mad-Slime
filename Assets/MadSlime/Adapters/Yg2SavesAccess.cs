@@ -1,6 +1,5 @@
 using System;
 using Core;
-using Player;
 using System.Collections.Generic;
 using Upgrades;
 using YG;
@@ -95,19 +94,25 @@ namespace Adapters
             }
         }
 
-        public PlayerSkins SelectedSkinType
+        public int LegacySelectedSkinIndex => YG2.saves.SelectedSkinType;
+
+        public List<int> LegacyOpenSkinIndices => YG2.saves._openSkins;
+
+        public string SelectedSkinId
         {
             get
             {
-                return YG2.saves.SelectedSkinType;
+                return YG2.saves.SelectedSkinId;
             }
             set
             {
-                YG2.saves.SelectedSkinType = value;
+                YG2.saves.SelectedSkinId = value;
             }
         }
 
-        public List<PlayerSkins> OpenSkins => YG2.saves._openSkins;
+        public List<string> OpenSkinIds => YG2.saves._openSkinIds;
+
+        public List<string> ShowcaseSkinIds => YG2.saves._showcaseSkinIds;
 
         public int SpeedLevel
         {

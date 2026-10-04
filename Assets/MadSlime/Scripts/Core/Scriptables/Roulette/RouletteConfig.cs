@@ -18,6 +18,22 @@ namespace Roulette
         [SerializeField] private List<SkinItem> _exclusiveSkins = new List<SkinItem>();
 
         [Header("Skin Roulette")]
+        [Tooltip("Шанс обычных скинов в процентах: сумма всех четырёх нормализуется до 100. 0 — редкость не выпадает.")]
+        [FormerlySerializedAs("_commonDropWeight")]
+        [SerializeField, Min(0f)] private float _commonDropChance = 100f;
+
+        [Tooltip("Шанс редких скинов в процентах.")]
+        [FormerlySerializedAs("_rareDropWeight")]
+        [SerializeField, Min(0f)] private float _rareDropChance = 45f;
+
+        [Tooltip("Шанс эпических скинов в процентах.")]
+        [FormerlySerializedAs("_epicDropWeight")]
+        [SerializeField, Min(0f)] private float _epicDropChance = 15f;
+
+        [Tooltip("Шанс легендарных скинов в процентах.")]
+        [FormerlySerializedAs("_legendaryDropWeight")]
+        [SerializeField, Min(0f)] private float _legendaryDropChance = 4f;
+
         [Tooltip("Минимальный порог цены крутки скин-рулетки: с неё цена стартует и ниже не опускается.")]
         [FormerlySerializedAs("_skinSpinBaseCost")]
         [SerializeField, Min(0)] private int _skinSpinMinCost = 300;
@@ -30,6 +46,16 @@ namespace Roulette
 
         [Tooltip("Компенсация монетами за сектор скина, когда все обычные скины уже собраны.")]
         [SerializeField, Min(0)] private int _duplicateCoinsCompensation = 100;
+
+        [Header("Skin Showcase")]
+        [Tooltip("Сколько легендарных скинов держит витрина скин-рулетки. Витрина формируется один раз и обновляется только после выбивания скина.")]
+        [SerializeField, Min(0)] private int _showcaseLegendaryCount = 1;
+
+        [Tooltip("Сколько эпических скинов держит витрина скин-рулетки.")]
+        [SerializeField, Min(0)] private int _showcaseEpicCount = 2;
+
+        [Tooltip("Сколько редких скинов держит витрина скин-рулетки. Сумма трёх чисел не должна превышать число слотов колеса.")]
+        [SerializeField, Min(0)] private int _showcaseRareCount = 5;
 
         [Header("Rarity")]
         [Tooltip("Таблица редкостей скинов: веса выпадения и цвета плашек.")]
@@ -45,15 +71,12 @@ namespace Roulette
         [Tooltip("Период бесплатной крутки (с). 1800 = раз в 30 минут.")]
         [SerializeField, Min(60)] private int _freeSpinCooldownSeconds = 1800;
 
-        [Header("Reel Motion")]
-        [Tooltip("Пауза между холостыми шагами ленты (с).")]
-        [SerializeField, Min(0.1f)] private float _idleStepInterval = 1.1f;
+        [Header("Wheel Motion")]
+        [Tooltip("Скорость медленного вращения колеса в простое (градусов в секунду). 0 — колесо стоит.")]
+        [SerializeField, Min(0f)] private float _idleRotationSpeed = 12f;
 
-        [Tooltip("Длительность одного холостого шага на одну карточку (с).")]
-        [SerializeField, Min(0.05f)] private float _idleStepDuration = 0.18f;
-
-        [Tooltip("Откат ленты назад перед круткой (в карточках).")]
-        [SerializeField, Min(0f)] private float _windBackCards = 0.6f;
+        [Tooltip("Откат колеса назад перед круткой (в градусах).")]
+        [SerializeField, Min(0f)] private float _windBackDegrees = 25f;
 
         [Tooltip("Длительность отката назад (с).")]
         [SerializeField, Min(0.05f)] private float _windBackDuration = 0.3f;
@@ -69,6 +92,10 @@ namespace Roulette
 
         [Tooltip("Крутизна торможения: 2 — мягкий разгон и плавный выбег, 5 — классика слотов, 8+ — резкий старт и долгое затухание.")]
         [SerializeField, Min(1f)] private float _spinEasePower = 5f;
+
+        [Tooltip("Максимальное отклонение финала в градусах: колесо перелетает или недолетает выпавшую ячейку на случайную величину от 0 до этого значения, затем щёлкает на место. 0 — всегда точная остановка.")]
+        [FormerlySerializedAs("_settleOvershootDegrees")]
+        [SerializeField, Min(0f)] private float _settleMaxDeviationDegrees = 25f;
 
         [Tooltip("Пауза ленты на выпавшем призе до попапа выигрыша (с).")]
         [SerializeField, Min(0.1f)] private float _winDwellSeconds = 0.7f;
@@ -93,15 +120,50 @@ namespace Roulette
         public int AdSpinWindowSeconds => _adSpinWindowSeconds;
         public int AdSpinsPerWindow => _adSpinsPerWindow;
         public int FreeSpinCooldownSeconds => _freeSpinCooldownSeconds;
-        public float IdleStepInterval => _idleStepInterval;
-        public float IdleStepDuration => _idleStepDuration;
-        public float WindBackCards => _windBackCards;
+        public float GetSkinDropChance(SkinRarity rarity)
+        {
+            switch (rarity)
+            {
+                case SkinRarity.Rare:
+                    return _rareDropChance;
+
+                case SkinRarity.Epic:
+                    return _epicDropChance;
+
+                case SkinRarity.Legendary:
+                    return _legendaryDropChance;
+
+                default:
+                    return _commonDropChance;
+            }
+        }
+
+        public int GetShowcaseQuota(SkinRarity rarity)
+        {
+            switch (rarity)
+            {
+                case SkinRarity.Rare:
+                    return _showcaseRareCount;
+
+                case SkinRarity.Epic:
+                    return _showcaseEpicCount;
+
+                case SkinRarity.Legendary:
+                    return _showcaseLegendaryCount;
+
+                default:
+                    return 0;
+            }
+        }
+
+        public float IdleRotationSpeed => _idleRotationSpeed;
+        public float WindBackDegrees => _windBackDegrees;
         public float WindBackDuration => _windBackDuration;
         public int MinTurns => _minTurns;
         public int MaxTurns => _maxTurns;
         public float SpinDuration => _spinDuration;
-
         public float SpinEasePower => _spinEasePower;
+        public float SettleMaxDeviationDegrees => _settleMaxDeviationDegrees;
         public float WinDwellSeconds => _winDwellSeconds;
         public SfxClip StepClip => _stepClip;
         public SfxClip SpinStartClip => _spinStartClip;
@@ -126,12 +188,13 @@ namespace Roulette
         [Tooltip("Эксклюзивный скин (для типа Skin). Берётся из списка эксклюзивных.")]
         [SerializeField] private SkinItem _skin;
 
-        [Tooltip("Вес сектора: во сколько раз он вероятнее сектора с весом 1.")]
-        [SerializeField, Min(0f)] private float _weight = 1f;
+        [Tooltip("Шанс сектора в процентах: сумма по всем секторам нормализуется до 100. 0 — сектор не выпадает.")]
+        [FormerlySerializedAs("_weight")]
+        [SerializeField, Min(0f)] private float _dropChance = 25f;
 
         public RewardKind RewardType => _rewardKind;
         public int Coins => _coins;
         public SkinItem Skin => _skin;
-        public float Weight => _weight;
+        public float DropChance => _dropChance;
     }
 }

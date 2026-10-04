@@ -12,8 +12,31 @@ namespace Shop
         private MeshRenderer _renderer;
         private MeshFilter _meshFilter;
 
-        public MeshRenderer Renderer => _renderer;
-        public MeshFilter MeshFilter => _meshFilter;
+        public MeshRenderer Renderer
+        {
+            get
+            {
+                if (_renderer == null && TryGetComponent(out MeshRenderer renderer))
+                {
+                    _renderer = renderer;
+                }
+
+                return _renderer;
+            }
+        }
+
+        public MeshFilter MeshFilter
+        {
+            get
+            {
+                if (_meshFilter == null && TryGetComponent(out MeshFilter meshFilter))
+                {
+                    _meshFilter = meshFilter;
+                }
+
+                return _meshFilter;
+            }
+        }
 
         private void Awake()
         {

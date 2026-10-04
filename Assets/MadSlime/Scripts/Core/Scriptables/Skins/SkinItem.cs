@@ -1,4 +1,4 @@
-using Player;
+using System;
 using UnityEngine;
 
 namespace Skins
@@ -15,11 +15,8 @@ namespace Skins
         [Tooltip("Редкость скина: задаёт цвет плашки и вес выпадения в скин-рулетке.")]
         [SerializeField] private SkinRarity _rarity;
 
-        [Tooltip("Цена в монетах. 0 = выдаётся бесплатно.")]
-        [SerializeField, Range(0, 10000)] private int _price;
-
-        [Tooltip("Уникальный тип скина; дубли в ShopContent запрещены.")]
-        [SerializeField] private PlayerSkins _skinType;
+        [Tooltip("Уникальный id скина: ключ сейвов. Менять после релиза нельзя.")]
+        [SerializeField] private string _id;
 
         public GameObject Model => _model;
 
@@ -27,8 +24,15 @@ namespace Skins
 
         public SkinRarity Rarity => _rarity;
 
-        public int Price => _price;
+        public string Id => _id;
 
-        public PlayerSkins SkinType => _skinType;
+        private void OnValidate()
+        {
+            if (string.IsNullOrWhiteSpace(_id) == true)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SkinItem requires a non-empty _id. It is the save key of the skin.");
+            }
+        }
     }
 }

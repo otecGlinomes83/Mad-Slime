@@ -1,6 +1,4 @@
-using Player;
 using System.Collections.Generic;
-using UnityEngine;
 using Upgrades;
 
 namespace YG
@@ -16,8 +14,12 @@ namespace YG
 
         public int Balance = 250;
 
-        public PlayerSkins SelectedSkinType = PlayerSkins.Slime;
-        public List<PlayerSkins> _openSkins = new List<PlayerSkins>() { PlayerSkins.Slime };
+        public int SelectedSkinType;
+        public List<int> _openSkins = new List<int>() { 0 };
+
+        public string SelectedSkinId = "";
+        public List<string> _openSkinIds = new List<string>();
+        public List<string> _showcaseSkinIds = new List<string>();
 
         public int SpeedLevel;
         public int AppetiteLevel;

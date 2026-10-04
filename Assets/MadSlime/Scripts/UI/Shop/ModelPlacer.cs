@@ -129,6 +129,12 @@ namespace Shop
         {
             MeshFilter meshFilter = skinModel.MeshFilter;
 
+            if (meshFilter == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: SkinModel '{skinModel.name}' has no MeshFilter component. SkinModel requires one on the same object.");
+            }
+
             if (meshFilter.sharedMesh == null)
             {
                 throw new InvalidOperationException(

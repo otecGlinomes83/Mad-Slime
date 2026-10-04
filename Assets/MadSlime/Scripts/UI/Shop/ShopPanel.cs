@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Game;
-using Player;
 using Roulette;
 using TMPro;
 using Upgrades;
@@ -24,6 +23,8 @@ namespace Shop
         [SerializeField] private UpgradeItemViewFactory _upgradeFactory;
         [SerializeField, Tooltip("Плашка-разделитель перед одноразовыми покупками. Пусто — без разделителя.")]
         private GameObject _perkSeparatorPrefab;
+        [SerializeField, Min(1), Tooltip("Колонок в альбоме скинов — должно совпадать с фактическим числом колонок грида: каждая редкость идёт своей строкой, строка добивается пустыми ячейками до конца.")]
+        private int _skinsPerRow = 3;
         [SerializeField] private TMP_Text _moneyText;
         [SerializeField] private Button _upgradesTabButton;
         [SerializeField] private Button _rouletteTabButton;
@@ -32,6 +33,7 @@ namespace Shop
 
         private readonly List<ShopItemView> _shopItems = new List<ShopItemView>();
         private readonly List<UpgradeItemView> _upgradeItems = new List<UpgradeItemView>();
+        private readonly List<GameObject> _rowFillers = new List<GameObject>();
 
         private Wallet _wallet;
         private PlayerUpgrades _upgrades;
@@ -88,12 +90,12 @@ namespace Shop
 
         private void ShowEquippedSkin()
         {
-            SkinItem equipped = FindSkin(_progress.SelectedSkin);
+            SkinItem equipped = FindSkin(_progress.SelectedSkinId);
 
             if (equipped == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: the selected skin '{_progress.SelectedSkin}' is missing from ShopContent. " +
+                    $"{name}: the selected skin '{_progress.SelectedSkinId}' is missing from ShopContent. " +
                     "Add it to SkinItems so the preview can show the equipped skin.");
             }
 
@@ -101,11 +103,11 @@ namespace Shop
             _modelPlacer.PlayWalk();
         }
 
-        private SkinItem FindSkin(PlayerSkins skinType)
+        private SkinItem FindSkin(string skinId)
         {
             foreach (SkinItem item in _skinItems)
             {
-                if (item != null && item.SkinType == skinType)
+                if (item != null && item.Id == skinId)
                 {
                     return item;
                 }
@@ -295,34 +297,88 @@ namespace Shop
         {
             Clear();
 
-            foreach (SkinItem item in _skinItems)
+            int index = 0;
+
+            while (index < _skinItems.Count)
             {
-                ShopItemView view = _factory.Get(item, _itemsParent);
-                view.Click += OnSkinItemClick;
-                view.SetRarityColor(_rouletteService.GetRarityColor(item.Rarity));
+                SkinRarity rarity = _skinItems[index].Rarity;
+                int groupEnd = index;
 
-                if (IsOpen(item) == true)
+                while (groupEnd < _skinItems.Count && _skinItems[groupEnd].Rarity == rarity)
                 {
-                    view.SetExclusive(false);
-                    view.Unlock();
+                    groupEnd++;
+                }
 
-                    if (IsSelected(item) == true)
-                    {
-                        ApplySelection(view);
-                    }
-                    else
-                    {
-                        view.UnSelect();
-                    }
+                SpawnRarityGroup(index, groupEnd);
+
+                index = groupEnd;
+            }
+
+            int remainder = _shopItems.Count % _skinsPerRow;
+
+            if (remainder != 0)
+            {
+                SpawnRowFillers(_skinsPerRow - remainder);
+            }
+        }
+
+        private void SpawnRarityGroup(int start, int end)
+        {
+            for (int i = start; i < end; i++)
+            {
+                if (IsOpen(_skinItems[i]) == true)
+                {
+                    SpawnSkinView(_skinItems[i]);
+                }
+            }
+
+            for (int i = start; i < end; i++)
+            {
+                if (IsOpen(_skinItems[i]) == false)
+                {
+                    SpawnSkinView(_skinItems[i]);
+                }
+            }
+        }
+
+        private void SpawnSkinView(SkinItem item)
+        {
+            ShopItemView view = _factory.Get(item, _itemsParent);
+            view.Click += OnSkinItemClick;
+            view.SetRarityColor(_rouletteService.GetRarityColor(item.Rarity));
+
+            if (IsOpen(item) == true)
+            {
+                view.SetExclusive(false);
+                view.Unlock();
+
+                if (IsSelected(item) == true)
+                {
+                    ApplySelection(view);
                 }
                 else
                 {
-                    view.SetExclusive(_exclusiveSkins.Contains(item));
-                    view.Lock();
                     view.UnSelect();
                 }
+            }
+            else
+            {
+                view.SetExclusive(_exclusiveSkins.Contains(item));
+                view.Lock();
+                view.UnSelect();
+            }
 
-                _shopItems.Add(view);
+            _shopItems.Add(view);
+        }
+
+        private void SpawnRowFillers(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                GameObject filler = new GameObject("RowFiller", typeof(RectTransform));
+                filler.transform.SetParent(_itemsParent, false);
+
+                _rowFillers.Add(filler);
             }
         }
 
@@ -428,17 +484,17 @@ namespace Shop
 
         private bool IsOpen(SkinItem item)
         {
-            return _progress.OpenSkins.Contains(item.SkinType);
+            return _progress.OpenSkinIds.Contains(item.Id);
         }
 
         private bool IsSelected(SkinItem item)
         {
-            return _progress.SelectedSkin == item.SkinType;
+            return _progress.SelectedSkinId == item.Id;
         }
 
         private void SelectPersist(SkinItem item)
         {
-            _progress.SelectedSkin = item.SkinType;
+            _progress.SelectedSkinId = item.Id;
             _progress.Save();
         }
 
@@ -504,6 +560,16 @@ namespace Shop
             }
 
             _upgradeItems.Clear();
+
+            foreach (GameObject filler in _rowFillers)
+            {
+                if (filler != null)
+                {
+                    Destroy(filler);
+                }
+            }
+
+            _rowFillers.Clear();
 
             if (_perkSeparator != null)
             {

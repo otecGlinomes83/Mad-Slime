@@ -1,7 +1,6 @@
 using Core;
 using System;
 using System.Collections.Generic;
-using Player;
 using UnityEngine;
 using Upgrades;
 using VContainer;
@@ -10,21 +9,20 @@ namespace Game
 {
     public sealed class PlayerProgress : MonoBehaviour
     {
+        private static readonly string[] LegacySkinIds =
+        {
+            "Slime",
+            "Pacman",
+            "Tung",
+            "Crown",
+            "Phantom"
+        };
+
         private ISavesAccess _saves;
 
-        public bool IsReady => _saves.IsReady;
+        public event Action Ready;
 
-        public event Action Ready
-        {
-            add
-            {
-                _saves.Ready += value;
-            }
-            remove
-            {
-                _saves.Ready -= value;
-            }
-        }
+        public bool IsReady => _saves.IsReady;
 
         public int CurrentLevel
         {
@@ -74,19 +72,21 @@ namespace Game
             }
         }
 
-        public PlayerSkins SelectedSkin
+        public string SelectedSkinId
         {
             get
             {
-                return _saves.SelectedSkinType;
+                return _saves.SelectedSkinId;
             }
             set
             {
-                _saves.SelectedSkinType = value;
+                _saves.SelectedSkinId = value;
             }
         }
 
-        public List<PlayerSkins> OpenSkins => _saves.OpenSkins;
+        public List<string> OpenSkinIds => _saves.OpenSkinIds;
+
+        public List<string> ShowcaseSkinIds => _saves.ShowcaseSkinIds;
 
         public float MusicVolume
         {
@@ -144,6 +144,64 @@ namespace Game
         public void Construct(ISavesAccess saves)
         {
             _saves = saves;
+            _saves.Ready += OnSavesReady;
+
+            if (_saves.IsReady == true)
+            {
+                OnSavesReady();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_saves != null)
+            {
+                _saves.Ready -= OnSavesReady;
+            }
+        }
+
+        private void OnSavesReady()
+        {
+            MigrateLegacySkinSaves();
+
+            Action ready = Ready;
+            ready?.Invoke();
+        }
+
+        private void MigrateLegacySkinSaves()
+        {
+            if (string.IsNullOrEmpty(_saves.SelectedSkinId) == false)
+            {
+                return;
+            }
+
+            _saves.SelectedSkinId = ResolveLegacySkinId(_saves.LegacySelectedSkinIndex);
+
+            List<int> legacyOpenSkins = _saves.LegacyOpenSkinIndices;
+
+            for (int i = 0; i < legacyOpenSkins.Count; i++)
+            {
+                string legacyId = ResolveLegacySkinId(legacyOpenSkins[i]);
+
+                if (_saves.OpenSkinIds.Contains(legacyId) == false)
+                {
+                    _saves.OpenSkinIds.Add(legacyId);
+                }
+            }
+
+            _saves.Save();
+        }
+
+        private static string ResolveLegacySkinId(int legacyIndex)
+        {
+            if (legacyIndex < 0 || legacyIndex >= LegacySkinIds.Length)
+            {
+                throw new InvalidOperationException(
+                    $"PlayerProgress: legacy skin index {legacyIndex} is outside the migration table " +
+                    $"of {LegacySkinIds.Length} entries.");
+            }
+
+            return LegacySkinIds[legacyIndex];
         }
 
         public int GetUpgradeLevel(UpgradeType type)

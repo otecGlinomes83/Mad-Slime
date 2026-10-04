@@ -56,15 +56,17 @@ namespace Roulette
                     $"{name}: RouletteConfig '{_config.name}' has no SkinRarityTable assigned.");
             }
 
+            float skinChanceTotal = 0f;
+
             for (int i = 0; i < RarityOrder.Length; i++)
             {
-                RaritySettings settings = _config.RarityTable.Get(RarityOrder[i]);
+                skinChanceTotal += _config.GetSkinDropChance(RarityOrder[i]);
+            }
 
-                if (settings.DropWeight <= 0f)
-                {
-                    throw new InvalidOperationException(
-                        $"{name}: Rarity '{RarityOrder[i]}' in '{_config.RarityTable.name}' has a non-positive drop weight.");
-                }
+            if (skinChanceTotal <= 0f)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RouletteConfig '{_config.name}' skin drop chances sum to zero — nothing can drop.");
             }
 
             for (int i = 0; i < _config.Sectors.Count; i++)
@@ -84,17 +86,17 @@ namespace Roulette
                 }
             }
 
-            float totalWeight = 0f;
+            float sectorChanceTotal = 0f;
 
             for (int i = 0; i < _config.Sectors.Count; i++)
             {
-                totalWeight += _config.Sectors[i].Weight;
+                sectorChanceTotal += _config.Sectors[i].DropChance;
             }
 
-            if (totalWeight <= 0f)
+            if (sectorChanceTotal <= 0f)
             {
                 throw new InvalidOperationException(
-                    $"{name}: RouletteConfig '{_config.name}' sectors have zero total weight — nothing can drop.");
+                    $"{name}: RouletteConfig '{_config.name}' sectors have zero total drop chance — nothing can drop.");
             }
 
             if (_config.DuplicateCoinsCompensation <= 0)
@@ -187,57 +189,184 @@ namespace Roulette
             _wallet.Add(amount);
         }
 
-        public List<SkinItem> CollectAvailableSkinPool(IEnumerable<SkinItem> source)
+        public void EnsureShowcaseFormed(IReadOnlyList<SkinItem> catalog)
         {
-            List<SkinItem> pool = new List<SkinItem>();
-
-            foreach (SkinItem item in source)
+            if (_progress.ShowcaseSkinIds.Count > 0)
             {
-                if (item == null)
-                {
-                    continue;
-                }
+                return;
+            }
 
-                if (IsSkinOpen(item) == false)
+            List<string> formedIds = new List<string>();
+
+            AppendShowcaseQuota(formedIds, SkinRarity.Legendary, catalog);
+            AppendShowcaseQuota(formedIds, SkinRarity.Epic, catalog);
+            AppendShowcaseQuota(formedIds, SkinRarity.Rare, catalog);
+
+            if (formedIds.Count == 0)
+            {
+                return;
+            }
+
+            List<string> showcaseIds = _progress.ShowcaseSkinIds;
+
+            for (int i = 0; i < formedIds.Count; i++)
+            {
+                showcaseIds.Add(formedIds[i]);
+            }
+
+            _progress.Save();
+        }
+
+        public List<SkinItem> GetShowcaseSkins(IReadOnlyList<SkinItem> catalog)
+        {
+            List<SkinItem> showcaseSkins = new List<SkinItem>();
+            List<string> showcaseIds = _progress.ShowcaseSkinIds;
+
+            for (int i = 0; i < showcaseIds.Count; i++)
+            {
+                SkinItem item = FindInCatalog(catalog, showcaseIds[i]);
+
+                if (item != null)
                 {
-                    pool.Add(item);
+                    showcaseSkins.Add(item);
                 }
             }
 
-            return pool;
+            return showcaseSkins;
         }
 
         public bool IsSkinOpen(SkinItem item)
         {
-            return _progress.OpenSkins.Contains(item.SkinType);
+            return _progress.OpenSkinIds.Contains(item.Id);
         }
 
-        public void GrantSkin(SkinItem item)
+        public void GrantSkin(SkinItem item, IReadOnlyList<SkinItem> catalog)
         {
             if (IsSkinOpen(item) == true)
             {
                 return;
             }
 
-            _progress.OpenSkins.Add(item.SkinType);
+            _progress.OpenSkinIds.Add(item.Id);
+            ReplaceShowcaseSlot(item, catalog);
             _progress.Save();
+        }
+
+        private void ReplaceShowcaseSlot(SkinItem wonSkin, IReadOnlyList<SkinItem> catalog)
+        {
+            List<string> showcaseIds = _progress.ShowcaseSkinIds;
+            int slotIndex = showcaseIds.IndexOf(wonSkin.Id);
+
+            if (slotIndex < 0)
+            {
+                return;
+            }
+
+            showcaseIds.RemoveAt(slotIndex);
+
+            SkinItem replacement = PickShowcaseReplacement(wonSkin.Rarity, catalog);
+
+            if (replacement != null)
+            {
+                showcaseIds.Insert(slotIndex, replacement.Id);
+            }
+        }
+
+        private SkinItem PickShowcaseReplacement(SkinRarity rarity, IReadOnlyList<SkinItem> catalog)
+        {
+            List<SkinItem> candidates = CollectShowcaseCandidates(rarity, catalog);
+
+            if (candidates.Count == 0)
+            {
+                return null;
+            }
+
+            return candidates[Random.Range(0, candidates.Count)];
+        }
+
+        private void AppendShowcaseQuota(List<string> formedIds, SkinRarity rarity, IReadOnlyList<SkinItem> catalog)
+        {
+            int quota = _config.GetShowcaseQuota(rarity);
+            List<SkinItem> candidates = CollectShowcaseCandidates(rarity, catalog);
+
+            for (int i = 0; i < quota && candidates.Count > 0; i++)
+            {
+                int pickIndex = Random.Range(0, candidates.Count);
+
+                formedIds.Add(candidates[pickIndex].Id);
+                candidates.RemoveAt(pickIndex);
+            }
+        }
+
+        private List<SkinItem> CollectShowcaseCandidates(SkinRarity rarity, IReadOnlyList<SkinItem> catalog)
+        {
+            List<SkinItem> candidates = new List<SkinItem>();
+
+            for (int i = 0; i < catalog.Count; i++)
+            {
+                SkinItem item = catalog[i];
+
+                if (item == null || item.Rarity != rarity)
+                {
+                    continue;
+                }
+
+                if (IsSkinOpen(item) == true || IsExclusive(item) == true)
+                {
+                    continue;
+                }
+
+                candidates.Add(item);
+            }
+
+            return candidates;
+        }
+
+        private bool IsExclusive(SkinItem item)
+        {
+            IReadOnlyList<SkinItem> exclusives = _config.ExclusiveSkins;
+
+            for (int i = 0; i < exclusives.Count; i++)
+            {
+                if (exclusives[i] == item)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static SkinItem FindInCatalog(IReadOnlyList<SkinItem> catalog, string skinId)
+        {
+            for (int i = 0; i < catalog.Count; i++)
+            {
+                SkinItem item = catalog[i];
+
+                if (item != null && item.Id == skinId)
+                {
+                    return item;
+                }
+            }
+
+            return null;
         }
 
         public int PickMainSectorIndex()
         {
             IReadOnlyList<RouletteSector> sectors = _config.Sectors;
-            float totalWeight = 0f;
+            float chanceTotal = 0f;
 
             for (int i = 0; i < sectors.Count; i++)
             {
-                totalWeight += sectors[i].Weight;
+                chanceTotal += sectors[i].DropChance;
             }
 
-            float roll = Random.Range(0f, totalWeight);
+            float roll = Random.Range(0f, chanceTotal);
 
             for (int i = 0; i < sectors.Count; i++)
             {
-                roll -= sectors[i].Weight;
+                roll -= sectors[i].DropChance;
 
                 if (roll <= 0f)
                 {
@@ -257,8 +386,8 @@ namespace Roulette
             }
 
             SkinRarity[] tiers = new SkinRarity[RarityOrder.Length];
-            float[] tierWeights = new float[RarityOrder.Length];
-            float totalWeight = 0f;
+            float[] tierChances = new float[RarityOrder.Length];
+            float chanceTotal = 0f;
             int tierCount = 0;
 
             for (int i = 0; i < RarityOrder.Length; i++)
@@ -270,15 +399,15 @@ namespace Roulette
                     continue;
                 }
 
-                float weight = _config.RarityTable.Get(RarityOrder[i]).DropWeight;
+                float chance = _config.GetSkinDropChance(RarityOrder[i]);
 
                 tiers[tierCount] = RarityOrder[i];
-                tierWeights[tierCount] = weight;
-                totalWeight += weight;
+                tierChances[tierCount] = chance;
+                chanceTotal += chance;
                 tierCount++;
             }
 
-            SkinRarity chosenRarity = RollRarity(tiers, tierWeights, tierCount, totalWeight);
+            SkinRarity chosenRarity = RollRarity(tiers, tierChances, tierCount, chanceTotal);
 
             return PickIndexInRarity(pool, chosenRarity);
         }
@@ -286,6 +415,21 @@ namespace Roulette
         public Color GetRarityColor(SkinRarity rarity)
         {
             return _config.RarityTable.Get(rarity).PlateColor;
+        }
+
+        public SkinItem PickHiddenSkin()
+        {
+            IReadOnlyList<SkinItem> hiddenSkins = _config.ExclusiveSkins;
+
+            if (hiddenSkins.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RouletteConfig '{_config.name}' has no exclusive skins — the hidden sector cannot grant a random skin.");
+            }
+
+            int index = Random.Range(0, hiddenSkins.Count);
+
+            return hiddenSkins[index];
         }
 
         public void SortByRarityAscending(List<SkinItem> skins)
@@ -324,13 +468,13 @@ namespace Roulette
             return false;
         }
 
-        private static SkinRarity RollRarity(SkinRarity[] tiers, float[] tierWeights, int tierCount, float totalWeight)
+        private static SkinRarity RollRarity(SkinRarity[] tiers, float[] tierChances, int tierCount, float chanceTotal)
         {
-            float roll = Random.Range(0f, totalWeight);
+            float roll = Random.Range(0f, chanceTotal);
 
             for (int i = 0; i < tierCount; i++)
             {
-                roll -= tierWeights[i];
+                roll -= tierChances[i];
 
                 if (roll <= 0f)
                 {

@@ -7,14 +7,14 @@ namespace Shop
     [RequireComponent(typeof(Button))]
     public sealed class ShopTabButton : MonoBehaviour
     {
-        [Tooltip("Фон кнопки: его спрайт переключается между вариантами.")]
+        [Tooltip("Фон кнопки: его спрайт переключается между обычным и выбранным.")]
         [SerializeField] private Image _background;
+
+        [Tooltip("Спрайт фона невыбранной вкладки.")]
+        [SerializeField] private Sprite _backgroundSprite;
 
         [Tooltip("Спрайт фона выбранной вкладки.")]
         [SerializeField] private Sprite _selectedSprite;
-
-        [Tooltip("Спрайт фона невыбранной вкладки.")]
-        [SerializeField] private Sprite _unselectedSprite;
 
         public bool IsSelected { get; private set; }
 
@@ -26,10 +26,10 @@ namespace Shop
                     $"{name}: Background is not assigned. Drag the background Image into the _background field.");
             }
 
-            if (_selectedSprite == null || _unselectedSprite == null)
+            if (_backgroundSprite == null || _selectedSprite == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: a background sprite is not assigned. Drag the selected and unselected sprites into the fields.");
+                    $"{name}: a background sprite is not assigned. Drag the background and selected sprites into the fields.");
             }
         }
 
@@ -62,7 +62,7 @@ namespace Shop
         public void Deselect()
         {
             IsSelected = false;
-            _background.sprite = _unselectedSprite;
+            _background.sprite = _backgroundSprite;
         }
     }
 }

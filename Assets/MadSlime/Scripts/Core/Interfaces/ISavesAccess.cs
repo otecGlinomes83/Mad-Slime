@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Player;
 using Upgrades;
 
 namespace Core
@@ -23,9 +22,15 @@ namespace Core
 
         float SfxVolume { get; set; }
 
-        PlayerSkins SelectedSkinType { get; set; }
+        int LegacySelectedSkinIndex { get; }
 
-        List<PlayerSkins> OpenSkins { get; }
+        List<int> LegacyOpenSkinIndices { get; }
+
+        string SelectedSkinId { get; set; }
+
+        List<string> OpenSkinIds { get; }
+
+        List<string> ShowcaseSkinIds { get; }
 
         int SpeedLevel { get; set; }
 

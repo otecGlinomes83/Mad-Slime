@@ -71,9 +71,9 @@ namespace Player
                 return;
             }
 
-            PlayerSkins selectedType = _progress.SelectedSkin;
+            string selectedId = _progress.SelectedSkinId;
 
-            SkinItem matchingItem = FindItem(selectedType);
+            SkinItem matchingItem = FindItem(selectedId);
 
             if (matchingItem == null)
             {
@@ -88,7 +88,7 @@ namespace Player
             _currentModel = Instantiate(matchingItem.Model, _skinsContainer);
         }
 
-        private SkinItem FindItem(PlayerSkins skinType)
+        private SkinItem FindItem(string skinId)
         {
             foreach (SkinItem item in _shopContent.SkinItems)
             {
@@ -97,7 +97,7 @@ namespace Player
                     continue;
                 }
 
-                if (item.SkinType == skinType)
+                if (item.Id == skinId)
                 {
                     return item;
                 }
