@@ -15,14 +15,16 @@
   <component name="ChangeListManager">
     <list default="true" id="32b22157-d486-449b-b3c9-7cbcbfbd921f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Mad-Slime/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Sounds/Alexey Pigeon - Crocodildo Penissini.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Sounds/Alexey Pigeon - Crocodildo Penissini.mp3.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Sounds/Blk Odyssy - Want You (hitmos.fm).mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Sounds/Blk Odyssy - Want You (hitmos.fm).mp3.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Sounds/Kid_Cudi_-_Mr_Rager_48070241.mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Sounds/Kid_Cudi_-_Mr_Rager_48070241.mp3.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Sounds/Гражданская Оборона - Всё идёт по плану (hitmos.fm).mp3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Sounds/Гражданская Оборона - Всё идёт по плану (hitmos.fm).mp3.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Adapters/Yg2LeaderboardService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Adapters/Yg2LeaderboardService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/DI/ProjectScope.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Resources/Prefabs/DI/ProjectScope.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Audio/SfxPlayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Audio/SfxPlayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Collectables/Collector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Collectables/Collector.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Camera/CameraImpulseConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MadSlime/Scripts/Core/Scriptables/Camera/CameraImpulseConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/ModulesListYG2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/ModulesListYG2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/ServerInfoYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/ServerInfoYG2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wiki/Архитектура.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Архитектура.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wiki/Граф модулей.md" beforeDir="false" afterPath="$PROJECT_DIR$/Wiki/Граф модулей.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,36 +121,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Notification.DisplayName-DoNotAsk-WindowsDefender&quot;: &quot;Microsoft Defender may affect IDE&quot;,
-    &quot;Notification.DoNotAsk-WindowsDefender&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;copilot.chat.legacySessionMetadata.migrated&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "cidr.known.project.marker": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "copilot.chat.legacySessionMetadata.migrated": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="$USER_HOME$/Unity/Hub/Editor/2022.3.62f2/Editor/Unity" />
+      <option name="EXE_PATH" value="G:\Code\unity\Editor\2022.3.62f2\Editor\Unity.exe" />
       <option name="PROGRAM_PARAMETERS" value="-projectPath &quot;D:\3. files\unity repos\Mad-Slime&quot; -debugCodeOptimization" />
       <option name="WORKING_DIRECTORY" value="D:\3. files\unity repos\Mad-Slime" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -158,7 +158,7 @@
       <method v="2" />
     </configuration>
     <configuration name="Unit Tests (batch mode)" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="$USER_HOME$/Unity/Hub/Editor/2022.3.62f2/Editor/Unity" />
+      <option name="EXE_PATH" value="G:\Code\unity\Editor\2022.3.62f2\Editor\Unity.exe" />
       <option name="PROGRAM_PARAMETERS" value="-runTests -batchmode -projectPath &quot;D:\3. files\unity repos\Mad-Slime&quot; -testResults Logs/results.xml -logFile Logs/Editor.log -testPlatform EditMode -debugCodeOptimization" />
       <option name="WORKING_DIRECTORY" value="D:\3. files\unity repos\Mad-Slime" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -169,12 +169,10 @@
     </configuration>
     <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" useMixedMode="false">
       <option name="allowRunningInParallel" value="false" />
+      <option name="coreClr" value="false" />
       <option name="listenPortForConnections" value="false" />
       <option name="pid" />
       <option name="projectPathOnTarget" />
-      <option name="runtimes">
-        <list />
-      </option>
       <option name="selectedOptions">
         <list />
       </option>

@@ -17,7 +17,7 @@ namespace Collectables
         private PlayerUpgrades _upgrades;
         private Pauser _pauser;
 
-        public event Action<Items.Item> ItemCollected;
+        public event Action<Item> ItemCollected;
 
         [Inject]
         public void Construct(PlayerTier tierHolder, ItemDetector detector, Absorber absorber,
@@ -67,7 +67,7 @@ namespace Collectables
             _detector.Detected -= OnItemDetected;
         }
 
-        private void OnItemDetected(Items.Item item)
+        private void OnItemDetected(Item item)
         {
             if (item.Definition == null)
             {
@@ -89,7 +89,7 @@ namespace Collectables
             CollectAsync(item).Forget();
         }
 
-        private async UniTaskVoid CollectAsync(Items.Item item)
+        private async UniTaskVoid CollectAsync(Item item)
         {
             item.Collect();
 

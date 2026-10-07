@@ -122,7 +122,7 @@ namespace Audio
                     $"{name}: SfxClip '{sfxClip.name}' has no AudioClip assigned.");
             }
 
-            if (sfxClip.IsRandomPitch == true && sfxClip.MinPitch > sfxClip.MaxPitch)
+            if (sfxClip.IsRandomPitch && sfxClip.MinPitch > sfxClip.MaxPitch)
             {
                 throw new InvalidOperationException(
                     $"{name}: SfxClip '{sfxClip.name}' has MinPitch {sfxClip.MinPitch} greater than MaxPitch {sfxClip.MaxPitch}.");

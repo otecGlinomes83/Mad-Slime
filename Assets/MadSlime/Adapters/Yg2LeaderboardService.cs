@@ -61,7 +61,8 @@ namespace Adapters
 
             try
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(EntriesTimeoutSeconds), true, PlayerLoopTiming.Update, cancellationToken);
+                await UniTask.Delay(TimeSpan.FromSeconds(EntriesTimeoutSeconds), true, PlayerLoopTiming.Update,
+                    cancellationToken);
             }
             catch (OperationCanceledException)
             {

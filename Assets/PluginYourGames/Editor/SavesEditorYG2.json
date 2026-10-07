@@ -4,12 +4,12 @@
     "Language": "ru",
     "musicVolume": 0.005058822687715292,
     "sfxVolume": 0.429993212223053,
-    "Balance": 10000149,
+    "Balance": 9988199,
     "SelectedSkinType": 0,
     "_openSkins": [
         0
     ],
-    "SelectedSkinId": "Phantom",
+    "SelectedSkinId": "Crown",
     "_openSkinIds": [
         "Slime",
         "Crown",
@@ -22,9 +22,13 @@
     "AppetiteLevel": 0,
     "TasteLevel": 0,
     "MetabolismLevel": 0,
-    "PurchasedPerks": [],
-    "LastFreeSpinUnixTime": 1791145676,
+    "PurchasedPerks": [
+        0,
+        1,
+        2
+    ],
+    "LastFreeSpinUnixTime": 1791373098,
     "RouletteAdSpinTimes": [],
     "SkinSpinCount": 0,
-    "idSave": 698
+    "idSave": 709
 }
