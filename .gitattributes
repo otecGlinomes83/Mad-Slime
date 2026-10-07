@@ -10,3 +10,4 @@
 *.physicsMaterial2D merge=unityyamlmerge
 *.renderTexture merge=unityyamlmerge
 *.naturalmotiondata merge=unityyamlmerge
+*.mp3 filter=lfs diff=lfs merge=lfs -text
