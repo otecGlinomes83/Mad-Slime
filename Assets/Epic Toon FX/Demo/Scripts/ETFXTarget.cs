@@ -42,7 +42,7 @@ public class ETFXTarget : MonoBehaviour
             }
         }
     }
-	
+
 	IEnumerator Respawn()
     {
         yield return new WaitForSeconds(3);
