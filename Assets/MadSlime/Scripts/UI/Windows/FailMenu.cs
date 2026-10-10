@@ -5,23 +5,29 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public sealed class FailMenu : BaseWindow
+    public class FailMenu : BaseWindow
     {
         [SerializeField] private TMP_Text _moneyCount;
         [SerializeField] private Button _rescueButton;
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _menuButton;
 
-        private Action _rescueAction;
-        private Action _restartAction;
-        private Action _menuAction;
+        private bool _isNavigationRequested;
 
-        public void Initialize(int moneyCount, Action rescueAction, bool canRescue, Action restartAction, Action menuAction)
+        public event Action RescueRequested;
+
+        public event Action RestartRequested;
+
+        public event Action MenuRequested;
+
+        protected override void Awake()
         {
-            if (_restartButton == null)
+            base.Awake();
+
+            if (_moneyCount == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: RestartButton is not assigned. Drag a Button into the _restartButton field.");
+                    $"{name}: MoneyCount is not assigned. Drag a TMP_Text into the _moneyCount field.");
             }
 
             if (_rescueButton == null)
@@ -30,69 +36,92 @@ namespace UI
                     $"{name}: RescueButton is not assigned. Drag a Button into the _rescueButton field.");
             }
 
+            if (_restartButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: RestartButton is not assigned. Drag a Button into the _restartButton field.");
+            }
+
             if (_menuButton == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: MenuButton is not assigned. Drag a Button into the _menuButton field.");
             }
+        }
 
-            if (_moneyCount == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: MoneyCount is not assigned. Drag a TMP_Text into the _moneyCount field.");
-            }
-
-            _rescueAction = rescueAction;
-            _restartAction = restartAction;
-            _menuAction = menuAction;
-
-            _rescueButton.onClick.RemoveListener(RequestRescue);
-            _restartButton.onClick.RemoveListener(RequestRestart);
-            _menuButton.onClick.RemoveListener(RequestMenu);
-            _rescueButton.onClick.AddListener(RequestRescue);
-            _restartButton.onClick.AddListener(RequestRestart);
-            _menuButton.onClick.AddListener(RequestMenu);
-
-            _rescueButton.gameObject.SetActive(canRescue == true && rescueAction != null);
-
+        public void Initialize(int moneyCount, bool canRescue)
+        {
+            _isNavigationRequested = false;
+            _restartButton.interactable = true;
+            _menuButton.interactable = true;
             _moneyCount.text = $"{moneyCount}";
+
+            _rescueButton.interactable = canRescue;
+            _rescueButton.gameObject.SetActive(canRescue);
+        }
+
+        public void LockRescue()
+        {
+            _rescueButton.interactable = false;
+        }
+
+        private void OnEnable()
+        {
+            _rescueButton.onClick.AddListener(OnRescueClicked);
+            _restartButton.onClick.AddListener(OnRestartClicked);
+            _menuButton.onClick.AddListener(OnMenuClicked);
         }
 
         protected override void OnDisable()
         {
-            _rescueButton?.onClick.RemoveListener(RequestRescue);
-            _restartButton?.onClick.RemoveListener(RequestRestart);
-            _menuButton?.onClick.RemoveListener(RequestMenu);
-
             base.OnDisable();
+            _rescueButton.onClick.RemoveListener(OnRescueClicked);
+            _restartButton.onClick.RemoveListener(OnRestartClicked);
+            _menuButton.onClick.RemoveListener(OnMenuClicked);
         }
 
-        private void RequestRescue()
+        protected override void OnClosing()
         {
             _rescueButton.interactable = false;
-            _rescueAction?.Invoke();
+            _restartButton.interactable = false;
+            _menuButton.interactable = false;
         }
 
-        public void OnRescueRejected()
+        private void OnRescueClicked()
         {
-            _rescueButton.interactable = true;
+            if (_isNavigationRequested == true || IsClosing == true)
+            {
+                return;
+            }
+
+            Action rescueRequested = RescueRequested;
+            rescueRequested?.Invoke();
         }
 
-        public void Dismiss()
+        private void OnRestartClicked()
         {
-            CloseAnimated();
+            if (_isNavigationRequested == true || IsClosing == true)
+            {
+                return;
+            }
+
+            _isNavigationRequested = true;
+            Action restartRequested = RestartRequested;
+            restartRequested?.Invoke();
+
         }
 
-        private void RequestRestart()
+        private void OnMenuClicked()
         {
-            _restartAction?.Invoke();
-            CloseAnimated();
-        }
+            if (_isNavigationRequested == true || IsClosing == true)
+            {
+                return;
+            }
 
-        private void RequestMenu()
-        {
-            _menuAction?.Invoke();
-            CloseAnimated();
+            _isNavigationRequested = true;
+            Action menuRequested = MenuRequested;
+            menuRequested?.Invoke();
+
         }
     }
 }

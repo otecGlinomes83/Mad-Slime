@@ -6,17 +6,19 @@ using VContainer;
 
 namespace Player
 {
-    public sealed class PlayerTier : MonoBehaviour
+    public class PlayerTier : MonoBehaviour
     {
         private int _mass;
         private PlayerConfig _config;
         private TierResolver _tierResolver;
 
-        public event Action<ItemTier, ItemTier> TierChanged;
+        public event Action<SizeTier, SizeTier> TierChanged;
         public event Action<int, int> MassChanged;
 
         public int Mass => _mass;
-        public ItemTier CurrentTier { get; private set; } = ItemTier.Small;
+        private SizeTier _currentTier = SizeTier.Small;
+
+        public SizeTier CurrentTier => _currentTier;
 
         [Inject]
         public void Construct(PlayerConfig config, TierResolver tierResolver)
@@ -39,8 +41,12 @@ namespace Player
                     $"{name}: PlayerConfig was not injected. Check that GameLifetimeScope is configured and PlayerTier is registered.");
             }
 
+        }
+
+        public void Initialize()
+        {
             _mass = _config.StartMass;
-            CurrentTier = _tierResolver.GetUnlockedTier(_mass);
+            _currentTier = _tierResolver.GetUnlockedTier(_mass);
         }
 
         public void Add(int amount)
@@ -56,10 +62,16 @@ namespace Player
             _mass += amount;
             MassChanged?.Invoke(previous, _mass);
 
-            ItemTier previousTier = CurrentTier;
-            CurrentTier = _tierResolver.GetUnlockedTier(_mass);
+            SizeTier previousTier = CurrentTier;
+            SizeTier currentTier = _tierResolver.GetUnlockedTier(_mass);
 
-            TierChanged?.Invoke(previousTier, CurrentTier);
+            if (currentTier == previousTier)
+            {
+                return;
+            }
+
+            _currentTier = currentTier;
+            TierChanged?.Invoke(previousTier, currentTier);
         }
     }
 }

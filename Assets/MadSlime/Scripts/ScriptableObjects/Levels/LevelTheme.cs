@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [CreateAssetMenu(menuName = "Mad Slime/Level Theme", fileName = "NewLevelTheme")]
-    public sealed class LevelTheme : ScriptableObject
+    public class LevelTheme : ScriptableObject
     {
         [Tooltip("Материал пола уровня.")]
         [SerializeField] private Material _floorMaterial;

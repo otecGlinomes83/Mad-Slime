@@ -10,7 +10,7 @@ namespace Game
         public const string English = "en";
         public const string Turkish = "tr";
 
-        private static readonly string[] LanguageOrder = { Russian, English, Turkish };
+        private static string[] LanguageOrder = { Russian, English, Turkish };
 
         private static LocalizationTable s_table;
         private static string s_language = Russian;

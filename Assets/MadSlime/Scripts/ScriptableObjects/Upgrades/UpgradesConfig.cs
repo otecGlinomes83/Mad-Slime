@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Upgrades
 {
     [CreateAssetMenu(menuName = "Mad Slime/Upgrades Config", fileName = "NewUpgradesConfig")]
-    public sealed class UpgradesConfig : ScriptableObject
+    public class UpgradesConfig : ScriptableObject
     {
         [Tooltip("Ступенчатые прокачки: цена ступени = BaseCost + CostStep * текущий уровень ступени.")]
         [SerializeField] private List<UpgradeEntry> _upgrades = new List<UpgradeEntry>();
@@ -25,37 +25,10 @@ namespace Upgrades
         public Color HighlightColor => _highlightColor;
         public float OutlineWidth => _outlineWidth;
 
-        public UpgradeEntry GetUpgrade(UpgradeType type)
-        {
-            for (int i = 0; i < _upgrades.Count; i++)
-            {
-                if (_upgrades[i].Type == type)
-                {
-                    return _upgrades[i];
-                }
-            }
-
-            throw new InvalidOperationException(
-                $"UpgradesConfig '{name}': no entry for upgrade '{type}'. Add a row for it.");
-        }
-
-        public PerkEntry GetPerk(PerkType type)
-        {
-            for (int i = 0; i < _perks.Count; i++)
-            {
-                if (_perks[i].Type == type)
-                {
-                    return _perks[i];
-                }
-            }
-
-            throw new InvalidOperationException(
-                $"UpgradesConfig '{name}': no entry for perk '{type}'. Add a row for it.");
-        }
     }
 
     [Serializable]
-    public sealed class UpgradeEntry
+    public class UpgradeEntry
     {
         [Tooltip("Тип ступенчатой прокачки.")]
         [SerializeField] private UpgradeType _type;
@@ -83,26 +56,10 @@ namespace Upgrades
         public IReadOnlyList<float> StepValues => _stepValues;
         public int MaxSteps => _maxSteps;
 
-        public int GetCost(int currentLevel)
-        {
-            return _baseCost + _costStep * currentLevel;
-        }
-
-        public float GetTotalValue(int level)
-        {
-            float total = 0f;
-
-            for (int i = 0; i < level && i < _stepValues.Count; i++)
-            {
-                total += _stepValues[i];
-            }
-
-            return total;
-        }
     }
 
     [Serializable]
-    public sealed class PerkEntry
+    public class PerkEntry
     {
         [Tooltip("Тип одноразовой покупки.")]
         [SerializeField] private PerkType _type;

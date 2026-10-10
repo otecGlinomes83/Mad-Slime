@@ -6,23 +6,22 @@ namespace ShapeFill
 {
     [RequireComponent(typeof(GridBuilder))]
     [RequireComponent(typeof(ShapeFiller))]
-    [RequireComponent(typeof(FillCounter))]
-    public sealed class ShapeFillOrchestrator : MonoBehaviour
+    public class ShapeFillOrchestrator : MonoBehaviour
     {
         public event Action<float> FillCompleted;
 
         private GridBuilder _gridBuilder;
         private ShapeFiller _shapeFiller;
-        private FillCounter _fillCounter;
+        private FillResultCalculator _resultCalculator;
 
         public bool CanRescue => _shapeFiller.CanRescue;
 
         [Inject]
-        public void Construct(GridBuilder gridBuilder, ShapeFiller shapeFiller, FillCounter fillCounter)
+        public void Construct(GridBuilder gridBuilder, ShapeFiller shapeFiller, FillResultCalculator resultCalculator)
         {
             _gridBuilder = gridBuilder;
             _shapeFiller = shapeFiller;
-            _fillCounter = fillCounter;
+            _resultCalculator = resultCalculator;
         }
 
         private void Awake()
@@ -39,10 +38,10 @@ namespace ShapeFill
                     $"{name}: ShapeFiller was not injected. Check that FillLifetimeScope registers ShapeFiller and ShapeFillOrchestrator.");
             }
 
-            if (_fillCounter == null)
+            if (_resultCalculator == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: FillCounter was not injected. Check that FillLifetimeScope registers FillCounter and ShapeFillOrchestrator.");
+                    $"{name}: FillResultCalculator was not injected. Check that FillLifetimeScope registers FillResultCalculator and ShapeFillOrchestrator.");
             }
         }
 
@@ -53,24 +52,41 @@ namespace ShapeFill
 
         private void OnDisable()
         {
-            _shapeFiller.FillCompleted -= OnFillCompleted;
+            if (_shapeFiller != null)
+            {
+                _shapeFiller.FillCompleted -= OnFillCompleted;
+            }
         }
 
-        public void StartFill()
+        public void Prepare()
         {
             _shapeFiller.Initialize();
             _shapeFiller.BuildShape();
-
-            int maxCubes = _gridBuilder.FillCells.Count;
-
-            _shapeFiller.Fill(
-                _fillCounter.CalculateQuotaFill(maxCubes),
-                _fillCounter.CalculateBonusFill(maxCubes));
         }
 
-        public void Rescue()
+        public FillResult CalculateResult()
+        {
+            return _resultCalculator.Calculate(_gridBuilder.FillCells.Count);
+        }
+
+        public void Show(FillResult result)
+        {
+            _shapeFiller.ShowResult(result);
+        }
+
+        public void Stop()
+        {
+            _shapeFiller.StopFill();
+        }
+
+        public void RescueShow()
         {
             _shapeFiller.Rescue();
+        }
+
+        public void Accelerate()
+        {
+            _shapeFiller.Accelerate();
         }
 
         private void OnFillCompleted(float fillPercent)

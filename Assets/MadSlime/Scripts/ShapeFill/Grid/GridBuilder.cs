@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ShapeFill
 {
-    public sealed class GridBuilder : MonoBehaviour
+    public class GridBuilder : MonoBehaviour
     {
         private const int BorderThickness = 2;
 
@@ -18,8 +18,8 @@ namespace ShapeFill
         private int _gridHeight;
         private bool[,] _filledCells;
         private Color[,] _pixelColors;
-        private readonly List<Vector2Int> _borderCells = new List<Vector2Int>();
-        private readonly List<Vector2Int> _fillCells = new List<Vector2Int>();
+        private List<Vector2Int> _borderCells = new List<Vector2Int>();
+        private List<Vector2Int> _fillCells = new List<Vector2Int>();
 
         public IReadOnlyList<Vector2Int> BorderCells => _borderCells;
         public IReadOnlyList<Vector2Int> FillCells => _fillCells;
@@ -180,7 +180,7 @@ namespace ShapeFill
             _fillCells.Sort(BottomToTopLeftToRightComparer.Instance);
         }
 
-        private sealed class BottomToTopLeftToRightComparer : IComparer<Vector2Int>
+        private class BottomToTopLeftToRightComparer : IComparer<Vector2Int>
         {
             public static readonly BottomToTopLeftToRightComparer Instance = new BottomToTopLeftToRightComparer();
 

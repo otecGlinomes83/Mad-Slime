@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [System.Serializable]
-    public sealed class SpawnZone
+    public class SpawnZone
     {
         [Tooltip("Форма зоны раскладки: Grid (сетка), Circle (круг), Scatter (хаотичный россыпь), CircleGrid (кольцо из сетки).")]
         [SerializeField] private SpawnShape _shape = SpawnShape.Circle;
@@ -25,10 +25,10 @@ namespace Scriptables
         [SerializeField] private float _spacing = 0f;
 
         [Tooltip("Минимальный тир предметов в зоне.")]
-        [SerializeField] private ItemTier _minTier = ItemTier.Small;
+        [SerializeField] private SizeTier _minTier = SizeTier.Small;
 
         [Tooltip("Максимальный тир предметов в зоне.")]
-        [SerializeField] private ItemTier _maxTier = ItemTier.Small;
+        [SerializeField] private SizeTier _maxTier = SizeTier.Small;
 
         [Tooltip("Вкл — вся зона заполняется одним случайным предметом из пула зоны.")]
         [SerializeField] private bool _singleType = false;
@@ -39,8 +39,8 @@ namespace Scriptables
         public int Count => _count;
         public bool AutoSpacing => _autoSpacing;
         public float Spacing => _spacing;
-        public ItemTier MinTier => _minTier;
-        public ItemTier MaxTier => _maxTier;
+        public SizeTier MinTier => _minTier;
+        public SizeTier MaxTier => _maxTier;
         public bool SingleType => _singleType;
     }
 }

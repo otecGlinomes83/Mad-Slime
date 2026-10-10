@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 namespace Collectables
 {
-    public sealed class Absorber : MonoBehaviour
+    public class Absorber : MonoBehaviour
     {
         [SerializeField] private PlayerConfig _config;
 

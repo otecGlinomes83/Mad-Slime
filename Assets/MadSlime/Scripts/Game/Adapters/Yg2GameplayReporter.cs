@@ -3,7 +3,7 @@ using YG;
 
 namespace Adapters
 {
-    public sealed class Yg2GameplayReporter : IGameplayReporter
+    public class Yg2GameplayReporter : IGameplayReporter
     {
         public void ReportStart()
         {

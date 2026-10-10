@@ -1,35 +1,30 @@
-using Interfaces;
+using Items;
 using Player;
+using Scriptables;
 using Skills;
 using System;
 using UnityEngine;
-using Upgrades;
 using VContainer;
-using Game;
 
 namespace Collectables
 {
-    public sealed class ItemAttractor : MonoBehaviour
+    public class ItemAttractor : MonoBehaviour
     {
         private const float MinDistanceSqr = 0.0001f;
 
         [SerializeField] private AttractConfig _config;
 
-        private PlayerTier _playerTier;
+        private CollectAvailability _collectAvailability;
         private AttractableDetector _detector;
         private ItemDetector _collectDetector;
-        private PlayerUpgrades _upgrades;
-        private Pauser _pauser;
 
         [Inject]
-        public void Construct(PlayerTier playerTier, AttractableDetector detector, ItemDetector collectDetector,
-            PlayerUpgrades upgrades, Pauser pauser)
+        public void Construct(CollectAvailability collectAvailability, AttractableDetector detector,
+            ItemDetector collectDetector)
         {
-            _playerTier = playerTier;
+            _collectAvailability = collectAvailability;
             _detector = detector;
             _collectDetector = collectDetector;
-            _upgrades = upgrades;
-            _pauser = pauser;
         }
 
         private void Awake()
@@ -40,10 +35,10 @@ namespace Collectables
                     $"{name}: AttractConfig is not assigned. Drag an AttractConfig asset into the _config field.");
             }
 
-            if (_playerTier == null)
+            if (_collectAvailability == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerTier was not injected. Check that GameLifetimeScope registers PlayerTier and ItemAttractor.");
+                    $"{name}: CollectAvailability was not injected. Check that GameLifetimeScope registers CollectAvailability and ItemAttractor.");
             }
 
             if (_detector == null)
@@ -78,19 +73,6 @@ namespace Collectables
                     $"{name}: AttractConfig '{_config.name}' has ApproachPower <= 0. " +
                     "It must be positive: 1 = linear, 2 = parabola, higher values approach exponential growth.");
             }
-
-            if (_config.OrbitStrength < 0f)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: AttractConfig '{_config.name}' has OrbitStrength < 0. " +
-                    "It is the sideways swirl speed as a fraction of the pull speed, so it must be 0 or greater. 0 = straight line.");
-            }
-
-            if (_pauser == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Pauser was not injected. Check that GameLifetimeScope registers Pauser and ItemAttractor.");
-            }
         }
 
         private void OnEnable()
@@ -103,19 +85,14 @@ namespace Collectables
             _detector.Detected -= OnAttractableDetected;
         }
 
-        private void OnAttractableDetected(IAttractable attractable)
+        private void OnAttractableDetected(Item attractable)
         {
-            if (_pauser.IsPaused == true)
+            if (_collectAvailability.CanCollect(attractable.Definition.Tier) == false)
             {
                 return;
             }
 
-            if (attractable.Tier > _playerTier.CurrentTier + _upgrades.AmbitionTierOffset)
-            {
-                return;
-            }
-
-            Transform target = attractable.Self;
+            Transform target = attractable.transform;
             Vector3 toPlayer = transform.position - target.position;
             toPlayer.y = 0f;
 
@@ -133,11 +110,8 @@ namespace Collectables
             float speed = _config.AttractionForce * multiplier;
 
             Vector3 radial = toPlayer / distance;
-            int instanceId = target.GetInstanceID();
-            float orbitSide = 1f - 2f * (instanceId & 1);
-            Vector3 tangent = new Vector3(radial.z, 0f, -radial.x) * (orbitSide * _config.OrbitStrength);
 
-            target.position += (radial + tangent) * (speed * Time.deltaTime);
+            target.position += radial * (speed * Time.deltaTime);
         }
     }
 }

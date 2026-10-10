@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Quota
 {
     [Serializable]
-    public sealed class QuotaEntry
+    public class QuotaEntry
     {
         [SerializeField] private ItemDefinition _definition;
         [SerializeField] private int _targetCount = 1;

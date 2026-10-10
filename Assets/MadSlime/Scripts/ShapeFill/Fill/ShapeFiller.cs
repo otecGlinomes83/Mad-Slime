@@ -9,7 +9,7 @@ using VContainer;
 namespace ShapeFill
 {
     [RequireComponent(typeof(CubeSpawner))]
-    public sealed class ShapeFiller : MonoBehaviour
+    public class ShapeFiller : MonoBehaviour
     {
         private enum BoostStage
         {
@@ -70,7 +70,7 @@ namespace ShapeFill
 
         public event Action<float> FillCompleted;
 
-        public event Action<FlyingCube> CubeArrived;
+        public event Action<CubeFlightAnimator> CubeArrived;
 
         [Inject]
         public void Construct(GridBuilder gridShape, CubeSpawner spawner, FillConfig config)
@@ -131,12 +131,15 @@ namespace ShapeFill
             _fillIndex = 0;
         }
 
-        public void Fill(int quotaCubesCount, int bonusCubesCount)
+        public void ShowResult(FillResult result)
         {
-            int quota = Mathf.Clamp(quotaCubesCount, 0, RequiredFillCount);
-            int target = Mathf.Clamp(quota + Mathf.Max(0, bonusCubesCount), quota, RequiredFillCount);
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result),
+                    $"{name}: ShowResult requires a calculated fill result.");
+            }
 
-            if (target <= 0)
+            if (result.TargetCubes <= 0)
             {
                 _hasResult = true;
                 FillCompleted?.Invoke(0f);
@@ -146,15 +149,15 @@ namespace ShapeFill
             StopFill();
             _fillIndex = 0;
             _arrivedCount = 0;
-            _quotaTarget = quota;
-            _currentTarget = target;
+            _quotaTarget = result.QuotaCubes;
+            _currentTarget = result.TargetCubes;
             _boostStage = BoostStage.Normal;
             _isFilling = true;
-            _hasResult = false;
+            _hasResult = true;
 
             _fillCts = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
 
-            FillAsync(_fillCts.Token, target).Forget();
+            FillAsync(_fillCts.Token, _currentTarget).Forget();
         }
 
         public void Rescue()
@@ -295,7 +298,7 @@ namespace ShapeFill
 
         private void SpawnBorderCube(Vector2Int cell)
         {
-            FlyingCube borderCube = _spawner.Spawn(
+            CubeFlightAnimator borderCube = _spawner.Spawn(
                 _gridShape.GridToWorld(cell.x, cell.y),
                 Quaternion.identity,
                 _gridShape.CellSize,
@@ -440,7 +443,7 @@ namespace ShapeFill
 
         private void SpawnFillCube(Vector2Int cell, float flightDuration)
         {
-            FlyingCube fillCube = _spawner.Spawn(
+            CubeFlightAnimator fillCube = _spawner.Spawn(
                 _spawnPosition,
                 UnityEngine.Random.rotation,
                 _gridShape.CellSize,
@@ -452,7 +455,7 @@ namespace ShapeFill
             fillCube.Launch(_gridShape.GridToWorld(cell.x, cell.y), flightDuration);
         }
 
-        private void OnCubeArrived(FlyingCube cube)
+        private void OnCubeArrived(CubeFlightAnimator cube)
         {
             cube.Arrived -= OnCubeArrived;
             _arrivedCount++;
@@ -462,7 +465,6 @@ namespace ShapeFill
             if (_arrivedCount >= _currentTarget)
             {
                 _isFilling = false;
-                _hasResult = true;
 
                 FillCompleted?.Invoke((float)_currentTarget / RequiredFillCount);
             }

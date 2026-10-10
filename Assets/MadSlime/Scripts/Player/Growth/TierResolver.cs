@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace Player
 {
-    public sealed class TierResolver : MonoBehaviour
+    public class TierResolver : MonoBehaviour
     {
         [SerializeField] private PlayerConfig _config;
 
-        private readonly List<PlayerTierThreshold> _sortedByMass = new List<PlayerTierThreshold>();
+        private List<PlayerTierThreshold> _sortedByMass = new List<PlayerTierThreshold>();
 
         private void Awake()
         {
@@ -30,9 +30,9 @@ namespace Player
             _sortedByMass.Sort((left, right) => left.RequiredMass.CompareTo(right.RequiredMass));
         }
 
-        public ItemTier GetUnlockedTier(int mass)
+        public SizeTier GetUnlockedTier(int mass)
         {
-            ItemTier unlocked = ItemTier.Small;
+            SizeTier unlocked = SizeTier.Small;
 
             for (int i = 0; i < _sortedByMass.Count; i++)
             {
@@ -49,7 +49,7 @@ namespace Player
             return unlocked;
         }
 
-        public float GetSpeedFor(ItemTier tier)
+        public float GetSpeedFor(SizeTier tier)
         {
             for (int i = 0; i < _sortedByMass.Count; i++)
             {
@@ -97,7 +97,7 @@ namespace Player
             return Mathf.Clamp01((mass - previousThresholdMass) / segment);
         }
 
-        public float GetScaleFor(ItemTier tier)
+        public float GetScaleFor(SizeTier tier)
         {
             for (int i = 0; i < _sortedByMass.Count; i++)
             {
@@ -110,7 +110,7 @@ namespace Player
             return 1f;
         }
 
-        public float GetCameraOffsetFor(ItemTier tier)
+        public float GetCameraOffsetFor(SizeTier tier)
         {
             for (int i = 0; i < _sortedByMass.Count; i++)
             {

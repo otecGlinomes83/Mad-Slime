@@ -1,4 +1,5 @@
 using Core;
+using Saves;
 using Scriptables;
 using System;
 using UnityEngine;
@@ -6,16 +7,18 @@ using VContainer;
 
 namespace Game
 {
-    public sealed class LeaderboardReporter : MonoBehaviour
+    public class LeaderboardReporter : MonoBehaviour
     {
         [SerializeField] private YandexConfig _config;
 
         private ILeaderboardService _leaderboardService;
+        private ICollectedItemsStorage _storage;
 
         [Inject]
-        public void Construct(ILeaderboardService leaderboardService)
+        public void Construct(ILeaderboardService leaderboardService, ICollectedItemsStorage storage)
         {
             _leaderboardService = leaderboardService;
+            _storage = storage;
         }
 
         private void Awake()
@@ -39,14 +42,14 @@ namespace Game
             }
         }
 
-        public void Report(int score)
+        public void Report()
         {
             if (_leaderboardService.IsAuthorized == false)
             {
                 return;
             }
 
-            _leaderboardService.SetScore(_config.LeaderboardName, score);
+            _leaderboardService.SetScore(_config.LeaderboardName, _storage.CollectedItemsCount);
         }
     }
 }

@@ -6,7 +6,7 @@ using VContainer;
 
 namespace UI
 {
-    public sealed class TimerUI : MonoBehaviour
+    public class TimerUI : MonoBehaviour
     {
         [SerializeField] private TMP_Text _timerText;
 

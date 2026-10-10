@@ -11,7 +11,7 @@ using UnityEditor;
 
 namespace Game
 {
-    public sealed class LayoutPreviewDrawer : MonoBehaviour
+    public class LayoutPreviewDrawer : MonoBehaviour
     {
         [SerializeField] private LevelGenerator _levelGenerator;
         [SerializeField] private LayoutsLibrary _library;
@@ -23,8 +23,8 @@ namespace Game
         [Space]
         [SerializeField] private LayoutSet _customLayout;
 
-        private readonly List<float> _zoneRadii = new List<float>(16);
-        private readonly List<Vector3> _zonePoints = new List<Vector3>(64);
+        private List<float> _zoneRadii = new List<float>(16);
+        private List<Vector3> _zonePoints = new List<Vector3>(64);
 
         public LevelGenerator LevelGenerator => _levelGenerator;
         public LayoutsLibrary Library => _library;
@@ -119,7 +119,7 @@ namespace Game
                 {
                     if (_propSet.Props[propIndex] != null)
                     {
-                        _zoneRadii.Add(ItemSize.GetRadiusXZ(_propSet.Props[propIndex]) * maxScale);
+                        _zoneRadii.Add(LevelItemsSpawner.GetRadiusXZ(_propSet.Props[propIndex]) * maxScale);
                     }
                 }
 
@@ -165,7 +165,7 @@ namespace Game
 
         private void DrawMapBounds()
         {
-            Bounds floorBounds = _levelGenerator.FloorBounds;
+            Bounds floorBounds = _levelGenerator.GetFloorBounds();
 
             if (floorBounds.size.x == 0f || floorBounds.size.z == 0f)
             {
@@ -207,7 +207,7 @@ namespace Game
         private Vector3 ClampToMap(Vector3 localPosition, float margin)
         {
             Vector3 worldPosition = transform.TransformPoint(localPosition);
-            Bounds floorBounds = _levelGenerator.FloorBounds;
+            Bounds floorBounds = _levelGenerator.GetFloorBounds();
 
             if (floorBounds.size.x == 0f || floorBounds.size.z == 0f)
             {
@@ -310,29 +310,29 @@ namespace Game
             Handles.Label(labelPosition, labelText, GetZoneLabelStyle());
         }
 
-        private static Color GetTierColor(ItemTier tier)
+        private static Color GetTierColor(SizeTier tier)
         {
-            if (tier == ItemTier.Small)
+            if (tier == SizeTier.Small)
             {
                 return Color.green;
             }
 
-            if (tier == ItemTier.Medium)
+            if (tier == SizeTier.Medium)
             {
                 return Color.yellow;
             }
 
-            if (tier == ItemTier.Large)
+            if (tier == SizeTier.Large)
             {
                 return new Color(1f, 0.5f, 0f);
             }
 
-            if (tier == ItemTier.Huge)
+            if (tier == SizeTier.Huge)
             {
                 return new Color(1f, 0.2f, 0.2f);
             }
 
-            if (tier == ItemTier.Giant)
+            if (tier == SizeTier.Giant)
             {
                 return new Color(0.8f, 0.2f, 1f);
             }

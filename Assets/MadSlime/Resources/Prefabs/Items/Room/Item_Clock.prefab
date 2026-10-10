@@ -8,9 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 5678111833898287589}
   - component: {fileID: 3014831187960734120}
   - component: {fileID: 5678111833898287489}
   - component: {fileID: 1845724424454668399}
+  - component: {fileID: 4658407402432765230}
   m_Layer: 3
   m_Name: Item_Clock
   m_TagString: Untagged
@@ -68,7 +70,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _definition: {fileID: 11400000, guid: da299f4fe364fee74971c063281030f7, type: 2}
-  _collider: {fileID: 5678111833898287489}
+--- !u!114 &4658407402432765230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813106647590951858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f42675b1a0c0800ceb4a2e5cb8ce0ff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _ghostMaterial: {fileID: 2100000, guid: 2566cc4f8c7914449b603a2474de69ba, type: 2}
   _ghostFadeConfig: {fileID: 11400000, guid: ee25c91a9b0da4b94b8654ae2cfe4341, type: 2}
 --- !u!1001 &4662855610479103317
@@ -133,3 +146,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8547591403481943424, guid: 106f0663b6134f44686b5bcc87f6a3bb, type: 3}
   m_PrefabInstance: {fileID: 4662855610479103317}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5678111833898287589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813106647590951858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa669f528708ba027a628953ef1ce0c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier:
+  _collider: {fileID: 5678111833898287489}

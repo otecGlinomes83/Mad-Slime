@@ -1,4 +1,3 @@
-using Skins;
 using System;
 using UnityEngine;
 using VContainer;
@@ -6,7 +5,7 @@ using VContainer.Unity;
 
 namespace Shop
 {
-    public sealed class ShopItemViewFactory : MonoBehaviour
+    public class ShopItemViewFactory : MonoBehaviour
     {
         [SerializeField] private ShopItemView _shopItemViewPrefab;
 
@@ -27,12 +26,9 @@ namespace Shop
             }
         }
 
-        public ShopItemView Get(SkinItem skinItem, Transform parent)
+        public ShopItemView Get(Transform parent)
         {
-            ShopItemView instance = _resolver.Instantiate(_shopItemViewPrefab, parent);
-            instance.Initialize(skinItem);
-
-            return instance;
+            return _resolver.Instantiate(_shopItemViewPrefab, parent);
         }
     }
 }

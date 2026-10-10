@@ -7,29 +7,28 @@ using VContainer;
 namespace Audio
 {
     [RequireComponent(typeof(ShapeFiller))]
-    public sealed class FlyingCubeArrivalSound : MonoBehaviour
+    public class FlyingCubeArrivalSound : MonoBehaviour
     {
         [SerializeField] private SfxClip _sfxClip;
         [SerializeField, Range(0.5f, 2f)] private float _minPitch = 0.9f;
         [SerializeField, Range(0.5f, 2f)] private float _maxPitch = 1.35f;
         [SerializeField, Min(0f)] private float _minInterval = 0.03f;
 
-        private SfxPlayer _sfxPlayer;
+        private IGameSoundPlayer _soundPlayer;
         private ShapeFiller _filler;
-        private float _lastPlayedTime;
 
         [Inject]
-        public void Construct(SfxPlayer sfxPlayer)
+        public void Construct(IGameSoundPlayer soundPlayer)
         {
-            _sfxPlayer = sfxPlayer;
+            _soundPlayer = soundPlayer;
         }
 
         private void Awake()
         {
-            if (_sfxPlayer == null)
+            if (_soundPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SfxPlayer was not injected. FillLifetimeScope must be the first object in the scene hierarchy.");
+                    $"{name}: IGameSoundPlayer was not injected. FillLifetimeScope must be the first object in the scene hierarchy.");
             }
 
             if (_sfxClip == null)
@@ -57,17 +56,11 @@ namespace Audio
             _filler.CubeArrived -= OnFillerCubeArrived;
         }
 
-        private void OnFillerCubeArrived(FlyingCube cube)
+        private void OnFillerCubeArrived(CubeFlightAnimator cube)
         {
-            if (Time.time - _lastPlayedTime < _minInterval)
-            {
-                return;
-            }
-
-            _lastPlayedTime = Time.time;
-
             float pitch = Mathf.Lerp(_minPitch, _maxPitch, _filler.FillFraction);
-            _sfxPlayer.PlayGame(_sfxClip.Clip, _sfxClip.Volume, pitch);
+
+            _soundPlayer.Play(_sfxClip, pitch, _minInterval);
         }
     }
 }

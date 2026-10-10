@@ -1,4 +1,5 @@
 using Core;
+using Saves;
 using Scriptables;
 using System;
 using UnityEngine;
@@ -6,18 +7,21 @@ using VContainer;
 
 namespace Game
 {
-    public sealed class LocalizationService : MonoBehaviour
+    public class LocalizationService : MonoBehaviour
     {
         [SerializeField] private LocalizationTable _table;
 
-        private PlayerProgress _progress;
+        private ILanguageStorage _languageStorage;
+        private ISavesReadiness _savesReadiness;
         private ILanguageProvider _languageProvider;
         private bool _suppressPersist;
 
         [Inject]
-        public void Construct(PlayerProgress progress, ILanguageProvider languageProvider)
+        public void Construct(ILanguageStorage languageStorage, ISavesReadiness savesReadiness,
+            ILanguageProvider languageProvider)
         {
-            _progress = progress;
+            _languageStorage = languageStorage;
+            _savesReadiness = savesReadiness;
             _languageProvider = languageProvider;
         }
 
@@ -32,15 +36,15 @@ namespace Game
 
         private void OnEnable()
         {
-            if (_progress == null || _languageProvider == null)
+            if (_languageStorage == null || _savesReadiness == null || _languageProvider == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: dependencies were not injected. Check that ProjectScope is the first root object of the project.");
             }
 
-            Localization.Initialize(_table, _progress.Language);
+            Localization.Initialize(_table, "");
             Localization.LanguageChanged += OnLanguageChanged;
-            _progress.Ready += OnSdkData;
+            _savesReadiness.Ready += OnSavesReady;
             _languageProvider.LanguageSwitched += OnYandexLangChanged;
             ApplyLanguage();
         }
@@ -48,13 +52,24 @@ namespace Game
         private void OnDisable()
         {
             Localization.LanguageChanged -= OnLanguageChanged;
-            _progress.Ready -= OnSdkData;
+
+            if (_savesReadiness != null)
+            {
+                _savesReadiness.Ready -= OnSavesReady;
+            }
+
             _languageProvider.LanguageSwitched -= OnYandexLangChanged;
         }
 
         private void ApplyLanguage()
         {
-            string savedLanguage = _progress.Language;
+            if (_savesReadiness.IsReady == false)
+            {
+                SetSuppressedLanguage(_languageProvider.Language);
+                return;
+            }
+
+            string savedLanguage = _languageStorage.Language;
 
             if (string.IsNullOrEmpty(savedLanguage) == false)
             {
@@ -62,26 +77,29 @@ namespace Game
                 return;
             }
 
+            SetSuppressedLanguage(_languageProvider.Language);
+        }
+
+        private void SetSuppressedLanguage(string language)
+        {
             _suppressPersist = true;
-            Localization.SetLanguage(_languageProvider.Language);
+            Localization.SetLanguage(language);
             _suppressPersist = false;
         }
 
-        private void OnSdkData()
+        private void OnSavesReady()
         {
             ApplyLanguage();
         }
 
         private void OnYandexLangChanged(string language)
         {
-            if (string.IsNullOrEmpty(_progress.Language) == false)
+            if (_savesReadiness.IsReady == true && string.IsNullOrEmpty(_languageStorage.Language) == false)
             {
                 return;
             }
 
-            _suppressPersist = true;
-            Localization.SetLanguage(language);
-            _suppressPersist = false;
+            SetSuppressedLanguage(language);
         }
 
         private void OnLanguageChanged()
@@ -91,8 +109,7 @@ namespace Game
                 return;
             }
 
-            _progress.Language = Localization.CurrentLanguage;
-            _progress.Save();
+            _languageStorage.SetLanguage(Localization.CurrentLanguage);
         }
     }
 }

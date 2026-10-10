@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace Shop
 {
     [RequireComponent(typeof(Button))]
-    public sealed class ShopTabButton : MonoBehaviour
+    public class ShopTabButton : MonoBehaviour
     {
         [Tooltip("Фон кнопки: его спрайт переключается между обычным и выбранным.")]
         [SerializeField] private Image _background;
@@ -16,7 +16,9 @@ namespace Shop
         [Tooltip("Спрайт фона выбранной вкладки.")]
         [SerializeField] private Sprite _selectedSprite;
 
-        public bool IsSelected { get; private set; }
+        private bool _isSelected;
+
+        public bool IsSelected => _isSelected;
 
         private void Awake()
         {
@@ -33,35 +35,16 @@ namespace Shop
             }
         }
 
-        public void Select()
+        public void SetSelected(bool isSelected)
         {
-            IsSelected = true;
-            _background.sprite = _selectedSprite;
+            _isSelected = isSelected;
 
-            Transform group = transform;
-
-            if (transform.parent != null)
+            if (isSelected == true)
             {
-                group = transform.parent;
+                _background.sprite = _selectedSprite;
+                return;
             }
 
-            foreach (Transform child in group)
-            {
-                if (child == transform)
-                {
-                    continue;
-                }
-
-                if (child.TryGetComponent(out ShopTabButton other) == true)
-                {
-                    other.Deselect();
-                }
-            }
-        }
-
-        public void Deselect()
-        {
-            IsSelected = false;
             _background.sprite = _backgroundSprite;
         }
     }

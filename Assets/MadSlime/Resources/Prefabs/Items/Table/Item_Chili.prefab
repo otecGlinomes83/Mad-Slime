@@ -8,9 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 7723809818026352774}
   - component: {fileID: 2135421274998680955}
   - component: {fileID: 4267546099392978565}
   - component: {fileID: 3248723085793609923}
+  - component: {fileID: 7723809818026352674}
   m_Layer: 3
   m_Name: Item_Chili
   m_TagString: Untagged
@@ -68,7 +70,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _definition: {fileID: 11400000, guid: b04750c388a495440a07fdb9961f7cee, type: 2}
-  _collider: {fileID: 4267546099392978565}
+--- !u!114 &7723809818026352674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412670562047978862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f42675b1a0c0800ceb4a2e5cb8ce0ff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _ghostMaterial: {fileID: 2100000, guid: 2566cc4f8c7914449b603a2474de69ba, type: 2}
   _ghostFadeConfig: {fileID: 11400000, guid: ee25c91a9b0da4b94b8654ae2cfe4341, type: 2}
 --- !u!1001 &2508241692715933568
@@ -133,3 +146,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 309828826319317368, guid: 1807159ec89ebce49b7e618e03e6d277, type: 3}
   m_PrefabInstance: {fileID: 2508241692715933568}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7723809818026352774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412670562047978862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa669f528708ba027a628953ef1ce0c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier:
+  _collider: {fileID: 4267546099392978565}

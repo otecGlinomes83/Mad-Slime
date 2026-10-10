@@ -6,13 +6,15 @@ using VContainer;
 
 namespace Game
 {
-    public sealed class AdScheduler : MonoBehaviour
+    public class AdScheduler : MonoBehaviour
     {
         [SerializeField] private YandexConfig _config;
 
         private IAdsService _adsService;
-        private Action _pendingRewardAction;
+        private Action _pendingGrantedAction;
+        private Action _pendingCompletedWithoutRewardAction;
         private Action _pendingRejectedAction;
+        private Action _pendingErrorAction;
         private bool _rewardedReceived;
 
         [Inject]
@@ -61,15 +63,11 @@ namespace Game
 
         public void ShowDoubleReward(Action onGranted)
         {
-            ShowRewarded(_config.DoubleRewardId, onGranted);
+            ShowRewarded(_config.DoubleRewardId, onGranted, null, null, null);
         }
 
-        public void ShowRewarded(string rewardId, Action onGranted)
-        {
-            ShowRewarded(rewardId, onGranted, null);
-        }
-
-        public void ShowRewarded(string rewardId, Action onGranted, Action onRejected)
+        public void ShowRewarded(string rewardId, Action onGranted, Action onCompletedWithoutReward,
+            Action onRejected, Action onError)
         {
             if (onGranted == null)
             {
@@ -83,8 +81,10 @@ namespace Game
             }
 
             _rewardedReceived = false;
-            _pendingRewardAction = onGranted;
+            _pendingGrantedAction = onGranted;
+            _pendingCompletedWithoutRewardAction = onCompletedWithoutReward;
             _pendingRejectedAction = onRejected;
+            _pendingErrorAction = onError;
             _adsService.ShowRewarded(rewardId);
         }
 
@@ -100,27 +100,33 @@ namespace Game
 
         private void OnRewardedClosed()
         {
-            Action action = _pendingRewardAction;
-            Action rejected = _pendingRejectedAction;
-            _pendingRewardAction = null;
-            _pendingRejectedAction = null;
+            Action granted = _pendingGrantedAction;
+            Action completedWithoutReward = _pendingCompletedWithoutRewardAction;
+            ClearPendingActions();
 
             if (_rewardedReceived == true)
             {
-                action?.Invoke();
+                granted?.Invoke();
+                return;
             }
-            else
-            {
-                rejected?.Invoke();
-            }
+
+            completedWithoutReward?.Invoke();
         }
 
         private void OnRewardedError()
         {
-            Action rejected = _pendingRejectedAction;
-            _pendingRewardAction = null;
+            Action error = _pendingErrorAction;
+            ClearPendingActions();
+
+            error?.Invoke();
+        }
+
+        private void ClearPendingActions()
+        {
+            _pendingGrantedAction = null;
+            _pendingCompletedWithoutRewardAction = null;
             _pendingRejectedAction = null;
-            rejected?.Invoke();
+            _pendingErrorAction = null;
         }
     }
 }

@@ -7,25 +7,25 @@ using VContainer;
 namespace Audio
 {
     [RequireComponent(typeof(Button))]
-    public sealed class UIButtonSound : MonoBehaviour
+    public class UIButtonSound : MonoBehaviour
     {
         [SerializeField] private SfxClip _sfxClip;
 
         private Button _button;
-        private SfxPlayer _sfxPlayer;
+        private IUISoundPlayer _soundPlayer;
 
         [Inject]
-        public void Construct(SfxPlayer sfxPlayer)
+        public void Construct(IUISoundPlayer soundPlayer)
         {
-            _sfxPlayer = sfxPlayer;
+            _soundPlayer = soundPlayer;
         }
 
         private void Awake()
         {
-            if (_sfxPlayer == null)
+            if (_soundPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SfxPlayer was not injected. The scene scope must inject this UIButtonSound: drag the component into the scope's UI Button Sounds list (runtime-spawned objects are injected automatically via IObjectResolver.Instantiate).");
+                    $"{name}: IUISoundPlayer was not injected. Scene buttons are injected through the scene scope's UI Button Sounds list (runtime-spawned objects are injected automatically via IObjectResolver.Instantiate).");
             }
 
             if (_sfxClip == null)
@@ -53,7 +53,7 @@ namespace Audio
 
         private void PlayClick()
         {
-            _sfxPlayer.PlayUi(_sfxClip);
+            _soundPlayer.Play(_sfxClip);
         }
     }
 }

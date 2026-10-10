@@ -7,26 +7,26 @@ using VContainer;
 
 namespace Audio
 {
-    public sealed class TierUpSound : MonoBehaviour
+    public class TierUpSound : MonoBehaviour
     {
         [SerializeField] private SfxClip _sfxClip;
 
-        private SfxPlayer _sfxPlayer;
+        private IGameSoundPlayer _soundPlayer;
         private PlayerTier _playerTier;
 
         [Inject]
-        public void Construct(SfxPlayer sfxPlayer, PlayerTier playerTier)
+        public void Construct(IGameSoundPlayer soundPlayer, PlayerTier playerTier)
         {
-            _sfxPlayer = sfxPlayer;
+            _soundPlayer = soundPlayer;
             _playerTier = playerTier;
         }
 
         private void Awake()
         {
-            if (_sfxPlayer == null)
+            if (_soundPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SfxPlayer was not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
+                    $"{name}: IGameSoundPlayer was not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
             }
 
             if (_playerTier == null)
@@ -52,14 +52,14 @@ namespace Audio
             _playerTier.TierChanged -= OnTierChanged;
         }
 
-        private void OnTierChanged(ItemTier previousTier, ItemTier currentTier)
+        private void OnTierChanged(SizeTier previousTier, SizeTier currentTier)
         {
             if (currentTier <= previousTier)
             {
                 return;
             }
 
-            _sfxPlayer.PlayGame(_sfxClip);
+            _soundPlayer.Play(_sfxClip);
         }
     }
 }

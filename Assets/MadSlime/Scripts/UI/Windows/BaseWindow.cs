@@ -1,57 +1,97 @@
-using Game;
 using System;
 using UI.Animations;
 using UnityEngine;
-using VContainer;
-using VContainer.Unity;
 
 namespace UI
 {
+    [RequireComponent(typeof(UiScaleAnimator))]
     public class BaseWindow : MonoBehaviour, IShowable
     {
-        protected Pauser Pauser { get; private set; }
-
         public event Action Closed;
 
-        [Inject]
-        public void Construct(Pauser pauser)
-        {
-            Pauser = pauser;
-        }
+        public event Action CloseRequested;
 
-        public void Show()
+        private UiScaleAnimator _scaleAnimator;
+        private bool _isClosing;
+        private bool _isCloseRequested;
+        private bool _isClosed;
+
+        protected bool IsClosing => _isClosing;
+
+        protected virtual void Awake()
         {
-            if (Pauser == null)
+            if (TryGetComponent(out _scaleAnimator) == false)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Pauser was not injected. The window prefab must be shown through the DI container (UiSpawner.Spawn).");
+                    $"{name}: UiScaleAnimator is missing. The window prefab must contain a UiScaleAnimator component.");
             }
+        }
 
-            Pauser.RequestPause();
-            UiAnimations.ScaleIn((RectTransform)transform, UiAnimations.WindowScaleInDuration);
+        public virtual void Show()
+        {
+            _scaleAnimator.HideCompleted -= OnHideCompleted;
+            _isClosing = false;
+            _isCloseRequested = false;
+            _isClosed = false;
+            gameObject.SetActive(true);
+            _scaleAnimator.PlayShow();
         }
 
         public void Hide()
         {
-            CloseAnimated();
+            BeginClose();
         }
 
-        protected void CloseAnimated()
+        public void RequestClose()
         {
-            UiAnimations.ScaleOut((RectTransform)transform, UiAnimations.WindowScaleOutDuration, DestroyWindow);
+            if (_isClosing == true || _isCloseRequested == true)
+            {
+                return;
+            }
+
+            _isCloseRequested = true;
+            Action closeRequested = CloseRequested;
+            closeRequested?.Invoke();
+        }
+
+        public void BeginClose()
+        {
+            if (_isClosing == true)
+            {
+                return;
+            }
+
+            _isClosing = true;
+            OnClosing();
+
+            _scaleAnimator.HideCompleted += OnHideCompleted;
+            _scaleAnimator.PlayHide();
+        }
+
+        protected virtual void OnClosing()
+        {
         }
 
         protected virtual void OnDisable()
         {
-            Pauser?.RequestResume();
+            if (_scaleAnimator != null)
+            {
+                _scaleAnimator.HideCompleted -= OnHideCompleted;
+            }
         }
 
-        private void DestroyWindow()
+        private void OnHideCompleted()
         {
+            if (_isClosed == true)
+            {
+                return;
+            }
+
+            _isClosed = true;
+            _scaleAnimator.HideCompleted -= OnHideCompleted;
+
             Action closed = Closed;
             closed?.Invoke();
-
-            Destroy(gameObject);
         }
     }
 }

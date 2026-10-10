@@ -6,10 +6,10 @@ using VContainer.Unity;
 
 namespace UI
 {
-    public sealed class UiSpawner
+    public class UiSpawner
     {
-        private readonly IObjectResolver _resolver;
-        private readonly Dictionary<UiLayer, int> _nextOrders = new Dictionary<UiLayer, int>();
+        private IObjectResolver _resolver;
+        private Dictionary<UiLayer, int> _nextOrders = new Dictionary<UiLayer, int>();
 
         public UiSpawner(IObjectResolver resolver)
         {
@@ -22,7 +22,7 @@ namespace UI
             _resolver = resolver;
         }
 
-        public T Spawn<T>(T prefab, UiLayer layer, Action onClosed = null) where T : Component, IShowable
+        public T Spawn<T>(T prefab, UiLayer layer) where T : Component, IShowable
         {
             if (prefab == null)
             {
@@ -33,25 +33,19 @@ namespace UI
             T instance = _resolver.Instantiate(prefab);
 
             ApplyLayer(instance, layer);
-            instance.Show();
-            SubscribeClosed(instance, onClosed);
 
             return instance;
         }
 
-        public T Show<T>(T showable, UiLayer layer, Action onClosed = null) where T : Component, IShowable
+        public void Release(Component window)
         {
-            if (showable == null)
+            if (window == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(showable),
-                    "UiSpawner: the shown element is null. Assign the element in the caller's serialized field.");
+                throw new ArgumentOutOfRangeException(nameof(window),
+                    "UiSpawner.Release: the released window is null.");
             }
 
-            ApplyLayer(showable, layer);
-            showable.Show();
-            SubscribeClosed(showable, onClosed);
-
-            return showable;
+            Destroy(window.gameObject);
         }
 
         public void Show(IShowable showable)
@@ -63,17 +57,6 @@ namespace UI
             }
 
             showable.Show();
-        }
-
-        public void Hide(IShowable showable)
-        {
-            if (showable == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(showable),
-                    "UiSpawner: the hidden element is null.");
-            }
-
-            showable.Hide();
         }
 
         private void ApplyLayer(Component showable, UiLayer layer)
@@ -100,44 +83,10 @@ namespace UI
             return nextOrder;
         }
 
-        private static void SubscribeClosed(Component showable, Action onClosed)
+        private void Destroy(GameObject gameObject)
         {
-            if (onClosed == null)
-            {
-                return;
-            }
-
-            ClosedRelay relay = showable.gameObject.AddComponent<ClosedRelay>();
-            relay.Initialize((IShowable)showable, onClosed);
+            UnityEngine.Object.Destroy(gameObject);
         }
 
-        private sealed class ClosedRelay : MonoBehaviour
-        {
-            private IShowable _showable;
-            private Action _onClosed;
-
-            public void Initialize(IShowable showable, Action onClosed)
-            {
-                _showable = showable;
-                _onClosed = onClosed;
-                _showable.Closed += OnShowableClosed;
-            }
-
-            private void OnDestroy()
-            {
-                if (_showable == null)
-                {
-                    return;
-                }
-
-                _showable.Closed -= OnShowableClosed;
-            }
-
-            private void OnShowableClosed()
-            {
-                _showable.Closed -= OnShowableClosed;
-                _onClosed.Invoke();
-            }
-        }
     }
 }

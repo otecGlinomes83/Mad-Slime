@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [CreateAssetMenu(menuName = "Mad Slime/Prop Set", fileName = "NewPropSet")]
-    public sealed class PropSet : ScriptableObject
+    public class PropSet : ScriptableObject
     {
         [Tooltip("Базовые предметы-пропсы уровня.")]
         [SerializeField] private List<Item> _props = new List<Item>();
@@ -19,7 +19,7 @@ namespace Scriptables
     }
 
     [Serializable]
-    public sealed class PropVariant
+    public class PropVariant
     {
         [Tooltip("Префаб предмета.")]
         [SerializeField] private Item _prefab;

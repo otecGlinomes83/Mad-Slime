@@ -1,14 +1,46 @@
 using System;
-using Core;
-using System.Collections.Generic;
-using Upgrades;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using YG;
 
 namespace Adapters
 {
-    public sealed class Yg2SavesAccess : ISavesAccess
+    public class Yg2SavesAccess
     {
+        private SaveConfirmation _confirmation;
+        private UniTask _latestSave;
+        private bool _hasSaved;
+
+        public Yg2SavesAccess(SaveConfirmation confirmation)
+        {
+            if (confirmation == null)
+            {
+                throw new ArgumentNullException(nameof(confirmation));
+            }
+
+            _confirmation = confirmation;
+        }
+
+        public UniTask ConfirmSavedAsync(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (IsReady == false)
+            {
+                throw new InvalidOperationException("Cannot confirm a save before SDK readiness.");
+            }
+
+            if (_hasSaved == false)
+            {
+                Save();
+            }
+
+            return _latestSave.AttachExternalCancellation(cancellationToken);
+        }
+
         public bool IsReady => YG2.isSDKEnabled;
+
+        public SavesYG Data => YG2.saves;
 
         public event Action Ready
         {
@@ -22,182 +54,35 @@ namespace Adapters
             }
         }
 
-        public int Balance
-        {
-            get
-            {
-                return YG2.saves.Balance;
-            }
-            set
-            {
-                YG2.saves.Balance = value;
-            }
-        }
-
-        public int CurrentLevel
-        {
-            get
-            {
-                return YG2.saves.CurrentLevel;
-            }
-            set
-            {
-                YG2.saves.CurrentLevel = value;
-            }
-        }
-
-        public int MaxLevel
-        {
-            get
-            {
-                return YG2.saves.MaxLevel;
-            }
-            set
-            {
-                YG2.saves.MaxLevel = value;
-            }
-        }
-
-        public string Language
-        {
-            get
-            {
-                return YG2.saves.Language;
-            }
-            set
-            {
-                YG2.saves.Language = value;
-            }
-        }
-
-        public float MusicVolume
-        {
-            get
-            {
-                return YG2.saves.musicVolume;
-            }
-            set
-            {
-                YG2.saves.musicVolume = value;
-            }
-        }
-
-        public float SfxVolume
-        {
-            get
-            {
-                return YG2.saves.sfxVolume;
-            }
-            set
-            {
-                YG2.saves.sfxVolume = value;
-            }
-        }
-
-        public int LegacySelectedSkinIndex => YG2.saves.SelectedSkinType;
-
-        public List<int> LegacyOpenSkinIndices => YG2.saves._openSkins;
-
-        public string SelectedSkinId
-        {
-            get
-            {
-                return YG2.saves.SelectedSkinId;
-            }
-            set
-            {
-                YG2.saves.SelectedSkinId = value;
-            }
-        }
-
-        public List<string> OpenSkinIds => YG2.saves._openSkinIds;
-
-        public List<string> ShowcaseSkinIds => YG2.saves._showcaseSkinIds;
-
-        public int SpeedLevel
-        {
-            get
-            {
-                return YG2.saves.SpeedLevel;
-            }
-            set
-            {
-                YG2.saves.SpeedLevel = value;
-            }
-        }
-
-        public int AppetiteLevel
-        {
-            get
-            {
-                return YG2.saves.AppetiteLevel;
-            }
-            set
-            {
-                YG2.saves.AppetiteLevel = value;
-            }
-        }
-
-        public int TasteLevel
-        {
-            get
-            {
-                return YG2.saves.TasteLevel;
-            }
-            set
-            {
-                YG2.saves.TasteLevel = value;
-            }
-        }
-
-        public int MetabolismLevel
-        {
-            get
-            {
-                return YG2.saves.MetabolismLevel;
-            }
-            set
-            {
-                YG2.saves.MetabolismLevel = value;
-            }
-        }
-
-        public List<PerkType> PurchasedPerks => YG2.saves.PurchasedPerks;
-
-        public long LastFreeSpinUnixTime
-        {
-            get
-            {
-                return YG2.saves.LastFreeSpinUnixTime;
-            }
-            set
-            {
-                YG2.saves.LastFreeSpinUnixTime = value;
-            }
-        }
-
-        public List<long> RouletteAdSpinTimes => YG2.saves.RouletteAdSpinTimes;
-
-        public int SkinSpinCount
-        {
-            get
-            {
-                return YG2.saves.SkinSpinCount;
-            }
-            set
-            {
-                YG2.saves.SkinSpinCount = value;
-            }
-        }
-
         public void Save()
         {
             if (YG2.isSDKEnabled == false)
             {
-                return;
+                throw new InvalidOperationException(
+                    "Yg2SavesAccess: cannot save before the SDK data is ready.");
             }
 
+#if UNITY_WEBGL && UNITY_EDITOR == false
+            YG2.saves.idSave++;
+
+            if (YG2.infoYG.Storage.saveLocal == true)
+            {
+                YG.Insides.YGInsides.SaveLocal();
+            }
+
+            _latestSave = UniTask.CompletedTask;
+
+            if (YG2.infoYG.Storage.saveCloud == true)
+            {
+                string json = UnityEngine.JsonUtility.ToJson(YG2.saves);
+                _latestSave = _confirmation.ConfirmAsync(json, CancellationToken.None).Preserve();
+                _latestSave.Forget();
+            }
+#else
             YG2.SaveProgress();
+            _latestSave = UniTask.CompletedTask;
+#endif
+            _hasSaved = true;
         }
     }
 }

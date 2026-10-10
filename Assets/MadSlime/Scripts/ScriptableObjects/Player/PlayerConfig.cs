@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [CreateAssetMenu(menuName = "Mad Slime/Player Config", fileName = "NewPlayerConfig")]
-    public sealed class PlayerConfig : ScriptableObject
+    public class PlayerConfig : ScriptableObject
     {
         [Header("Movement")]
         [Tooltip("Скорость поворота модели слайма в сторону движения (град/с).")]

@@ -5,17 +5,22 @@ using UnityEngine;
 
 namespace Game
 {
-    public sealed class ZoneLayoutPlanner
+    public class ZoneLayoutPlanner
     {
         private const double FullCircleRadians = Math.PI * 2.0;
 
-        private readonly List<Vector3> _positions = new List<Vector3>(64);
-        private readonly List<Placement> _placements = new List<Placement>(64);
-        private readonly System.Random _random;
+        private List<Vector3> _positions = new List<Vector3>(64);
+        private List<Placement> _placements = new List<Placement>(64);
+        private System.Random _random;
 
         public ZoneLayoutPlanner(System.Random random)
         {
-            _random = random ?? new System.Random();
+            _random = random;
+
+            if (_random == null)
+            {
+                _random = new System.Random();
+            }
         }
 
         public IReadOnlyList<Vector3> Positions => _positions;

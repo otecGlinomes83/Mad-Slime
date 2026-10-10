@@ -327,7 +327,7 @@ MonoBehaviour:
   _lockImage: {fileID: 4846107130676545206}
   _rouletteBadge: {fileID: 8569844124931748770}
   _priceView: {fileID: 0}
-  _selectionText: {fileID: 674088670218753203}
+  _selectedMark: {fileID: 674088670218753203}
 --- !u!114 &8249506779102666086
 MonoBehaviour:
   m_ObjectHideFlags: 0

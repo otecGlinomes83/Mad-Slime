@@ -3,9 +3,9 @@ using Scriptables;
 
 namespace Game
 {
-    public sealed class LevelConfigResolver
+    public class LevelConfigResolver
     {
-        private readonly LevelsCatalog _catalog;
+        private LevelsCatalog _catalog;
 
         public LevelConfigResolver(LevelsCatalog catalog)
         {

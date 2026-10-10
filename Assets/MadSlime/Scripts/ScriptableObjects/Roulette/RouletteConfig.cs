@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using Scriptables;
 using Skins;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Roulette
 {
     [CreateAssetMenu(menuName = "Mad Slime/Roulette Config", fileName = "NewRouletteConfig")]
-    public sealed class RouletteConfig : ScriptableObject
+    public class RouletteConfig : ScriptableObject
     {
         [Header("Main Roulette")]
         [Tooltip("Секторы ежедневной рулетки: монеты и эксклюзивные скины. Вес сектора задаёт его шанс.")]
@@ -19,23 +18,23 @@ namespace Roulette
 
         [Header("Skin Roulette")]
         [Tooltip("Шанс обычных скинов в процентах: сумма всех четырёх нормализуется до 100. 0 — редкость не выпадает.")]
-        [FormerlySerializedAs("_commonDropWeight")]
+
         [SerializeField, Min(0f)] private float _commonDropChance = 100f;
 
         [Tooltip("Шанс редких скинов в процентах.")]
-        [FormerlySerializedAs("_rareDropWeight")]
+
         [SerializeField, Min(0f)] private float _rareDropChance = 45f;
 
         [Tooltip("Шанс эпических скинов в процентах.")]
-        [FormerlySerializedAs("_epicDropWeight")]
+
         [SerializeField, Min(0f)] private float _epicDropChance = 15f;
 
         [Tooltip("Шанс легендарных скинов в процентах.")]
-        [FormerlySerializedAs("_legendaryDropWeight")]
+
         [SerializeField, Min(0f)] private float _legendaryDropChance = 4f;
 
         [Tooltip("Минимальный порог цены крутки скин-рулетки: с неё цена стартует и ниже не опускается.")]
-        [FormerlySerializedAs("_skinSpinBaseCost")]
+
         [SerializeField, Min(0)] private int _skinSpinMinCost = 300;
 
         [Tooltip("Максимальный порог цены крутки скин-рулетки. 0 — без предела.")]
@@ -94,7 +93,7 @@ namespace Roulette
         [SerializeField, Min(1f)] private float _spinEasePower = 5f;
 
         [Tooltip("Максимальное отклонение финала в градусах: колесо перелетает или недолетает выпавшую ячейку на случайную величину от 0 до этого значения, затем щёлкает на место. 0 — всегда точная остановка.")]
-        [FormerlySerializedAs("_settleOvershootDegrees")]
+
         [SerializeField, Min(0f)] private float _settleMaxDeviationDegrees = 25f;
 
         [Tooltip("Пауза ленты на выпавшем призе до попапа выигрыша (с).")]
@@ -120,41 +119,13 @@ namespace Roulette
         public int AdSpinWindowSeconds => _adSpinWindowSeconds;
         public int AdSpinsPerWindow => _adSpinsPerWindow;
         public int FreeSpinCooldownSeconds => _freeSpinCooldownSeconds;
-        public float GetSkinDropChance(SkinRarity rarity)
-        {
-            switch (rarity)
-            {
-                case SkinRarity.Rare:
-                    return _rareDropChance;
-
-                case SkinRarity.Epic:
-                    return _epicDropChance;
-
-                case SkinRarity.Legendary:
-                    return _legendaryDropChance;
-
-                default:
-                    return _commonDropChance;
-            }
-        }
-
-        public int GetShowcaseQuota(SkinRarity rarity)
-        {
-            switch (rarity)
-            {
-                case SkinRarity.Rare:
-                    return _showcaseRareCount;
-
-                case SkinRarity.Epic:
-                    return _showcaseEpicCount;
-
-                case SkinRarity.Legendary:
-                    return _showcaseLegendaryCount;
-
-                default:
-                    return 0;
-            }
-        }
+        public float CommonDropChance => _commonDropChance;
+        public float RareDropChance => _rareDropChance;
+        public float EpicDropChance => _epicDropChance;
+        public float LegendaryDropChance => _legendaryDropChance;
+        public int ShowcaseRareCount => _showcaseRareCount;
+        public int ShowcaseEpicCount => _showcaseEpicCount;
+        public int ShowcaseLegendaryCount => _showcaseLegendaryCount;
 
         public float IdleRotationSpeed => _idleRotationSpeed;
         public float WindBackDegrees => _windBackDegrees;
@@ -171,7 +142,7 @@ namespace Roulette
     }
 
     [Serializable]
-    public sealed class RouletteSector
+    public class RouletteSector
     {
         public enum RewardKind
         {
@@ -189,7 +160,7 @@ namespace Roulette
         [SerializeField] private SkinItem _skin;
 
         [Tooltip("Шанс сектора в процентах: сумма по всем секторам нормализуется до 100. 0 — сектор не выпадает.")]
-        [FormerlySerializedAs("_weight")]
+
         [SerializeField, Min(0f)] private float _dropChance = 25f;
 
         public RewardKind RewardType => _rewardKind;

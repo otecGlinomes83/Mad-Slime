@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [CreateAssetMenu(menuName = "Mad Slime/Sfx Clip", fileName = "NewSfxClip")]
-    public sealed class SfxClip : ScriptableObject
+    public class SfxClip : ScriptableObject
     {
         [Tooltip("Аудиофайл, который проигрывает аудиосистема")]
         [SerializeField] private AudioClip _clip;

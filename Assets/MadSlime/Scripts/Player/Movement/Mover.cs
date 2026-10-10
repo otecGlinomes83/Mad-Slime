@@ -1,246 +1,47 @@
 using System;
-using Scriptables;
 using UnityEngine;
-using VContainer;
 
 namespace Movement
 {
-    [RequireComponent(typeof(CapsuleCollider))]
-    public sealed class Mover : MonoBehaviour
+    public class Mover : MonoBehaviour
     {
-        [SerializeField] private float _smoothTime = 0.12f;
+        private Clamper _clamper;
+        private Vector3 _velocity;
 
-        private const float MoveThreshold = 0.05f;
-        private const float MinDecayVelocity = 0.05f;
+        public Vector3 Velocity => _velocity;
 
-        private CapsuleCollider _playerCollider;
-        private Bounds _bounds;
-        private bool _hasBounds;
-        private Vector3 _currentVelocity;
-        private Vector3 _velocityRef;
-        private float _currentSpeed;
-        private PlayerConfig _playerConfig;
-        private float _crawlPhase;
-        private float _crawlStrength;
-        private float _crawlStrengthVelocityRef;
-        private bool _isCrawlInputActive;
-
-        public float CrawlPhase => _crawlPhase;
-
-        public float CrawlStrength => _crawlStrength;
-
-        private void Awake()
+        public void Setup(Clamper clamper)
         {
-            _playerCollider = GetComponent<CapsuleCollider>();
+            if (clamper == null)
+            {
+                throw new ArgumentNullException(nameof(clamper));
+            }
+
+            _clamper = clamper;
         }
 
-        [Inject]
-        public void Construct(PlayerConfig playerConfig)
+        public void Stop()
         {
-            if (playerConfig == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: PlayerConfig was not injected. Check that GameLifetimeScope registers Mover and PlayerConfig.");
-            }
-
-            ValidateCrawlConfig(playerConfig);
-
-            _playerConfig = playerConfig;
+            _velocity = Vector3.zero;
         }
 
-        private static void ValidateCrawlConfig(PlayerConfig playerConfig)
+        public void Move(Vector3 direction, float speed)
         {
-            if (playerConfig.CrawlStretchCurve == null || playerConfig.CrawlStretchCurve.length == 0)
+            if (speed < 0f)
             {
-                throw new InvalidOperationException(
-                    "PlayerConfig has an empty CrawlStretchCurve. Add keyframes to the Crawl section.");
+                throw new ArgumentOutOfRangeException(nameof(speed));
             }
 
-            if (playerConfig.CrawlThrustCurve == null || playerConfig.CrawlThrustCurve.length == 0)
+            Vector3 startPosition = transform.position;
+            Vector3 stepVelocity = Vector3.ClampMagnitude(direction, 1f) * speed;
+            Vector3 desiredPosition = startPosition + stepVelocity * Time.deltaTime;
+            transform.position = _clamper.ClampPosition(desiredPosition);
+            _velocity = Vector3.zero;
+
+            if (Time.deltaTime > 0f)
             {
-                throw new InvalidOperationException(
-                    "PlayerConfig has an empty CrawlThrustCurve. Add keyframes to the Crawl section.");
+                _velocity = (transform.position - startPosition) / Time.deltaTime;
             }
-
-            if (playerConfig.CrawlStride <= 0f && playerConfig.StridePerSpeed <= 0f)
-            {
-                throw new InvalidOperationException(
-                    "PlayerConfig: CrawlStride and StridePerSpeed are both zero, the crawl cycle can never advance.");
-            }
-        }
-
-        public void SetSpeed(float speed)
-        {
-            if (speed <= 0f)
-            {
-                throw new ArgumentOutOfRangeException(nameof(speed),
-                    "Mover.SetSpeed requires a positive speed.");
-            }
-
-            _currentSpeed = speed;
-        }
-
-        public void SetSmoothTime(float smoothTime)
-        {
-            if (smoothTime <= 0f)
-            {
-                throw new ArgumentOutOfRangeException(nameof(smoothTime),
-                    "Mover.SetSmoothTime requires a positive smooth time.");
-            }
-
-            _smoothTime = smoothTime;
-        }
-
-        public void SetBounds(Bounds bounds)
-        {
-            if (bounds.size.x <= 0f || bounds.size.z <= 0f)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bounds),
-                    "Mover.SetBounds requires positive XZ size.");
-            }
-
-            _bounds = bounds;
-            _hasBounds = true;
-        }
-
-        public void Move(Vector3 direction)
-        {
-            if (_hasBounds == false)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Move is called before SetBounds. Drag the Mover into the _mover field of LevelGenerator.");
-            }
-
-            if (_currentSpeed <= 0f)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Move is called before PlayerSpeed set the speed. Add PlayerSpeed to the Player and register it in GameLifetimeScope.");
-            }
-
-            bool hasInput = direction.sqrMagnitude >= MoveThreshold * MoveThreshold;
-
-            UpdateCrawlStrength(hasInput, Time.deltaTime);
-
-            if (hasInput == false)
-            {
-                DecayVelocity();
-                return;
-            }
-
-            direction = direction.normalized;
-
-            float crawlVelocityScale = GetCrawlVelocityScale();
-            Vector3 targetVelocity = direction * (_currentSpeed * crawlVelocityScale);
-
-            _currentVelocity = Vector3.SmoothDamp
-            (
-                _currentVelocity,
-                targetVelocity,
-                ref _velocityRef,
-                _smoothTime
-            );
-
-            transform.position += _currentVelocity * Time.deltaTime;
-
-            AdvanceCrawlPhase(_currentVelocity.magnitude * Time.deltaTime);
-
-            ClampToBounds();
-        }
-
-        private void DecayVelocity()
-        {
-            _currentVelocity = Vector3.SmoothDamp
-            (
-                _currentVelocity,
-                Vector3.zero,
-                ref _velocityRef,
-                _smoothTime
-            );
-
-            if (_currentVelocity.sqrMagnitude < MinDecayVelocity * MinDecayVelocity)
-            {
-                _currentVelocity = Vector3.zero;
-                return;
-            }
-
-            transform.position += _currentVelocity * Time.deltaTime;
-
-            AdvanceCrawlPhase(_currentVelocity.magnitude * Time.deltaTime);
-
-            ClampToBounds();
-        }
-
-        private void UpdateCrawlStrength(bool hasInput, float deltaTime)
-        {
-            if (hasInput != _isCrawlInputActive)
-            {
-                _isCrawlInputActive = hasInput;
-
-                if (hasInput == true)
-                {
-                    _crawlPhase = 0f;
-                    _crawlStrengthVelocityRef = 0f;
-                }
-            }
-
-            float targetStrength;
-
-            if (hasInput == true)
-            {
-                targetStrength = 1f;
-            }
-            else
-            {
-                targetStrength = 0f;
-            }
-
-            _crawlStrength = Mathf.Clamp01
-            (
-                Mathf.SmoothDamp
-                (
-                    _crawlStrength,
-                    targetStrength,
-                    ref _crawlStrengthVelocityRef,
-                    _playerConfig.CrawlRampTime,
-                    Mathf.Infinity,
-                    deltaTime
-                )
-            );
-        }
-
-        private float GetCrawlVelocityScale()
-        {
-            float thrust = _playerConfig.CrawlThrustCurve.Evaluate(_crawlPhase);
-
-            return 1f + _playerConfig.CrawlThrustDepth * (thrust - 1f) * _crawlStrength;
-        }
-
-        private void AdvanceCrawlPhase(float distance)
-        {
-            if (distance <= 0f)
-            {
-                return;
-            }
-
-            float stride = _playerConfig.CrawlStride + _currentSpeed * _playerConfig.StridePerSpeed;
-
-            if (stride <= 0f)
-            {
-                return;
-            }
-
-            _crawlPhase = (_crawlPhase + distance / stride) % 1f;
-        }
-
-        private void ClampToBounds()
-        {
-            float radius = _playerCollider.radius;
-            Vector3 position = transform.position;
-
-            position.x = Mathf.Clamp(position.x, _bounds.min.x + radius, _bounds.max.x - radius);
-            position.z = Mathf.Clamp(position.z, _bounds.min.z + radius, _bounds.max.z - radius);
-
-            transform.position = position;
         }
     }
 }

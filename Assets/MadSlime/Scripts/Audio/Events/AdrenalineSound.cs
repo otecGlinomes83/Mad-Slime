@@ -6,26 +6,26 @@ using VContainer;
 
 namespace Audio
 {
-    public sealed class AdrenalineSound : MonoBehaviour
+    public class AdrenalineSound : MonoBehaviour
     {
         [SerializeField] private SfxClip _sfxClip;
 
-        private SfxPlayer _sfxPlayer;
+        private IGameSoundPlayer _soundPlayer;
         private AdrenalineBoost _adrenalineBoost;
 
         [Inject]
-        public void Construct(SfxPlayer sfxPlayer, AdrenalineBoost adrenalineBoost)
+        public void Construct(IGameSoundPlayer soundPlayer, AdrenalineBoost adrenalineBoost)
         {
-            _sfxPlayer = sfxPlayer;
+            _soundPlayer = soundPlayer;
             _adrenalineBoost = adrenalineBoost;
         }
 
         private void Awake()
         {
-            if (_sfxPlayer == null)
+            if (_soundPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SfxPlayer was not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
+                    $"{name}: IGameSoundPlayer was not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
             }
 
             if (_adrenalineBoost == null)
@@ -52,7 +52,7 @@ namespace Audio
                 return;
             }
 
-            _sfxPlayer.PlayGame(_sfxClip);
+            _soundPlayer.Play(_sfxClip);
         }
     }
 }

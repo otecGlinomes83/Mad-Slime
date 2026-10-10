@@ -8,9 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 8187758184761072709}
   - component: {fileID: 5166724724515126263}
   - component: {fileID: 1587060696591395426}
   - component: {fileID: 6457338844489197488}
+  - component: {fileID: 4302996327701454625}
   m_Layer: 3
   m_Name: Item_Icecream1
   m_TagString: Untagged
@@ -68,7 +70,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _definition: {fileID: 11400000, guid: 8893e424a3c667a46891c87c845dfccd, type: 2}
-  _collider: {fileID: 1587060696591395426}
+--- !u!114 &4302996327701454625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6602182028105420319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f42675b1a0c0800ceb4a2e5cb8ce0ff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _ghostMaterial: {fileID: 2100000, guid: 2566cc4f8c7914449b603a2474de69ba, type: 2}
   _ghostFadeConfig: {fileID: 11400000, guid: ee25c91a9b0da4b94b8654ae2cfe4341, type: 2}
 --- !u!1001 &8187758184761072609
@@ -133,3 +146,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4098155591778969566, guid: ab2b37210e1e3dd4eabc0bb06fdffd06, type: 3}
   m_PrefabInstance: {fileID: 8187758184761072609}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8187758184761072709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6602182028105420319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa669f528708ba027a628953ef1ce0c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier:
+  _collider: {fileID: 1587060696591395426}

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [Serializable]
-    public sealed class LevelRange
+    public class LevelRange
     {
         [Tooltip("Первый уровень диапазона (нумерация с 1).")]
         [SerializeField] private int _fromLevel = 1;

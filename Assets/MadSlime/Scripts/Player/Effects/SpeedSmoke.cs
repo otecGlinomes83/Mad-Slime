@@ -1,3 +1,4 @@
+using Movement;
 using Scriptables;
 using System;
 using UnityEngine;
@@ -5,20 +6,20 @@ using VContainer;
 
 namespace Player
 {
-    public sealed class SpeedSmoke : MonoBehaviour
+    public class SpeedSmoke : MonoBehaviour
     {
         [Tooltip("Заранее расставленный в сцене зацикленный партикл дыма: код только включает и выключает проигрывание, настройки не трогает.")]
         [SerializeField] private ParticleSystem _smoke;
 
         private PlayerConfig _config;
-        private PlayerSpeed _playerSpeed;
+        private Movement.Movement _movement;
         private bool _isSmoking;
 
         [Inject]
-        public void Construct(PlayerConfig config, PlayerSpeed playerSpeed)
+        public void Construct(PlayerConfig config, Movement.Movement movement)
         {
             _config = config;
-            _playerSpeed = playerSpeed;
+            _movement = movement;
         }
 
         private void Awake()
@@ -35,10 +36,10 @@ namespace Player
                     $"{name}: PlayerConfig was not injected. Check that GameLifetimeScope registers PlayerConfig and SpeedSmoke.");
             }
 
-            if (_playerSpeed == null)
+            if (_movement == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerSpeed was not injected. Check that GameLifetimeScope registers PlayerSpeed and SpeedSmoke.");
+                    $"{name}: Movement was not injected. Check that GameLifetimeScope registers Movement and SpeedSmoke.");
             }
 
             _smoke.Stop(true, ParticleSystemStopBehavior.StopEmitting);
@@ -46,14 +47,14 @@ namespace Player
 
         private void OnEnable()
         {
-            _playerSpeed.SpeedChanged += OnSpeedChanged;
+            _movement.SpeedChanged += OnSpeedChanged;
 
             Refresh();
         }
 
         private void OnDisable()
         {
-            _playerSpeed.SpeedChanged -= OnSpeedChanged;
+            _movement.SpeedChanged -= OnSpeedChanged;
 
             SetSmoking(false);
         }
@@ -67,7 +68,7 @@ namespace Player
         {
             float threshold = _config.SmokeSpeedThreshold;
 
-            SetSmoking(threshold > 0f && _playerSpeed.CurrentSpeed > threshold);
+            SetSmoking(threshold > 0f && _movement.CurrentSpeed > threshold);
         }
 
         private void SetSmoking(bool isSmoking)

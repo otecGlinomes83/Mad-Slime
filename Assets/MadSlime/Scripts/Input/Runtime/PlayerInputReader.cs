@@ -4,11 +4,13 @@ using UnityEngine.InputSystem;
 
 namespace PlayerInput
 {
-    public sealed class PlayerInputReader : MonoBehaviour
+    public class PlayerInputReader : MonoBehaviour
     {
         private PlayerInputActions _inputActions;
 
-        public Vector2 MoveInput { get; private set; }
+        private Vector2 _moveInput;
+
+        public Vector2 MoveInput => _moveInput;
         public event Action MovementKeyPressed;
 
         private void Awake()
@@ -22,7 +24,7 @@ namespace PlayerInput
             _inputActions.Player.Move.canceled += OnMoveCanceled;
 
             _inputActions.Player.Enable();
-            MoveInput = Vector2.zero;
+            _moveInput = Vector2.zero;
         }
 
         private void OnDisable()
@@ -32,7 +34,7 @@ namespace PlayerInput
 
             _inputActions.Player.Disable();
 
-            MoveInput = Vector2.zero;
+            _moveInput = Vector2.zero;
         }
 
         private void OnDestroy()
@@ -43,7 +45,7 @@ namespace PlayerInput
         private void OnMovePerformed(InputAction.CallbackContext context)
         {
             bool wasZero = MoveInput == Vector2.zero;
-            MoveInput = context.ReadValue<Vector2>();
+            _moveInput = context.ReadValue<Vector2>();
 
             if (wasZero == true)
             {
@@ -53,7 +55,7 @@ namespace PlayerInput
 
         private void OnMoveCanceled(InputAction.CallbackContext context)
         {
-            MoveInput = Vector2.zero;
+            _moveInput = Vector2.zero;
         }
     }
 }

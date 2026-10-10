@@ -1,10 +1,9 @@
-using System;
 using UnityEngine;
 
 namespace Skins
 {
     [CreateAssetMenu(menuName = "Mad Slime/Shop Item", fileName = "NewShopItem")]
-    public sealed class SkinItem : ScriptableObject
+    public class SkinItem : ScriptableObject
     {
         [Tooltip("Модель скина, инстансится на игрока при выборе.")]
         [SerializeField] private GameObject _model;
@@ -26,13 +25,5 @@ namespace Skins
 
         public string Id => _id;
 
-        private void OnValidate()
-        {
-            if (string.IsNullOrWhiteSpace(_id) == true)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: SkinItem requires a non-empty _id. It is the save key of the skin.");
-            }
-        }
     }
 }

@@ -1,20 +1,26 @@
-﻿using System;
+using System;
 using Audio;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI
 {
-    public sealed class PauseMenu : BaseWindow
+    public class PauseMenu : BaseWindow
     {
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _menuButton;
         [SerializeField] private AudioSettingsPanel _settingsPanel;
 
-        private Action _menuAction;
+        private bool _isActionRequested;
 
-        public void Initialize(bool isMenuButtonNeeded, Action menuAction = null)
+        public event Action CloseButtonClicked;
+
+        public event Action MenuButtonClicked;
+
+        protected override void Awake()
         {
+            base.Awake();
+
             if (_closeButton == null)
             {
                 throw new InvalidOperationException(
@@ -32,36 +38,59 @@ namespace UI
                 throw new InvalidOperationException(
                     $"{name}: SettingsPanel is not assigned. Drag an AudioSettingsPanel into the _settingsPanel field.");
             }
+        }
 
-            _closeButton.onClick.AddListener(Close);
-            _menuButton.gameObject.SetActive(false);
-
-            if (isMenuButtonNeeded && menuAction != null)
-            {
-                _menuButton.gameObject.SetActive(true);
-                _menuButton.onClick.AddListener(OnMenuClicked);
-                _menuAction = menuAction;
-            }
-
+        public void Initialize(bool isMenuButtonNeeded)
+        {
+            _isActionRequested = false;
+            _closeButton.interactable = true;
+            _menuButton.interactable = true;
             _settingsPanel.Initialize();
+
+            _menuButton.gameObject.SetActive(isMenuButtonNeeded);
+        }
+
+        private void OnEnable()
+        {
+            _closeButton.onClick.AddListener(OnCloseClicked);
+            _menuButton.onClick.AddListener(OnMenuClicked);
         }
 
         protected override void OnDisable()
         {
-            _closeButton?.onClick.RemoveListener(Close);
-            _menuButton?.onClick.RemoveListener(OnMenuClicked);
             base.OnDisable();
+            _closeButton.onClick.RemoveListener(OnCloseClicked);
+            _menuButton.onClick.RemoveListener(OnMenuClicked);
+        }
+
+        protected override void OnClosing()
+        {
+            _closeButton.interactable = false;
+            _menuButton.interactable = false;
+        }
+
+        private void OnCloseClicked()
+        {
+            if (_isActionRequested == true || IsClosing == true)
+            {
+                return;
+            }
+
+            _isActionRequested = true;
+            Action closeButtonClicked = CloseButtonClicked;
+            closeButtonClicked?.Invoke();
         }
 
         private void OnMenuClicked()
         {
-            _menuAction?.Invoke();
-            Close();
-        }
+            if (_isActionRequested == true || IsClosing == true)
+            {
+                return;
+            }
 
-        private void Close()
-        {
-            CloseAnimated();
+            _isActionRequested = true;
+            Action menuButtonClicked = MenuButtonClicked;
+            menuButtonClicked?.Invoke();
         }
     }
 }

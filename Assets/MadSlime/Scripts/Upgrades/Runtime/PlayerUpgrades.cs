@@ -1,46 +1,57 @@
 using System;
 using System.Collections.Generic;
 using Game;
+using Saves;
 using UnityEngine;
 using VContainer;
 
 namespace Upgrades
 {
-    public sealed class PlayerUpgrades : MonoBehaviour
+    public class PlayerUpgrades : MonoBehaviour
     {
         [SerializeField] private UpgradesConfig _config;
 
-        private PlayerProgress _progress;
+        private IUpgradesStorage _storage;
 
-        public float SpeedMultiplier => GetMultiplier(UpgradeType.Speed);
-        public float MassMultiplier => GetMultiplier(UpgradeType.Appetite);
-        public float QuotaMassMultiplier => GetMultiplier(UpgradeType.Appetite) * GetMultiplier(UpgradeType.Taste);
-        public float ForeignFillMultiplier => GetMultiplier(UpgradeType.Metabolism);
-        public bool HasSmell => IsPerkPurchased(PerkType.Smell);
-        public bool HasAdrenaline => IsPerkPurchased(PerkType.Adrenaline);
-        public bool HasAmbitions => IsPerkPurchased(PerkType.Ambitions);
-
-        public int AmbitionTierOffset
+        public float GetSpeedMultiplier()
         {
-            get
-            {
-                if (HasAmbitions == false)
-                {
-                    return 0;
-                }
-
-                return Mathf.RoundToInt(_config.GetPerk(PerkType.Ambitions).Value);
-            }
+            return GetMultiplier(UpgradeType.Speed);
         }
 
-        public float AdrenalineSpeedMultiplier => _config.GetPerk(PerkType.Adrenaline).Value;
-        public Color HighlightColor => _config.HighlightColor;
-        public float OutlineWidth => _config.OutlineWidth;
+        public float GetMassMultiplier()
+        {
+            return GetMultiplier(UpgradeType.Appetite);
+        }
+
+        public float GetQuotaMassMultiplier()
+        {
+            return GetMultiplier(UpgradeType.Appetite) * GetMultiplier(UpgradeType.Taste);
+        }
+
+        public float GetForeignFillMultiplier()
+        {
+            return GetMultiplier(UpgradeType.Metabolism);
+        }
+
+        public bool HasSmell()
+        {
+            return IsPerkPurchased(PerkType.Smell);
+        }
+
+        public bool HasAdrenaline()
+        {
+            return IsPerkPurchased(PerkType.Adrenaline);
+        }
+
+        public bool HasAmbitions()
+        {
+            return IsPerkPurchased(PerkType.Ambitions);
+        }
 
         [Inject]
-        public void Construct(PlayerProgress progress)
+        public void Construct(IUpgradesStorage storage)
         {
-            _progress = progress;
+            _storage = storage;
         }
 
         private void Awake()
@@ -51,10 +62,10 @@ namespace Upgrades
                     $"{name}: UpgradesConfig is not assigned. Drag the UpgradesConfig asset into the _config field.");
             }
 
-            if (_progress == null)
+            if (_storage == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerProgress was not injected. Check that ProjectLifetimeScope registers PlayerProgress and PlayerUpgrades.");
+                    $"{name}: IUpgradesStorage was not injected. Check that ProjectLifetimeScope registers Saver and PlayerUpgrades.");
             }
 
             for (int i = 0; i < _config.Upgrades.Count; i++)
@@ -67,8 +78,6 @@ namespace Upgrades
                         $"PlayerUpgrades: upgrade '{entry.Type}' in '{_config.name}' has {entry.StepValues.Count} " +
                         $"step values, but MaxSteps is {entry.MaxSteps}. Fill one value per step.");
                 }
-
-                _progress.GetUpgradeLevel(entry.Type);
             }
 
             for (int i = 0; i < _config.Perks.Count; i++)
@@ -79,12 +88,12 @@ namespace Upgrades
 
         public int GetLevel(UpgradeType type)
         {
-            return _progress.GetUpgradeLevel(type);
+            return _storage.GetUpgradeLevel(type);
         }
 
         public bool IsMaxed(UpgradeType type)
         {
-            return GetLevel(type) >= _config.GetUpgrade(type).MaxSteps;
+            return GetLevel(type) >= GetUpgrade(type).MaxSteps;
         }
 
         public int GetNextCost(UpgradeType type)
@@ -95,7 +104,8 @@ namespace Upgrades
                     $"PlayerUpgrades: upgrade '{type}' is maxed and has no next cost.");
             }
 
-            return _config.GetUpgrade(type).GetCost(GetLevel(type));
+            UpgradeEntry entry = GetUpgrade(type);
+            return entry.BaseCost + entry.CostStep * GetLevel(type);
         }
 
         public void PurchaseStepped(UpgradeType type)
@@ -106,18 +116,17 @@ namespace Upgrades
                     $"PlayerUpgrades: upgrade '{type}' is already maxed.");
             }
 
-            _progress.SetUpgradeLevel(type, GetLevel(type) + 1);
-            _progress.Save();
+            _storage.SetUpgradeLevel(type, GetLevel(type) + 1);
         }
 
         public bool IsPerkPurchased(PerkType type)
         {
-            return _progress.PurchasedPerks.Contains(type);
+            return _storage.IsPerkPurchased(type);
         }
 
         public int GetPerkCost(PerkType type)
         {
-            return _config.GetPerk(type).Cost;
+            return GetPerk(type).Cost;
         }
 
         public void PurchasePerk(PerkType type)
@@ -128,11 +137,12 @@ namespace Upgrades
                     $"PlayerUpgrades: perk '{type}' is already purchased.");
             }
 
-            _config.GetPerk(type);
+            GetPerk(type);
 
-            _progress.PurchasedPerks.Add(type);
-            _progress.Save();
+            _storage.PurchasePerk(type);
         }
+
+        public UpgradesConfig Config => _config;
 
         public IReadOnlyList<UpgradeEntry> UpgradeEntries => _config.Upgrades;
 
@@ -140,38 +150,66 @@ namespace Upgrades
 
         public int GetMaxSteps(UpgradeType type)
         {
-            return _config.GetUpgrade(type).MaxSteps;
-        }
-
-        public Sprite GetUpgradeIcon(UpgradeType type)
-        {
-            return _config.GetUpgrade(type).Icon;
-        }
-
-        public Sprite GetPerkIcon(PerkType type)
-        {
-            return _config.GetPerk(type).Icon;
+            return GetUpgrade(type).MaxSteps;
         }
 
         public float GetNextStepValue(UpgradeType type)
         {
-            UpgradeEntry entry = _config.GetUpgrade(type);
+            UpgradeEntry entry = GetUpgrade(type);
 
-            return entry.GetTotalValue(GetLevel(type) + 1);
+            return SumValues(entry, GetLevel(type) + 1);
         }
 
         public float GetTotalValue(UpgradeType type)
         {
-            UpgradeEntry entry = _config.GetUpgrade(type);
+            UpgradeEntry entry = GetUpgrade(type);
 
-            return entry.GetTotalValue(GetLevel(type));
+            return SumValues(entry, GetLevel(type));
         }
 
         private float GetMultiplier(UpgradeType type)
         {
-            UpgradeEntry entry = _config.GetUpgrade(type);
+            UpgradeEntry entry = GetUpgrade(type);
 
-            return 1f + entry.GetTotalValue(GetLevel(type));
+            return 1f + SumValues(entry, GetLevel(type));
+        }
+        public UpgradeEntry GetUpgrade(UpgradeType type)
+        {
+            for (int i = 0; i < _config.Upgrades.Count; i++)
+            {
+                if (_config.Upgrades[i].Type == type)
+                {
+                    return _config.Upgrades[i];
+                }
+            }
+
+            throw new InvalidOperationException(
+                $"UpgradesConfig '{_config.name}': no entry for upgrade '{type}'. Add a row for it.");
+        }
+
+        public PerkEntry GetPerk(PerkType type)
+        {
+            for (int i = 0; i < _config.Perks.Count; i++)
+            {
+                if (_config.Perks[i].Type == type)
+                {
+                    return _config.Perks[i];
+                }
+            }
+
+            throw new InvalidOperationException(
+                $"UpgradesConfig '{_config.name}': no entry for perk '{type}'. Add a row for it.");
+        }
+        private float SumValues(UpgradeEntry entry, int level)
+        {
+            float total = 0f;
+
+            for (int i = 0; i < level && i < entry.StepValues.Count; i++)
+            {
+                total += entry.StepValues[i];
+            }
+
+            return total;
         }
     }
 }

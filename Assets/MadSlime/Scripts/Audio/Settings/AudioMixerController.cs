@@ -1,33 +1,33 @@
+using Saves;
 using System;
-using System.Threading;
-using Cysharp.Threading.Tasks;
-using Game;
 using UnityEngine;
 using UnityEngine.Audio;
 using VContainer;
 
 namespace Audio
 {
-    public sealed class AudioMixerController : MonoBehaviour
+    public class AudioMixerController : MonoBehaviour
     {
         private const string MusicVolumeParam = "MusicVolume";
         private const string SfxVolumeParam = "SFXVolume";
         private const float MinLinearGuard = 0.0001f;
-        private const int SaveDelayMilliseconds = 500;
 
         [SerializeField] private AudioMixer _mixer;
         [SerializeField] private AudioMixerGroup _musicGroup;
         [SerializeField] private AudioMixerGroup _sfxGroup;
 
+        private IAudioStorage _audioStorage;
+        private ISavesReadiness _savesReadiness;
         private float _musicVolume01;
         private float _sfxVolume01;
-        private CancellationTokenSource _saveCancellationTokenSource;
-        private PlayerProgress _progress;
+        private bool _isVolumesLoaded;
+        private bool _hasUnsavedChanges;
 
         [Inject]
-        public void Construct(PlayerProgress progress)
+        public void Construct(IAudioStorage audioStorage, ISavesReadiness savesReadiness)
         {
-            _progress = progress;
+            _audioStorage = audioStorage;
+            _savesReadiness = savesReadiness;
         }
 
         public float MusicVolume => _musicVolume01;
@@ -53,45 +53,40 @@ namespace Audio
                     $"{name}: SFX AudioMixerGroup is not assigned. Drag a group into the _sfxGroup field.");
             }
 
-            if (_progress == null)
+            if (_audioStorage == null || _savesReadiness == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerProgress was not injected. Check that ProjectLifetimeScope registers PlayerProgress and AudioMixerController.");
+                    $"{name}: saves dependencies were not injected. Check that ProjectLifetimeScope registers Saver and AudioMixerController.");
             }
         }
 
         private void OnEnable()
         {
-            _progress.Ready += OnSavesLoaded;
+            _savesReadiness.Ready += OnSavesReady;
             ApplyFromSaves();
         }
 
         private void OnDisable()
         {
-            _progress.Ready -= OnSavesLoaded;
+            _savesReadiness.Ready -= OnSavesReady;
         }
 
-        private void OnDestroy()
-        {
-            bool hasPendingSave = _saveCancellationTokenSource != null;
-
-            CancelDelayedSave();
-
-            if (hasPendingSave == true)
-            {
-                _progress.Save();
-            }
-        }
-
-        private void OnSavesLoaded()
+        private void OnSavesReady()
         {
             ApplyFromSaves();
         }
 
         private void ApplyFromSaves()
         {
-            _musicVolume01 = _progress.MusicVolume;
-            _sfxVolume01 = _progress.SfxVolume;
+            if (_savesReadiness.IsReady == false)
+            {
+                return;
+            }
+
+            _musicVolume01 = _audioStorage.MusicVolume;
+            _sfxVolume01 = _audioStorage.SfxVolume;
+            _isVolumesLoaded = true;
+            _hasUnsavedChanges = false;
 
             ApplyMusic();
             ApplySFX();
@@ -99,59 +94,29 @@ namespace Audio
 
         public void SetMusicVolume(float volume01)
         {
-            float clamped = Mathf.Clamp01(volume01);
-            _musicVolume01 = clamped;
-            _progress.MusicVolume = clamped;
+            _musicVolume01 = Mathf.Clamp01(volume01);
+            _hasUnsavedChanges = true;
 
             ApplyMusic();
-            ScheduleSave();
         }
 
         public void SetSFXVolume(float volume01)
         {
-            float clamped = Mathf.Clamp01(volume01);
-            _sfxVolume01 = clamped;
-            _progress.SfxVolume = clamped;
+            _sfxVolume01 = Mathf.Clamp01(volume01);
+            _hasUnsavedChanges = true;
 
             ApplySFX();
-            ScheduleSave();
         }
 
-        private void ScheduleSave()
+        public void CommitVolumes()
         {
-            CancelDelayedSave();
-
-            _saveCancellationTokenSource = new CancellationTokenSource();
-            SaveDelayedAsync(_saveCancellationTokenSource.Token).Forget();
-        }
-
-        private async UniTaskVoid SaveDelayedAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                await UniTask.Delay(SaveDelayMilliseconds, cancellationToken: cancellationToken);
-            }
-            catch (OperationCanceledException)
+            if (_isVolumesLoaded == false || _hasUnsavedChanges == false)
             {
                 return;
             }
 
-            _saveCancellationTokenSource?.Dispose();
-            _saveCancellationTokenSource = null;
-
-            _progress.Save();
-        }
-
-        private void CancelDelayedSave()
-        {
-            if (_saveCancellationTokenSource == null)
-            {
-                return;
-            }
-
-            _saveCancellationTokenSource.Cancel();
-            _saveCancellationTokenSource.Dispose();
-            _saveCancellationTokenSource = null;
+            _hasUnsavedChanges = false;
+            _audioStorage.SetVolumes(_musicVolume01, _sfxVolume01);
         }
 
         private void ApplyMusic()

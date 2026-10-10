@@ -7,10 +7,10 @@ using UnityEngine;
 
 namespace Game
 {
-    public sealed class QuotaGenerator
+    public class QuotaGenerator
     {
-        private readonly List<ItemDefinition> _candidates = new List<ItemDefinition>();
-        private readonly Dictionary<ItemTier, int> _tierEntryCounts = new Dictionary<ItemTier, int>();
+        private List<ItemDefinition> _candidates = new List<ItemDefinition>();
+        private Dictionary<SizeTier, int> _tierEntryCounts = new Dictionary<SizeTier, int>();
 
         public List<QuotaEntry> Generate(Dictionary<ItemDefinition, int> spawnedCounts, LevelConfig config)
         {
@@ -27,7 +27,7 @@ namespace Game
             for (int i = 0; i < _candidates.Count && entries.Count < typesTarget; i++)
             {
                 ItemDefinition definition = _candidates[i];
-                ItemTier tier = definition.Tier;
+                SizeTier tier = definition.Tier;
 
                 _tierEntryCounts.TryGetValue(tier, out int tierCount);
 

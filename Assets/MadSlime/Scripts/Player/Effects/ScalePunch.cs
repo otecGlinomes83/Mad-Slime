@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Player
 {
-    public sealed class ScalePunch : MonoBehaviour
+    public class ScalePunch : MonoBehaviour
     {
         [SerializeField] private PlayerConfig _config;
         [SerializeField] private Transform _target;

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UI.Animations
 {
     [Serializable]
-    public sealed class UiEnableTarget
+    public class UiEnableTarget
     {
         [SerializeField] private GameObject _target;
 

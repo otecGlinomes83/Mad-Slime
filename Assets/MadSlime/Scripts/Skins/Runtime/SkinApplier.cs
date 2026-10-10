@@ -1,5 +1,6 @@
 using System;
 using Game;
+using Saves;
 using Shop;
 using Skins;
 using UnityEngine;
@@ -7,18 +8,20 @@ using VContainer;
 
 namespace Player
 {
-    public sealed class SkinApplier : MonoBehaviour
+    public class SkinApplier : MonoBehaviour
     {
         [SerializeField] private ShopContent _shopContent;
         [SerializeField] private Transform _skinsContainer;
 
-        private PlayerProgress _progress;
+        private ISkinStorage _skinStorage;
+        private ISavesReadiness _savesReadiness;
         private GameObject _currentModel;
 
         [Inject]
-        public void Construct(PlayerProgress progress)
+        public void Construct(ISkinStorage skinStorage, ISavesReadiness savesReadiness)
         {
-            _progress = progress;
+            _skinStorage = skinStorage;
+            _savesReadiness = savesReadiness;
         }
 
         private void Awake()
@@ -38,7 +41,7 @@ namespace Player
 
         private void OnEnable()
         {
-            _progress.Ready += OnSavesLoaded;
+            _savesReadiness.Ready += OnSavesLoaded;
         }
 
         private void Start()
@@ -48,7 +51,7 @@ namespace Player
 
         private void OnDisable()
         {
-            _progress.Ready -= OnSavesLoaded;
+            _savesReadiness.Ready -= OnSavesLoaded;
         }
 
         private void OnDestroy()
@@ -66,12 +69,12 @@ namespace Player
 
         private void ApplySelectedSkin()
         {
-            if (_progress == null)
+            if (_savesReadiness.IsReady == false)
             {
                 return;
             }
 
-            string selectedId = _progress.SelectedSkinId;
+            string selectedId = _skinStorage.SelectedSkinId;
 
             SkinItem matchingItem = FindItem(selectedId);
 

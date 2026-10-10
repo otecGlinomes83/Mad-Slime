@@ -3,7 +3,7 @@ using Items;
 
 namespace Collectables
 {
-    public sealed class ItemDetector : GenericOverlapDetector<Items.Item>
+    public class ItemDetector : GenericOverlapDetector<Items.Item>
     {
     }
 }

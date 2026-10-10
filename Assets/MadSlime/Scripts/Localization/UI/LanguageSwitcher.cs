@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public sealed class LanguageSwitcher : MonoBehaviour
+    public class LanguageSwitcher : MonoBehaviour
     {
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _label;

@@ -10,7 +10,7 @@ using VContainer;
 
 namespace UI
 {
-    public sealed class GrowthBarView : MonoBehaviour
+    public class GrowthBarView : MonoBehaviour
     {
         [SerializeField] private Image _progressBar;
         [SerializeField] private TMP_Text _tierText;
@@ -82,7 +82,7 @@ namespace UI
             Refresh(currentMass);
         }
 
-        private void OnTierChanged(ItemTier previousTier, ItemTier currentTier)
+        private void OnTierChanged(SizeTier previousTier, SizeTier currentTier)
         {
             Refresh(_playerTier.Mass);
         }

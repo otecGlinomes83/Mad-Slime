@@ -1,21 +1,22 @@
+using Saves;
 using System;
 using UnityEngine;
 using VContainer;
 
 namespace Game
 {
-    public sealed class Wallet : MonoBehaviour
+    public class Wallet : MonoBehaviour
     {
-        private PlayerProgress _progress;
+        private IBalanceStorage _balanceStorage;
 
         public event Action<int, int> BalanceChanged;
 
-        public int Balance => _progress.Balance;
+        public int Balance => _balanceStorage.Balance;
 
         [Inject]
-        public void Construct(PlayerProgress progress)
+        public void Construct(IBalanceStorage balanceStorage)
         {
-            _progress = progress;
+            _balanceStorage = balanceStorage;
         }
 
         public void Add(int amount)
@@ -26,11 +27,7 @@ namespace Game
                     "Wallet.Add requires a positive amount.");
             }
 
-            int previousBalance = _progress.Balance;
-            _progress.Balance = previousBalance + amount;
-            _progress.Save();
-
-            BalanceChanged?.Invoke(previousBalance, _progress.Balance);
+            SetBalance(_balanceStorage.Balance + amount);
         }
 
         public void Spend(int amount)
@@ -41,17 +38,22 @@ namespace Game
                     "Wallet.Spend requires a positive amount.");
             }
 
-            if (_progress.Balance < amount)
+            if (_balanceStorage.Balance < amount)
             {
                 throw new InvalidOperationException(
-                    $"Wallet.Spend failed: balance {_progress.Balance} is less than required {amount}.");
+                    $"Wallet.Spend failed: balance {_balanceStorage.Balance} is less than required {amount}.");
             }
 
-            int previousBalance = _progress.Balance;
-            _progress.Balance = previousBalance - amount;
-            _progress.Save();
+            SetBalance(_balanceStorage.Balance - amount);
+        }
 
-            BalanceChanged?.Invoke(previousBalance, _progress.Balance);
+        private void SetBalance(int balance)
+        {
+            int previousBalance = _balanceStorage.Balance;
+
+            _balanceStorage.SetBalance(balance);
+
+            BalanceChanged?.Invoke(previousBalance, balance);
         }
     }
 }

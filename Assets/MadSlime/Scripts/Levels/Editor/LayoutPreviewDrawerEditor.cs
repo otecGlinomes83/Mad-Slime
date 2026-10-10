@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Game
 {
     [CustomEditor(typeof(LayoutPreviewDrawer))]
-    public sealed class LayoutPreviewDrawerEditor : Editor
+    public class LayoutPreviewDrawerEditor : Editor
     {
         private int _handleLayoutIndex;
 

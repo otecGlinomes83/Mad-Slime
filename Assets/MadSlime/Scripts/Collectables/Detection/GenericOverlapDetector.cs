@@ -1,12 +1,11 @@
-﻿using System;
 using Player;
-using Skills;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
-using VContainer;
 
 namespace Detection
 {
-    public abstract class GenericOverlapDetector<T> : MonoBehaviour where T : class
+    public abstract class GenericOverlapDetector<T> : MonoBehaviour, IRadiusRecipient where T : class
     {
         private const int BufferSize = 256;
 
@@ -14,86 +13,63 @@ namespace Detection
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] private Color _gizmoColor = Color.cyan;
 
-        private readonly Collider[] _buffer = new Collider[BufferSize];
-
-        private PlayerTier _tierSource;
-        private TierResolver _tierResolver;
-        private float _baseRadius;
+        private Collider[] _buffer = new Collider[BufferSize];
+        private HashSet<T> _previousTargets = new HashSet<T>();
+        private HashSet<T> _currentTargets = new HashSet<T>();
 
         public event Action<T> Detected;
 
+        public event Action<T> Exited;
+
         public float Radius => _radius;
-
-        [Inject]
-        public void Construct(PlayerTier tierSource, TierResolver tierResolver)
-        {
-            _tierSource = tierSource;
-            _tierResolver = tierResolver;
-        }
-
-        private void Awake()
-        {
-            if (_tierSource == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: TierSource was not injected. Check that GameLifetimeScope registers PlayerTier and the detector.");
-            }
-
-            if (_tierResolver == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: TierResolver was not injected. Check that GameLifetimeScope registers TierResolver and the detector.");
-            }
-
-            _baseRadius = _radius;
-        }
 
         protected virtual void Update()
         {
-            if (Time.timeScale == 0f)
-            {
-                return;
-            }
-
+            _currentTargets.Clear();
             int hitsCount = Physics.OverlapSphereNonAlloc(transform.position, _radius, _buffer, _layerMask);
 
             for (int i = 0; i < hitsCount; i++)
             {
-                if (_buffer[i].TryGetComponent(out T target) == false)
+                if (_buffer[i].TryGetComponent(out T target) == false || _currentTargets.Add(target) == false)
                 {
                     continue;
                 }
 
                 Detected?.Invoke(target);
             }
-        }
 
-        protected virtual void OnEnable()
-        {
-            _tierSource.TierChanged += OnTierSourceChanged;
-            SetRadius(_baseRadius * _tierResolver.GetScaleFor(_tierSource.CurrentTier));
+            foreach (T target in _previousTargets)
+            {
+                if (_currentTargets.Contains(target) == false)
+                {
+                    Exited?.Invoke(target);
+                }
+            }
+
+            HashSet<T> reusableTargets = _previousTargets;
+            _previousTargets = _currentTargets;
+            _currentTargets = reusableTargets;
         }
 
         protected virtual void OnDisable()
         {
-            _tierSource.TierChanged -= OnTierSourceChanged;
-        }
-
-        public void SetRadius(float newRadius)
-        {
-            if (newRadius < 0f)
+            foreach (T target in _previousTargets)
             {
-                throw new ArgumentOutOfRangeException(nameof(newRadius), "new radius cannot be negative");
+                Exited?.Invoke(target);
             }
 
-            _radius = newRadius;
+            _previousTargets.Clear();
+            _currentTargets.Clear();
         }
 
-        private void OnTierSourceChanged(ItemTier previousTier, ItemTier currentTier)
+        public void SetRadius(float radius)
         {
-            float newRadius = _baseRadius * _tierResolver.GetScaleFor(currentTier);
+            if (radius < 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(radius));
+            }
 
-            SetRadius(newRadius);
+            _radius = radius;
         }
 
         private void OnDrawGizmosSelected()

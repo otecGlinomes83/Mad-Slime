@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [CreateAssetMenu(menuName = "Mad Slime/Layout Set", fileName = "NewLayoutSet")]
-    public sealed class LayoutSet : ScriptableObject
+    public class LayoutSet : ScriptableObject
     {
         [Tooltip("Зоны спавна предметов уровня.")]
         [SerializeField] private List<SpawnZone> _zones = new List<SpawnZone>();

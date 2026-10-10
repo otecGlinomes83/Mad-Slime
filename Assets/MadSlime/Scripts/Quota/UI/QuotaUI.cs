@@ -1,104 +1,101 @@
 using System;
 using System.Collections.Generic;
-using DG.Tweening;
-using Game;
-using Quota;
 using UnityEngine;
 using VContainer;
 
-namespace UI
+namespace Quota
 {
-    public sealed class QuotaUI : MonoBehaviour
+    [RequireComponent(typeof(QuotaIntroSequence))]
+    public class QuotaUI : MonoBehaviour
     {
         [SerializeField] private QuotaPlateUI _platePrefab;
         [SerializeField] private RectTransform _container;
-        [SerializeField] private float _verticalSpacing = 60f;
-
-        [Tooltip("Длительность выезда первой плашки (с).")]
+        [SerializeField, Min(1f)] private float _verticalSpacing = 60f;
         [SerializeField, Min(0.01f)] private float _plateIntroDuration = 0.25f;
-
-        [Tooltip("Насколько дольше выезжает каждая следующая плашка (с).")]
+        [Tooltip("Задержка перед выездом каждой следующей плашки (с).")]
         [SerializeField, Min(0f)] private float _plateIntroDurationStep = 0.1f;
-
-        [Tooltip("С какого расстояния слева плашка выезжает (юниты).")]
         [SerializeField, Min(0f)] private float _plateIntroSlideOffset = 90f;
-
         [SerializeField, Min(0.01f)] private float _shiftDuration = 0.25f;
         [SerializeField, Min(0.01f)] private float _removeDuration = 0.2f;
 
-        private readonly List<QuotaPlateUI> _plates = new List<QuotaPlateUI>();
-        private readonly Dictionary<QuotaEntry, QuotaPlateUI> _platesByEntry = new Dictionary<QuotaEntry, QuotaPlateUI>();
-
-        private LevelProgress _levelProgress;
-        private bool _isSubscribed;
+        private List<QuotaPlateUI> _plates = new List<QuotaPlateUI>();
+        private List<QuotaPlateAnimator> _animators = new List<QuotaPlateAnimator>();
+        private List<QuotaPlateAnimator> _removing = new List<QuotaPlateAnimator>();
+        private Dictionary<QuotaEntry, QuotaPlateUI> _platesByEntry = new Dictionary<QuotaEntry, QuotaPlateUI>();
+        private QuotaBoard _board;
+        private QuotaPlateSpawner _plateSpawner;
+        private QuotaIntroSequence _introSequence;
 
         [Inject]
-        public void Construct(LevelProgress levelProgress)
+        public void Construct(QuotaBoard board)
         {
-            _levelProgress = levelProgress;
+            _board = board;
         }
 
         private void Awake()
         {
-            if (_platePrefab == null)
+            if (_platePrefab == null || _container == null || _board == null)
             {
-                throw new InvalidOperationException(
-                    $"{name}: PlatePrefab is not assigned. Drag a QuotaPlateUI prefab into the _platePrefab field.");
+                throw new InvalidOperationException($"{name}: quota board, plate prefab and container are required.");
             }
 
-            if (_container == null)
+            if (TryGetComponent(out _introSequence) == false)
             {
-                throw new InvalidOperationException(
-                    $"{name}: Container is not assigned. Drag a RectTransform into the _container field.");
+                throw new InvalidOperationException($"{name}: QuotaIntroSequence is required.");
             }
+
+            _plateSpawner = new QuotaPlateSpawner(_platePrefab, _container);
         }
 
         private void OnEnable()
         {
-            SubscribeIfNeeded();
-        }
-
-        private void Start()
-        {
-            if (_levelProgress == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: LevelProgress was not injected. Check that GameLifetimeScope is configured and QuotaUI is registered.");
-            }
-
-            SubscribeIfNeeded();
+            _board.QuotaChanged += OnQuotaChanged;
+            _board.ResetCompleted += Populate;
             Populate();
         }
 
         private void OnDisable()
         {
-            _isSubscribed = false;
-
-            if (_levelProgress != null)
+            if (_board != null)
             {
-                _levelProgress.QuotaChanged -= OnQuotaChanged;
-            }
-        }
-
-        private void SubscribeIfNeeded()
-        {
-            if (_isSubscribed == true || _levelProgress == null)
-            {
-                return;
+                _board.QuotaChanged -= OnQuotaChanged;
+                _board.ResetCompleted -= Populate;
             }
 
-            _isSubscribed = true;
-            _levelProgress.QuotaChanged += OnQuotaChanged;
+            Clear();
         }
 
         private void Populate()
         {
-            IReadOnlyList<QuotaEntry> quota = _levelProgress.Quota;
+            Clear();
+            IReadOnlyList<QuotaEntry> entries = _board.Entries;
 
-            for (int i = 0; i < quota.Count; i++)
+            for (int i = 0; i < entries.Count; i++)
             {
-                QuotaPlateUI plate = CreatePlate(quota[i], i);
-                plate.UpdateCount(quota[i].Remaining);
+                QuotaEntry entry = entries[i];
+
+                if (entry.Remaining <= 0)
+                {
+                    continue;
+                }
+
+                QuotaPlateUI plate = _plateSpawner.Spawn(entry);
+
+                if (plate.TryGetComponent(out QuotaPlateAnimator animator) == false)
+                {
+                    Destroy(plate.gameObject);
+                    throw new InvalidOperationException($"{name}: plate requires QuotaPlateAnimator.");
+                }
+
+                _plates.Add(plate);
+                _animators.Add(animator);
+                _platesByEntry.Add(entry, plate);
+            }
+
+            if (_plates.Count > 0)
+            {
+                _introSequence.Play(_animators, _verticalSpacing, _plateIntroSlideOffset,
+                    _plateIntroDuration, _plateIntroDurationStep);
             }
         }
 
@@ -106,49 +103,66 @@ namespace UI
         {
             if (_platesByEntry.TryGetValue(entry, out QuotaPlateUI plate) == false)
             {
-                plate = CreatePlate(entry, _plates.Count);
+                return;
             }
+
+            int index = _plates.IndexOf(plate);
+            QuotaPlateAnimator animator = _animators[index];
 
             if (remaining > 0)
             {
                 plate.UpdateCount(remaining);
+                animator.PlayPop();
                 return;
             }
 
-            RemovePlate(plate);
+            _introSequence.Cancel();
+            _platesByEntry.Remove(entry);
+            _plates.RemoveAt(index);
+            _animators.RemoveAt(index);
+            _removing.Add(animator);
+            animator.RemovalCompleted += OnRemovalCompleted;
+            animator.PlayRemoval(_removeDuration, _plateIntroSlideOffset);
         }
 
-        private QuotaPlateUI CreatePlate(QuotaEntry entry, int index)
+        private void OnRemovalCompleted(QuotaPlateAnimator animator)
         {
-            QuotaPlateUI newPlate = Instantiate(_platePrefab, _container);
+            animator.RemovalCompleted -= OnRemovalCompleted;
+            _removing.Remove(animator);
+            Destroy(animator.gameObject);
 
-            Vector2 finalPosition = new Vector2(0f, -index * _verticalSpacing);
-            Vector2 startPosition = finalPosition + new Vector2(-_plateIntroSlideOffset, 0f);
-            float duration = _plateIntroDuration + index * _plateIntroDurationStep;
-
-            newPlate.Setup(entry);
-            newPlate.PlayIntro(startPosition, finalPosition, duration);
-
-            _plates.Insert(index, newPlate);
-            _platesByEntry[entry] = newPlate;
-
-            return newPlate;
-        }
-
-        private void RemovePlate(QuotaPlateUI plate)
-        {
-            _plates.Remove(plate);
-            _platesByEntry.Remove(plate.Entry);
-
-            plate.PlayRemoval(_removeDuration, ShiftPlates);
-        }
-
-        private void ShiftPlates()
-        {
-            for (int i = 0; i < _plates.Count; i++)
+            for (int i = 0; i < _animators.Count; i++)
             {
-                _plates[i].MoveTo(new Vector3(0f, -i * _verticalSpacing, 0f), _shiftDuration);
+                _animators[i].MoveTo(new Vector3(0f, -i * _verticalSpacing, 0f), _shiftDuration);
             }
+        }
+
+        private void Clear()
+        {
+            if (_introSequence != null)
+            {
+                _introSequence.Cancel();
+            }
+
+            foreach (QuotaPlateAnimator animator in _animators)
+            {
+                animator.Cancel();
+                animator.gameObject.SetActive(false);
+                Destroy(animator.gameObject);
+            }
+
+            foreach (QuotaPlateAnimator animator in _removing)
+            {
+                animator.RemovalCompleted -= OnRemovalCompleted;
+                animator.Cancel();
+                animator.gameObject.SetActive(false);
+                Destroy(animator.gameObject);
+            }
+
+            _plates.Clear();
+            _animators.Clear();
+            _removing.Clear();
+            _platesByEntry.Clear();
         }
     }
 }

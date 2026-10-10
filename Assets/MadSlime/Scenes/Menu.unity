@@ -680,7 +680,7 @@ MonoBehaviour:
   _pauseMenu: {fileID: 5859713677950448305, guid: 07369f9036a55ff4e8db9b912f0290c3, type: 3}
   _leaderboardMenuPrefab: {fileID: 8220248474289526730, guid: 65a7a973925ce514787b4a5cea516689, type: 3}
   _dailyRoulette: {fileID: 1560748444112562554}
-  _musicTrack: {fileID: 11400000, guid: 52c79a4e807cefa1ea96c3121d3cd8f5, type: 2}
+  _musicPlaylist: {fileID: 11400000, guid: 189043936494be54fb7b4dedf1a99314, type: 2}
 --- !u!114 &206106546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1721,6 +1721,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 870000002}
   - component: {fileID: 666189401}
   - component: {fileID: 666189400}
   - component: {fileID: 666189399}
@@ -1902,13 +1903,23 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _mainMenu: {fileID: 206106545}
-  _startup: {fileID: 1028076301}
-  _rouletteService: {fileID: 1028076302}
-  _rouletteView: {fileID: 1560748444112562554}
   _adScheduler: {fileID: 1028076303}
   _wallet: {fileID: 1028076296}
   _pauser: {fileID: 1028076297}
   _levelLabelUI: {fileID: 463540513}
+  _sceneButtonSounds:
+  - {fileID: 62363771}
+  - {fileID: 529690149}
+  - {fileID: 63944066}
+  - {fileID: 1367543221}
+  - {fileID: 1373315976}
+  - {fileID: 2059128504}
+  - {fileID: 1765293736}
+  - {fileID: 384392664}
+  _menuSessionHandler: {fileID: 870000000}
+  _rouletteConfig: {fileID: 11400000, guid: 9f034a199c15cd67ea264f0afa3531c4, type: 2}
+  _roulettePresenter: {fileID: 870000001}
+  _shopContent: {fileID: 11400000, guid: 3e9b0436cf221244fb683430095afbcf, type: 2}
 --- !u!1 &844052691
 GameObject:
   m_ObjectHideFlags: 0
@@ -1992,12 +2003,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 870000000}
   - component: {fileID: 1028076294}
   - component: {fileID: 1028076297}
   - component: {fileID: 1028076296}
-  - component: {fileID: 1028076301}
   - component: {fileID: 1028076303}
-  - component: {fileID: 1028076302}
   m_Layer: 0
   m_Name: Systems
   m_TagString: Untagged
@@ -2044,31 +2054,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30c5a1cabd2b8654798caec886866614, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1028076301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1028076293}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f8c2e91d7a64b05a1c9f4d2e8b60a17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1028076302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1028076293}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0ede29d1e3a07646987b5e4024cf002, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _config: {fileID: 11400000, guid: 9f034a199c15cd67ea264f0afa3531c4, type: 2}
 --- !u!114 &1028076303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3964,6 +3949,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 180c2a16271d0ac49949744470fb7287, type: 3}
+--- !u!114 &2059128504 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 195608263011131561, guid: 180c2a16271d0ac49949744470fb7287, type: 3}
+  m_PrefabInstance: {fileID: 2059128503}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6444badc9bc7aae4592860efff6a4cd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1560748444112562554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3986,6 +3982,7 @@ MonoBehaviour:
   _winPopupPrefab: {fileID: 5093799342498913054, guid: 401d1e3d257653c46b3eeb3f70dabb6a, type: 3}
   _screenRoot: {fileID: 666189397}
   _closeButton: {fileID: 1952087864}
+  _screenScaleAnimator: {fileID: 870000002}
 --- !u!114 &6045276305314912848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4054,6 +4051,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 870000001}
   - component: {fileID: 6286811584108114462}
   - component: {fileID: 1560748444112562554}
   - component: {fileID: 7176536224304083786}
@@ -4075,3 +4073,45 @@ SceneRoots:
   - {fileID: 2022909734}
   - {fileID: 206106549}
   - {fileID: 666189401}
+--- !u!114 &870000000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028076293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6840be3f3540c1eafabe10a0a16bedc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier:
+  _settingsMenuPrefab: {fileID: 5859713677950448305, guid: 07369f9036a55ff4e8db9b912f0290c3, type: 3}
+  _leaderboardMenuPrefab: {fileID: 8220248474289526730, guid: 65a7a973925ce514787b4a5cea516689, type: 3}
+  _dailyRoulette: {fileID: 870000001}
+  _musicPlaylist: {fileID: 11400000, guid: 189043936494be54fb7b4dedf1a99314, type: 2}
+  _mainMenu: {fileID: 206106545}
+--- !u!114 &870000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7471733373252188899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07b907bbcd894d91bf84af4a70dab7ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier:
+  _view: {fileID: 1560748444112562554}
+--- !u!114 &870000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 666189397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33e5ab73b0afac97e8c359c702b32951, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

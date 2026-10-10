@@ -9,7 +9,7 @@ using VContainer;
 
 namespace ShapeFill
 {
-    public sealed class FillFinale : MonoBehaviour
+    public class FillFinale : MonoBehaviour
     {
         [Tooltip("Система конфетти на сцене Fill (не префаб-ассет): настраивается в редакторе. На Awake гасится, играет только по FillCompleted.")]
         [SerializeField] private ParticleSystem _confetti;
@@ -17,16 +17,16 @@ namespace ShapeFill
         private FillConfig _config;
         private ShapeFillOrchestrator _orchestrator;
         private GridBuilder _gridBuilder;
-        private SfxPlayer _sfxPlayer;
+        private IGameSoundPlayer _soundPlayer;
 
         [Inject]
         public void Construct(ShapeFillOrchestrator orchestrator, GridBuilder gridBuilder, FillConfig config,
-            SfxPlayer sfxPlayer)
+            IGameSoundPlayer soundPlayer)
         {
             _orchestrator = orchestrator;
             _gridBuilder = gridBuilder;
             _config = config;
-            _sfxPlayer = sfxPlayer;
+            _soundPlayer = soundPlayer;
         }
 
         private void Awake()
@@ -49,10 +49,10 @@ namespace ShapeFill
                     $"{name}: FillConfig was not injected. Check that FillLifetimeScope has the FillConfig assigned.");
             }
 
-            if (_sfxPlayer == null)
+            if (_soundPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SfxPlayer was not injected. Check that ProjectLifetimeScope registers SfxPlayer.");
+                    $"{name}: IGameSoundPlayer was not injected. Check that ProjectLifetimeScope registers AudioPlayer.");
             }
 
             if (_confetti == null)
@@ -138,12 +138,12 @@ namespace ShapeFill
 
         private void PlayFinaleClip()
         {
-            if (_config.FinaleClip == null || _sfxPlayer == null)
+            if (_config.FinaleClip == null || _soundPlayer == null)
             {
                 return;
             }
 
-            _sfxPlayer.PlayGame(_config.FinaleClip);
+            _soundPlayer.Play(_config.FinaleClip);
         }
 
         private void PlayShapePunch()

@@ -8,7 +8,7 @@ using VContainer;
 
 namespace UI
 {
-    public sealed class FillProgressUI : MonoBehaviour
+    public class FillProgressUI : MonoBehaviour
     {
         [SerializeField] private TMP_Text _percentText;
         [SerializeField, Range(0f, 1f)] private float _punchStrength = 0.25f;
@@ -65,7 +65,7 @@ namespace UI
             _percentText.text = $"{finalPercent}%";
         }
 
-        private void OnCubeArrived(FlyingCube cube)
+        private void OnCubeArrived(CubeFlightAnimator cube)
         {
             int percent = Mathf.RoundToInt(_shapeFiller.FormFillFraction * 100f);
 

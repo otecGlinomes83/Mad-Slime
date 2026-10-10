@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using Audio;
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Scriptables;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,10 +8,9 @@ using Random = UnityEngine.Random;
 
 namespace Roulette
 {
-    public sealed class RouletteWheel : MonoBehaviour
+    public class RouletteWheel : MonoBehaviour
     {
         private const float FullCircleDegrees = 360f;
-        private const float MinTickIntervalSeconds = 0.06f;
         private const float SettleSwingSeconds = 0.2f;
         private const float WinPunchStrength = 0.12f;
         private const float MaxWinPunchDurationSeconds = 0.5f;
@@ -32,26 +27,25 @@ namespace Roulette
         private List<TMP_Text> _sectorLabels = new List<TMP_Text>();
 
         private RouletteConfig _config;
-        private SfxPlayer _sfxPlayer;
         private float[] _sectorAngles;
         private float _arrowAngle;
         private float _averageSectorAngle;
         private float _rotation;
         private int _lastTickIndex;
-        private float _lastTickTime;
         private int _pendingTargetIndex;
         private bool _isSpinning;
         private bool _isBuilt;
-        private Action _spinCompleted;
+
+        public event Action Tick;
+        public event Action Completed;
 
         public bool IsSpinning => _isSpinning;
 
         public int SectorCount => _sectorIcons.Count;
 
-        public void Setup(RouletteConfig config, SfxPlayer sfxPlayer)
+        public void Setup(RouletteConfig config)
         {
             _config = config;
-            _sfxPlayer = sfxPlayer;
         }
 
         public void Build(IReadOnlyList<RouletteSectorIcon> sectors)
@@ -146,7 +140,7 @@ namespace Roulette
             _isBuilt = true;
         }
 
-        public void Spin(int targetIndex, Action onComplete)
+        public void Spin(int targetIndex)
         {
             if (_config == null)
             {
@@ -176,11 +170,8 @@ namespace Roulette
 
             _isSpinning = true;
             _pendingTargetIndex = targetIndex;
-            _spinCompleted = onComplete;
 
             DOTween.Kill(this);
-
-            PlayClip(_config.SpinStartClip);
 
             int turns = Random.Range(_config.MinTurns, _config.MaxTurns + 1);
             float targetAngle = Mod(_arrowAngle - _sectorAngles[targetIndex], FullCircleDegrees);
@@ -190,6 +181,7 @@ namespace Roulette
 
             Sequence sequence = DOTween.Sequence();
             sequence.SetTarget(this);
+            sequence.SetUpdate(true);
             sequence.SetLink(gameObject, LinkBehaviour.KillOnDisable);
 
             sequence.Append(DOTween.To(ReadRotation, ApplyRotation, windBackRotation, _config.WindBackDuration)
@@ -265,7 +257,7 @@ namespace Roulette
         {
             _rotation = rotation;
             _spinContainer.localRotation = Quaternion.Euler(0f, 0f, _rotation);
-            TryPlayStepSound();
+            EmitTick();
         }
 
         private float ReadRotation()
@@ -280,33 +272,17 @@ namespace Roulette
             return 1f - Mathf.Pow(1f - normalized, _config.SpinEasePower);
         }
 
-        private void TryPlayStepSound()
+        private void EmitTick()
         {
-            if (_config.StepClip == null || _sfxPlayer == null)
-            {
-                return;
-            }
-
             int tickIndex = Mathf.FloorToInt((_arrowAngle - _rotation) / _averageSectorAngle);
 
-            if (tickIndex == _lastTickIndex || Time.unscaledTime - _lastTickTime < MinTickIntervalSeconds)
+            if (tickIndex == _lastTickIndex)
             {
                 return;
             }
 
             _lastTickIndex = tickIndex;
-            _lastTickTime = Time.unscaledTime;
-            _sfxPlayer.PlayUi(_config.StepClip);
-        }
-
-        private void PlayClip(SfxClip clip)
-        {
-            if (clip == null || _sfxPlayer == null)
-            {
-                return;
-            }
-
-            _sfxPlayer.PlayUi(clip);
+            Tick?.Invoke();
         }
 
         private void OnSpinCompleted()
@@ -317,7 +293,7 @@ namespace Roulette
 
             ApplyRotation(_rotation);
             PunchWinningIcon();
-            HoldWinAsync().Forget();
+            Completed?.Invoke();
         }
 
         private void PunchWinningIcon()
@@ -327,34 +303,19 @@ namespace Roulette
             _sectorIcons[_pendingTargetIndex].rectTransform
                 .DOPunchScale(new Vector3(WinPunchStrength, WinPunchStrength, 0f), punchDuration, WinPunchVibrato, WinPunchElasticity)
                 .SetTarget(this)
+                .SetUpdate(true)
                 .SetLink(gameObject, LinkBehaviour.KillOnDisable);
         }
 
-        private async UniTaskVoid HoldWinAsync()
+        public void Stop()
         {
-            CancellationToken cancellationToken = this.GetCancellationTokenOnDestroy();
-
-            try
-            {
-                await UniTask.Delay(
-                    TimeSpan.FromSeconds(_config.WinDwellSeconds),
-                    DelayType.Realtime,
-                    PlayerLoopTiming.Update,
-                    cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                return;
-            }
-
-            Action completed = _spinCompleted;
-            _spinCompleted = null;
-            completed?.Invoke();
+            DOTween.Kill(this);
+            _isSpinning = false;
         }
 
         private void OnDisable()
         {
-            _isSpinning = false;
+            Stop();
         }
 
         private static float Mod(float value, float modulus)

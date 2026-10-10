@@ -1,53 +1,46 @@
+using System;
 using Game;
 using TMPro;
 using UnityEngine;
-using VContainer;
 
 namespace UI
 {
-    public sealed class LevelLabelUI : MonoBehaviour
+    public class LevelLabelUI : MonoBehaviour
     {
         [SerializeField] private TMP_Text _labelText;
 
-        private PlayerProgress _progress;
-
-        [Inject]
-        public void Construct(PlayerProgress progress)
-        {
-            _progress = progress;
-        }
+        private int _level;
 
         private void OnEnable()
         {
             Localization.LanguageChanged += UpdateLabel;
-            _progress.Ready += OnSDKDataLoaded;
             UpdateLabel();
         }
 
         private void OnDisable()
         {
             Localization.LanguageChanged -= UpdateLabel;
-            _progress.Ready -= OnSDKDataLoaded;
         }
 
-        private void Start()
+        public void SetLevel(int level)
         {
-            UpdateLabel();
-        }
+            if (level <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(level));
+            }
 
-        private void OnSDKDataLoaded()
-        {
+            _level = level;
             UpdateLabel();
         }
 
         private void UpdateLabel()
         {
-            if (_progress == null || _labelText == null)
+            if (_level <= 0)
             {
                 return;
             }
 
-            _labelText.text = string.Format(Localization.Get("level_label"), _progress.CurrentLevel);
+            _labelText.text = string.Format(Localization.Get("level_label"), _level);
         }
     }
 }

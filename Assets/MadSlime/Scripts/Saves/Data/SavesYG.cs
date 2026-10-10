@@ -7,6 +7,7 @@ namespace YG
     {
         public int CurrentLevel = 1;
         public int MaxLevel = 1;
+        public int CollectedItemsCount;
         public string Language = "";
 
         public float musicVolume = 0.5f;
@@ -14,11 +15,8 @@ namespace YG
 
         public int Balance = 250;
 
-        public int SelectedSkinType;
-        public List<int> _openSkins = new List<int>() { 0 };
-
-        public string SelectedSkinId = "";
-        public List<string> _openSkinIds = new List<string>();
+        public string SelectedSkinId = "Slime";
+        public List<string> _openSkinIds = new List<string> { "Slime" };
         public List<string> _showcaseSkinIds = new List<string>();
 
         public int SpeedLevel;

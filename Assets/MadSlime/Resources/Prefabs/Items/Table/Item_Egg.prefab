@@ -8,9 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 5693388964895285398}
   - component: {fileID: 9211669569000292117}
   - component: {fileID: 208129885884059484}
   - component: {fileID: 557471785623285591}
+  - component: {fileID: 4043785875542063555}
   m_Layer: 3
   m_Name: Item_Egg
   m_TagString: Untagged
@@ -68,7 +70,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _definition: {fileID: 11400000, guid: d45249c802ced384f95830154f57789a, type: 2}
-  _collider: {fileID: 208129885884059484}
+--- !u!114 &4043785875542063555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548937852924066588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f42675b1a0c0800ceb4a2e5cb8ce0ff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _ghostMaterial: {fileID: 2100000, guid: 2566cc4f8c7914449b603a2474de69ba, type: 2}
   _ghostFadeConfig: {fileID: 11400000, guid: ee25c91a9b0da4b94b8654ae2cfe4341, type: 2}
 --- !u!1001 &5693388964895285298
@@ -133,3 +146,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8488403649040824176, guid: 91886e26378d5c8459647771afc74426, type: 3}
   m_PrefabInstance: {fileID: 5693388964895285298}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5693388964895285398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548937852924066588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa669f528708ba027a628953ef1ce0c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier:
+  _collider: {fileID: 208129885884059484}

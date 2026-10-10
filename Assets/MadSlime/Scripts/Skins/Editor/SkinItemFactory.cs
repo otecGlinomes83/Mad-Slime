@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace EditorTools
 {
-    public sealed class SkinItemFactory : EditorWindow
+    public class SkinItemFactory : EditorWindow
     {
         private const string PrefsKey = "MadSlime.SkinItemFactory";
         private const int IconSize = 256;
@@ -460,7 +460,7 @@ namespace EditorTools
         }
 
         [Serializable]
-        private sealed class WindowState
+        private class WindowState
         {
             public string ShopContentPath;
             public string SkinsPath;

@@ -4,7 +4,7 @@ using YG;
 
 namespace Adapters
 {
-    public sealed class Yg2AdsService : IAdsService, IDisposable
+    public class Yg2AdsService : IAdsService, IDisposable
     {
         public event Action RewardedOpened;
 

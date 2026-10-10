@@ -8,9 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 8651333803605204360}
   - component: {fileID: 5508201266387454300}
   - component: {fileID: 4973467462039163623}
   - component: {fileID: 2595532298012620906}
+  - component: {fileID: 6028054316284106859}
   m_Layer: 3
   m_Name: Item_Keyboard_01
   m_TagString: Untagged
@@ -68,7 +70,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _definition: {fileID: 11400000, guid: 33c0a5b80611f2ced9df81a6ac8cc8f9, type: 2}
-  _collider: {fileID: 4973467462039163623}
+--- !u!114 &6028054316284106859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4649952896245162611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f42675b1a0c0800ceb4a2e5cb8ce0ff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _ghostMaterial: {fileID: 2100000, guid: 2566cc4f8c7914449b603a2474de69ba, type: 2}
   _ghostFadeConfig: {fileID: 11400000, guid: ee25c91a9b0da4b94b8654ae2cfe4341, type: 2}
 --- !u!1001 &8651333803605204260
@@ -133,3 +146,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7971893848683864307, guid: 9c326950798af1e408c27d64104b1cda, type: 3}
   m_PrefabInstance: {fileID: 8651333803605204260}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8651333803605204360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4649952896245162611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa669f528708ba027a628953ef1ce0c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier:
+  _collider: {fileID: 4973467462039163623}

@@ -1,12 +1,11 @@
 using System;
 using UnityEngine;
-using Upgrades;
 using VContainer;
 using VContainer.Unity;
 
 namespace Shop
 {
-    public sealed class UpgradeItemViewFactory : MonoBehaviour
+    public class UpgradeItemViewFactory : MonoBehaviour
     {
         [SerializeField] private UpgradeItemView _upgradeItemViewPrefab;
 
@@ -27,20 +26,9 @@ namespace Shop
             }
         }
 
-        public UpgradeItemView Get(PlayerUpgrades upgrades, UpgradeType type, Transform parent)
+        public UpgradeItemView Get(Transform parent)
         {
-            UpgradeItemView instance = _resolver.Instantiate(_upgradeItemViewPrefab, parent);
-            instance.Initialize(upgrades, type);
-
-            return instance;
-        }
-
-        public UpgradeItemView Get(PlayerUpgrades upgrades, PerkType type, Transform parent)
-        {
-            UpgradeItemView instance = _resolver.Instantiate(_upgradeItemViewPrefab, parent);
-            instance.Initialize(upgrades, type);
-
-            return instance;
+            return _resolver.Instantiate(_upgradeItemViewPrefab, parent);
         }
     }
 }

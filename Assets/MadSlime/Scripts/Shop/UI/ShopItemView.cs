@@ -1,121 +1,67 @@
 using System;
-using UI;
-using Skins;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Shop
 {
-    [RequireComponent(typeof(Image))]
-    [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(Image), typeof(Button))]
     public class ShopItemView : MonoBehaviour
     {
-        [SerializeField] private Sprite _standardBackground;
-        [SerializeField] private Sprite _highlightBackground;
-
+        [SerializeField] private Image _backgroundImage;
         [SerializeField] private Image _contentImage;
         [SerializeField] private Image _lockImage;
         [SerializeField] private GameObject _rouletteBadge;
-
-        [SerializeField] private IntValueView _priceView;
-
-        [SerializeField] private Image _selectionText;
+        [SerializeField] private Image _selectedMark;
 
         private Button _button;
-        private Image _backgroundImage;
-        private Color _rarityColor = Color.white;
+        private string _skinId;
 
         public event Action<ShopItemView> Click;
+        public string SkinId => _skinId;
 
-        public SkinItem SkinItem { get; private set; }
+        private void Awake()
+        {
+            TryGetComponent(out _button);
 
-        public bool IsLock { get; private set; }
+            if (_backgroundImage == null)
+            {
+                TryGetComponent(out _backgroundImage);
+            }
+        }
 
-        public bool IsExclusive { get; private set; }
-
-        public GameObject Model => SkinItem.Model;
+        private void OnEnable()
+        {
+            _button.onClick.AddListener(OnClick);
+        }
 
         private void OnDisable()
         {
             _button.onClick.RemoveListener(OnClick);
         }
-        
-        public void Initialize(SkinItem skinItem)
+
+        public void Initialize(string skinId, Sprite icon, Color rarityColor, bool isExclusive, bool isUnlocked, bool isSelected)
         {
-            _backgroundImage = GetComponent<Image>();
-            _button = GetComponent<Button>();
-
-            _button.onClick.AddListener(OnClick);
-
-            _backgroundImage.sprite = _standardBackground;
-            _backgroundImage.color = _rarityColor;
-
-            SkinItem = skinItem;
-
-            _contentImage.sprite = skinItem.Icon;
+            _skinId = skinId;
+            _contentImage.sprite = icon;
+            _backgroundImage.color = rarityColor;
+            _rouletteBadge.SetActive(isExclusive);
+            SetUnlocked(isUnlocked);
+            SetSelected(isSelected);
         }
 
-        public void SetExclusive(bool isExclusive)
+        public void SetUnlocked(bool isUnlocked)
         {
-            IsExclusive = isExclusive;
-
-            if (_rouletteBadge != null)
-            {
-                _rouletteBadge.gameObject.SetActive(isExclusive);
-            }
+            _lockImage.gameObject.SetActive(isUnlocked == false);
         }
 
-        public void SetRarityColor(Color rarityColor)
+        public void SetSelected(bool isSelected)
         {
-            _rarityColor = rarityColor;
-            _backgroundImage.color = _rarityColor;
+            _selectedMark.gameObject.SetActive(isSelected);
         }
 
-        public void OnClick()
+        private void OnClick()
         {
             Click?.Invoke(this);
-        }
-
-        public void Lock()
-        {
-            IsLock = true;
-            _lockImage.gameObject.SetActive(IsLock);
-
-            if (_priceView != null)
-            {
-                _priceView.Hide();
-            }
-        }
-
-        public void Unlock()
-        {
-            IsLock = false;
-            _lockImage.gameObject.SetActive(IsLock);
-
-            if (_priceView != null)
-            {
-                _priceView.Hide();
-            }
-        }
-
-        public void Select()
-        {
-            _selectionText.gameObject.SetActive(true);
-        }
-
-        public void UnSelect()
-        {
-            _selectionText.gameObject.SetActive(false);
-        }
-
-        public void Highlight()
-        {
-            _backgroundImage.sprite = _highlightBackground;
-        }
-
-        public void UnHighlight()
-        {
-            _backgroundImage.sprite = _standardBackground;
         }
     }
 }

@@ -8,7 +8,8 @@ using UnityEngine.UI;
 
 namespace Roulette
 {
-    public sealed class RouletteWinPopup : MonoBehaviour, IShowable
+    [RequireComponent(typeof(UiScaleAnimator))]
+    public class RouletteWinPopup : BaseWindow
     {
         private const float FadeAlpha = 0.85f;
 
@@ -40,10 +41,10 @@ namespace Roulette
         [SerializeField] private TMP_Text _plateText;
         [SerializeField] private Button _takeButton;
 
-        public event Action Closed;
-
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             if (_panel == null || _fade == null || _skinIcon == null || _coinIcon == null || _prizeFrame == null
                 || _plate == null || _plateText == null || _takeButton == null)
             {
@@ -76,36 +77,21 @@ namespace Roulette
             _takeButton.onClick.AddListener(OnTakeClicked);
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
             _takeButton.onClick.RemoveListener(OnTakeClicked);
+            base.OnDisable();
         }
 
-        public void Show()
+        public override void Show()
         {
-            gameObject.SetActive(true);
-
             _takeButton.interactable = true;
             _fade.color = new Color(0f, 0f, 0f, FadeAlpha);
-
-            UiAnimations.ScaleIn(_panel, UiAnimations.WindowScaleInDuration);
+            base.Show();
         }
 
-        public void Hide()
+        public void InitializeSkin(SkinItem skin, SkinRarity rarity, string rarityName)
         {
-            _takeButton.interactable = false;
-
-            UiAnimations.ScaleOut(_panel, UiAnimations.WindowScaleOutDuration, HideAndDestroy);
-        }
-
-        public void ShowSkin(SkinItem skin, SkinRarity rarity, string rarityName)
-        {
-            if (gameObject.activeSelf == false)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: ShowSkin requires a shown popup. Spawn the popup through UiSpawner first.");
-            }
-
             if (skin == null)
             {
                 throw new ArgumentNullException(nameof(skin),
@@ -125,14 +111,8 @@ namespace Roulette
             ShowRarity(rarity, rarityName);
         }
 
-        public void ShowCoins(int amount)
+        public void InitializeCoins(int amount)
         {
-            if (gameObject.activeSelf == false)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: ShowCoins requires a shown popup. Spawn the popup through UiSpawner first.");
-            }
-
             _skinIcon.gameObject.SetActive(false);
             _coinIcon.gameObject.SetActive(true);
 
@@ -184,15 +164,8 @@ namespace Roulette
 
         private void OnTakeClicked()
         {
-            Hide();
-        }
-
-        private void HideAndDestroy()
-        {
-            Action closed = Closed;
-            closed?.Invoke();
-
-            Destroy(gameObject);
+            _takeButton.interactable = false;
+            RequestClose();
         }
     }
 }

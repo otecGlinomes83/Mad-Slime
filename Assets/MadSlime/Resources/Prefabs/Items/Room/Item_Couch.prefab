@@ -8,9 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 8123016736918946014}
   - component: {fileID: 2771908477042757634}
   - component: {fileID: 2921703278089039350}
   - component: {fileID: 6167749002704691899}
+  - component: {fileID: 8123016736918945914}
   m_Layer: 3
   m_Name: Item_Couch
   m_TagString: Untagged
@@ -68,7 +70,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _definition: {fileID: 11400000, guid: d952156cfd34fdd6ab2cebaf59a69fb4, type: 2}
-  _collider: {fileID: 2921703278089039350}
+--- !u!114 &8123016736918945914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1994525835846492201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f42675b1a0c0800ceb4a2e5cb8ce0ff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _ghostMaterial: {fileID: 2100000, guid: 2566cc4f8c7914449b603a2474de69ba, type: 2}
   _ghostFadeConfig: {fileID: 11400000, guid: ee25c91a9b0da4b94b8654ae2cfe4341, type: 2}
 --- !u!1001 &7729662048639136491
@@ -133,3 +146,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8351658570819504376, guid: d87062a01bcf5a9469bbe4c0e64ffb9a, type: 3}
   m_PrefabInstance: {fileID: 7729662048639136491}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8123016736918946014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1994525835846492201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa669f528708ba027a628953ef1ce0c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier:
+  _collider: {fileID: 2921703278089039350}

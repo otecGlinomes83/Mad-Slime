@@ -219,6 +219,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 890000000000001}
   - component: {fileID: 8700189432219741535}
   - component: {fileID: 5153659263850431688}
   m_Layer: 0
@@ -262,8 +263,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _icon: {fileID: 8581002886094918300}
   _text: {fileID: 8906595393071233678}
-  _popStrength: 0.12
-  _popDuration: 0.18
 --- !u!1 &4689922341195404401
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,3 +338,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &890000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2878179731002415283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbd7256eff5d49b29b6a9669c62bb094, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _popStrength: 0.12
+  _popDuration: 0.18

@@ -648,8 +648,8 @@ MonoBehaviour:
   _gridBuilder: {fileID: 1948289412}
   _shapeFiller: {fileID: 1948289411}
   _cubeSpawner: {fileID: 1948289416}
-  _fillCounter: {fileID: 1948289410}
-  _fillTapInput: {fileID: 482700000000000015}
+  _fillResultCalculator: {fileID: 1948289410}
+  _fillTapButton: {fileID: 482700000000000015}
   _fillFinale: {fileID: 1948289418}
   _fillProgressUI: {fileID: 6593674394236639972}
   _fillDebug: {fileID: 482700000000000017}
@@ -660,6 +660,8 @@ MonoBehaviour:
   _pauser: {fileID: 1495407473}
   _fillUIFabric: {fileID: 644641159827276039}
   _flyingCubeArrivalSound: {fileID: 1948289414}
+  _sceneButtonSounds:
+  - {fileID: 3783574669433125315}
 --- !u!4 &1076171417
 Transform:
   m_ObjectHideFlags: 0
@@ -709,7 +711,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2f1f401decc45442939dfda7b9daf0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _musicTrack: {fileID: 11400000, guid: 83e6d3770e595383695b63eb69eb1da1, type: 2}
+  _musicPlaylist: {fileID: 11400000, guid: 851b4581b784f28479a2cf7f0e42514b, type: 2}
 --- !u!4 &1495407472
 Transform:
   m_ObjectHideFlags: 0

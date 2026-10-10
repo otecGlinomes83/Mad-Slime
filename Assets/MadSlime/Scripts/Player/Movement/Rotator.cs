@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Movement
 {
-    public sealed class Rotator : MonoBehaviour
+    public class Rotator : MonoBehaviour
     {
         private const float MinDirectionSqrMagnitude = 0.0001f;
 

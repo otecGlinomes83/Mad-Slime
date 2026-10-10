@@ -6,7 +6,7 @@ using VContainer;
 
 namespace Audio
 {
-    public sealed class AudioSettingsPanel : MonoBehaviour
+    public class AudioSettingsPanel : MonoBehaviour
     {
         private const float TickThrottleSeconds = 0.08f;
 
@@ -15,15 +15,15 @@ namespace Audio
         [SerializeField] private SfxClip _tickClip;
 
         private AudioMixerController _mixerController;
-        private SfxPlayer _sfxPlayer;
+        private IUISoundPlayer _soundPlayer;
         private float _lastTickTime;
         private bool _isInitialized;
 
         [Inject]
-        public void Construct(AudioMixerController mixerController, SfxPlayer sfxPlayer)
+        public void Construct(AudioMixerController mixerController, IUISoundPlayer soundPlayer)
         {
             _mixerController = mixerController;
-            _sfxPlayer = sfxPlayer;
+            _soundPlayer = soundPlayer;
         }
 
         private void OnDisable()
@@ -36,6 +36,8 @@ namespace Audio
             _musicSlider.onValueChanged.RemoveListener(OnMusicSliderChanged);
             _sfxSlider.onValueChanged.RemoveListener(OnSfxSliderChanged);
 
+            _mixerController.CommitVolumes();
+
             _isInitialized = false;
         }
 
@@ -47,10 +49,10 @@ namespace Audio
                     $"{name}: AudioMixerController was not injected. The settings prefab must be instantiated through the DI container (IObjectResolver.Instantiate).");
             }
 
-            if (_sfxPlayer == null)
+            if (_soundPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SfxPlayer was not injected. The settings prefab must be instantiated through the DI container (IObjectResolver.Instantiate).");
+                    $"{name}: IUISoundPlayer was not injected. The settings prefab must be instantiated through the DI container (IObjectResolver.Instantiate).");
             }
 
             if (_musicSlider == null)
@@ -110,7 +112,7 @@ namespace Audio
             }
 
             _lastTickTime = currentTime;
-            _sfxPlayer.PlayUi(_tickClip);
+            _soundPlayer.Play(_tickClip);
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [CreateAssetMenu(menuName = "Mad Slime/Level Config", fileName = "NewLevelConfig")]
-    public sealed class LevelConfig : ScriptableObject
+    public class LevelConfig : ScriptableObject
     {
         [Tooltip("Тема уровня: материал пола и текстура формы для сцены заливки.")]
         [SerializeField] private LevelTheme _theme;
@@ -40,13 +40,13 @@ namespace Scriptables
 
         public LevelTheme Theme => _theme;
         public PropSet PropSet => _propSet;
-        public ItemTier MinTier => (ItemTier)Mathf.Clamp(_minTier, 0, (int)ItemTier.Boss);
-        public ItemTier MaxTier => (ItemTier)Mathf.Clamp(_maxTier, _minTier, (int)ItemTier.Boss);
+        public SizeTier MinTier => (SizeTier)_minTier;
+        public SizeTier MaxTier => (SizeTier)_maxTier;
         public float TimerDuration => _timerDuration;
         public int QuotaTypesMin => _quotaTypesMin;
         public int QuotaTypesMax => _quotaTypesMax;
-        public int QuotaTargetMin => Mathf.Max(1, _quotaTargetMin);
-        public int QuotaTargetMax => Mathf.Max(QuotaTargetMin, _quotaTargetMax);
-        public int QuotaMaxSameTier => Mathf.Max(1, _quotaMaxSameTier);
+        public int QuotaTargetMin => _quotaTargetMin;
+        public int QuotaTargetMax => _quotaTargetMax;
+        public int QuotaMaxSameTier => _quotaMaxSameTier;
     }
 }

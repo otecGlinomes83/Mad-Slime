@@ -1,16 +1,10 @@
-using Audio;
-using Cysharp.Threading.Tasks;
-using Game;
-using Roulette;
-using Scriptables;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using VContainer;
 
 namespace UI
 {
-    public sealed class MainMenu : MonoBehaviour
+    public class MainMenu : MonoBehaviour
     {
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _shopButton;
@@ -18,41 +12,18 @@ namespace UI
         [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _dailyButton;
 
-        [SerializeField] private PauseMenu _pauseMenu;
-        [SerializeField] private LeaderboardMenu _leaderboardMenuPrefab;
-        [SerializeField] private RouletteView _dailyRoulette;
-        [SerializeField] private SfxClip _musicTrack;
+        public event Action PlayClicked;
 
-        private MusicPlayer _musicPlayer;
-        private Pauser _pauser;
-        private GameDirector _gameDirector;
-        private UiSpawner _uiSpawner;
-        private bool _isSubscribed;
+        public event Action ShopClicked;
 
-        [Inject]
-        public void Construct(GameDirector gameDirector, Pauser pauser,
-            MusicPlayer musicPlayer, UiSpawner uiSpawner)
-        {
-            _gameDirector = gameDirector;
-            _pauser = pauser;
-            _musicPlayer = musicPlayer;
-            _uiSpawner = uiSpawner;
-        }
+        public event Action LeaderboardClicked;
+
+        public event Action SettingsClicked;
+
+        public event Action DailyClicked;
 
         private void Awake()
         {
-            if (_gameDirector == null || _pauser == null || _musicPlayer == null || _uiSpawner == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: dependencies were not injected. MenuLifetimeScope must be the first object in the scene hierarchy.");
-            }
-
-            if (_musicTrack == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Music track is not assigned. Drag a SfxClip asset into the _musicTrack field.");
-            }
-
             if (_playButton == null)
             {
                 throw new InvalidOperationException(
@@ -77,109 +48,54 @@ namespace UI
                     $"{name}: SettingsButton is not assigned. Drag a Button into the _settingsButton field.");
             }
 
-            if (_leaderboardMenuPrefab == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: LeaderboardMenuPrefab is not assigned. Drag a LeaderboardMenu prefab into the _leaderboardMenuPrefab field.");
-            }
-
             if (_dailyButton == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: DailyButton is not assigned. Drag a Button into the _dailyButton field.");
             }
-
-            if (_dailyRoulette == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: DailyRoulette is not assigned. Drag the daily RouletteView component into the _dailyRoulette field.");
-            }
-        }
-
-        private void Start()
-        {
-            _musicPlayer.Play(_musicTrack);
-
-            if (_gameDirector.TryMarkDailyShown() == true)
-            {
-                ShowDailyRoulette();
-            }
         }
 
         private void OnEnable()
         {
-            if (_isSubscribed)
-            {
-                return;
-            }
-
-            _isSubscribed = true;
-
             _playButton.onClick.AddListener(OnPlayClicked);
-            _settingsButton.onClick.AddListener(OnSettingsClicked);
             _shopButton.onClick.AddListener(OnShopClicked);
             _leaderboardButton.onClick.AddListener(OnLeaderboardClicked);
+            _settingsButton.onClick.AddListener(OnSettingsClicked);
             _dailyButton.onClick.AddListener(OnDailyClicked);
         }
 
         private void OnDisable()
         {
-            if (_isSubscribed == false)
-            {
-                return;
-            }
-
-            _isSubscribed = false;
-
             _playButton.onClick.RemoveListener(OnPlayClicked);
-            _settingsButton.onClick.RemoveListener(OnSettingsClicked);
             _shopButton.onClick.RemoveListener(OnShopClicked);
             _leaderboardButton.onClick.RemoveListener(OnLeaderboardClicked);
+            _settingsButton.onClick.RemoveListener(OnSettingsClicked);
             _dailyButton.onClick.RemoveListener(OnDailyClicked);
-        }
-
-        private void OnSettingsClicked()
-        {
-            PauseMenu pauseMenu = _uiSpawner.Spawn(_pauseMenu, UiLayer.Popup);
-            pauseMenu.Initialize(false);
         }
 
         private void OnPlayClicked()
         {
-            NavigateTo(SceneId.Game).Forget();
+            PlayClicked?.Invoke();
         }
 
         private void OnShopClicked()
         {
-            NavigateTo(SceneId.Shop).Forget();
+            ShopClicked?.Invoke();
         }
 
         private void OnLeaderboardClicked()
         {
-            LeaderboardMenu leaderboardMenu = _uiSpawner.Spawn(_leaderboardMenuPrefab, UiLayer.Popup);
-            leaderboardMenu.Initialize();
+            LeaderboardClicked?.Invoke();
+        }
+
+        private void OnSettingsClicked()
+        {
+            SettingsClicked?.Invoke();
         }
 
         private void OnDailyClicked()
         {
-            ShowDailyRoulette();
-        }
-
-        private void ShowDailyRoulette()
-        {
-            _uiSpawner.Show(_dailyRoulette, UiLayer.Popup);
-        }
-
-        private async UniTaskVoid NavigateTo(SceneId targetSceneId)
-        {
-            if (_gameDirector.IsTransitioning == true || _dailyRoulette.IsSpinning == true)
-            {
-                return;
-            }
-
-            _pauser.ResetToPlay();
-
-            await _gameDirector.LoadAsync(targetSceneId);
+            DailyClicked?.Invoke();
         }
     }
 }

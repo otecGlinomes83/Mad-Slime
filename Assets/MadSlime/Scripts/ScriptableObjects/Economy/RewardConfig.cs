@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [CreateAssetMenu(menuName = "Mad Slime/Reward Config", fileName = "NewRewardConfig")]
-    public sealed class RewardConfig : ScriptableObject
+    public class RewardConfig : ScriptableObject
     {
         [Tooltip("Базовая награда монетами за победу на уровне.")]
         [SerializeField] private int _baseReward = 50;

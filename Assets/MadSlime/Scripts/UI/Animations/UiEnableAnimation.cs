@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UI.Animations
 {
-    public sealed class UiEnableAnimation : MonoBehaviour, IShowable
+    public class UiEnableAnimation : MonoBehaviour
     {
         [SerializeField] private UiAppearMode _mode = UiAppearMode.Scale;
 
@@ -17,7 +17,7 @@ namespace UI.Animations
         private Vector3 _enabledScale;
         private Tween _currentTween;
 
-        public event Action Closed;
+        public event Action<UiEnableAnimation> OutroCompleted;
 
         private void Awake()
         {
@@ -32,61 +32,12 @@ namespace UI.Animations
             CaptureEnabledState();
         }
 
-        private void OnEnable()
-        {
-            if (_mode == UiAppearMode.None)
-            {
-                return;
-            }
-
-            PlayIntro();
-        }
-
         private void OnDisable()
         {
             KillCurrentTween();
         }
 
-        public void Show()
-        {
-            gameObject.SetActive(true);
-        }
-
-        public void Hide()
-        {
-            PlayOutro();
-        }
-
-        public void PlayOutro()
-        {
-            if (_mode == UiAppearMode.None)
-            {
-                gameObject.SetActive(false);
-
-                Action closed = Closed;
-                closed?.Invoke();
-                return;
-            }
-
-            KillCurrentTween();
-
-            if (_mode == UiAppearMode.Scale)
-            {
-                _currentTween = transform.DOScale(Vector3.zero, _duration)
-                    .SetEase(Ease.InBack);
-            }
-            else
-            {
-                _currentTween = CreateMoveTween(OutPositionFor(_mode), _duration, Ease.InCubic);
-            }
-
-            _currentTween
-                .SetUpdate(true)
-                .SetLink(gameObject)
-                .OnComplete(OnOutroCompleted);
-        }
-
-        private void PlayIntro()
+        public void PlayIntro()
         {
             KillCurrentTween();
 
@@ -111,6 +62,26 @@ namespace UI.Animations
                 .OnComplete(OnIntroCompleted);
         }
 
+        public void PlayOutro()
+        {
+            KillCurrentTween();
+
+            if (_mode == UiAppearMode.Scale)
+            {
+                _currentTween = transform.DOScale(Vector3.zero, _duration)
+                    .SetEase(Ease.InBack);
+            }
+            else
+            {
+                _currentTween = CreateMoveTween(OutPositionFor(_mode), _duration, Ease.InCubic);
+            }
+
+            _currentTween
+                .SetUpdate(true)
+                .SetLink(gameObject)
+                .OnComplete(OnOutroCompleted);
+        }
+
         private void OnIntroCompleted()
         {
             _currentTween = null;
@@ -121,10 +92,8 @@ namespace UI.Animations
         {
             _currentTween = null;
             ApplyEnabledState();
-            gameObject.SetActive(false);
 
-            Action closed = Closed;
-            closed?.Invoke();
+            OutroCompleted?.Invoke(this);
         }
 
         private void ApplyEnabledState()
@@ -182,6 +151,12 @@ namespace UI.Animations
             }
 
             _enabledScale = transform.localScale;
+        }
+
+        public void Cancel()
+        {
+            KillCurrentTween();
+            ApplyEnabledState();
         }
 
         private void KillCurrentTween()

@@ -1,5 +1,6 @@
 using Core;
 using Game;
+using Saves;
 using Scriptables;
 using System;
 using System.Collections.Generic;
@@ -10,24 +11,23 @@ using VContainer;
 
 namespace UI
 {
-    public sealed class LeaderboardMenu : BaseWindow
+    public class LeaderboardMenu : BaseWindow
     {
         private const int TopCount = 10;
         private const int AroundCount = 1;
-        private const string PhotoSize = "nonePhoto";
 
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _authButton;
         [SerializeField] private TMP_Text _entriesText;
         [SerializeField] private YandexConfig _config;
 
-        private PlayerProgress _progress;
+        private ISavesReadiness _savesReadiness;
         private ILeaderboardService _leaderboardService;
 
         [Inject]
-        public void Construct(PlayerProgress progress, ILeaderboardService leaderboardService)
+        public void Construct(ISavesReadiness savesReadiness, ILeaderboardService leaderboardService)
         {
-            _progress = progress;
+            _savesReadiness = savesReadiness;
             _leaderboardService = leaderboardService;
         }
 
@@ -57,7 +57,7 @@ namespace UI
                     $"{name}: YandexConfig is not assigned. Drag the YandexConfig asset into the _config field.");
             }
 
-            if (_progress == null || _leaderboardService == null)
+            if (_savesReadiness == null || _leaderboardService == null)
             {
                 throw new InvalidOperationException(
                     $"{name}: dependencies were not injected. The window prefab must be shown through the DI container (UiSpawner.Spawn).");
@@ -67,7 +67,7 @@ namespace UI
             _authButton.onClick.AddListener(OnAuthClicked);
             _leaderboardService.EntriesReceived += OnLeaderboardReceived;
             _leaderboardService.EntriesFailed += OnLeaderboardFailed;
-            _progress.Ready += OnSdkDataReceived;
+            _savesReadiness.Ready += OnSdkDataReceived;
 
             RefreshAuthView();
             RequestLeaderboard();
@@ -75,19 +75,23 @@ namespace UI
 
         protected override void OnDisable()
         {
+            base.OnDisable();
             _closeButton?.onClick.RemoveListener(Close);
             _authButton?.onClick.RemoveListener(OnAuthClicked);
+            if (_leaderboardService == null)
+            {
+                return;
+            }
+
             _leaderboardService.EntriesReceived -= OnLeaderboardReceived;
             _leaderboardService.EntriesFailed -= OnLeaderboardFailed;
-            _progress.Ready -= OnSdkDataReceived;
-
-            base.OnDisable();
+            _savesReadiness.Ready -= OnSdkDataReceived;
         }
 
         private void RequestLeaderboard()
         {
             _entriesText.text = Localization.Get("leaderboard_loading");
-            _leaderboardService.RequestEntries(_config.LeaderboardName, TopCount, AroundCount, PhotoSize);
+            _leaderboardService.RequestEntries(_config.LeaderboardName, TopCount, AroundCount);
         }
 
         private void OnLeaderboardFailed()
@@ -95,14 +99,14 @@ namespace UI
             _entriesText.text = Localization.Get("leaderboard_error");
         }
 
-        private void OnLeaderboardReceived(LeaderboardSnapshot snapshot)
+        private void OnLeaderboardReceived(LeaderboardData snapshot)
         {
             if (snapshot.TechnoName != _config.LeaderboardName)
             {
                 return;
             }
 
-            if (snapshot.HasEntries == false || snapshot.Players.Length == 0)
+            if (snapshot.Players.Length == 0)
             {
                 _entriesText.text = Localization.Get("leaderboard_empty");
                 return;
@@ -125,9 +129,9 @@ namespace UI
                 lines.Add(line);
             }
 
-            if (ownRowInTop == false && _leaderboardService.IsAuthorized && snapshot.HasCurrentPlayer && snapshot.CurrentPlayer.Rank > 0)
+            if (ownRowInTop == false && _leaderboardService.IsAuthorized && snapshot.CurrentPlayer.HasValue && snapshot.CurrentPlayer.Value.Rank > 0)
             {
-                lines.Add($"<b>{snapshot.CurrentPlayer.Rank}. {_leaderboardService.PlayerName} — {snapshot.CurrentPlayer.Score}</b>");
+                lines.Add($"<b>{snapshot.CurrentPlayer.Value.Rank}. {_leaderboardService.PlayerName} — {snapshot.CurrentPlayer.Value.Score}</b>");
             }
 
             _entriesText.text = string.Join("\n", lines);
@@ -156,7 +160,7 @@ namespace UI
 
         private void Close()
         {
-            CloseAnimated();
+            RequestClose();
         }
     }
 }

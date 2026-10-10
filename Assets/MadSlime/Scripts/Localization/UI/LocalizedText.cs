@@ -6,7 +6,7 @@ using UnityEngine;
 namespace UI
 {
     [RequireComponent(typeof(TMP_Text))]
-    public sealed class LocalizedText : MonoBehaviour
+    public class LocalizedText : MonoBehaviour
     {
         [SerializeField] private string _key;
 

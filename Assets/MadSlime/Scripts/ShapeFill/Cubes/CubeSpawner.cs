@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace ShapeFill
 {
-    public sealed class CubeSpawner : MonoBehaviour
+    public class CubeSpawner : MonoBehaviour
     {
-        private static readonly int ColorId = Shader.PropertyToID("_Color");
+        private static int ColorId = Shader.PropertyToID("_Color");
 
         [SerializeField] private FlyingCube _cubePrefab;
         [SerializeField] private Transform _cubesParent;
@@ -32,14 +32,20 @@ namespace ShapeFill
             }
         }
 
-        public FlyingCube Spawn(Vector3 position, Quaternion rotation, float scale, Color color)
+        public CubeFlightAnimator Spawn(Vector3 position, Quaternion rotation, float scale, Color color)
         {
             FlyingCube cube = Instantiate(_cubePrefab, position, rotation, _cubesParent);
             cube.transform.localScale = Vector3.one * scale;
 
             SetColor(cube.gameObject, color);
 
-            return cube;
+            if (cube.TryGetComponent(out CubeFlightAnimator flightAnimator) == false)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: the FlyingCube prefab '{_cubePrefab.name}' has no CubeFlightAnimator. Add one to the prefab.");
+            }
+
+            return flightAnimator;
         }
 
         private void SetColor(GameObject cube, Color color)

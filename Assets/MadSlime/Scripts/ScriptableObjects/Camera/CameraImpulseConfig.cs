@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [CreateAssetMenu(menuName = "Mad Slime/Camera Impulse Config", fileName = "NewCameraImpulseConfig")]
-    public sealed class CameraImpulseConfig : ScriptableObject
+    public class CameraImpulseConfig : ScriptableObject
     {
         [Header("Pull")]
         [Tooltip(

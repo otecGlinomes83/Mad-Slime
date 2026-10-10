@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [CreateAssetMenu(menuName = "Mad Slime/Yandex Config", fileName = "NewYandexConfig")]
-    public sealed class YandexConfig : ScriptableObject
+    public class YandexConfig : ScriptableObject
     {
         [Header("Ads")]
         [Tooltip("ID rewarded-блока удвоения награды. Должен совпадать с блоком, созданным в Яндекс.Консоли.")]

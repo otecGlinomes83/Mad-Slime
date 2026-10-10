@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UI
 {
-    public sealed class LookAtCamera : MonoBehaviour
+    public class LookAtCamera : MonoBehaviour
     {
         [SerializeField] private Camera _camera;
 

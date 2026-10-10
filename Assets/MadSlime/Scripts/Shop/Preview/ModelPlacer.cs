@@ -3,25 +3,29 @@ using UnityEngine;
 
 namespace Shop
 {
-    public sealed class ModelPlacer : MonoBehaviour
+    public class ModelPlacer : MonoBehaviour
     {
         private const float FaceTurnDegrees = 45f;
 
-        [SerializeField] private float _rotationSpeed = 45f;
+        [SerializeField] private PreviewRotator _rotator;
         [SerializeField] private float _padding = 0.85f;
         [SerializeField, Tooltip("Подъём модели над центром экрана после подгонки.")]
         private float _lift = 0f;
         [SerializeField] private Transform _modelsParent;
         [SerializeField] private Camera _camera;
 
-        private readonly Vector3[] _localCorners = new Vector3[8];
+        private Vector3[] _localCorners = new Vector3[8];
 
         private GameObject _currentModel;
-        private Animator _currentAnimator;
         private Vector3 _rotationAnchor;
 
         private void Awake()
         {
+            if (_rotator == null)
+            {
+                throw new InvalidOperationException($"{name}: PreviewRotator is required.");
+            }
+
             if (_modelsParent == null)
             {
                 throw new InvalidOperationException(
@@ -33,19 +37,6 @@ namespace Shop
                 throw new InvalidOperationException(
                     $"{name}: ModelPlacer requires _camera to be assigned in the inspector.");
             }
-        }
-
-        private void Update()
-        {
-            if (_currentModel == null)
-            {
-                return;
-            }
-
-            _currentModel.transform.RotateAround(
-                _rotationAnchor,
-                Vector3.up,
-                _rotationSpeed * Time.unscaledDeltaTime);
         }
 
         public void SetModel(GameObject model)
@@ -62,7 +53,6 @@ namespace Shop
             }
 
             _currentModel = Instantiate(model, _modelsParent);
-            _currentModel.TryGetComponent(out _currentAnimator);
 
             if (_currentModel.TryGetComponent(out SkinModel skinModel) == false)
             {
@@ -72,16 +62,18 @@ namespace Shop
 
             FaceCamera(_currentModel.transform.rotation);
             FitToCamera(skinModel);
+            _rotator.Setup(_currentModel.transform, _rotationAnchor);
         }
 
-        public void PlayWalk()
+        public void Clear()
         {
-            if (_currentAnimator == null)
-            {
-                return;
-            }
+            _rotator.Setup(null, Vector3.zero);
 
-            _currentAnimator.SetTrigger(SkinModel.WalkTrigger);
+            if (_currentModel != null)
+            {
+                Destroy(_currentModel);
+                _currentModel = null;
+            }
         }
 
         private void FaceCamera(Quaternion baseRotation)
@@ -127,7 +119,7 @@ namespace Shop
 
         private Bounds GetAccurateWorldBounds(SkinModel skinModel)
         {
-            MeshFilter meshFilter = skinModel.MeshFilter;
+            skinModel.TryGetComponent(out MeshFilter meshFilter);
 
             if (meshFilter == null)
             {

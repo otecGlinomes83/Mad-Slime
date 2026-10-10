@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Skills
 {
     [CreateAssetMenu(fileName = "NewAttractConfig", menuName = "Mad Slime/Attract Config")]
-    public sealed class AttractConfig : ScriptableObject
+    public class AttractConfig : ScriptableObject
     {
         [Tooltip("Базовая скорость притяжения предметов магнитом (юнитов/с) в точке первого контакта.")]
         [SerializeField] private float _attractionForce = 6f;

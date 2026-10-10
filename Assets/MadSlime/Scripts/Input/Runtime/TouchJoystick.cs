@@ -7,7 +7,7 @@ using UnityEngine.InputSystem.OnScreen;
 
 namespace PlayerInput
 {
-    public sealed class TouchJoystick : OnScreenControl, IPointerDownHandler, IDragHandler, IPointerUpHandler
+    public class TouchJoystick : OnScreenControl, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
         [InputControl(layout = "Vector2")]
         [SerializeField] private string _controlPath = "<Gamepad>/leftStick";

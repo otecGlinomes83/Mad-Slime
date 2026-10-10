@@ -7,28 +7,27 @@ using Random = UnityEngine.Random;
 
 namespace Audio
 {
-    public sealed class PlayerPickupSound : MonoBehaviour
+    public class PlayerPickupSound : MonoBehaviour
     {
         [SerializeField] private PlayerConfig _config;
         [SerializeField] private SfxClip _sfxClip;
 
-        private SfxPlayer _sfxPlayer;
-        private Collector _collector;
-        private float _nextAllowedSoundTime;
+        private IGameSoundPlayer _soundPlayer;
+        private ItemCollector _itemCollector;
 
         [Inject]
-        public void Construct(SfxPlayer sfxPlayer, Collector collector)
+        public void Construct(IGameSoundPlayer soundPlayer, ItemCollector itemCollector)
         {
-            _sfxPlayer = sfxPlayer;
-            _collector = collector;
+            _soundPlayer = soundPlayer;
+            _itemCollector = itemCollector;
         }
 
         private void Awake()
         {
-            if (_sfxPlayer == null)
+            if (_soundPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SfxPlayer was not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
+                    $"{name}: IGameSoundPlayer was not injected. GameLifetimeScope must be the first object in the scene hierarchy.");
             }
 
             if (_config == null)
@@ -37,10 +36,10 @@ namespace Audio
                     $"{name}: PlayerConfig is not assigned. Drag the PlayerConfig asset into the _config field.");
             }
 
-            if (_collector == null)
+            if (_itemCollector == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Collector was not injected. Check that GameLifetimeScope registers Collector and PlayerPickupSound.");
+                    $"{name}: ItemCollector was not injected. Check that GameLifetimeScope registers ItemCollector and PlayerPickupSound.");
             }
 
             if (_sfxClip == null)
@@ -64,32 +63,21 @@ namespace Audio
 
         private void OnEnable()
         {
-            _collector.ItemCollected += OnItemCollected;
+            _itemCollector.ItemCollected += OnItemCollected;
         }
 
         private void OnDisable()
         {
-            _collector.ItemCollected -= OnItemCollected;
+            _itemCollector.ItemCollected -= OnItemCollected;
         }
 
         private void OnItemCollected(Items.Item item)
         {
-            if (Time.time < _nextAllowedSoundTime)
-            {
-                return;
-            }
-
-            _nextAllowedSoundTime = Time.time + Random.Range(
+            float throttleSeconds = Random.Range(
                 _config.PickupSoundMinInterval,
                 _config.PickupSoundMaxInterval);
 
-            PlayPop();
-        }
-
-        private void PlayPop()
-        {
-            float pitch = Random.Range(_config.PickupSoundMinPitch, _config.PickupSoundMaxPitch);
-            _sfxPlayer.PlayGame(_sfxClip.Clip, _sfxClip.Volume, pitch);
+            _soundPlayer.Play(_sfxClip, throttleSeconds);
         }
     }
 }

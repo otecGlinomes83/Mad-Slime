@@ -10,13 +10,13 @@ namespace Core
 
         string PlayerName { get; }
 
-        event Action<LeaderboardSnapshot> EntriesReceived;
+        event Action<LeaderboardData> EntriesReceived;
 
         event Action EntriesFailed;
 
         void SetScore(string leaderboardName, int score);
 
-        void RequestEntries(string leaderboardName, int topCount, int aroundCount, string photoSize);
+        void RequestEntries(string leaderboardName, int topCount, int aroundCount);
 
         void OpenAuthDialog();
     }

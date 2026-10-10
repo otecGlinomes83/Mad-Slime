@@ -27,8 +27,6 @@ public static class PlayerDataResetTool
         json = ReplaceNumber(json, "CurrentLevel", 1);
         json = ReplaceNumber(json, "MaxLevel", 1);
         json = ReplaceNumber(json, "Balance", TestBalance);
-        json = ReplaceNumber(json, "SelectedSkinType", 0);
-        json = ReplaceArray(json, "_openSkins", "[0]");
         json = ReplaceStringIfPresent(json, "SelectedSkinId", "");
         json = ReplaceArrayIfPresent(json, "_openSkinIds", "[]");
         json = ReplaceArrayIfPresent(json, "_showcaseSkinIds", "[]");

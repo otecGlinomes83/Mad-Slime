@@ -5,10 +5,10 @@ using UnityEngine;
 namespace Scriptables
 {
     [Serializable]
-    public sealed class PlayerTierThreshold
+    public class PlayerTierThreshold
     {
         [Tooltip("Какой тир открывается при достижении порога.")]
-        [SerializeField] private ItemTier _tier;
+        [SerializeField] private SizeTier _tier;
 
         [Tooltip("Масса, необходимая для открытия этого тира.")]
         [SerializeField] private int _requiredMass;
@@ -22,7 +22,7 @@ namespace Scriptables
         [Tooltip("Во сколько раз отъезжает камера на этом тире.")]
         [SerializeField] private float _cameraOffsetMultiplier = 1f;
 
-        public ItemTier Tier => _tier;
+        public SizeTier Tier => _tier;
         public int RequiredMass => _requiredMass;
         public float ScaleMultiplier => _scaleMultiplier;
         public float CameraOffsetMultiplier => _cameraOffsetMultiplier;

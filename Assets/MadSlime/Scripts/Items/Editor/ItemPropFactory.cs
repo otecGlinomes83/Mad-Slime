@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace EditorTools
 {
-    public sealed class ItemPropFactory : EditorWindow
+    public class ItemPropFactory : EditorWindow
     {
         private const string PrefsKey = "MadSlime.ItemPropFactory";
         private const int IconSize = 256;
@@ -352,7 +352,7 @@ namespace EditorTools
 
                 job.Definitions.Add(definition);
 
-                if (entry.Tier == ItemTier.Small)
+                if (entry.Tier == SizeTier.Small)
                 {
                     job.FallbackDefinition = definition;
                 }
@@ -453,10 +453,26 @@ namespace EditorTools
         {
             SerializedObject serialized = new SerializedObject(item);
             serialized.FindProperty("_definition").objectReferenceValue = fallbackDefinition;
-            serialized.FindProperty("_collider").objectReferenceValue = collider;
-            serialized.FindProperty("_ghostMaterial").objectReferenceValue = _ghostMaterial;
-            serialized.FindProperty("_ghostFadeConfig").objectReferenceValue = _ghostFadeConfig;
             serialized.ApplyModifiedPropertiesWithoutUndo();
+
+            if (item.TryGetComponent(out ItemBody body) == false)
+            {
+                body = item.gameObject.AddComponent<ItemBody>();
+            }
+
+            SerializedObject serializedBody = new SerializedObject(body);
+            serializedBody.FindProperty("_collider").objectReferenceValue = collider;
+            serializedBody.ApplyModifiedPropertiesWithoutUndo();
+
+            if (item.TryGetComponent(out ItemVisual visual) == false)
+            {
+                visual = item.gameObject.AddComponent<ItemVisual>();
+            }
+
+            SerializedObject serializedVisual = new SerializedObject(visual);
+            serializedVisual.FindProperty("_ghostMaterial").objectReferenceValue = _ghostMaterial;
+            serializedVisual.FindProperty("_ghostFadeConfig").objectReferenceValue = _ghostFadeConfig;
+            serializedVisual.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private void WritePropSet(List<ModelJob> jobs)
@@ -728,7 +744,7 @@ namespace EditorTools
             return string.CompareOrdinal(left.PrefabName, right.PrefabName);
         }
 
-        private sealed class ModelJob
+        private class ModelJob
         {
             public GameObject Model;
             public string PrefabName;
@@ -740,7 +756,7 @@ namespace EditorTools
         }
 
         [Serializable]
-        private sealed class WindowState
+        private class WindowState
         {
             public string ModelsPath;
             public string PrefabsPath;

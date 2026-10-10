@@ -1,23 +1,42 @@
+using Cysharp.Threading.Tasks;
 using System;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI
 {
-    public sealed class WinMenu : BaseWindow
+    public class WinMenu : BaseWindow
     {
         [SerializeField] private TMP_Text _moneyCount;
         [SerializeField] private Button _nextLevelButton;
         [SerializeField] private Button _doubleRewardButton;
         [SerializeField] private Button _menuButton;
 
-        private Action _nextLevelAction;
-        private Action _doubleRewardAction;
-        private Action _menuAction;
+        [Tooltip("Длительность отсчёта показанной награды от предыдущей суммы до итоговой (с).")]
+        [SerializeField, Min(0.01f)] private float _countUpDuration = 0.8f;
 
-        public void Initialize(int moneyCount, Action nextLevelAction, Action doubleRewardAction, Action menuAction)
+        public event Action NextLevelRequested;
+
+        public event Action DoubleRewardRequested;
+
+        public event Action MenuRequested;
+
+        private int _moneyCountShown;
+        private CancellationTokenSource _countUpCancellation;
+        private bool _isNavigationRequested;
+
+        protected override void Awake()
         {
+            base.Awake();
+
+            if (_moneyCount == null)
+            {
+                throw new InvalidOperationException(
+                    $"{name}: MoneyCount is not assigned. Drag a TMP_Text into the _moneyCount field.");
+            }
+
             if (_nextLevelButton == null)
             {
                 throw new InvalidOperationException(
@@ -29,70 +48,140 @@ namespace UI
                 throw new InvalidOperationException(
                     $"{name}: MenuButton is not assigned. Drag a Button into the _menuButton field.");
             }
+        }
 
-            if (_moneyCount == null)
+        public void Initialize(int moneyCount, int previousMoneyCount, bool canDoubleReward)
+        {
+            CancelCountUp();
+            _isNavigationRequested = false;
+            _nextLevelButton.interactable = true;
+            _menuButton.interactable = true;
+            _doubleRewardButton.interactable = canDoubleReward;
+            _moneyCountShown = previousMoneyCount;
+            _moneyCount.text = $"{previousMoneyCount}";
+
+            _doubleRewardButton.gameObject.SetActive(canDoubleReward);
+        }
+
+        public void PlayRewardCountUp(int targetAmount)
+        {
+            CancelCountUp();
+
+            if (IsClosing == true)
             {
-                throw new InvalidOperationException(
-                    $"{name}: MoneyCount is not assigned. Drag a TMP_Text into the _moneyCount field.");
+                return;
+            }
+            if (targetAmount <= _moneyCountShown)
+            {
+                _moneyCountShown = targetAmount;
+                _moneyCount.text = $"{targetAmount}";
+                return;
             }
 
-            _nextLevelAction = nextLevelAction;
-            _doubleRewardAction = doubleRewardAction;
-            _menuAction = menuAction;
+            _countUpCancellation = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+            CountUpMoneyAsync(_moneyCountShown, targetAmount, _countUpCancellation.Token).Forget();
+        }
 
-            _nextLevelButton.onClick.RemoveListener(RequestNextLevel);
-            _nextLevelButton.onClick.AddListener(RequestNextLevel);
-            _menuButton.onClick.RemoveListener(RequestMenu);
-            _menuButton.onClick.AddListener(RequestMenu);
+        private async UniTaskVoid CountUpMoneyAsync(int fromAmount, int toAmount, CancellationToken cancellationToken)
+        {
+            float elapsedTime = 0f;
 
-            if (_doubleRewardButton != null)
+            try
             {
-                _doubleRewardButton.onClick.RemoveListener(RequestDoubleReward);
-
-                if (doubleRewardAction != null)
+                while (elapsedTime < _countUpDuration)
                 {
-                    _doubleRewardButton.onClick.AddListener(RequestDoubleReward);
-                    _doubleRewardButton.gameObject.SetActive(true);
-                }
-                else
-                {
-                    _doubleRewardButton.gameObject.SetActive(false);
+                    elapsedTime += Time.unscaledDeltaTime;
+                    float progress = Mathf.Clamp01(elapsedTime / _countUpDuration);
+                    int shownAmount = Mathf.RoundToInt(Mathf.Lerp(fromAmount, toAmount, progress));
+                    _moneyCountShown = shownAmount;
+                    _moneyCount.text = $"{shownAmount}";
+                    await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
                 }
             }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
 
-            _moneyCount.text = $"{moneyCount}";
+            _moneyCountShown = toAmount;
+            _moneyCount.text = $"{toAmount}";
+        }
+
+        private void OnEnable()
+        {
+            _nextLevelButton.onClick.AddListener(OnNextLevelClicked);
+            _doubleRewardButton.onClick.AddListener(OnDoubleRewardClicked);
+            _menuButton.onClick.AddListener(OnMenuClicked);
         }
 
         protected override void OnDisable()
         {
-            _nextLevelButton?.onClick.RemoveListener(RequestNextLevel);
-            _doubleRewardButton?.onClick.RemoveListener(RequestDoubleReward);
-            _menuButton?.onClick.RemoveListener(RequestMenu);
-
+            CancelCountUp();
             base.OnDisable();
+            _nextLevelButton.onClick.RemoveListener(OnNextLevelClicked);
+            _doubleRewardButton.onClick.RemoveListener(OnDoubleRewardClicked);
+            _menuButton.onClick.RemoveListener(OnMenuClicked);
         }
 
-        private void RequestNextLevel()
+        protected override void OnClosing()
         {
-            _nextLevelAction?.Invoke();
-            Close();
+            CancelCountUp();
+            _nextLevelButton.interactable = false;
+            _doubleRewardButton.interactable = false;
+            _menuButton.interactable = false;
         }
 
-        private void RequestDoubleReward()
+        private void CancelCountUp()
         {
-            _doubleRewardAction?.Invoke();
-            _doubleRewardButton.gameObject.SetActive(false);
+            if (_countUpCancellation == null)
+            {
+                return;
+            }
+
+            _countUpCancellation.Cancel();
+            _countUpCancellation.Dispose();
+            _countUpCancellation = null;
         }
 
-        private void RequestMenu()
+        private void OnNextLevelClicked()
         {
-            _menuAction?.Invoke();
-            Close();
+            if (_isNavigationRequested == true || IsClosing == true)
+            {
+                return;
+            }
+
+            _isNavigationRequested = true;
+            Action nextLevelRequested = NextLevelRequested;
+            nextLevelRequested?.Invoke();
+
         }
 
-        private void Close()
+        public void SetDoubleRewardAvailable(bool isAvailable)
         {
-            CloseAnimated();
+            _doubleRewardButton.interactable = isAvailable;
+        }
+
+        private void OnDoubleRewardClicked()
+        {
+            if (_isNavigationRequested == true || IsClosing == true)
+            {
+                return;
+            }
+            Action doubleRewardRequested = DoubleRewardRequested;
+            doubleRewardRequested?.Invoke();
+        }
+
+        private void OnMenuClicked()
+        {
+            if (_isNavigationRequested == true || IsClosing == true)
+            {
+                return;
+            }
+
+            _isNavigationRequested = true;
+            Action menuRequested = MenuRequested;
+            menuRequested?.Invoke();
+
         }
     }
 }

@@ -8,9 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 7132566590846541292}
   - component: {fileID: 3255747879834854740}
   - component: {fileID: 1771661954606569621}
   - component: {fileID: 7132566590846541192}
+  - component: {fileID: 5328522264689436125}
   m_Layer: 3
   m_Name: Item_Fridge_01
   m_TagString: Untagged
@@ -68,7 +70,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _definition: {fileID: 11400000, guid: 916c982d73542eddd8de1040d2395c67, type: 2}
-  _collider: {fileID: 1771661954606569621}
+--- !u!114 &5328522264689436125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9133648802659462226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f42675b1a0c0800ceb4a2e5cb8ce0ff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _ghostMaterial: {fileID: 2100000, guid: 2566cc4f8c7914449b603a2474de69ba, type: 2}
   _ghostFadeConfig: {fileID: 11400000, guid: ee25c91a9b0da4b94b8654ae2cfe4341, type: 2}
 --- !u!1001 &9154490989338481548
@@ -133,3 +146,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3585842044887211447, guid: 07ed45d24c00a20419c02b6fe2ceb905, type: 3}
   m_PrefabInstance: {fileID: 9154490989338481548}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7132566590846541292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9133648802659462226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa669f528708ba027a628953ef1ce0c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier:
+  _collider: {fileID: 1771661954606569621}

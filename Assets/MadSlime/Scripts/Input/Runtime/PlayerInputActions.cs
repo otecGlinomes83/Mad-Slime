@@ -255,9 +255,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     }
 
     // Player
-    private readonly InputActionMap m_Player;
+    private InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-    private readonly InputAction m_Player_Move;
+    private InputAction m_Player_Move;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>

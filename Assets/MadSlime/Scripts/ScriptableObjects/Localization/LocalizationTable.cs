@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [CreateAssetMenu(menuName = "Mad Slime/Localization Table", fileName = "Localization")]
-    public sealed class LocalizationTable : ScriptableObject
+    public class LocalizationTable : ScriptableObject
     {
         [Tooltip("Строки локализации: ключ + переводы по языкам.")]
         [SerializeField] private List<LocaleEntry> _entries = new List<LocaleEntry>();
@@ -29,7 +29,7 @@ namespace Scriptables
     }
 
     [Serializable]
-    public sealed class LocaleEntry
+    public class LocaleEntry
     {
         [Tooltip("Ключ, по которому код запрашивает строку через Localization.Get.")]
         [SerializeField] private string _key;

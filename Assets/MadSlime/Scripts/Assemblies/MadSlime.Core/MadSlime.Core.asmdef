@@ -2,7 +2,8 @@
     "name": "MadSlime.Core",
     "rootNamespace": "",
     "references": [
-        "QuickOutline"
+        "QuickOutline",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

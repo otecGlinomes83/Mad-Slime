@@ -4,7 +4,7 @@ using YG;
 
 namespace Adapters
 {
-    public sealed class Yg2LanguageProvider : ILanguageProvider
+    public class Yg2LanguageProvider : ILanguageProvider
     {
         public string Language => YG2.lang;
 

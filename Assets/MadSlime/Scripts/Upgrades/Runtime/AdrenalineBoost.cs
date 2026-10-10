@@ -1,4 +1,5 @@
-using Game;
+using Movement;
+using Scriptables;
 using System;
 using UnityEngine;
 using Upgrades;
@@ -6,30 +7,30 @@ using VContainer;
 
 namespace Player
 {
-    public sealed class AdrenalineBoost : MonoBehaviour
+    public class AdrenalineBoost : MonoBehaviour
     {
-        private Timer _timer;
+        [SerializeField] private UpgradesConfig _config;
+
         private PlayerUpgrades _upgrades;
-        private PlayerSpeed _playerSpeed;
+        private Movement.Movement _movement;
         private bool _isBoosted;
 
         public event Action BoostStarted;
         public event Action BoostEnded;
 
         [Inject]
-        public void Construct(Timer timer, PlayerUpgrades upgrades, PlayerSpeed playerSpeed)
+        public void Construct(PlayerUpgrades upgrades, Movement.Movement movement)
         {
-            _timer = timer;
             _upgrades = upgrades;
-            _playerSpeed = playerSpeed;
+            _movement = movement;
         }
 
         private void Awake()
         {
-            if (_timer == null)
+            if (_config == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Timer was not injected. Check that GameLifetimeScope registers Timer and AdrenalineBoost.");
+                    $"{name}: UpgradesConfig is not assigned. Drag the UpgradesConfig asset into the _config field.");
             }
 
             if (_upgrades == null)
@@ -38,53 +39,34 @@ namespace Player
                     $"{name}: PlayerUpgrades was not injected. Check that ProjectLifetimeScope registers PlayerUpgrades.");
             }
 
-            if (_playerSpeed == null)
+            if (_movement == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerSpeed was not injected. Check that GameLifetimeScope registers PlayerSpeed and AdrenalineBoost.");
+                    $"{name}: Movement was not injected. Check that GameLifetimeScope registers Movement and AdrenalineBoost.");
             }
+
+            _config.GetPerk(PerkType.Adrenaline);
         }
 
-        private void OnEnable()
+        public void Enable()
         {
-            _timer.FinalCountdownStarted += OnFinalCountdownStarted;
-            _timer.Finished += OnTimerFinished;
-            _timer.Stopped += OnTimerStopped;
-        }
+            if (_isBoosted == true)
+            {
+                return;
+            }
 
-        private void OnDisable()
-        {
-            _timer.FinalCountdownStarted -= OnFinalCountdownStarted;
-            _timer.Finished -= OnTimerFinished;
-            _timer.Stopped -= OnTimerStopped;
-
-            ResetBoost();
-        }
-
-        private void OnFinalCountdownStarted()
-        {
             if (_upgrades.HasAdrenaline == false)
             {
                 return;
             }
 
             _isBoosted = true;
-            _playerSpeed.SetBoostMultiplier(_upgrades.AdrenalineSpeedMultiplier);
+            _movement.SetBoostMultiplier(_config.GetPerk(PerkType.Adrenaline).Value);
 
             BoostStarted?.Invoke();
         }
 
-        private void OnTimerFinished()
-        {
-            ResetBoost();
-        }
-
-        private void OnTimerStopped()
-        {
-            ResetBoost();
-        }
-
-        private void ResetBoost()
+        public void Disable()
         {
             if (_isBoosted == false)
             {
@@ -92,7 +74,7 @@ namespace Player
             }
 
             _isBoosted = false;
-            _playerSpeed.SetBoostMultiplier(1f);
+            _movement.SetBoostMultiplier(1f);
 
             BoostEnded?.Invoke();
         }

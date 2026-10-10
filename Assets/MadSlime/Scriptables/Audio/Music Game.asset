@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7abeebd6a4eb99499a98c8973fea4ad8, type: 3}
   m_Name: Music Game
   m_EditorClassIdentifier: 
-  _clip: {fileID: 8300000, guid: 16da009790821ab468d790a51a05367e, type: 3}
+  _clip: {fileID: 8300000, guid: d268bdb4b580e6d94b023cf6ad3dc93f, type: 3}
   _volume: 1
   _isRandomPitch: 0
   _minPitch: 1

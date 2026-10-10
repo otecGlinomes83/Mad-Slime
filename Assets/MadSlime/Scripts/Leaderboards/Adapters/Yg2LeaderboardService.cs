@@ -8,7 +8,7 @@ using YG.Utils.LB;
 
 namespace Adapters
 {
-    public sealed class Yg2LeaderboardService : ILeaderboardService, IDisposable
+    public class Yg2LeaderboardService : ILeaderboardService, IDisposable
     {
         private const float EntriesTimeoutSeconds = 8f;
 
@@ -18,11 +18,12 @@ namespace Adapters
 
         public string PlayerName => YG2.player.name;
 
-        public event Action<LeaderboardSnapshot> EntriesReceived;
+        public event Action<LeaderboardData> EntriesReceived;
 
         public event Action EntriesFailed;
 
         private CancellationTokenSource _entriesWatchSource;
+        private string _requestedLeaderboardName;
 
         public Yg2LeaderboardService()
         {
@@ -40,14 +41,15 @@ namespace Adapters
             YG2.SetLeaderboard(leaderboardName, score);
         }
 
-        public void RequestEntries(string leaderboardName, int topCount, int aroundCount, string photoSize)
+        public void RequestEntries(string leaderboardName, int topCount, int aroundCount)
         {
             CancelEntriesWatch();
 
+            _requestedLeaderboardName = leaderboardName;
             _entriesWatchSource = new CancellationTokenSource();
             WatchEntriesAsync(_entriesWatchSource).Forget();
 
-            YG2.GetLeaderboard(leaderboardName, topCount, aroundCount, photoSize);
+            YG2.GetLeaderboard(leaderboardName, topCount, aroundCount, "nonePhoto");
         }
 
         public void OpenAuthDialog()
@@ -89,18 +91,17 @@ namespace Adapters
 
         private void OnLeaderboardReceived(LBData data)
         {
+            if (data == null || data.technoName != _requestedLeaderboardName)
+            {
+                return;
+            }
+
             CancelEntriesWatch();
+            _requestedLeaderboardName = null;
 
             LeaderboardEntryData[] players = MapPlayers(data.players);
 
-            LeaderboardSnapshot snapshot = new LeaderboardSnapshot
-            {
-                TechnoName = data.technoName,
-                HasEntries = data.entries != InfoYG.NO_DATA,
-                Players = players,
-                CurrentPlayer = MapCurrentPlayer(data.currentPlayer),
-                HasCurrentPlayer = data.currentPlayer != null,
-            };
+            LeaderboardData snapshot = new LeaderboardData(data.technoName, players, MapCurrentPlayer(data.currentPlayer));
 
             EntriesReceived?.Invoke(snapshot);
         }
@@ -133,11 +134,11 @@ namespace Adapters
             };
         }
 
-        private LeaderboardEntryData MapCurrentPlayer(LBCurrentPlayerData sourcePlayer)
+        private LeaderboardEntryData? MapCurrentPlayer(LBCurrentPlayerData sourcePlayer)
         {
             if (sourcePlayer == null)
             {
-                return new LeaderboardEntryData();
+                return null;
             }
 
             return new LeaderboardEntryData

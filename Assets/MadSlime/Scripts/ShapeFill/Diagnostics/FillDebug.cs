@@ -1,12 +1,13 @@
 using DG.Tweening;
 using Game;
+using Quota;
 using System;
 using UnityEngine;
 using VContainer;
 
 namespace ShapeFill
 {
-    public sealed class FillDebug : MonoBehaviour
+    public class FillDebug : MonoBehaviour
     {
         [SerializeField] private Transform _cubesContainer;
 
@@ -23,17 +24,17 @@ namespace ShapeFill
 
         private ShapeFiller _filler;
         private FillSessionHandler _sessionHandler;
-        private LevelProgress _levelProgress;
+        private QuotaCounter _quotaCounter;
 
         private Camera _camera;
         private float _startFov;
 
         [Inject]
-        public void Construct(ShapeFiller filler, FillSessionHandler sessionHandler, LevelProgress levelProgress)
+        public void Construct(ShapeFiller filler, FillSessionHandler sessionHandler, QuotaCounter quotaCounter)
         {
             _filler = filler;
             _sessionHandler = sessionHandler;
-            _levelProgress = levelProgress;
+            _quotaCounter = quotaCounter;
         }
 
         private void Awake()
@@ -50,10 +51,10 @@ namespace ShapeFill
                     $"{name}: FillSessionHandler was not injected. Check that FillLifetimeScope registers FillSessionHandler and FillDebug.");
             }
 
-            if (_levelProgress == null)
+            if (_quotaCounter == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: LevelProgress was not injected. Check that ProjectLifetimeScope registers LevelProgress.");
+                    $"{name}: QuotaCounter was not injected. Check that ProjectLifetimeScope registers QuotaCounter.");
             }
 
             if (_cubesContainer == null)
@@ -78,7 +79,7 @@ namespace ShapeFill
 
             _startFov = _camera.fieldOfView;
 
-            if (_levelProgress.TotalQuotaTarget <= 0)
+            if (_quotaCounter.TotalQuotaTarget <= 0)
             {
                 _sessionHandler.enabled = false;
             }
@@ -104,9 +105,9 @@ namespace ShapeFill
 
             int requiredCount = _filler.RequiredFillCount;
             int quotaCount = Mathf.Clamp(Mathf.RoundToInt(GetTestQuotaPercent() * requiredCount), 0, requiredCount);
-            int totalCount = Mathf.Clamp(Mathf.RoundToInt(GetTestPercent() * requiredCount), quotaCount, requiredCount);
+            int bonusCount = Mathf.Clamp(Mathf.RoundToInt(GetTestPercent() * requiredCount), quotaCount, requiredCount) - quotaCount;
 
-            _filler.Fill(quotaCount, totalCount - quotaCount);
+            _filler.ShowResult(new FillResult(quotaCount, bonusCount, requiredCount));
         }
 
         [ContextMenu("Complete Test Fill Instantly")]

@@ -1,146 +1,78 @@
-using System;
-using System.Collections.Generic;
+using Collectables;
 using Items;
-using Player;
-using Skills;
+using Quota;
+using System.Collections.Generic;
 using UnityEngine;
-using Upgrades;
 using VContainer;
 
 namespace Game
 {
-    public sealed class QuotaItemHighlighter : MonoBehaviour
+    public class QuotaItemHighlighter : MonoBehaviour
     {
-        [Tooltip("Базовый радиус подсветки квотовых предметов. Растёт с тиром как у детекторов (база * TierResolver), от магнита не зависит.")]
-        [SerializeField, Min(0f)] private float _radius = 3f;
+        [SerializeField] private Color _highlightColor = new Color(1f, 0.85f, 0.2f, 1f);
+        [SerializeField, Min(0f)] private float _outlineWidth = 4f;
 
-        [SerializeField] private Color _gizmoColor = new Color(1f, 0.85f, 0.2f, 1f);
-
-        private LevelGenerator _levelGenerator;
-        private LevelProgress _levelProgress;
-        private PlayerUpgrades _upgrades;
-        private PlayerTier _tierSource;
-        private TierResolver _tierResolver;
-        private Movement.Mover _mover;
-        private float _baseRadius;
-
-        public float Radius => _radius;
+        private QuotaItemDetector _detector;
+        private QuotaBoard _board;
+        private HashSet<Item> _items = new HashSet<Item>();
 
         [Inject]
-        public void Construct(LevelGenerator levelGenerator, LevelProgress levelProgress,
-            PlayerUpgrades upgrades, PlayerTier tierSource, TierResolver tierResolver,
-            Movement.Mover mover)
+        public void Construct(QuotaItemDetector detector, QuotaBoard board)
         {
-            _levelGenerator = levelGenerator;
-            _levelProgress = levelProgress;
-            _upgrades = upgrades;
-            _tierSource = tierSource;
-            _tierResolver = tierResolver;
-            _mover = mover;
-        }
-
-        private void Awake()
-        {
-            if (_levelGenerator == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: LevelGenerator was not injected. Check that GameLifetimeScope registers LevelGenerator and QuotaItemHighlighter.");
-            }
-
-            if (_levelProgress == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: LevelProgress was not injected. Check that GameLifetimeScope registers LevelProgress and QuotaItemHighlighter.");
-            }
-
-            if (_upgrades == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: PlayerUpgrades was not injected. Check that GameLifetimeScope registers PlayerUpgrades and QuotaItemHighlighter.");
-            }
-
-            if (_tierSource == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: TierSource was not injected. Check that GameLifetimeScope registers PlayerTier and QuotaItemHighlighter.");
-            }
-
-            if (_tierResolver == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: TierResolver was not injected. Check that GameLifetimeScope registers TierResolver and QuotaItemHighlighter.");
-            }
-
-            if (_mover == null)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Mover was not injected. Check that GameLifetimeScope registers Mover and QuotaItemHighlighter.");
-            }
-
-            if (_radius < 0f)
-            {
-                throw new InvalidOperationException(
-                    $"{name}: Radius cannot be negative. Set a non-negative value in the _radius field.");
-            }
-
-            _baseRadius = _radius;
-        }
-
-        private void Update()
-        {
-            if (Time.timeScale == 0f || _upgrades.HasSmell == false)
-            {
-                return;
-            }
-
-            Vector3 playerPosition = _mover.transform.position;
-            float sqrRadius = _radius * _radius;
-            Color highlightColor = _upgrades.HighlightColor;
-            float outlineWidth = _upgrades.OutlineWidth;
-            IReadOnlyList<Item> items = _levelGenerator.SpawnedItems;
-
-            for (int i = 0; i < items.Count; i++)
-            {
-                Item item = items[i];
-                bool inRadius = (item.transform.position - playerPosition).sqrMagnitude <= sqrRadius;
-
-                item.SetHighlighted(
-                    inRadius == true && _levelProgress.IsQuotaItem(item.Definition),
-                    highlightColor,
-                    outlineWidth);
-            }
+            _detector = detector;
+            _board = board;
         }
 
         private void OnEnable()
         {
-            _tierSource.TierChanged += OnTierSourceChanged;
-            SetRadius(_baseRadius * _tierResolver.GetScaleFor(_tierSource.CurrentTier));
+            _detector.Detected += OnDetected;
+            _detector.Exited += OnExited;
+            _board.QuotaChanged += OnQuotaChanged;
         }
 
         private void OnDisable()
         {
-            _tierSource.TierChanged -= OnTierSourceChanged;
-        }
+            _detector.Detected -= OnDetected;
+            _detector.Exited -= OnExited;
+            _board.QuotaChanged -= OnQuotaChanged;
 
-        private void OnTierSourceChanged(ItemTier previousTier, ItemTier currentTier)
-        {
-            SetRadius(_baseRadius * _tierResolver.GetScaleFor(currentTier));
-        }
-
-        private void SetRadius(float newRadius)
-        {
-            if (newRadius < 0f)
+            foreach (Item item in _items)
             {
-                throw new ArgumentOutOfRangeException(nameof(newRadius), "new radius cannot be negative");
+                SetHighlighted(item, false);
             }
 
-            _radius = newRadius;
+            _items.Clear();
         }
 
-        private void OnDrawGizmosSelected()
+        private void OnDetected(Item item)
         {
-            Gizmos.color = _gizmoColor;
-            Gizmos.DrawWireSphere(transform.position, _radius);
+            _items.Add(item);
+            SetHighlighted(item, _board.IsQuotaItem(item.Definition));
+        }
+
+        private void OnExited(Item item)
+        {
+            _items.Remove(item);
+            SetHighlighted(item, false);
+        }
+
+        private void OnQuotaChanged(int remaining, QuotaEntry entry)
+        {
+            foreach (Item item in _items)
+            {
+                if (item != null)
+                {
+                    SetHighlighted(item, _board.IsQuotaItem(item.Definition));
+                }
+            }
+        }
+
+        private void SetHighlighted(Item item, bool isHighlighted)
+        {
+            if (item != null && item.TryGetComponent(out ItemVisual visual))
+            {
+                visual.SetHighlighted(isHighlighted, _highlightColor, _outlineWidth);
+            }
         }
     }
 }

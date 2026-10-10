@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Scriptables
 {
     [CreateAssetMenu(menuName = "Mad Slime/Fill Config", fileName = "NewFillConfig")]
-    public sealed class FillConfig : ScriptableObject
+    public class FillConfig : ScriptableObject
     {
         [Header("Fill")]
         [Tooltip("Пауза перед первым кубом заливки (с).")]
@@ -67,12 +67,8 @@ namespace Scriptables
         [Tooltip("Насколько отъезжает камера при полном заполнении (градусы поля зрения). 0 = камера остаётся на месте.")]
         [SerializeField, Min(0f)] private float _fovKick = 9f;
 
-        [Tooltip("Длительность отъезда камеры (с). Столько же камера возвращается обратно — суммарный цикл 2x, держи меньше WinDelay.")]
+        [Tooltip("Длительность отъезда камеры (с). Столько же камера возвращается обратно — суммарный цикл 2x.")]
         [SerializeField, Min(0.01f)] private float _fovDuration = 0.6f;
-
-        [Header("Session")]
-        [Tooltip("Задержка перед окном победы после полного заполнения (с). Должно вмещать конфетти и цикл отъезда камеры.")]
-        [SerializeField, Min(0f)] private float _winDelay = 1.3f;
 
         [Header("Sounds")]
         [Tooltip("Звук финала филла (puff/конфетти) в момент запуска конфетти. Пусто — без звука.")]
@@ -97,7 +93,6 @@ namespace Scriptables
         public float ShapePunchElasticity => _shapePunchElasticity;
         public float FovKick => _fovKick;
         public float FovDuration => _fovDuration;
-        public float WinDelay => _winDelay;
         public SfxClip FinaleClip => _finaleClip;
     }
 }
