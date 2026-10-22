@@ -4,7 +4,7 @@ namespace UI
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(RectTransform))]
-    public sealed class MenuLabelFloat : MonoBehaviour
+    public class MenuLabelFloat : MonoBehaviour
     {
         [Tooltip("Отклонение вверх и вниз от исходной позиции, в единицах Canvas.")]
         [SerializeField, Min(0f)] private float _amplitude = 10f;
@@ -25,14 +25,24 @@ namespace UI
 
         private void Update()
         {
-            _elapsed += _useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            float deltaTime = Time.deltaTime;
+
+            if (_useUnscaledTime)
+            {
+                deltaTime = Time.unscaledDeltaTime;
+            }
+
+            _elapsed += deltaTime;
             float offset = Mathf.Sin(_elapsed * (Mathf.PI * 2f / Mathf.Max(0.1f, _period))) * _amplitude;
             _rect.anchoredPosition = _restPosition + Vector2.up * offset;
         }
 
         private void OnDisable()
         {
-            if (_rect != null) _rect.anchoredPosition = _restPosition;
+            if (_rect != null)
+            {
+                _rect.anchoredPosition = _restPosition;
+            }
         }
     }
 }

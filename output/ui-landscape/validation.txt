@@ -1,0 +1,46 @@
+PASS Player frames advance
+SCREEN main-1920x1080 actual=1920x1080 frame=322
+SCREEN main-portrait actual=1080x1920 frame=454
+SCREEN main-3840x2160 actual=3840x2160 frame=537
+SCREEN upgrades-1920x1080 actual=1920x1080 frame=669
+PASS Seven upgrade/perk cards
+PASS Four skills in left column
+PASS Three perks in right column
+PASS Skills left, perks right
+PASS Description avoids purchase chip Большие амбиции
+CARD Большие амбиции bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Позволяет съесть предметы на один тир крупнее.
+PASS Description avoids purchase chip Адреналин
+CARD Адреналин bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Ускоряет движение, когда время на исходе.
+PASS Description avoids purchase chip Улучшенный нюх
+CARD Улучшенный нюх bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Подсвечивает рядом квотовые предметы, которые можно съесть.
+PASS Step label remains inside Метаболизм
+PASS Description avoids purchase chip Метаболизм
+CARD Метаболизм bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Предметы вне квоты сильнее заполняют картинку.
+Вклад +15%
+PASS Step label remains inside Знаток вкуса
+PASS Description avoids purchase chip Знаток вкуса
+CARD Знаток вкуса bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Больше массы за квотовые предметы.
+Масса от квоты +20%
+PASS Step label remains inside Аппетит
+PASS Description avoids purchase chip Аппетит
+CARD Аппетит bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Больше массы за каждый съеденный предмет.
+Масса +15%
+PASS Step label remains inside Скорость
+PASS Description avoids purchase chip Скорость
+CARD Скорость bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Быстрее двигайся и собирай предметы.
+Скорость +10%
+PASS Upgrade purchase works after rearranging
+SCREEN upgrades-2560x1080 actual=2560x1080 frame=749
+SCREEN upgrades-960x540 actual=960x540 frame=913
+SCREEN upgrades-english actual=1920x1080 frame=1089
+SCREEN upgrades-portrait actual=1080x1920 frame=1221
+PASS Portrait retains seven cards
+PASS Portrait skill and perk sections do not overlap
+SCREEN skins-1920x1080 actual=1920x1080 frame=1360
+PASS Four named rarity groups
+PASS Skin catalog opens at top
+SCREEN skins-1920x1200 actual=1920x1200 frame=1459
+SCREEN skins-portrait actual=1080x1920 frame=1523
+SCREEN daily-roulette actual=1920x1080 frame=1679
+SCREEN skin-roulette actual=1920x1080 frame=1858
+ERROR_COUNT 0

@@ -37,49 +37,57 @@ namespace DI
             if (_playerUpgrades == null)
             {
                 throw new InvalidOperationException(
-                    "ProjectLifetimeScope: PlayerUpgrades is not assigned. Open the ProjectScope prefab and drag the PlayerUpgrades component into the Player Upgrades field.");
+                    "ProjectLifetimeScope: PlayerUpgrades is not assigned. Open the ProjectScope "
+                        + "prefab and drag the PlayerUpgrades component into the Player Upgrades field.");
             }
 
             if (_levelsCatalog == null)
             {
                 throw new InvalidOperationException(
-                    "ProjectLifetimeScope: LevelsCatalog is not assigned. Open the ProjectScope prefab and drag the LevelsCatalog asset into the Levels Catalog field.");
+                    "ProjectLifetimeScope: LevelsCatalog is not assigned. Open the ProjectScope "
+                        + "prefab and drag the LevelsCatalog asset into the Levels Catalog field.");
             }
 
             if (_localizationService == null)
             {
                 throw new InvalidOperationException(
-                    "ProjectLifetimeScope: LocalizationService is not assigned. Open the ProjectScope prefab and drag the LocalizationService component into the Localization Service field.");
+                    "ProjectLifetimeScope: LocalizationService is not assigned. Open the "
+                        + "ProjectScope prefab and drag the LocalizationService component into the Localization Service field.");
             }
 
             if (_tierTable == null)
             {
                 throw new InvalidOperationException(
-                    "ProjectLifetimeScope: TierTable is not assigned. Open the ProjectScope prefab and drag the TierTable asset into the Tier Table field.");
+                    "ProjectLifetimeScope: TierTable is not assigned. Open the ProjectScope prefab "
+                        + "and drag the TierTable asset into the Tier Table field.");
             }
 
             if (_layoutsLibrary == null)
             {
                 throw new InvalidOperationException(
-                    "ProjectLifetimeScope: LayoutsLibrary is not assigned. Open the ProjectScope prefab and drag the LayoutsLibrary asset into the Layouts Library field.");
+                    "ProjectLifetimeScope: LayoutsLibrary is not assigned. Open the ProjectScope "
+                        + "prefab and drag the LayoutsLibrary asset into the Layouts Library field.");
             }
 
             if (_audioPlayer == null)
             {
                 throw new InvalidOperationException(
-                    "ProjectLifetimeScope: AudioPlayer is not assigned. Open the ProjectScope prefab and drag the AudioPlayer component into the Audio Player field.");
+                    "ProjectLifetimeScope: AudioPlayer is not assigned. Open the ProjectScope "
+                        + "prefab and drag the AudioPlayer component into the Audio Player field.");
             }
 
             if (_audioMixerController == null)
             {
                 throw new InvalidOperationException(
-                    "ProjectLifetimeScope: AudioMixerController is not assigned. Open the ProjectScope prefab and drag the AudioMixerController component into the Audio Mixer Controller field.");
+                    "ProjectLifetimeScope: AudioMixerController is not assigned. Open the "
+                        + "ProjectScope prefab and drag the AudioMixerController component into the Audio Mixer Controller field.");
             }
 
             if (_sceneNavigator == null)
             {
                 throw new InvalidOperationException(
-                    "ProjectLifetimeScope: SceneNavigator is not assigned. Open the ProjectScope prefab and drag the SceneNavigator component into the Scene Navigator field.");
+                    "ProjectLifetimeScope: SceneNavigator is not assigned. Open the ProjectScope "
+                        + "prefab and drag the SceneNavigator component into the Scene Navigator field.");
             }
 
             Yg2SavesAccess savesAccess = new Yg2SavesAccess(_saveConfirmation);

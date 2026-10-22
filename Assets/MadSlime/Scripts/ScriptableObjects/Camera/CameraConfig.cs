@@ -45,7 +45,8 @@ namespace Scriptables
         [SerializeField, Range(0f, 1f)] private Vector2 _shakeAxes = Vector2.one;
 
         [Tooltip(
-            "Минимальная масса предмета, включающая шейк. Сравнивается с массами TierTable: при Small=1/Medium=1000 порог 1000 = трясёт только с крупного тира.")]
+            "Минимальная масса предмета, включающая шейк. Сравнивается с массами TierTable: "
+                + "при Small=1/Medium=1000 порог 1000 = трясёт только с крупного тира.")]
         [SerializeField, Min(0f)]
         private float _shakeMassThreshold = 1000f;
 

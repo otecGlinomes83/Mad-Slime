@@ -18,7 +18,8 @@ namespace Game
             if (drawer.CustomLayout != null)
             {
                 EditorGUILayout.HelpBox(
-                    $"Scene handles edit Custom Layout ('{drawer.CustomLayout.name}'). Clear the Custom Layout field to edit library layouts by index.",
+                    $"Scene handles edit Custom Layout ('{drawer.CustomLayout.name}'). Clear the "
+                        + $"Custom Layout field to edit library layouts by index.",
                     MessageType.Info);
                 return;
             }

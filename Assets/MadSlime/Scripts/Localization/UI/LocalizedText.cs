@@ -14,21 +14,24 @@ namespace UI
 
         private void Awake()
         {
-            _text = GetComponent<TMP_Text>();
+            if (TryGetComponent(out _text) == false)
+            {
+                throw new InvalidOperationException($"{name}: TMP_Text is required.");
+            }
         }
 
         private void OnEnable()
         {
-            Localization.LanguageChanged += Apply;
-            Apply();
+            Localization.LanguageChanged += OnLanguageChanged;
+            OnLanguageChanged();
         }
 
         private void OnDisable()
         {
-            Localization.LanguageChanged -= Apply;
+            Localization.LanguageChanged -= OnLanguageChanged;
         }
 
-        private void Apply()
+        private void OnLanguageChanged()
         {
             if (_key == null || _key == string.Empty)
             {

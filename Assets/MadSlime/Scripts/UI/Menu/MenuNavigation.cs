@@ -21,7 +21,6 @@ namespace UI
         }
 
         [SerializeField] private GameObject _uiRoot;
-        [SerializeField] private GameObject _backgroundRoot;
         [SerializeField] private GameObject _mainWindow;
         [SerializeField] private GameObject _skinsWindow;
         [SerializeField] private GameObject _upgradesWindow;
@@ -63,7 +62,7 @@ namespace UI
 
         private void Awake()
         {
-            if (_uiRoot == null || _backgroundRoot == null || _mainWindow == null || _skinsWindow == null
+            if (_uiRoot == null || _mainWindow == null || _skinsWindow == null
                 || _upgradesWindow == null
                 || _previewCamera == null || _playButton == null || _skinsButton == null || _upgradesButton == null
                 || _leaderboardButton == null || _settingsButton == null || _dailyButton == null
@@ -173,7 +172,7 @@ namespace UI
 
         private bool CanInteractWithScreen()
         {
-            return _popups.IsOpen == false && _sceneNavigator.IsTransitioning == false;
+            return _popups.HasOpenPopups() == false && _sceneNavigator.IsTransitioning == false;
         }
 
         private void OnPlayClicked()
@@ -387,7 +386,6 @@ namespace UI
         private void SetWindow(WindowState state)
         {
             _state = state;
-            // Scene objects can already be destroyed when either OnDisable calls Stop.
             SetActiveIfAlive(_mainWindow, state == WindowState.Main);
             SetActiveIfAlive(_skinsWindow, state == WindowState.Skins);
             SetActiveIfAlive(_upgradesWindow, state == WindowState.Upgrades);
@@ -395,7 +393,6 @@ namespace UI
             {
                 SetActiveIfAlive(_previewCamera.gameObject, state == WindowState.Skins);
             }
-            SetActiveIfAlive(_backgroundRoot, state != WindowState.Stopped);
         }
 
         private static void SetActiveIfAlive(GameObject target, bool active)

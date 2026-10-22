@@ -1,0 +1,3 @@
+1080x1920: MysterySkin 1254x1254, assigned to active wheel, preserveAspect=True
+1920x1080: MysterySkin 1254x1254, assigned to active wheel, preserveAspect=True
+PASS

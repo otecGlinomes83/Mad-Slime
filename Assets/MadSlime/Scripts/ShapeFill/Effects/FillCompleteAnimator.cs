@@ -12,7 +12,8 @@ namespace ShapeFill
     [RequireComponent(typeof(FillCompleteSound))]
     public class FillCompleteAnimator : MonoBehaviour
     {
-        [Tooltip("Система конфетти на сцене Fill (не префаб-ассет): настраивается в редакторе. На Awake гасится, играет только по FillCompleted.")]
+        [Tooltip("Система конфетти на сцене Fill (не префаб-ассет): настраивается в редакторе. "
+            + "На Awake гасится, играет только по FillCompleted.")]
         [SerializeField] private ParticleSystem _confetti;
 
         private FillConfig _config;
@@ -33,7 +34,8 @@ namespace ShapeFill
             if (_orchestrator == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Orchestrator was not injected. Check that FillLifetimeScope registers ShapeFillOrchestrator and FillCompleteAnimator.");
+                    $"{name}: Orchestrator was not injected. Check that FillLifetimeScope registers "
+                        + $"ShapeFillOrchestrator and FillCompleteAnimator.");
             }
 
             if (_gridBuilder == null)
@@ -51,7 +53,8 @@ namespace ShapeFill
             if (_confetti == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Confetti is not assigned. Place the ConfettiBlastRainbow prefab into the Fill scene and drag the instance into the _confetti field.");
+                    $"{name}: Confetti is not assigned. Place the ConfettiBlastRainbow prefab into "
+                        + $"the Fill scene and drag the instance into the _confetti field.");
             }
 
             if (_confetti.gameObject.scene.IsValid() == false)
@@ -60,12 +63,11 @@ namespace ShapeFill
                     $"{name}: Confetti must be a scene instance, not a prefab asset. Drag the scene object into the _confetti field.");
             }
 
-            _completeSound = GetComponent<FillCompleteSound>();
-
-            if (_completeSound == null)
+            if (TryGetComponent(out _completeSound) == false)
             {
                 throw new InvalidOperationException(
-                    $"{name}: FillCompleteSound was not found. It is required by FillCompleteAnimator and must sit on the same GameObject.");
+                    $"{name}: FillCompleteSound was not found. It is required by "
+                        + $"FillCompleteAnimator and must sit on the same GameObject.");
             }
 
             _confetti.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);

@@ -1,0 +1,142 @@
+PASS Hidden editor container activated at startup
+PASS Automatic daily popup visible
+SCREEN startup-popup
+PASS Clickable CloseButton
+PASS Input System UI module enabled
+PASS Raycast hits CloseButton
+MOUSE DOWN CloseButton (942.00, 1600.00)
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Current scene dimensions _upgradesButton (460.00, 210.00)
+PASS Current scene dimensions _skinsButton (460.00, 210.00)
+PASS Current scene dimensions _leaderboardButton (460.00, 210.00)
+PASS Current scene dimensions _settingsButton (460.00, 210.00)
+PASS Current scene dimensions _dailyButton (460.00, 210.00)
+SCREEN main-portrait
+PASS Clickable UpgradesButton
+PASS Input System UI module enabled
+PASS Raycast hits UpgradesButton
+MOUSE DOWN UpgradesButton (296.00, 1175.00)
+PASS Mouse opens upgrades
+PASS Clickable CloseButton
+PASS Input System UI module enabled
+PASS Raycast hits CloseButton
+MOUSE DOWN CloseButton (995.00, 1830.00)
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Clickable SkinsButton
+PASS Input System UI module enabled
+PASS Raycast hits SkinsButton
+MOUSE DOWN SkinsButton (784.00, 1175.00)
+PASS Mouse opens skins
+PASS Clickable CloseButton
+PASS Input System UI module enabled
+PASS Raycast hits CloseButton
+MOUSE DOWN CloseButton (995.00, 1830.00)
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Clickable SettingsButton
+PASS Input System UI module enabled
+PASS Raycast hits SettingsButton
+MOUSE DOWN SettingsButton (784.00, 931.00)
+PASS Mouse opens settings
+PASS Clickable CloseButton
+PASS Input System UI module enabled
+PASS Raycast hits CloseButton
+MOUSE DOWN CloseButton (948.00, 1368.00)
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Clickable LeaderboardButton
+PASS Input System UI module enabled
+PASS Raycast hits LeaderboardButton
+MOUSE DOWN LeaderboardButton (296.00, 931.00)
+PASS Mouse opens leaderboard
+PASS Clickable CloseButton
+PASS Input System UI module enabled
+PASS Raycast hits CloseButton
+MOUSE DOWN CloseButton (981.80, 1313.08)
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Clickable DailyButton
+PASS Input System UI module enabled
+PASS Raycast hits DailyButton
+MOUSE DOWN DailyButton (296.00, 687.00)
+PASS Mouse opens roulette
+PASS Clickable CloseButton
+PASS Input System UI module enabled
+PASS Raycast hits CloseButton
+MOUSE DOWN CloseButton (942.00, 1600.00)
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Current scene dimensions _upgradesButton (460.00, 210.00)
+PASS Current scene dimensions _skinsButton (460.00, 210.00)
+PASS Current scene dimensions _leaderboardButton (460.00, 210.00)
+PASS Current scene dimensions _settingsButton (460.00, 210.00)
+PASS Current scene dimensions _dailyButton (460.00, 210.00)
+SCREEN main-landscape
+PASS Clickable UpgradesButton
+PASS Input System UI module enabled
+PASS Raycast hits UpgradesButton
+MOUSE DOWN UpgradesButton (1167.20, 800.00)
+PASS Mouse opens upgrades
+PASS Clickable CloseButton
+PASS Input System UI module enabled
+PASS Raycast hits CloseButton
+MOUSE DOWN CloseButton (1819.00, 1002.00)
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Clickable SkinsButton
+PASS Input System UI module enabled
+PASS Raycast hits SkinsButton
+MOUSE DOWN SkinsButton (1655.20, 800.00)
+PASS Mouse opens skins
+PASS Clickable CloseButton
+PASS Input System UI module enabled
+PASS Raycast hits CloseButton
+MOUSE DOWN CloseButton (1819.00, 1002.00)
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Clickable SettingsButton
+PASS Input System UI module enabled
+PASS Raycast hits SettingsButton
+MOUSE DOWN SettingsButton (1655.20, 570.00)
+PASS Mouse opens settings
+PASS Clickable CloseButton
+PASS Input System UI module enabled
+PASS Raycast hits CloseButton
+MOUSE DOWN CloseButton (1368.00, 948.00)
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Clickable LeaderboardButton
+PASS Input System UI module enabled
+PASS Raycast hits LeaderboardButton
+MOUSE DOWN LeaderboardButton (1167.20, 570.00)
+PASS Mouse opens leaderboard
+PASS Clickable CloseButton
+PASS Input System UI module enabled
+PASS Raycast hits CloseButton
+MOUSE DOWN CloseButton (1458.00, 938.00)
+PASS Popup stack clear
+PASS Main buttons interactable after close
+PASS Clickable DailyButton
+PASS Input System UI module enabled
+PASS Raycast hits DailyButton
+MOUSE DOWN DailyButton (1167.20, 340.00)
+PASS Mouse opens roulette
+PASS Clickable CloseButton
+PASS Input System UI module enabled
+PASS Raycast hits CloseButton
+MOUSE DOWN CloseButton (1382.00, 975.00)
+PASS Popup stack clear
+PASS Main buttons interactable after close
+SCREEN before-play
+PASS Clickable PlayButton
+PASS Input System UI module enabled
+PASS Raycast hits PlayButton
+MOUSE DOWN PlayButton (1411.20, 120.00)
+PASS Mouse Play loads Game scene
+PASS No runtime errors

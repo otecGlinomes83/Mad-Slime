@@ -111,6 +111,14 @@ namespace UI
         private void ApplyFillAmount(float fillAmount)
         {
             _progressBar.fillAmount = fillAmount;
+            if (_progressBar.type == Image.Type.Sliced)
+            {
+                RectTransform fill = _progressBar.rectTransform;
+                fill.anchorMax = new Vector2(fillAmount, 1f);
+                fill.offsetMin = Vector2.zero;
+                fill.offsetMax = Vector2.zero;
+                _progressBar.enabled = fillAmount > 0f;
+            }
         }
     }
 }

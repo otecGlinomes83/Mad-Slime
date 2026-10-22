@@ -43,7 +43,10 @@ namespace Audio
                     $"{name}: MinPitch {_minPitch} is greater than MaxPitch {_maxPitch}.");
             }
 
-            _filler = GetComponent<ShapeFiller>();
+            if (TryGetComponent(out _filler) == false)
+            {
+                throw new InvalidOperationException($"{name}: ShapeFiller is required.");
+            }
         }
 
         private void OnEnable()
@@ -58,7 +61,7 @@ namespace Audio
 
         private void OnFillerCubeArrived(CubeFlightAnimator cube)
         {
-            float pitch = Mathf.Lerp(_minPitch, _maxPitch, _filler.FillFraction);
+            float pitch = Mathf.Lerp(_minPitch, _maxPitch, _filler.GetFillFraction());
 
             _soundPlayer.Play(_sfxClip, pitch, _minInterval);
         }

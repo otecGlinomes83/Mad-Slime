@@ -4,48 +4,18 @@ using UnityEngine;
 
 namespace UI
 {
-    // Keeps covered screens alive while only the top popup receives UI input.
-    public sealed class MenuPopupStack
+    public class MenuPopupStack
     {
-        private sealed class InputState
+
+        private GameObject[] _screens;
+        private List<Component> _windows = new List<Component>();
+        private List<MenuPopupInputState> _popupInput = new List<MenuPopupInputState>();
+        private List<MenuPopupInputState> _screenInput = new List<MenuPopupInputState>();
+
+        public bool HasOpenPopups()
         {
-            private readonly CanvasGroup _group;
-            private readonly bool _interactable;
-            private readonly bool _blocksRaycasts;
-
-            public InputState(GameObject root)
-            {
-                if (root.TryGetComponent(out _group) == false)
-                {
-                    _group = root.AddComponent<CanvasGroup>();
-                }
-
-                _interactable = _group.interactable;
-                _blocksRaycasts = _group.blocksRaycasts;
-            }
-
-            public void Block()
-            {
-                _group.interactable = false;
-                _group.blocksRaycasts = false;
-            }
-
-            public void Restore()
-            {
-                if (_group != null)
-                {
-                    _group.interactable = _interactable;
-                    _group.blocksRaycasts = _blocksRaycasts;
-                }
-            }
+            return _windows.Count > 0;
         }
-
-        private readonly GameObject[] _screens;
-        private readonly List<Component> _windows = new List<Component>();
-        private readonly List<InputState> _popupInput = new List<InputState>();
-        private readonly List<InputState> _screenInput = new List<InputState>();
-
-        public bool IsOpen => _windows.Count > 0;
 
         public MenuPopupStack(params GameObject[] screens)
         {
@@ -54,7 +24,7 @@ namespace UI
 
         public bool IsTop(Component window)
         {
-            return IsOpen && _windows[_windows.Count - 1] == window;
+            return HasOpenPopups() && _windows[_windows.Count - 1] == window;
         }
 
         public void Push(Component window)
@@ -64,7 +34,7 @@ namespace UI
                 throw new InvalidOperationException("The popup is already open.");
             }
 
-            if (IsOpen)
+            if (HasOpenPopups())
             {
                 _popupInput[_popupInput.Count - 1].Block();
             }
@@ -72,14 +42,14 @@ namespace UI
             {
                 foreach (GameObject screen in _screens)
                 {
-                    InputState input = new InputState(screen);
+                    MenuPopupInputState input = new MenuPopupInputState(screen);
                     _screenInput.Add(input);
                     input.Block();
                 }
             }
 
             _windows.Add(window);
-            _popupInput.Add(new InputState(window.gameObject));
+            _popupInput.Add(new MenuPopupInputState(window.gameObject));
         }
 
         public void Pop(Component window)
@@ -93,7 +63,7 @@ namespace UI
             _windows.RemoveAt(last);
             _popupInput.RemoveAt(last);
 
-            if (IsOpen)
+            if (HasOpenPopups())
             {
                 _popupInput[_popupInput.Count - 1].Restore();
             }
@@ -105,7 +75,7 @@ namespace UI
 
         public void Clear()
         {
-            foreach (InputState input in _popupInput)
+            foreach (MenuPopupInputState input in _popupInput)
             {
                 input.Restore();
             }
@@ -117,7 +87,7 @@ namespace UI
 
         private void RestoreScreens()
         {
-            foreach (InputState input in _screenInput)
+            foreach (MenuPopupInputState input in _screenInput)
             {
                 input.Restore();
             }

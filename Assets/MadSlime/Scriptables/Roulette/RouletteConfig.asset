@@ -15,28 +15,28 @@ MonoBehaviour:
   _sectors:
   - _rewardKind: 0
     _coins: 50
-    _dropChance: 35
+    _dropChance: 31.818182
   - _rewardKind: 0
     _coins: 150
-    _dropChance: 25
+    _dropChance: 22.727273
   - _rewardKind: 0
     _coins: 300
-    _dropChance: 15
+    _dropChance: 13.636364
   - _rewardKind: 0
     _coins: 600
-    _dropChance: 10
+    _dropChance: 9.090909
   - _rewardKind: 0
     _coins: 1000
-    _dropChance: 7
+    _dropChance: 6.363636
   - _rewardKind: 0
     _coins: 1500
-    _dropChance: 4
+    _dropChance: 3.636364
   - _rewardKind: 0
     _coins: 3000
-    _dropChance: 3
+    _dropChance: 2.727272
   - _rewardKind: 1
     _coins: 0
-    _dropChance: 1
+    _dropChance: 10
   _exclusiveSkins:
   - {fileID: 11400000, guid: 82671d3ec500bdb07894301d5ce80736, type: 2}
   - {fileID: 11400000, guid: 3e381ab6fe2dd0d3fbdbb3eedd543d26, type: 2}

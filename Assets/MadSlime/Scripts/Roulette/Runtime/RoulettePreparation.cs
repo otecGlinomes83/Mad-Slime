@@ -23,7 +23,9 @@ namespace Roulette
         private UiSpawner _spawner;
         private RouletteModel _dailyModel;
 
-        public RouletteModel SkinModel { get; private set; }
+        private RouletteModel _skinModel;
+
+        public RouletteModel SkinModel => _skinModel;
 
         [Inject]
         public void Construct(RouletteConfig config, ShopContent content, RouletteFactory factory,
@@ -50,7 +52,7 @@ namespace Roulette
             RouletteConfigValidator validator = new RouletteConfigValidator();
             validator.Validate(_config, _content.SkinItems, dailySectorCount, skinSectorCount);
             _dailyModel = _factory.CreateDaily(dailySectorCount);
-            SkinModel = _factory.CreateSkins(_content.SkinItems, skinSectorCount);
+            _skinModel = _factory.CreateSkins(_content.SkinItems, skinSectorCount);
             _dailyModel.RefreshSlots();
             SkinModel.RefreshSlots();
         }
@@ -73,7 +75,11 @@ namespace Roulette
             }
 
             RouletteView view = _spawner.Spawn(prefab, UiLayer.Popup);
-            RoulettePresenter presenter = view.GetComponent<RoulettePresenter>();
+            if (view.TryGetComponent(out RoulettePresenter presenter) == false)
+            {
+                throw new InvalidOperationException($"{view.name}: RoulettePresenter is required.");
+            }
+
             presenter.Setup(model, _ads, _sound, _saveConfirmation);
             return presenter;
         }

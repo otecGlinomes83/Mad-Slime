@@ -1,0 +1,32 @@
+{
+  "scenes_and_prefabs": [
+    "Assets/MadSlime/Resources/Prefabs/UI/FillUI.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/LoadingScreen.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/PerkSeporator.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Plate.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/RouletteWheel.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/UpgradePlate.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/WinPopup.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/WindowHeader.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Buttons/CloseButton.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Buttons/PauseButtonCanvas.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Menu/LeaderboardMenu.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Menu/LeaderboardRowView.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Menu/PauseMenu.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/WinMenu.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Skins/PerkSeparator.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteSectorCard.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Skins/SkinItem.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Skins/SkinRarityGroup.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Skins/UpgradeItem.prefab",
+    "Assets/MadSlime/Scenes/Menu.unity",
+    "Assets/MadSlime/Scenes/Game.unity",
+    "Assets/MadSlime/Scenes/Fill.unity",
+    "Assets/MadSlime/Scriptables/Upgrades/UpgradesConfig.asset",
+    "Assets/MadSlime/Scriptables/Localization/Localization.asset"
+  ],
+  "ui_png_count": 45,
+  "skin_png_count": 34
+}

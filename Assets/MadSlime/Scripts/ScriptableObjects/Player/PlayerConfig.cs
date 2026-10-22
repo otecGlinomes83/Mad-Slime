@@ -31,7 +31,8 @@ namespace Scriptables
         [Tooltip("Порог скорости (юниты/с), выше которого слайм дымит. На поздних тирах скорость переваливает за порог. 0 = без дыма.")]
         [SerializeField, Min(0f)] private float _smokeSpeedThreshold;
 
-        [Tooltip("С какой доли пути предмет начинает сжиматься в ноль. 0.6 = последние 40% пути; 0.8 = доезжает целым и схлопывается у пасти.")]
+        [Tooltip("С какой доли пути предмет начинает сжиматься в ноль. 0.6 = последние 40% пути; "
+            + "0.8 = доезжает целым и схлопывается у пасти.")]
         [SerializeField, Range(0.1f, 0.95f)] private float _shrinkStart = 0.6f;
 
         [Tooltip("Крутость разгона ease-in. 1 = линейно, 2 = мягкий отрыв и разгон, 3+ = предмет зависает и резко всасывается.")]
@@ -41,7 +42,8 @@ namespace Scriptables
         [Tooltip("Длительность полного прохода кривой сквоша (с).")]
         [SerializeField, Min(0.01f)] private float _squashDuration = 0.2f;
 
-        [Tooltip("Кривая сквоша: X — время прохода (0–1), Y — множитель размера (1 = обычный, 0.85 = вжим до 85%). Форму анимации задаёт целиком.")]
+        [Tooltip("Кривая сквоша: X — время прохода (0–1), Y — множитель размера (1 = обычный, "
+            + "0.85 = вжим до 85%). Форму анимации задаёт целиком.")]
         [SerializeField] private AnimationCurve _squashCurve = new AnimationCurve(
             new Keyframe(0f, 1f),
             new Keyframe(0.35f, 0.88f),
@@ -65,7 +67,8 @@ namespace Scriptables
         [SerializeField, Range(0f, 0.5f)] private float _deformMaxStretch = 0.22f;
 
         [Header("Movement Cycle")]
-        [Tooltip("Форма сжатия: X — фаза шага (0–1), Y — глубина сжатия (0–1). 0 — исходный размер, 1 — максимальное сжатие. Значение в нуле должно совпадать со значением в единице, иначе цикл щёлкает на стыке.")]
+        [Tooltip("Форма сжатия: X — фаза шага (0–1), Y — глубина сжатия (0–1). 0 — исходный "
+            + "размер, 1 — максимальное сжатие. Значение в нуле должно совпадать со значением в единице, иначе цикл щёлкает на стыке.")]
         [SerializeField] private AnimationCurve _crawlStretchCurve = new AnimationCurve(
             new Keyframe(0f, 0f),
             new Keyframe(0.35f, 1f),

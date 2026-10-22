@@ -46,7 +46,7 @@ namespace Shop
             _skinId = skinId;
             _rarityColor = rarityColor;
             _contentImage.sprite = icon;
-            _backgroundImage.color = rarityColor;
+            _backgroundImage.color = _rarityColor;
             SetUnlocked(isUnlocked);
             SetSelected(isSelected);
         }

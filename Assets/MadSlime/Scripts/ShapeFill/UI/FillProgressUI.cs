@@ -1,23 +1,19 @@
-using DG.Tweening;
-using ShapeFill;
 using System;
-using System.Collections.Generic;
+using ShapeFill;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using VContainer;
 
 namespace UI
 {
     public class FillProgressUI : MonoBehaviour
     {
+        [SerializeField] private Image _progressBar;
         [SerializeField] private TMP_Text _percentText;
-        [SerializeField, Range(0f, 1f)] private float _punchStrength = 0.25f;
-        [SerializeField, Min(0.01f)] private float _punchDuration = 0.25f;
-        [SerializeField, Min(0)] private int _punchVibrato = 8;
-        [SerializeField, Range(0f, 1f)] private float _punchElasticity = 0.4f;
-        [SerializeField] private List<int> _punchMilestones = new List<int> { 25, 50, 75, 100 };
 
-        private int _lastPercent;
+        private const float FullPercent = 100f;
+
         private ShapeFiller _shapeFiller;
 
         [Inject]
@@ -36,20 +32,20 @@ namespace UI
 
             if (_percentText == null)
             {
-                throw new InvalidOperationException(
-                    $"{name}: PercentText is not assigned. Drag a TMP_Text into the _percentText field.");
+                throw new InvalidOperationException($"{name}: assign the fill percentage text.");
             }
 
-            _percentText.text = "0%";
+            if (_progressBar == null)
+            {
+                throw new InvalidOperationException($"{name}: assign the fill progress image.");
+            }
         }
 
         private void OnEnable()
         {
             _shapeFiller.CubeArrived += OnCubeArrived;
             _shapeFiller.FillCompleted += OnFillCompleted;
-
-            _lastPercent = 0;
-            _percentText.text = "0%";
+            ApplyProgress(0f);
         }
 
         private void OnDisable()
@@ -60,38 +56,29 @@ namespace UI
 
         private void OnFillCompleted(float percent)
         {
-            int finalPercent = Mathf.RoundToInt(percent * 100f);
-            _lastPercent = finalPercent;
-            _percentText.text = $"{finalPercent}%";
+            ApplyProgress(percent);
         }
 
         private void OnCubeArrived(CubeFlightAnimator cube)
         {
-            int percent = Mathf.RoundToInt(_shapeFiller.FormFillFraction * 100f);
-
-            if (percent == _lastPercent)
-            {
-                return;
-            }
-
-            _lastPercent = percent;
-            _percentText.text = $"{percent}%";
-
-            if (_punchMilestones.Contains(percent) == true)
-            {
-                Punch();
-            }
+            ApplyProgress(_shapeFiller.GetFormFillFraction());
         }
 
-        private void Punch()
+        private void ApplyProgress(float fraction)
         {
-            _percentText.transform.DOKill();
-            _percentText.transform.DOPunchScale(
-                    Vector3.one * _punchStrength,
-                    _punchDuration,
-                    _punchVibrato,
-                    _punchElasticity)
-                .SetLink(gameObject);
+            float fillAmount = Mathf.Clamp01(fraction);
+            _progressBar.fillAmount = fillAmount;
+            int percent = Mathf.RoundToInt(fillAmount * FullPercent);
+            _percentText.SetText("{0}%", percent);
+
+            if (_progressBar.type == Image.Type.Sliced)
+            {
+                RectTransform fill = _progressBar.rectTransform;
+                fill.anchorMax = new Vector2(fillAmount, 1f);
+                fill.offsetMin = Vector2.zero;
+                fill.offsetMax = Vector2.zero;
+                _progressBar.enabled = fillAmount > 0f;
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Quota
     {
         private const float MaxFillPercent = 1f;
         private const float QuotaFillWeight = 1f;
+        private const float ForeignFillWeight = 0.1f;
 
         private QuotaBoard _board;
         private PlayerUpgrades _upgrades;
@@ -99,7 +100,7 @@ namespace Quota
                 return;
             }
 
-            _collectedForeignFill += _upgrades.GetForeignFillMultiplier();
+            _collectedForeignFill += ForeignFillWeight * _upgrades.GetForeignFillMultiplier();
         }
 
         private void CheckCompletion()

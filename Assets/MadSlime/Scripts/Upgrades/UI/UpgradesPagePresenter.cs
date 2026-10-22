@@ -13,18 +13,22 @@ namespace Shop
         private const float ThousandsPriceThreshold = 1000f;
 
         [SerializeField] private Transform _upgradesParent;
+        [SerializeField] private Transform _perksParent;
         [SerializeField] private UpgradeItemViewFactory _upgradeFactory;
-        [SerializeField] private GameObject _perkSeparatorPrefab;
 
         private PlayerUpgrades _upgrades;
         private Wallet _wallet;
         private UpgradePurchaseModel _purchases;
         private List<UpgradeItemView> _upgradeViews = new List<UpgradeItemView>();
         private List<UpgradeItemView> _perkViews = new List<UpgradeItemView>();
-        private GameObject _separator;
 
         public void Setup(PlayerUpgrades upgrades, Wallet wallet, Action<Action> transaction)
         {
+            if (_upgradesParent == null || _perksParent == null || _upgradeFactory == null)
+            {
+                throw new InvalidOperationException($"{name}: assign both upgrade lists and the item factory.");
+            }
+
             Clear();
             _upgrades = upgrades;
             _wallet = wallet;
@@ -65,14 +69,9 @@ namespace Shop
                 UpdateUpgrade(view, entry.Type);
             }
 
-            if (_perkSeparatorPrefab != null)
-            {
-                _separator = Instantiate(_perkSeparatorPrefab, _upgradesParent);
-            }
-
             foreach (PerkEntry entry in _upgrades.Config.Perks)
             {
-                UpgradeItemView view = _upgradeFactory.Get(_upgradesParent);
+                UpgradeItemView view = _upgradeFactory.Get(_perksParent);
                 view.Initialize(entry.Icon, Localization.Get(GetPerkKey(entry.Type)),
                     Localization.Get(GetPerkDescKey(entry.Type)), false);
                 view.Click += OnClicked;
@@ -183,12 +182,6 @@ namespace Shop
 
             _upgradeViews.Clear();
             _perkViews.Clear();
-
-            if (_separator != null)
-            {
-                Destroy(_separator);
-                _separator = null;
-            }
         }
 
         private string FormatPercent(float value)

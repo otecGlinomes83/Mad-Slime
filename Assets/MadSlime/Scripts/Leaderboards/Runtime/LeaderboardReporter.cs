@@ -32,13 +32,15 @@ namespace Game
             if (string.IsNullOrEmpty(_config.LeaderboardName))
             {
                 throw new InvalidOperationException(
-                    $"{name}: LeaderboardName is empty. Fill it in the YandexConfig asset (id of the leaderboard from the Yandex console).");
+                    $"{name}: LeaderboardName is empty. Fill it in the YandexConfig asset (id of the "
+                        + $"leaderboard from the Yandex console).");
             }
 
             if (_leaderboardService == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: ILeaderboardService was not injected. Check that ProjectLifetimeScope registers the YG2 leaderboard adapter.");
+                    $"{name}: ILeaderboardService was not injected. Check that ProjectLifetimeScope "
+                        + $"registers the YG2 leaderboard adapter.");
             }
         }
 

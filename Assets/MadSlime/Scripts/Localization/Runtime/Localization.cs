@@ -10,7 +10,7 @@ namespace Game
         public const string English = "en";
         public const string Turkish = "tr";
 
-        private static string[] LanguageOrder = { Russian, English, Turkish };
+        private static string[] s_languageOrder = { Russian, English, Turkish };
 
         private static LocalizationTable s_table;
         private static string s_language = Russian;
@@ -56,8 +56,8 @@ namespace Game
 
         public static void CycleLanguage()
         {
-            int next = (Array.IndexOf(LanguageOrder, s_language) + 1) % LanguageOrder.Length;
-            SetLanguage(LanguageOrder[next]);
+            int next = (Array.IndexOf(s_languageOrder, s_language) + 1) % s_languageOrder.Length;
+            SetLanguage(s_languageOrder[next]);
         }
 
         private static string ResolveLanguage(string language)
@@ -67,9 +67,9 @@ namespace Game
                 return FromSystemLanguage();
             }
 
-            for (int i = 0; i < LanguageOrder.Length; i++)
+            for (int i = 0; i < s_languageOrder.Length; i++)
             {
-                if (LanguageOrder[i] == language)
+                if (s_languageOrder[i] == language)
                 {
                     return language;
                 }

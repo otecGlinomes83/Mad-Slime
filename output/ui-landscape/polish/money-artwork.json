@@ -1,0 +1,50 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "transparent_background": true,
+  "style_reference": "Assets/MadSlime/Art/UI/Unified/Speed.png",
+  "prompt_template": "Create one polished high resolution transparent-background game currency icon. First attached reference defines SUBJECT and COMPOSITION; second winged boot defines the project's illustration STYLE only. {subject} Match the boot: bold smoothly drawn dark deep green outline, confident rounded forms, warm cream highlights, controlled 2-3 tone cel shading, beautiful material volume, professional casual-game illustration. Gold coins should match each other as a coherent six-icon reward family. Keep coin faces unmarked, NO lightning bolts, NO energy symbols, no letters or numerals. Preserve the original subject rather than simplifying it into generic circles. Center the isolated illustration, 10% transparent padding, crisp smooth edges, square canvas. No panel, no background, no ground shadow, no extra decoration. Deliver just this one icon.",
+  "assets": [
+    {
+      "name": "Coin",
+      "reference": "Assets/GUI Kit Casual Game/ResourcesData/Sprite/Common/btn_icon_gold.png",
+      "subject": "ONE single gold coin, slightly tilted in three-quarter view, clearly thick minted rim and raised inner bevel, warm rich gold with restrained bright highlight. No symbol in its center.",
+      "generated_path": "/home/mshgn4zzz/.codex/generated_images/01a15611-d34f-7902-a450-df813f75e2c8/exec-3bd18ad5-41e1-4d85-8463-c6f2751518e3.png",
+      "destination": "Assets/MadSlime/Art/UI/Unified/Coin.png"
+    },
+    {
+      "name": "CoinsFew",
+      "reference": "Assets/GUI Kit Casual Game/ResourcesData/Sprite/Shop/shop_img_gold_0.png",
+      "subject": "A small handful of exactly THREE gold coins: one tilted upright behind two lying coins. Preserve reference arrangement and thick coin rims.",
+      "generated_path": "/home/mshgn4zzz/.codex/generated_images/01a15611-d34f-7902-a450-df813f75e2c8/exec-4756dda6-f591-4dd6-843a-8bd29fdbf9cd.png",
+      "destination": "Assets/MadSlime/Art/UI/Unified/CoinsFew.png"
+    },
+    {
+      "name": "CoinsStack",
+      "reference": "Assets/GUI Kit Casual Game/ResourcesData/Sprite/Shop/shop_img_gold_1.png",
+      "subject": "A modest short neat STACK of gold coins, two loose coins leaning/lying in front. Preserve the reference silhouette and arrangement.",
+      "generated_path": "/home/mshgn4zzz/.codex/generated_images/01a15611-d34f-7902-a450-df813f75e2c8/exec-3667eca2-6588-4182-ba70-a0819cfc4a43.png",
+      "destination": "Assets/MadSlime/Art/UI/Unified/CoinsStack.png"
+    },
+    {
+      "name": "CoinsPile",
+      "reference": "Assets/GUI Kit Casual Game/ResourcesData/Sprite/Shop/shop_img_gold_2.png",
+      "subject": "A generous PILE of many gold coins with two or three uneven little stacks and a few tilted loose coins. Preserve the reference arrangement, noticeably more abundant than a small stack.",
+      "generated_path": "/home/mshgn4zzz/.codex/generated_images/01a15611-d34f-7902-a450-df813f75e2c8/exec-4ebf790e-638d-4b38-b74c-f6e2a64a0dfc.png",
+      "destination": "Assets/MadSlime/Art/UI/Unified/CoinsPile.png"
+    },
+    {
+      "name": "CoinsBag",
+      "reference": "Assets/GUI Kit Casual Game/ResourcesData/Sprite/Shop/shop_img_gold_3.png",
+      "subject": "A soft caramel brown MONEY BAG lying on its side with its tied neck toward the left, circular open mouth toward viewer, spilling plentiful gold coins. Preserve original reference arrangement; readable folded fabric, thick coin rims.",
+      "generated_path": "/home/mshgn4zzz/.codex/generated_images/01a15611-d34f-7902-a450-df813f75e2c8/exec-c074ea5b-5ef3-4678-837f-e0d426d1cc4a.png",
+      "destination": "Assets/MadSlime/Art/UI/Unified/CoinsBag.png"
+    },
+    {
+      "name": "CoinsSafe",
+      "reference": "Assets/GUI Kit Casual Game/ResourcesData/Sprite/Shop/shop_img_gold_4.png",
+      "subject": "A substantial muted lavender-gray OPEN SAFE filled with gold coins overflowing into a generous pile, thick open door hinged left with visible simple round lock. Preserve the original reference arrangement and silhouette.",
+      "generated_path": "/home/mshgn4zzz/.codex/generated_images/01a15611-d34f-7902-a450-df813f75e2c8/exec-6bfacd8c-cd2b-4b4e-8385-bcef9fedafdf.png",
+      "destination": "Assets/MadSlime/Art/UI/Unified/CoinsSafe.png"
+    }
+  ]
+}

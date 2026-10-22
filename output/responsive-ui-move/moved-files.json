@@ -1,0 +1,58 @@
+{
+  "Assets/MadSlime/ResponsiveUI/Runtime/ResponsiveCanvasLayout.cs": {
+    "old": "Assets/MadSlime/Scripts/UI/Layout/ResponsiveCanvasLayout.cs",
+    "sha256": "7e0e35c450f8ac5b4c7365f7c8c4da7547581688c1e2cc42ccb9c4ebc6eef9fc"
+  },
+  "Assets/MadSlime/ResponsiveUI/Runtime/ResponsiveSkinGrid.cs": {
+    "old": "Assets/MadSlime/Scripts/UI/Layout/ResponsiveSkinGrid.cs",
+    "sha256": "5468f247976caa58dabcda441f13a1ae93688d594ac032078669983d2a743401"
+  },
+  "Assets/MadSlime/ResponsiveUI/Runtime/RoulettePopupLayout.cs": {
+    "old": "Assets/MadSlime/Scripts/UI/Layout/RoulettePopupLayout.cs",
+    "sha256": "204f0a302041ce1ffb79cfbb06fe3d5f2fa7e9c20004fd9c3925324fac635cb6"
+  },
+  "Assets/MadSlime/ResponsiveUI/Runtime/MadSlime.UI.asmref": {
+    "old": "Assets/MadSlime/Scripts/UI/Layout/MadSlime.UI.asmref",
+    "sha256": "3496732b0166f75c6c7706b860cc048ad603b8f7cd1f157c5118b147783ff236"
+  },
+  "Assets/MadSlime/ResponsiveUI/Runtime/ResponsiveSkinGrid.cs.meta": {
+    "old": "Assets/MadSlime/Scripts/UI/Layout/ResponsiveSkinGrid.cs.meta",
+    "sha256": "029d1da1752253162d1a096d6e054c5963135355c51a0573c252fc07f41515d9"
+  },
+  "Assets/MadSlime/ResponsiveUI/Runtime/RoulettePopupLayout.cs.meta": {
+    "old": "Assets/MadSlime/Scripts/UI/Layout/RoulettePopupLayout.cs.meta",
+    "sha256": "1ad9f0a215254586c49286023067b47b979b16f35a3c0d5b970a490638fff804"
+  },
+  "Assets/MadSlime/ResponsiveUI/Runtime/ResponsiveCanvasLayout.cs.meta": {
+    "old": "Assets/MadSlime/Scripts/UI/Layout/ResponsiveCanvasLayout.cs.meta",
+    "sha256": "323796aed7bbc67d15da659e6986549e6fe346b13e8b2d697748e2ef62f158d7"
+  },
+  "Assets/MadSlime/ResponsiveUI/Runtime/MadSlime.UI.asmref.meta": {
+    "old": "Assets/MadSlime/Scripts/UI/Layout/MadSlime.UI.asmref.meta",
+    "sha256": "1d16742573c49726fd48c5fa25ccf9066bba3595e8a5a5dba07bebd8d748b5d7"
+  },
+  "Assets/MadSlime/ResponsiveUI/Runtime.meta": {
+    "old": "Assets/MadSlime/Scripts/UI/Layout.meta",
+    "sha256": "215850b85618eaa460633156a10d7dc841a35a12c31517ac2afdfa6c71f30d50"
+  },
+  "Assets/MadSlime/ResponsiveUI/Editor/ResponsiveCanvasLayoutEditor.cs": {
+    "old": "Assets/MadSlime/Editor/UI/ResponsiveCanvasLayoutEditor.cs",
+    "sha256": "31036be75463647bcda207a374de4efc0faf7f264f217ea235aee85d501bfdd7"
+  },
+  "Assets/MadSlime/ResponsiveUI/Editor/ResponsiveCanvasLayoutEditor.cs.meta": {
+    "old": "Assets/MadSlime/Editor/UI/ResponsiveCanvasLayoutEditor.cs.meta",
+    "sha256": "59204b16ec672b6c48c57744f7b485c2e991b55724ffeffe5a33fcce0a08bc12"
+  },
+  "Assets/MadSlime/ResponsiveUI/Editor/PrefabLayoutPreview.cs": {
+    "old": "Assets/MadSlime/Editor/UI/PrefabLayoutPreview.cs",
+    "sha256": "f32bec1f09ae8a3ac71436425109249daf4a284741ee915511e5750ac46df8cf"
+  },
+  "Assets/MadSlime/ResponsiveUI/Editor/PrefabLayoutPreview.cs.meta": {
+    "old": "Assets/MadSlime/Editor/UI/PrefabLayoutPreview.cs.meta",
+    "sha256": "3f8035fb5c392e1c090f6665fdc09ad17cceb2b9b83e3728c9b2d08aaa3387b5"
+  },
+  "Assets/MadSlime/ResponsiveUI/Editor.meta": {
+    "old": "Assets/MadSlime/Editor/UI.meta",
+    "sha256": "fdda0c3c923dd72dadc438a2d203c2f584eda1c53fce2839bf4afc7610b1bb7a"
+  }
+}

@@ -69,7 +69,8 @@ namespace UI
             if (_orchestrator == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: FillSceneOrchestrator was not injected. Check that FillLifetimeScope registers FillSceneOrchestrator and FillUIFabric.");
+                    $"{name}: FillSceneOrchestrator was not injected. Check that FillLifetimeScope "
+                        + $"registers FillSceneOrchestrator and FillUIFabric.");
             }
 
             if (_wallet == null)

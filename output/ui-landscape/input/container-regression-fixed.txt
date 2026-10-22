@@ -1,0 +1,21 @@
+STATE frame=272 timeScale=1 event=<b>Selected:</b>
+
+
+EventSystem (UnityEngine.InputSystem.UI.InputSystemUIInputModule)
+
+NAV Main popup=True
+GROUP UI/MainMenuWindow alpha=1 interactable=False blocks=False
+GROUP UI/RuntimeWindows/RouletteView(Clone) alpha=1 interactable=True blocks=True
+ROULETTE UI/RuntimeWindows/RouletteView(Clone) active=True canvas=True
+BUTTON UI/MainMenuWindow/Buttons/ButtonGrid/UpgradesButton active=True interactable=False
+HIT UI/RuntimeWindows/RouletteView(Clone)/Menu
+HIT UI/RuntimeWindows/RouletteView(Clone)/Fade
+STATE frame=438 timeScale=1 event=<b>Selected:</b>
+
+
+EventSystem (UnityEngine.InputSystem.UI.InputSystemUIInputModule)
+
+NAV Main popup=True
+GROUP UI/MainMenuWindow alpha=1 interactable=False blocks=False
+GROUP UI/RuntimeWindows/RouletteView(Clone) alpha=1 interactable=True blocks=True
+ROULETTE UI/RuntimeWindows/RouletteView(Clone) active=True canvas=True

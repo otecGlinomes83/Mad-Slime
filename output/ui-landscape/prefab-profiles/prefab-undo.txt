@@ -1,0 +1,9 @@
+PASS Capture stores edited position
+PASS Capture supports Undo
+PASS Preview surface survives Undo
+PASS Capture supports Redo
+PASS Preview surface survives Redo
+PASS Prefab save command accepted
+PASS Preview remains landscape after save
+PASS Preview render mode excluded from saved prefab
+PASS Saved edit persists after reopen

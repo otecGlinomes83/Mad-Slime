@@ -1,0 +1,17 @@
+1080x1920 Title: font=52, overflow=False, lines=1
+1080x1920 Warning: font=40, overflow=False, lines=7
+1080x1920 CancelLabel: font=40, overflow=False, lines=1
+1080x1920 ConfirmLabel: font=40, overflow=False, lines=1
+1920x1080 Title: font=52, overflow=False, lines=1
+1920x1080 Warning: font=40, overflow=False, lines=6
+1920x1080 CancelLabel: font=40, overflow=False, lines=1
+1920x1080 ConfirmLabel: font=40, overflow=False, lines=1
+1920x1080 Title: font=52, overflow=False, lines=1
+1920x1080 Warning: font=40, overflow=False, lines=6
+1920x1080 CancelLabel: font=40, overflow=False, lines=1
+1920x1080 ConfirmLabel: font=40, overflow=False, lines=1
+1080x1920 Title: font=52, overflow=False, lines=1
+1080x1920 Warning: font=40, overflow=False, lines=7
+1080x1920 CancelLabel: font=40, overflow=False, lines=1
+1080x1920 ConfirmLabel: font=40, overflow=False, lines=1
+PASS

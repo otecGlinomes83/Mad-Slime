@@ -105,13 +105,15 @@ namespace Game
             if (_leaderboardReporter == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: LeaderboardReporter was not injected. Check that FillLifetimeScope registers LeaderboardReporter and FillSceneOrchestrator.");
+                    $"{name}: LeaderboardReporter was not injected. Check that FillLifetimeScope "
+                        + $"registers LeaderboardReporter and FillSceneOrchestrator.");
             }
 
             if (_fillOrchestrator == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: ShapeFillOrchestrator was not injected. Check that FillLifetimeScope registers ShapeFillOrchestrator and FillSceneOrchestrator.");
+                    $"{name}: ShapeFillOrchestrator was not injected. Check that FillLifetimeScope "
+                        + $"registers ShapeFillOrchestrator and FillSceneOrchestrator.");
             }
 
             if (_rewarder == null)
@@ -129,7 +131,8 @@ namespace Game
             if (_sceneNavigator == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SceneNavigator was not injected. Check that ProjectLifetimeScope registers SceneNavigator and FillLifetimeScope registers FillSceneOrchestrator.");
+                    $"{name}: SceneNavigator was not injected. Check that ProjectLifetimeScope "
+                        + $"registers SceneNavigator and FillLifetimeScope registers FillSceneOrchestrator.");
             }
 
             if (_gridBuilder == null)
@@ -370,7 +373,7 @@ namespace Game
                 return;
             }
 
-            _canRescue = _fillOrchestrator.CanRescue;
+            _canRescue = _fillOrchestrator.CanRescue();
             Failed?.Invoke(_rewarder.GrantedTotal);
         }
 

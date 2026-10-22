@@ -1,0 +1,4 @@
+PASS Portrait records position and size without moving objects
+PASS Landscape records position and size without moving objects
+PASS Both profiles persist after scene save and reopen
+PASS Actual custom inspector selected; preview callback removed

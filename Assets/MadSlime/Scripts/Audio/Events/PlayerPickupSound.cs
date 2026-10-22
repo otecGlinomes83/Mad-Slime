@@ -51,13 +51,15 @@ namespace Audio
             if (_config.PickupSoundMinInterval > _config.PickupSoundMaxInterval)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerConfig has PickupSoundMinInterval {_config.PickupSoundMinInterval} greater than PickupSoundMaxInterval {_config.PickupSoundMaxInterval}.");
+                    $"{name}: PlayerConfig has PickupSoundMinInterval "
+                        + $"{_config.PickupSoundMinInterval} greater than PickupSoundMaxInterval {_config.PickupSoundMaxInterval}.");
             }
 
             if (_config.PickupSoundMinPitch > _config.PickupSoundMaxPitch)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerConfig has PickupSoundMinPitch {_config.PickupSoundMinPitch} greater than PickupSoundMaxPitch {_config.PickupSoundMaxPitch}.");
+                    $"{name}: PlayerConfig has PickupSoundMinPitch {_config.PickupSoundMinPitch} "
+                        + $"greater than PickupSoundMaxPitch {_config.PickupSoundMaxPitch}.");
             }
         }
 

@@ -12,7 +12,7 @@ namespace Game
         private const double FullCircleRadians = Math.PI * 2.0;
 
         private List<Vector3> _positions = new List<Vector3>(64);
-        private List<Placement> _placements = new List<Placement>(64);
+        private List<ZonePlacement> _placements = new List<ZonePlacement>(64);
         private System.Random _random;
 
         public ZoneLayoutPlanner(System.Random random)
@@ -27,7 +27,7 @@ namespace Game
 
         public IReadOnlyList<Vector3> Positions => _positions;
 
-        public IReadOnlyList<Placement> Placements => _placements;
+        public IReadOnlyList<ZonePlacement> Placements => _placements;
 
         public static float ResolveSpacing(SpawnZone zone, LayoutSet layout, IReadOnlyList<float> zoneRadii)
         {
@@ -115,7 +115,7 @@ namespace Game
 
                 if (FitsInZone(zone, center, spacing, _positions[i], poolRadii[poolIndex]) == true)
                 {
-                    _placements.Add(new Placement(_positions[i], poolIndex));
+                    _placements.Add(new ZonePlacement(_positions[i], poolIndex));
                 }
             }
         }
@@ -147,19 +147,6 @@ namespace Game
             float distance = Mathf.Sqrt(offsetX * offsetX + offsetZ * offsetZ);
 
             return distance + itemRadius <= zone.Radius;
-        }
-
-        public readonly struct Placement
-        {
-            public Placement(Vector3 position, int poolIndex)
-            {
-                Position = position;
-                PoolIndex = poolIndex;
-            }
-
-            public Vector3 Position { get; }
-
-            public int PoolIndex { get; }
         }
 
         private void CollectGrid(Vector2 center, int count, float spacing)

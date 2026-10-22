@@ -106,11 +106,12 @@ namespace PlayerInput
             }
 
             Vector2 canvasDelta = Vector2.Scale(localPoint - _dragOrigin, _background.localScale);
-            Vector2 clampedDelta = Vector2.ClampMagnitude(canvasDelta, _movementRange);
+            float movementRange = _movementRange * Mathf.Min(_background.localScale.x, _background.localScale.y);
+            Vector2 clampedDelta = Vector2.ClampMagnitude(canvasDelta, movementRange);
 
             _handle.anchoredPosition = InverseScale(clampedDelta, _background.localScale);
 
-            SendValueToControl(clampedDelta / _movementRange);
+            SendValueToControl(clampedDelta / movementRange);
         }
 
         public void OnPointerUp(PointerEventData eventData)

@@ -33,7 +33,8 @@ namespace UI
             if (_orchestrator == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: GameplayOrchestrator was not injected. Check that GameLifetimeScope registers GameplayOrchestrator and GameplayUIFabric.");
+                    $"{name}: GameplayOrchestrator was not injected. Check that GameLifetimeScope "
+                        + $"registers GameplayOrchestrator and GameplayUIFabric.");
             }
 
             if (_pauseButton == null)

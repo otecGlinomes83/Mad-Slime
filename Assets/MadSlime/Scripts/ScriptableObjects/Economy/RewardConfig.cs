@@ -36,7 +36,9 @@ namespace Scriptables
 
             double reward = Math.Round(_baseReward * Math.Pow(level, _growthExponent), MidpointRounding.AwayFromZero);
             if (reward > int.MaxValue)
+            {
                 throw new OverflowException("The level reward exceeds the wallet's integer range.");
+            }
             return (int)reward;
         }
     }

@@ -22,7 +22,8 @@ namespace ShapeFill
             if (_fillOrchestrator == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: ShapeFillOrchestrator was not injected. Check that FillLifetimeScope registers ShapeFillOrchestrator and FillTapButton.");
+                    $"{name}: ShapeFillOrchestrator was not injected. Check that FillLifetimeScope "
+                        + $"registers ShapeFillOrchestrator and FillTapButton.");
             }
         }
 

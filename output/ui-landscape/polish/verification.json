@@ -1,0 +1,28 @@
+{
+  "checked_at": "2026-10-20T14:05:06.776828",
+  "unity": "2022.3.62f2",
+  "menu_playmode_errors": 0,
+  "skin_thumbnails_restored": 34,
+  "skin_resolution": 512,
+  "money_artwork_count": 6,
+  "reward_icon_variants": 5,
+  "slider_resize_test": [
+    560,
+    64
+  ],
+  "particles_active_and_emitting": true,
+  "loading_reference": "PASS",
+  "assets_match_checked_copy": true,
+  "git_diff_check_current_files": "PASS",
+  "global_diff_check": "Other modified UI assets contain existing Unity YAML trailing whitespace; left untouched.",
+  "changed_files": [
+    "Assets/MadSlime/Resources/Prefabs/UI/PerkSeporator.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Menu/PauseMenu.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/WinPopup.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab",
+    "Assets/MadSlime/Scenes/Menu.unity",
+    "Assets/MadSlime/Scriptables/Localization/Localization.asset",
+    "Assets/MadSlime/Scripts/Shop/UI/ShopItemView.cs",
+    "Assets/MadSlime/Scripts/Skins/Editor/SkinItemFactory.cs"
+  ]
+}

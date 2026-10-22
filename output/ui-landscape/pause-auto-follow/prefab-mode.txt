@@ -1,0 +1,29 @@
+PASS Default source is Game View
+PASS Opening at Full HD automatically applies landscape without selecting layout Inspector
+PASS Full HD prefab editing surface
+PASS Same-orientation resolution change preserves manual edits
+PASS Higher resolution uses CanvasScaler logical units
+PASS Surface already restored in prefabSaved callback (1920.00, 1080.00)
+PASS Save prefab
+PASS Surface restored within save call, without delayed frame
+PASS Surface already restored in prefabSaved callback (1080.00, 1920.00)
+PASS Game View portrait automatically selects Portrait
+PASS Portrait pause dimensions restored
+PASS Portrait prefab surface follows Game View
+PASS Full HD switches back to landscape automatically
+PASS Captured landscape edit survives rotation
+PASS Surface already restored in prefabSaved callback (1920.00, 1080.00)
+PASS Repeated save 0
+PASS No deferred surface resize after save 0
+PASS Surface already restored in prefabSaved callback (1920.00, 1080.00)
+PASS Repeated save 1
+PASS No deferred surface resize after save 1
+PASS Surface already restored in prefabSaved callback (1920.00, 1080.00)
+PASS Repeated save 2
+PASS No deferred surface resize after save 2
+PASS Observed save callbacks
+PASS All manual/automatic save callbacks preserve the current editing orientation
+PASS Surface stable on following editor update
+PASS Saved Canvas remains screen-space
+PASS Saved landscape edit persists after reopen
+PASS Panel registered

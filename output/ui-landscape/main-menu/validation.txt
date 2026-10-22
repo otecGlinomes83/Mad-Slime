@@ -1,0 +1,253 @@
+PASS Identical menu button size UpgradesButton
+PASS Bounds UpgradesButton 1080x1920
+PASS Text fits ПРОКАЧКА
+PASS Icon doubled UpgradesButton
+PASS Icon left of text UpgradesButton
+PASS Identical menu button size SkinsButton
+PASS Bounds SkinsButton 1080x1920
+PASS Text fits СКИНЫ
+PASS Icon doubled SkinsButton
+PASS Icon left of text SkinsButton
+PASS Identical menu button size LeaderboardButton
+PASS Bounds LeaderboardButton 1080x1920
+PASS Text fits РЕЙТИНГ
+PASS Icon doubled LeaderboardButton
+PASS Icon left of text LeaderboardButton
+PASS Identical menu button size SettingsButton
+PASS Bounds SettingsButton 1080x1920
+PASS Text fits НАСТРОЙКИ
+PASS Icon doubled SettingsButton
+PASS Icon left of text SettingsButton
+PASS Identical menu button size DailyButton
+PASS Bounds DailyButton 1080x1920
+PASS Text fits РУЛЕТКА
+PASS Icon doubled DailyButton
+PASS Icon left of text DailyButton
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Bounds PlayButton 1080x1920
+PASS Text fits Уровень 4
+PASS Play below navigation
+SCREEN main-portrait
+PASS Identical menu button size UpgradesButton
+PASS Bounds UpgradesButton 1920x1080
+PASS Text fits ПРОКАЧКА
+PASS Icon doubled UpgradesButton
+PASS Icon left of text UpgradesButton
+PASS Identical menu button size SkinsButton
+PASS Bounds SkinsButton 1920x1080
+PASS Text fits СКИНЫ
+PASS Icon doubled SkinsButton
+PASS Icon left of text SkinsButton
+PASS Identical menu button size LeaderboardButton
+PASS Bounds LeaderboardButton 1920x1080
+PASS Text fits РЕЙТИНГ
+PASS Icon doubled LeaderboardButton
+PASS Icon left of text LeaderboardButton
+PASS Identical menu button size SettingsButton
+PASS Bounds SettingsButton 1920x1080
+PASS Text fits НАСТРОЙКИ
+PASS Icon doubled SettingsButton
+PASS Icon left of text SettingsButton
+PASS Identical menu button size DailyButton
+PASS Bounds DailyButton 1920x1080
+PASS Text fits РУЛЕТКА
+PASS Icon doubled DailyButton
+PASS Icon left of text DailyButton
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Bounds PlayButton 1920x1080
+PASS Text fits Уровень 4
+PASS Play below navigation
+SCREEN main-landscape
+PASS Identical menu button size UpgradesButton
+PASS Bounds UpgradesButton 2560x1080
+PASS Text fits ПРОКАЧКА
+PASS Icon doubled UpgradesButton
+PASS Icon left of text UpgradesButton
+PASS Identical menu button size SkinsButton
+PASS Bounds SkinsButton 2560x1080
+PASS Text fits СКИНЫ
+PASS Icon doubled SkinsButton
+PASS Icon left of text SkinsButton
+PASS Identical menu button size LeaderboardButton
+PASS Bounds LeaderboardButton 2560x1080
+PASS Text fits РЕЙТИНГ
+PASS Icon doubled LeaderboardButton
+PASS Icon left of text LeaderboardButton
+PASS Identical menu button size SettingsButton
+PASS Bounds SettingsButton 2560x1080
+PASS Text fits НАСТРОЙКИ
+PASS Icon doubled SettingsButton
+PASS Icon left of text SettingsButton
+PASS Identical menu button size DailyButton
+PASS Bounds DailyButton 2560x1080
+PASS Text fits РУЛЕТКА
+PASS Icon doubled DailyButton
+PASS Icon left of text DailyButton
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Bounds PlayButton 2560x1080
+PASS Text fits Уровень 4
+PASS Play below navigation
+SCREEN main-ultrawide
+PASS Identical menu button size UpgradesButton
+PASS Bounds UpgradesButton 1920x1080
+PASS Text fits UPGRADES
+PASS Icon doubled UpgradesButton
+PASS Icon left of text UpgradesButton
+PASS Identical menu button size SkinsButton
+PASS Bounds SkinsButton 1920x1080
+PASS Text fits SKINS
+PASS Icon doubled SkinsButton
+PASS Icon left of text SkinsButton
+PASS Identical menu button size LeaderboardButton
+PASS Bounds LeaderboardButton 1920x1080
+PASS Text fits LEADERBOARD
+PASS Icon doubled LeaderboardButton
+PASS Icon left of text LeaderboardButton
+PASS Identical menu button size SettingsButton
+PASS Bounds SettingsButton 1920x1080
+PASS Text fits SETTINGS
+PASS Icon doubled SettingsButton
+PASS Icon left of text SettingsButton
+PASS Identical menu button size DailyButton
+PASS Bounds DailyButton 1920x1080
+PASS Text fits DAILY WHEEL
+PASS Icon doubled DailyButton
+PASS Icon left of text DailyButton
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Bounds PlayButton 1920x1080
+PASS Text fits Level 4
+PASS Play below navigation
+SCREEN main-en
+PASS Identical menu button size UpgradesButton
+PASS Bounds UpgradesButton 1080x1920
+PASS Text fits GELİŞTİRMELER
+PASS Icon doubled UpgradesButton
+PASS Icon left of text UpgradesButton
+PASS Identical menu button size SkinsButton
+PASS Bounds SkinsButton 1080x1920
+PASS Text fits KOSTÜMLER
+PASS Icon doubled SkinsButton
+PASS Icon left of text SkinsButton
+PASS Identical menu button size LeaderboardButton
+PASS Bounds LeaderboardButton 1080x1920
+PASS Text fits SIRALAMA
+PASS Icon doubled LeaderboardButton
+PASS Icon left of text LeaderboardButton
+PASS Identical menu button size SettingsButton
+PASS Bounds SettingsButton 1080x1920
+PASS Text fits AYARLAR
+PASS Icon doubled SettingsButton
+PASS Icon left of text SettingsButton
+PASS Identical menu button size DailyButton
+PASS Bounds DailyButton 1080x1920
+PASS Text fits GÜNLÜK ÇARK
+PASS Icon doubled DailyButton
+PASS Icon left of text DailyButton
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Menu buttons separate
+PASS Bounds PlayButton 1080x1920
+PASS Text fits Seviye 4
+PASS Play below navigation
+SCREEN main-tr-portrait
+PASS Both upgrade headers present
+PASS Shared upgrade typography
+SCREEN upgrades-shared-separators
+PASS Four rarity groups
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits ЛЕГЕНДАРНЫЕ
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits ЭПИЧЕСКИЕ
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits РЕДКИЕ
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits ОБЫЧНЫЕ
+SCREEN skins-shared-separators
+PASS Four rarity groups
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits LEGENDARY
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits EPIC
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits RARE
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits COMMON
+SCREEN skins-en
+PASS Four rarity groups
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits LEGENDARY
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits EPIC
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits RARE
+PASS Rarity uses shared text size
+PASS Rarity uses shared style
+PASS Nested shared separator
+PASS Rarity heading fits COMMON
+SCREEN skins-portrait
+PASS No runtime errors

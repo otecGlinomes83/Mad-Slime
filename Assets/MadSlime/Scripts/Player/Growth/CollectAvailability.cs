@@ -31,7 +31,8 @@ namespace Player
             if (_upgrades == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerUpgrades was not injected. Check that ProjectLifetimeScope registers PlayerUpgrades and CollectAvailability.");
+                    $"{name}: PlayerUpgrades was not injected. Check that ProjectLifetimeScope "
+                        + $"registers PlayerUpgrades and CollectAvailability.");
             }
         }
 

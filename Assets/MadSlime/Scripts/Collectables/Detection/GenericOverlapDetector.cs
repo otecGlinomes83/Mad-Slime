@@ -1,6 +1,7 @@
 using Player;
 using System;
 using System.Collections.Generic;
+using Unity.Profiling;
 using UnityEngine;
 
 namespace Detection
@@ -17,16 +18,55 @@ namespace Detection
         private HashSet<T> _previousTargets = new HashSet<T>();
         private HashSet<T> _currentTargets = new HashSet<T>();
 
+        private ProfilerMarker _scanMarker;
+        private ProfilerMarker _collectHitsMarker;
+        private ProfilerMarker _processTargetsMarker;
+        private ProfilerMarker _processExitsMarker;
+
         public event Action<T> Detected;
 
         public event Action<T> Exited;
 
         public float Radius => _radius;
 
+        protected virtual void Awake()
+        {
+            string detectorName = GetType().Name;
+            _scanMarker = new ProfilerMarker($"{detectorName}.Scan");
+            _collectHitsMarker = new ProfilerMarker($"{detectorName}.CollectHits");
+            _processTargetsMarker = new ProfilerMarker($"{detectorName}.ProcessTargets");
+            _processExitsMarker = new ProfilerMarker($"{detectorName}.ProcessExits");
+        }
+
         protected virtual void Update()
         {
+            using ProfilerMarker.AutoScope scanScope = _scanMarker.Auto();
+
             _currentTargets.Clear();
             int hitsCount = CollectHits();
+            ProcessTargets(hitsCount);
+            ProcessExits();
+            SwapTargetSets();
+        }
+
+        private int CollectHits()
+        {
+            using ProfilerMarker.AutoScope collectHitsScope = _collectHitsMarker.Auto();
+
+            int hitsCount = Physics.OverlapSphereNonAlloc(transform.position, _radius, _buffer, _layerMask);
+
+            while (hitsCount == _buffer.Length)
+            {
+                Array.Resize(ref _buffer, _buffer.Length * 2);
+                hitsCount = Physics.OverlapSphereNonAlloc(transform.position, _radius, _buffer, _layerMask);
+            }
+
+            return hitsCount;
+        }
+
+        private void ProcessTargets(int hitsCount)
+        {
+            using ProfilerMarker.AutoScope processTargetsScope = _processTargetsMarker.Auto();
 
             for (int i = 0; i < hitsCount; i++)
             {
@@ -37,6 +77,11 @@ namespace Detection
 
                 Detected?.Invoke(target);
             }
+        }
+
+        private void ProcessExits()
+        {
+            using ProfilerMarker.AutoScope processExitsScope = _processExitsMarker.Auto();
 
             foreach (T target in _previousTargets)
             {
@@ -45,23 +90,13 @@ namespace Detection
                     Exited?.Invoke(target);
                 }
             }
+        }
 
+        private void SwapTargetSets()
+        {
             HashSet<T> reusableTargets = _previousTargets;
             _previousTargets = _currentTargets;
             _currentTargets = reusableTargets;
-        }
-
-        private int CollectHits()
-        {
-            int hitsCount = Physics.OverlapSphereNonAlloc(transform.position, _radius, _buffer, _layerMask);
-
-            while (hitsCount == _buffer.Length)
-            {
-                Array.Resize(ref _buffer, _buffer.Length * 2);
-                hitsCount = Physics.OverlapSphereNonAlloc(transform.position, _radius, _buffer, _layerMask);
-            }
-
-            return hitsCount;
         }
 
         protected virtual void OnDisable()

@@ -30,6 +30,7 @@ namespace UI
             }
 
             _parent = parent;
+            _parent.gameObject.SetActive(true);
         }
 
         public T Spawn<T>(T prefab, UiLayer layer) where T : Component, IShowable

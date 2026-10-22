@@ -30,7 +30,7 @@ namespace Quota
         {
             QuotaPlateUI plate = UnityEngine.Object.Instantiate(_platePrefab, _container);
 
-            plate.Setup(entry.Definition.Icon, entry.Remaining);
+            plate.Setup(entry.Definition.Icon, entry.GetRemaining());
 
             return plate;
         }

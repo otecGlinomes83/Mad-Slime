@@ -24,7 +24,8 @@ namespace Game
             if (config.PropSet == null)
             {
                 throw new InvalidOperationException(
-                    $"PropVariantsAssigner: LevelConfig '{config.name}' has no PropSet assigned. Drag a PropSet asset into the _propSet field.");
+                    $"PropVariantsAssigner: LevelConfig '{config.name}' has no PropSet assigned. "
+                        + $"Drag a PropSet asset into the _propSet field.");
             }
 
             IReadOnlyList<PropVariant> variants = config.PropSet.Variants;
@@ -77,7 +78,8 @@ namespace Game
                 if (variant == null || variant.Prefab == null || variant.Definition == null)
                 {
                     throw new InvalidOperationException(
-                        $"PropVariantsAssigner: PropSet '{config.PropSet.name}' contains an empty variant. Re-run Mad Slime → Prop Factory.");
+                        $"PropVariantsAssigner: PropSet '{config.PropSet.name}' contains an empty "
+                            + $"variant. Re-run Mad Slime → Prop Factory.");
                 }
 
                 if (variant.Definition.Tier < config.MinTier || variant.Definition.Tier > config.MaxTier)

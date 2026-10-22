@@ -1,0 +1,6 @@
+PASS All moved files and original metadata remain byte-identical
+PASS Old paths removed; runtime asmref retained, Editor remains outside runtime asmref
+PASS Existing scene/prefab script GUID references still resolve (23 references)
+PASS MadSlime.UI compiles with Unity Roslyn and project compiler response file (relocated paths; exit 0)
+PASS Assembly-CSharp-Editor compiles against rebuilt runtime reference assembly (exit 0)
+NOTE Full headless Unity import was unavailable because the project is already open; no editor lock was removed.

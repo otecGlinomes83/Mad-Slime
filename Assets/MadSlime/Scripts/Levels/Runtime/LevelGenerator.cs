@@ -31,6 +31,7 @@ namespace Game
         private Movement.Clamper _clamper;
         private ItemCollector _itemCollector;
         private LevelSurface _surface;
+        private LevelEnvironment _environment;
 
         public IReadOnlyList<Item> SpawnedItems => _itemsSpawner.ActiveItems;
 
@@ -95,6 +96,7 @@ namespace Game
             }
 
             _surface = new LevelSurface(floorMesh.sharedMesh, transform);
+            _environment = new LevelEnvironment(transform);
         }
 
         private void OnEnable()
@@ -110,6 +112,11 @@ namespace Game
         private void OnDestroy()
         {
             _itemsSpawner?.Clear();
+
+            if (_environment != null)
+            {
+                _environment.Clear();
+            }
         }
 
         public Bounds GetFloorBounds()
@@ -140,6 +147,7 @@ namespace Game
 
             List<QuotaEntry> quota = _quotaGenerator.Generate(_itemsSpawner.SpawnedCounts, config);
             _quotaBoard.Reset(quota);
+            _itemsSpawner.AssignQuotaLayers(quota);
         }
 
         private void ApplyTheme(LevelConfig config)
@@ -151,6 +159,7 @@ namespace Game
 
             _floorRenderer.sharedMaterial = config.Theme.FloorMaterial;
             _surface.Apply(config.Theme, GetFloorBounds());
+            _environment.Apply(config.Theme, GetFloorBounds());
         }
     }
 }

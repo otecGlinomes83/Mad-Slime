@@ -209,7 +209,8 @@ namespace Roulette
                 }
             }
 
-            throw new InvalidOperationException("Skin roulette needs at least one sector for every available rarity with a positive chance.");
+            throw new InvalidOperationException("Skin roulette needs at least one sector for every available rarity with a "
+                + "positive chance.");
         }
 
         private void AppendQuota(List<string> formed, List<string> existing, SkinRarity rarity, int quota)

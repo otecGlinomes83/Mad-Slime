@@ -1,0 +1,1098 @@
+PASS Open Prefab Mode Assets/MadSlime/Resources/Prefabs/UI/Buttons/PauseButtonCanvas.prefab
+CANVAS ScreenSpaceOverlay (0.00, 0.00)
+PASS Prefab editing surface is portrait size: (1080.00, 1920.00)
+PASS Actual Inspector PauseButtonCanvas
+PASS Actual prefab surface Portrait
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/Buttons/PauseButtonCanvas.prefab/PauseButtonCanvas
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Recorded Portrait target 0
+PASS Recorded Portrait target 1
+PASS Actual prefab surface Landscape
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/Buttons/PauseButtonCanvas.prefab/PauseButtonCanvas
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Recorded Landscape target 0
+PASS Recorded Landscape target 1
+PASS Save command accepted in Prefab Mode
+PASS Reopened same profiles
+PASS Saved Canvas remains ScreenSpaceOverlay
+PASS Saved CanvasScaler remains enabled
+PASS Persisted Portrait target 0
+PASS Persisted Portrait target 1
+PASS Persisted Landscape target 0
+PASS Persisted Landscape target 1
+PASS Open Prefab Mode Assets/MadSlime/Resources/Prefabs/UI/FillUI.prefab
+PASS Prefab editing surface is portrait size: (1080.00, 1920.00)
+PASS Actual Inspector PauseButtonCanvas
+PASS Actual prefab surface Portrait
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/FillUI.prefab/PauseButtonCanvas
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Recorded Portrait target 0
+PASS Recorded Portrait target 1
+PASS Actual prefab surface Landscape
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/FillUI.prefab/PauseButtonCanvas
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Recorded Landscape target 0
+PASS Recorded Landscape target 1
+PASS Actual Inspector FillProgress
+PASS Actual prefab surface Portrait
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/FillUI.prefab/FillProgress
+PASS Assigned target 0
+PASS Recorded Portrait target 0
+PASS Actual prefab surface Landscape
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/FillUI.prefab/FillProgress
+PASS Assigned target 0
+PASS Recorded Landscape target 0
+PASS Save command accepted in Prefab Mode
+PASS Reopened same profiles
+PASS Saved Canvas remains ScreenSpaceOverlay
+PASS Saved CanvasScaler remains enabled
+PASS Saved Canvas remains ScreenSpaceOverlay
+PASS Saved CanvasScaler remains enabled
+PASS Persisted Portrait target 0
+PASS Persisted Portrait target 1
+PASS Persisted Landscape target 0
+PASS Persisted Landscape target 1
+PASS Persisted Portrait target 0
+PASS Persisted Landscape target 0
+PASS Open Prefab Mode Assets/MadSlime/Resources/Prefabs/UI/LoadingScreen.prefab
+CANVAS ScreenSpaceOverlay (0.00, 0.00)
+PASS Prefab editing surface is portrait size: (1080.00, 1920.00)
+PASS Actual Inspector LoadingScreen
+PASS Actual prefab surface Portrait
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/LoadingScreen.prefab/LoadingScreen
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Recorded Portrait target 0
+PASS Recorded Portrait target 1
+PASS Recorded Portrait target 2
+PASS Recorded Portrait target 3
+PASS Actual prefab surface Landscape
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/LoadingScreen.prefab/LoadingScreen
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Recorded Landscape target 0
+PASS Recorded Landscape target 1
+PASS Recorded Landscape target 2
+PASS Recorded Landscape target 3
+PASS Save command accepted in Prefab Mode
+PASS Reopened same profiles
+PASS Saved Canvas remains ScreenSpaceOverlay
+PASS Saved CanvasScaler remains enabled
+PASS Persisted Portrait target 0
+PASS Persisted Portrait target 1
+PASS Persisted Portrait target 2
+PASS Persisted Portrait target 3
+PASS Persisted Landscape target 0
+PASS Persisted Landscape target 1
+PASS Persisted Landscape target 2
+PASS Persisted Landscape target 3
+PASS Open Prefab Mode Assets/MadSlime/Resources/Prefabs/UI/Menu/LeaderboardMenu.prefab
+CANVAS ScreenSpaceOverlay (0.00, 0.00)
+PASS Prefab editing surface is portrait size: (1080.00, 1920.00)
+PASS Actual Inspector LeaderboardMenu
+PASS Actual prefab surface Portrait
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/Menu/LeaderboardMenu.prefab/LeaderboardMenu
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Assigned target 15
+PASS Assigned target 16
+PASS Assigned target 17
+PASS Recorded Portrait target 0
+PASS Recorded Portrait target 1
+PASS Recorded Portrait target 2
+PASS Recorded Portrait target 3
+PASS Recorded Portrait target 4
+PASS Recorded Portrait target 5
+PASS Recorded Portrait target 6
+PASS Recorded Portrait target 7
+PASS Recorded Portrait target 8
+PASS Recorded Portrait target 9
+PASS Recorded Portrait target 10
+PASS Recorded Portrait target 11
+PASS Recorded Portrait target 12
+PASS Recorded Portrait target 13
+PASS Recorded Portrait target 14
+PASS Recorded Portrait target 15
+PASS Recorded Portrait target 16
+PASS Recorded Portrait target 17
+PASS Actual prefab surface Landscape
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/Menu/LeaderboardMenu.prefab/LeaderboardMenu
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Assigned target 15
+PASS Assigned target 16
+PASS Assigned target 17
+PASS Recorded Landscape target 0
+PASS Recorded Landscape target 1
+PASS Recorded Landscape target 2
+PASS Recorded Landscape target 3
+PASS Recorded Landscape target 4
+PASS Recorded Landscape target 5
+PASS Recorded Landscape target 6
+PASS Recorded Landscape target 7
+PASS Recorded Landscape target 8
+PASS Recorded Landscape target 9
+PASS Recorded Landscape target 10
+PASS Recorded Landscape target 11
+PASS Recorded Landscape target 12
+PASS Recorded Landscape target 13
+PASS Recorded Landscape target 14
+PASS Recorded Landscape target 15
+PASS Recorded Landscape target 16
+PASS Recorded Landscape target 17
+PASS Save command accepted in Prefab Mode
+PASS Reopened same profiles
+PASS Saved Canvas remains ScreenSpaceOverlay
+PASS Saved CanvasScaler remains enabled
+PASS Persisted Portrait target 0
+PASS Persisted Portrait target 1
+PASS Persisted Portrait target 2
+PASS Persisted Portrait target 3
+PASS Persisted Portrait target 4
+PASS Persisted Portrait target 5
+PASS Persisted Portrait target 6
+PASS Persisted Portrait target 7
+PASS Persisted Portrait target 8
+PASS Persisted Portrait target 9
+PASS Persisted Portrait target 10
+PASS Persisted Portrait target 11
+PASS Persisted Portrait target 12
+PASS Persisted Portrait target 13
+PASS Persisted Portrait target 14
+PASS Persisted Portrait target 15
+PASS Persisted Portrait target 16
+PASS Persisted Portrait target 17
+PASS Persisted Landscape target 0
+PASS Persisted Landscape target 1
+PASS Persisted Landscape target 2
+PASS Persisted Landscape target 3
+PASS Persisted Landscape target 4
+PASS Persisted Landscape target 5
+PASS Persisted Landscape target 6
+PASS Persisted Landscape target 7
+PASS Persisted Landscape target 8
+PASS Persisted Landscape target 9
+PASS Persisted Landscape target 10
+PASS Persisted Landscape target 11
+PASS Persisted Landscape target 12
+PASS Persisted Landscape target 13
+PASS Persisted Landscape target 14
+PASS Persisted Landscape target 15
+PASS Persisted Landscape target 16
+PASS Persisted Landscape target 17
+PASS Open Prefab Mode Assets/MadSlime/Resources/Prefabs/UI/Menu/PauseMenu.prefab
+CANVAS ScreenSpaceOverlay (0.00, 0.00)
+PASS Prefab editing surface is portrait size: (1080.00, 1920.00)
+PASS Actual Inspector PauseMenu
+PASS Actual prefab surface Portrait
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/Menu/PauseMenu.prefab/PauseMenu
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Assigned target 15
+PASS Assigned target 16
+PASS Assigned target 17
+PASS Assigned target 18
+PASS Assigned target 19
+PASS Assigned target 20
+PASS Assigned target 21
+PASS Assigned target 22
+PASS Assigned target 23
+PASS Assigned target 24
+PASS Assigned target 25
+PASS Assigned target 26
+PASS Assigned target 27
+PASS Assigned target 28
+PASS Assigned target 29
+PASS Recorded Portrait target 0
+PASS Recorded Portrait target 1
+PASS Recorded Portrait target 2
+PASS Recorded Portrait target 3
+PASS Recorded Portrait target 4
+PASS Recorded Portrait target 5
+PASS Recorded Portrait target 6
+PASS Recorded Portrait target 7
+PASS Recorded Portrait target 8
+PASS Recorded Portrait target 9
+PASS Recorded Portrait target 10
+PASS Recorded Portrait target 11
+PASS Recorded Portrait target 12
+PASS Recorded Portrait target 13
+PASS Recorded Portrait target 14
+PASS Recorded Portrait target 15
+PASS Recorded Portrait target 16
+PASS Recorded Portrait target 17
+PASS Recorded Portrait target 18
+PASS Recorded Portrait target 19
+PASS Recorded Portrait target 20
+PASS Recorded Portrait target 21
+PASS Recorded Portrait target 22
+PASS Recorded Portrait target 23
+PASS Recorded Portrait target 24
+PASS Recorded Portrait target 25
+PASS Recorded Portrait target 26
+PASS Recorded Portrait target 27
+PASS Recorded Portrait target 28
+PASS Recorded Portrait target 29
+PASS Actual prefab surface Landscape
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/Menu/PauseMenu.prefab/PauseMenu
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Assigned target 15
+PASS Assigned target 16
+PASS Assigned target 17
+PASS Assigned target 18
+PASS Assigned target 19
+PASS Assigned target 20
+PASS Assigned target 21
+PASS Assigned target 22
+PASS Assigned target 23
+PASS Assigned target 24
+PASS Assigned target 25
+PASS Assigned target 26
+PASS Assigned target 27
+PASS Assigned target 28
+PASS Assigned target 29
+PASS Recorded Landscape target 0
+PASS Recorded Landscape target 1
+PASS Recorded Landscape target 2
+PASS Recorded Landscape target 3
+PASS Recorded Landscape target 4
+PASS Recorded Landscape target 5
+PASS Recorded Landscape target 6
+PASS Recorded Landscape target 7
+PASS Recorded Landscape target 8
+PASS Recorded Landscape target 9
+PASS Recorded Landscape target 10
+PASS Recorded Landscape target 11
+PASS Recorded Landscape target 12
+PASS Recorded Landscape target 13
+PASS Recorded Landscape target 14
+PASS Recorded Landscape target 15
+PASS Recorded Landscape target 16
+PASS Recorded Landscape target 17
+PASS Recorded Landscape target 18
+PASS Recorded Landscape target 19
+PASS Recorded Landscape target 20
+PASS Recorded Landscape target 21
+PASS Recorded Landscape target 22
+PASS Recorded Landscape target 23
+PASS Recorded Landscape target 24
+PASS Recorded Landscape target 25
+PASS Recorded Landscape target 26
+PASS Recorded Landscape target 27
+PASS Recorded Landscape target 28
+PASS Recorded Landscape target 29
+PASS Save command accepted in Prefab Mode
+PASS Reopened same profiles
+PASS Saved Canvas remains ScreenSpaceOverlay
+PASS Saved CanvasScaler remains enabled
+PASS Persisted Portrait target 0
+PASS Persisted Portrait target 1
+PASS Persisted Portrait target 2
+PASS Persisted Portrait target 3
+PASS Persisted Portrait target 4
+PASS Persisted Portrait target 5
+PASS Persisted Portrait target 6
+PASS Persisted Portrait target 7
+PASS Persisted Portrait target 8
+PASS Persisted Portrait target 9
+PASS Persisted Portrait target 10
+PASS Persisted Portrait target 11
+PASS Persisted Portrait target 12
+PASS Persisted Portrait target 13
+PASS Persisted Portrait target 14
+PASS Persisted Portrait target 15
+PASS Persisted Portrait target 16
+PASS Persisted Portrait target 17
+PASS Persisted Portrait target 18
+PASS Persisted Portrait target 19
+PASS Persisted Portrait target 20
+PASS Persisted Portrait target 21
+PASS Persisted Portrait target 22
+PASS Persisted Portrait target 23
+PASS Persisted Portrait target 24
+PASS Persisted Portrait target 25
+PASS Persisted Portrait target 26
+PASS Persisted Portrait target 27
+PASS Persisted Portrait target 28
+PASS Persisted Portrait target 29
+PASS Persisted Landscape target 0
+PASS Persisted Landscape target 1
+PASS Persisted Landscape target 2
+PASS Persisted Landscape target 3
+PASS Persisted Landscape target 4
+PASS Persisted Landscape target 5
+PASS Persisted Landscape target 6
+PASS Persisted Landscape target 7
+PASS Persisted Landscape target 8
+PASS Persisted Landscape target 9
+PASS Persisted Landscape target 10
+PASS Persisted Landscape target 11
+PASS Persisted Landscape target 12
+PASS Persisted Landscape target 13
+PASS Persisted Landscape target 14
+PASS Persisted Landscape target 15
+PASS Persisted Landscape target 16
+PASS Persisted Landscape target 17
+PASS Persisted Landscape target 18
+PASS Persisted Landscape target 19
+PASS Persisted Landscape target 20
+PASS Persisted Landscape target 21
+PASS Persisted Landscape target 22
+PASS Persisted Landscape target 23
+PASS Persisted Landscape target 24
+PASS Persisted Landscape target 25
+PASS Persisted Landscape target 26
+PASS Persisted Landscape target 27
+PASS Persisted Landscape target 28
+PASS Persisted Landscape target 29
+PASS Open Prefab Mode Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab
+CANVAS ScreenSpaceOverlay (0.00, 0.00)
+PASS Prefab editing surface is portrait size: (1080.00, 1920.00)
+PASS Actual Inspector FailMenu
+PASS Actual prefab surface Portrait
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab/FailMenu
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Assigned target 15
+PASS Recorded Portrait target 0
+PASS Recorded Portrait target 1
+PASS Recorded Portrait target 2
+PASS Recorded Portrait target 3
+PASS Recorded Portrait target 4
+PASS Recorded Portrait target 5
+PASS Recorded Portrait target 6
+PASS Recorded Portrait target 7
+PASS Recorded Portrait target 8
+PASS Recorded Portrait target 9
+PASS Recorded Portrait target 10
+PASS Recorded Portrait target 11
+PASS Recorded Portrait target 12
+PASS Recorded Portrait target 13
+PASS Recorded Portrait target 14
+PASS Recorded Portrait target 15
+PASS Actual prefab surface Landscape
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab/FailMenu
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Assigned target 15
+PASS Recorded Landscape target 0
+PASS Recorded Landscape target 1
+PASS Recorded Landscape target 2
+PASS Recorded Landscape target 3
+PASS Recorded Landscape target 4
+PASS Recorded Landscape target 5
+PASS Recorded Landscape target 6
+PASS Recorded Landscape target 7
+PASS Recorded Landscape target 8
+PASS Recorded Landscape target 9
+PASS Recorded Landscape target 10
+PASS Recorded Landscape target 11
+PASS Recorded Landscape target 12
+PASS Recorded Landscape target 13
+PASS Recorded Landscape target 14
+PASS Recorded Landscape target 15
+PASS Save command accepted in Prefab Mode
+PASS Reopened same profiles
+PASS Saved Canvas remains ScreenSpaceOverlay
+PASS Saved CanvasScaler remains enabled
+PASS Persisted Portrait target 0
+PASS Persisted Portrait target 1
+PASS Persisted Portrait target 2
+PASS Persisted Portrait target 3
+PASS Persisted Portrait target 4
+PASS Persisted Portrait target 5
+PASS Persisted Portrait target 6
+PASS Persisted Portrait target 7
+PASS Persisted Portrait target 8
+PASS Persisted Portrait target 9
+PASS Persisted Portrait target 10
+PASS Persisted Portrait target 11
+PASS Persisted Portrait target 12
+PASS Persisted Portrait target 13
+PASS Persisted Portrait target 14
+PASS Persisted Portrait target 15
+PASS Persisted Landscape target 0
+PASS Persisted Landscape target 1
+PASS Persisted Landscape target 2
+PASS Persisted Landscape target 3
+PASS Persisted Landscape target 4
+PASS Persisted Landscape target 5
+PASS Persisted Landscape target 6
+PASS Persisted Landscape target 7
+PASS Persisted Landscape target 8
+PASS Persisted Landscape target 9
+PASS Persisted Landscape target 10
+PASS Persisted Landscape target 11
+PASS Persisted Landscape target 12
+PASS Persisted Landscape target 13
+PASS Persisted Landscape target 14
+PASS Persisted Landscape target 15
+PASS Open Prefab Mode Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/WinMenu.prefab
+CANVAS ScreenSpaceOverlay (0.00, 0.00)
+PASS Prefab editing surface is portrait size: (1080.00, 1920.00)
+PASS Actual Inspector WinMenu
+PASS Actual prefab surface Portrait
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/WinMenu.prefab/WinMenu
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Recorded Portrait target 0
+PASS Recorded Portrait target 1
+PASS Recorded Portrait target 2
+PASS Recorded Portrait target 3
+PASS Recorded Portrait target 4
+PASS Recorded Portrait target 5
+PASS Recorded Portrait target 6
+PASS Recorded Portrait target 7
+PASS Recorded Portrait target 8
+PASS Recorded Portrait target 9
+PASS Recorded Portrait target 10
+PASS Recorded Portrait target 11
+PASS Recorded Portrait target 12
+PASS Recorded Portrait target 13
+PASS Recorded Portrait target 14
+PASS Actual prefab surface Landscape
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/WinMenu.prefab/WinMenu
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Recorded Landscape target 0
+PASS Recorded Landscape target 1
+PASS Recorded Landscape target 2
+PASS Recorded Landscape target 3
+PASS Recorded Landscape target 4
+PASS Recorded Landscape target 5
+PASS Recorded Landscape target 6
+PASS Recorded Landscape target 7
+PASS Recorded Landscape target 8
+PASS Recorded Landscape target 9
+PASS Recorded Landscape target 10
+PASS Recorded Landscape target 11
+PASS Recorded Landscape target 12
+PASS Recorded Landscape target 13
+PASS Recorded Landscape target 14
+PASS Save command accepted in Prefab Mode
+PASS Reopened same profiles
+PASS Saved Canvas remains ScreenSpaceOverlay
+PASS Saved CanvasScaler remains enabled
+PASS Persisted Portrait target 0
+PASS Persisted Portrait target 1
+PASS Persisted Portrait target 2
+PASS Persisted Portrait target 3
+PASS Persisted Portrait target 4
+PASS Persisted Portrait target 5
+PASS Persisted Portrait target 6
+PASS Persisted Portrait target 7
+PASS Persisted Portrait target 8
+PASS Persisted Portrait target 9
+PASS Persisted Portrait target 10
+PASS Persisted Portrait target 11
+PASS Persisted Portrait target 12
+PASS Persisted Portrait target 13
+PASS Persisted Portrait target 14
+PASS Persisted Landscape target 0
+PASS Persisted Landscape target 1
+PASS Persisted Landscape target 2
+PASS Persisted Landscape target 3
+PASS Persisted Landscape target 4
+PASS Persisted Landscape target 5
+PASS Persisted Landscape target 6
+PASS Persisted Landscape target 7
+PASS Persisted Landscape target 8
+PASS Persisted Landscape target 9
+PASS Persisted Landscape target 10
+PASS Persisted Landscape target 11
+PASS Persisted Landscape target 12
+PASS Persisted Landscape target 13
+PASS Persisted Landscape target 14
+PASS Open Prefab Mode Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab
+CANVAS ScreenSpaceOverlay (0.00, 0.00)
+PASS Prefab editing surface is portrait size: (1080.00, 1920.00)
+PASS Actual Inspector RouletteView
+PASS Actual prefab surface Portrait
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab/RouletteView
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Assigned target 15
+PASS Assigned target 16
+PASS Assigned target 17
+PASS Assigned target 18
+PASS Assigned target 19
+PASS Assigned target 20
+PASS Assigned target 21
+PASS Assigned target 22
+PASS Assigned target 23
+PASS Assigned target 24
+PASS Assigned target 25
+PASS Assigned target 26
+PASS Assigned target 27
+PASS Assigned target 28
+PASS Assigned target 29
+PASS Assigned target 30
+PASS Assigned target 31
+PASS Recorded Portrait target 0
+PASS Recorded Portrait target 1
+PASS Recorded Portrait target 2
+PASS Recorded Portrait target 3
+PASS Recorded Portrait target 4
+PASS Recorded Portrait target 5
+PASS Recorded Portrait target 6
+PASS Recorded Portrait target 7
+PASS Recorded Portrait target 8
+PASS Recorded Portrait target 9
+PASS Recorded Portrait target 10
+PASS Recorded Portrait target 11
+PASS Recorded Portrait target 12
+PASS Recorded Portrait target 13
+PASS Recorded Portrait target 14
+PASS Recorded Portrait target 15
+PASS Recorded Portrait target 16
+PASS Recorded Portrait target 17
+PASS Recorded Portrait target 18
+PASS Recorded Portrait target 19
+PASS Recorded Portrait target 20
+PASS Recorded Portrait target 21
+PASS Recorded Portrait target 22
+PASS Recorded Portrait target 23
+PASS Recorded Portrait target 24
+PASS Recorded Portrait target 25
+PASS Recorded Portrait target 26
+PASS Recorded Portrait target 27
+PASS Recorded Portrait target 28
+PASS Recorded Portrait target 29
+PASS Recorded Portrait target 30
+PASS Recorded Portrait target 31
+PASS Actual prefab surface Landscape
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab/RouletteView
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Assigned target 15
+PASS Assigned target 16
+PASS Assigned target 17
+PASS Assigned target 18
+PASS Assigned target 19
+PASS Assigned target 20
+PASS Assigned target 21
+PASS Assigned target 22
+PASS Assigned target 23
+PASS Assigned target 24
+PASS Assigned target 25
+PASS Assigned target 26
+PASS Assigned target 27
+PASS Assigned target 28
+PASS Assigned target 29
+PASS Assigned target 30
+PASS Assigned target 31
+PASS Recorded Landscape target 0
+PASS Recorded Landscape target 1
+PASS Recorded Landscape target 2
+PASS Recorded Landscape target 3
+PASS Recorded Landscape target 4
+PASS Recorded Landscape target 5
+PASS Recorded Landscape target 6
+PASS Recorded Landscape target 7
+PASS Recorded Landscape target 8
+PASS Recorded Landscape target 9
+PASS Recorded Landscape target 10
+PASS Recorded Landscape target 11
+PASS Recorded Landscape target 12
+PASS Recorded Landscape target 13
+PASS Recorded Landscape target 14
+PASS Recorded Landscape target 15
+PASS Recorded Landscape target 16
+PASS Recorded Landscape target 17
+PASS Recorded Landscape target 18
+PASS Recorded Landscape target 19
+PASS Recorded Landscape target 20
+PASS Recorded Landscape target 21
+PASS Recorded Landscape target 22
+PASS Recorded Landscape target 23
+PASS Recorded Landscape target 24
+PASS Recorded Landscape target 25
+PASS Recorded Landscape target 26
+PASS Recorded Landscape target 27
+PASS Recorded Landscape target 28
+PASS Recorded Landscape target 29
+PASS Recorded Landscape target 30
+PASS Recorded Landscape target 31
+PASS Actual Inspector RouletteView buttonless
+PASS Actual prefab surface Portrait
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab/RouletteView
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Assigned target 15
+PASS Assigned target 16
+PASS Assigned target 17
+PASS Assigned target 18
+PASS Assigned target 19
+PASS Assigned target 20
+PASS Assigned target 21
+PASS Assigned target 22
+PASS Assigned target 23
+PASS Assigned target 24
+PASS Assigned target 25
+PASS Assigned target 26
+PASS Assigned target 27
+PASS Assigned target 28
+PASS Assigned target 29
+PASS Assigned target 30
+PASS Assigned target 31
+PASS Recorded Portrait target 0
+PASS Recorded Portrait target 1
+PASS Recorded Portrait target 2
+PASS Recorded Portrait target 3
+PASS Recorded Portrait target 4
+PASS Recorded Portrait target 5
+PASS Recorded Portrait target 6
+PASS Recorded Portrait target 7
+PASS Recorded Portrait target 8
+PASS Recorded Portrait target 9
+PASS Recorded Portrait target 10
+PASS Recorded Portrait target 11
+PASS Recorded Portrait target 12
+PASS Recorded Portrait target 13
+PASS Recorded Portrait target 14
+PASS Recorded Portrait target 15
+PASS Recorded Portrait target 16
+PASS Recorded Portrait target 17
+PASS Recorded Portrait target 18
+PASS Recorded Portrait target 19
+PASS Recorded Portrait target 20
+PASS Recorded Portrait target 21
+PASS Recorded Portrait target 22
+PASS Recorded Portrait target 23
+PASS Recorded Portrait target 24
+PASS Recorded Portrait target 25
+PASS Recorded Portrait target 26
+PASS Recorded Portrait target 27
+PASS Recorded Portrait target 28
+PASS Recorded Portrait target 29
+PASS Recorded Portrait target 30
+PASS Recorded Portrait target 31
+PASS Actual prefab surface Landscape
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab/RouletteView
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Assigned target 11
+PASS Assigned target 12
+PASS Assigned target 13
+PASS Assigned target 14
+PASS Assigned target 15
+PASS Assigned target 16
+PASS Assigned target 17
+PASS Assigned target 18
+PASS Assigned target 19
+PASS Assigned target 20
+PASS Assigned target 21
+PASS Assigned target 22
+PASS Assigned target 23
+PASS Assigned target 24
+PASS Assigned target 25
+PASS Assigned target 26
+PASS Assigned target 27
+PASS Assigned target 28
+PASS Assigned target 29
+PASS Assigned target 30
+PASS Assigned target 31
+PASS Recorded Landscape target 0
+PASS Recorded Landscape target 1
+PASS Recorded Landscape target 2
+PASS Recorded Landscape target 3
+PASS Recorded Landscape target 4
+PASS Recorded Landscape target 5
+PASS Recorded Landscape target 6
+PASS Recorded Landscape target 7
+PASS Recorded Landscape target 8
+PASS Recorded Landscape target 9
+PASS Recorded Landscape target 10
+PASS Recorded Landscape target 11
+PASS Recorded Landscape target 12
+PASS Recorded Landscape target 13
+PASS Recorded Landscape target 14
+PASS Recorded Landscape target 15
+PASS Recorded Landscape target 16
+PASS Recorded Landscape target 17
+PASS Recorded Landscape target 18
+PASS Recorded Landscape target 19
+PASS Recorded Landscape target 20
+PASS Recorded Landscape target 21
+PASS Recorded Landscape target 22
+PASS Recorded Landscape target 23
+PASS Recorded Landscape target 24
+PASS Recorded Landscape target 25
+PASS Recorded Landscape target 26
+PASS Recorded Landscape target 27
+PASS Recorded Landscape target 28
+PASS Recorded Landscape target 29
+PASS Recorded Landscape target 30
+PASS Recorded Landscape target 31
+PASS Save command accepted in Prefab Mode
+PASS Reopened same profiles
+PASS Saved Canvas remains ScreenSpaceOverlay
+PASS Saved CanvasScaler remains enabled
+PASS Persisted Portrait target 0
+PASS Persisted Portrait target 1
+PASS Persisted Portrait target 2
+PASS Persisted Portrait target 3
+PASS Persisted Portrait target 4
+PASS Persisted Portrait target 5
+PASS Persisted Portrait target 6
+PASS Persisted Portrait target 7
+PASS Persisted Portrait target 8
+PASS Persisted Portrait target 9
+PASS Persisted Portrait target 10
+PASS Persisted Portrait target 11
+PASS Persisted Portrait target 12
+PASS Persisted Portrait target 13
+PASS Persisted Portrait target 14
+PASS Persisted Portrait target 15
+PASS Persisted Portrait target 16
+PASS Persisted Portrait target 17
+PASS Persisted Portrait target 18
+PASS Persisted Portrait target 19
+PASS Persisted Portrait target 20
+PASS Persisted Portrait target 21
+PASS Persisted Portrait target 22
+PASS Persisted Portrait target 23
+PASS Persisted Portrait target 24
+PASS Persisted Portrait target 25
+PASS Persisted Portrait target 26
+PASS Persisted Portrait target 27
+PASS Persisted Portrait target 28
+PASS Persisted Portrait target 29
+PASS Persisted Portrait target 30
+PASS Persisted Portrait target 31
+PASS Persisted Landscape target 0
+PASS Persisted Landscape target 1
+PASS Persisted Landscape target 2
+PASS Persisted Landscape target 3
+PASS Persisted Landscape target 4
+PASS Persisted Landscape target 5
+PASS Persisted Landscape target 6
+PASS Persisted Landscape target 7
+PASS Persisted Landscape target 8
+PASS Persisted Landscape target 9
+PASS Persisted Landscape target 10
+PASS Persisted Landscape target 11
+PASS Persisted Landscape target 12
+PASS Persisted Landscape target 13
+PASS Persisted Landscape target 14
+PASS Persisted Landscape target 15
+PASS Persisted Landscape target 16
+PASS Persisted Landscape target 17
+PASS Persisted Landscape target 18
+PASS Persisted Landscape target 19
+PASS Persisted Landscape target 20
+PASS Persisted Landscape target 21
+PASS Persisted Landscape target 22
+PASS Persisted Landscape target 23
+PASS Persisted Landscape target 24
+PASS Persisted Landscape target 25
+PASS Persisted Landscape target 26
+PASS Persisted Landscape target 27
+PASS Persisted Landscape target 28
+PASS Persisted Landscape target 29
+PASS Persisted Landscape target 30
+PASS Persisted Landscape target 31
+PASS Persisted Portrait target 0
+PASS Persisted Portrait target 1
+PASS Persisted Portrait target 2
+PASS Persisted Portrait target 3
+PASS Persisted Portrait target 4
+PASS Persisted Portrait target 5
+PASS Persisted Portrait target 6
+PASS Persisted Portrait target 7
+PASS Persisted Portrait target 8
+PASS Persisted Portrait target 9
+PASS Persisted Portrait target 10
+PASS Persisted Portrait target 11
+PASS Persisted Portrait target 12
+PASS Persisted Portrait target 13
+PASS Persisted Portrait target 14
+PASS Persisted Portrait target 15
+PASS Persisted Portrait target 16
+PASS Persisted Portrait target 17
+PASS Persisted Portrait target 18
+PASS Persisted Portrait target 19
+PASS Persisted Portrait target 20
+PASS Persisted Portrait target 21
+PASS Persisted Portrait target 22
+PASS Persisted Portrait target 23
+PASS Persisted Portrait target 24
+PASS Persisted Portrait target 25
+PASS Persisted Portrait target 26
+PASS Persisted Portrait target 27
+PASS Persisted Portrait target 28
+PASS Persisted Portrait target 29
+PASS Persisted Portrait target 30
+PASS Persisted Portrait target 31
+PASS Persisted Landscape target 0
+PASS Persisted Landscape target 1
+PASS Persisted Landscape target 2
+PASS Persisted Landscape target 3
+PASS Persisted Landscape target 4
+PASS Persisted Landscape target 5
+PASS Persisted Landscape target 6
+PASS Persisted Landscape target 7
+PASS Persisted Landscape target 8
+PASS Persisted Landscape target 9
+PASS Persisted Landscape target 10
+PASS Persisted Landscape target 11
+PASS Persisted Landscape target 12
+PASS Persisted Landscape target 13
+PASS Persisted Landscape target 14
+PASS Persisted Landscape target 15
+PASS Persisted Landscape target 16
+PASS Persisted Landscape target 17
+PASS Persisted Landscape target 18
+PASS Persisted Landscape target 19
+PASS Persisted Landscape target 20
+PASS Persisted Landscape target 21
+PASS Persisted Landscape target 22
+PASS Persisted Landscape target 23
+PASS Persisted Landscape target 24
+PASS Persisted Landscape target 25
+PASS Persisted Landscape target 26
+PASS Persisted Landscape target 27
+PASS Persisted Landscape target 28
+PASS Persisted Landscape target 29
+PASS Persisted Landscape target 30
+PASS Persisted Landscape target 31
+PASS Open Prefab Mode Assets/MadSlime/Resources/Prefabs/UI/WinPopup.prefab
+CANVAS ScreenSpaceOverlay (0.00, 0.00)
+PASS Prefab editing surface is portrait size: (1080.00, 1920.00)
+PASS Actual Inspector WinPopup
+PASS Actual prefab surface Portrait
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/WinPopup.prefab/WinPopup
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Recorded Portrait target 0
+PASS Recorded Portrait target 1
+PASS Recorded Portrait target 2
+PASS Recorded Portrait target 3
+PASS Recorded Portrait target 4
+PASS Recorded Portrait target 5
+PASS Recorded Portrait target 6
+PASS Recorded Portrait target 7
+PASS Recorded Portrait target 8
+PASS Recorded Portrait target 9
+PASS Recorded Portrait target 10
+PASS Actual prefab surface Landscape
+PASS Targets assigned Assets/MadSlime/Resources/Prefabs/UI/WinPopup.prefab/WinPopup
+PASS Assigned target 0
+PASS Assigned target 1
+PASS Assigned target 2
+PASS Assigned target 3
+PASS Assigned target 4
+PASS Assigned target 5
+PASS Assigned target 6
+PASS Assigned target 7
+PASS Assigned target 8
+PASS Assigned target 9
+PASS Assigned target 10
+PASS Recorded Landscape target 0
+PASS Recorded Landscape target 1
+PASS Recorded Landscape target 2
+PASS Recorded Landscape target 3
+PASS Recorded Landscape target 4
+PASS Recorded Landscape target 5
+PASS Recorded Landscape target 6
+PASS Recorded Landscape target 7
+PASS Recorded Landscape target 8
+PASS Recorded Landscape target 9
+PASS Recorded Landscape target 10
+PASS Save command accepted in Prefab Mode
+PASS Reopened same profiles
+PASS Saved Canvas remains ScreenSpaceOverlay
+PASS Saved CanvasScaler remains enabled
+PASS Persisted Portrait target 0
+PASS Persisted Portrait target 1
+PASS Persisted Portrait target 2
+PASS Persisted Portrait target 3
+PASS Persisted Portrait target 4
+PASS Persisted Portrait target 5
+PASS Persisted Portrait target 6
+PASS Persisted Portrait target 7
+PASS Persisted Portrait target 8
+PASS Persisted Portrait target 9
+PASS Persisted Portrait target 10
+PASS Persisted Landscape target 0
+PASS Persisted Landscape target 1
+PASS Persisted Landscape target 2
+PASS Persisted Landscape target 3
+PASS Persisted Landscape target 4
+PASS Persisted Landscape target 5
+PASS Persisted Landscape target 6
+PASS Persisted Landscape target 7
+PASS Persisted Landscape target 8
+PASS Persisted Landscape target 9
+PASS Persisted Landscape target 10
+PASS All 9 UI prefabs verified in actual Prefab Mode

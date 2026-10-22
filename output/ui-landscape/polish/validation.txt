@@ -1,0 +1,117 @@
+PASS Player frames advance
+SCREEN main-1920x1080 actual=1920x1080 frame=318
+SCREEN main-portrait actual=1080x1920 frame=448
+SCREEN main-3840x2160 actual=3840x2160 frame=531
+SCREEN upgrades-1920x1080 actual=1920x1080 frame=656
+PASS Section headers have identical font, size and style
+PASS Seven upgrade/perk cards
+PASS Four skills in left column
+PASS Three perks in right column
+PASS Skills left, perks right
+PASS Description avoids purchase chip Большие амбиции
+PASS Description remains inside Большие амбиции
+CARD Большие амбиции bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Позволяет съесть предметы на один тир крупнее.
+PASS Description avoids purchase chip Адреналин
+PASS Description remains inside Адреналин
+CARD Адреналин bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Ускоряет движение, когда время на исходе.
+PASS Description avoids purchase chip Улучшенный нюх
+PASS Description remains inside Улучшенный нюх
+CARD Улучшенный нюх bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Подсвечивает рядом квотовые предметы, которые можно съесть.
+PASS Step label remains inside Метаболизм
+PASS Description avoids purchase chip Метаболизм
+PASS Description remains inside Метаболизм
+CARD Метаболизм bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Предметы вне квоты сильнее заполняют картинку.
+Вклад +60%
+PASS Step label remains inside Знаток вкуса
+PASS Description avoids purchase chip Знаток вкуса
+PASS Description remains inside Знаток вкуса
+CARD Знаток вкуса bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Больше массы за квотовые предметы.
+Масса от квоты +20%
+PASS Step label remains inside Аппетит
+PASS Description avoids purchase chip Аппетит
+PASS Description remains inside Аппетит
+CARD Аппетит bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Больше массы за каждый съеденный предмет.
+Масса +15%
+PASS Step label remains inside Скорость
+PASS Description avoids purchase chip Скорость
+PASS Description remains inside Скорость
+CARD Скорость bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Быстрее двигайся и собирай предметы.
+Скорость +10%
+PASS Upgrade purchase works after rearranging
+SCREEN upgrades-2560x1080 actual=2560x1080 frame=730
+SCREEN upgrades-960x540 actual=960x540 frame=886
+SCREEN upgrades-english actual=1920x1080 frame=1052
+SCREEN upgrades-portrait actual=1080x1920 frame=1178
+PASS Portrait retains seven cards
+PASS Portrait skill and perk sections do not overlap
+SCREEN skins-1920x1080 actual=1920x1080 frame=1315
+PASS Rarity color restored Axolotl
+PASS Rarity color restored CubeSlime
+PASS Rarity color restored Shark
+PASS Rarity color restored Pacman
+PASS Rarity color restored Unicorn
+PASS Rarity color restored Cactus
+PASS Rarity color restored Cupcake
+PASS Rarity color restored Ghost
+PASS Rarity color restored Chick
+PASS Rarity color restored Mimic
+PASS Rarity color restored Jellyfish
+PASS Rarity color restored Sahur
+PASS Rarity color restored BabyDragon
+PASS Rarity color restored Astronaut
+PASS Rarity color restored ToyKnight
+PASS Rarity color restored Bee
+PASS Rarity color restored Mushroom
+PASS Rarity color restored Cat
+PASS Rarity color restored Fox
+PASS Rarity color restored Panda
+PASS Rarity color restored LegacySlime
+PASS Rarity color restored Snail
+PASS Rarity color restored RedPanda
+PASS Rarity color restored Dog
+PASS Rarity color restored Penguin
+PASS Rarity color restored Piglet
+PASS Rarity color restored BearCub
+PASS Rarity color restored Dumpling
+PASS Rarity color restored Slime
+PASS Rarity color restored Frog
+PASS Rarity color restored Ufo
+PASS Rarity color restored Vacuum
+PASS Rarity color restored Bunny
+PASS Rarity color restored Car
+PASS Four named rarity groups
+PASS Skin catalog opens at top
+SCREEN skins-1920x1200 actual=1920x1200 frame=1410
+SCREEN skins-portrait actual=1080x1920 frame=1472
+SCREEN daily-roulette actual=1920x1080 frame=1622
+SCREEN skin-roulette actual=1920x1080 frame=1801
+SCREEN settings-menu actual=1920x1080 frame=1973
+PASS Slider visuals follow authored width and height
+PASS Slider handle follows height
+SCREEN settings-resized-slider actual=1920x1080 frame=2021
+SCREEN leaderboard-landscape actual=1920x1080 frame=2177
+PASS Popup within viewport Panel 1920x1080
+SCREEN leaderboard-compact actual=960x540 frame=2346
+PASS Popup within viewport Panel 960x540
+SCREEN leaderboard-portrait actual=1080x1920 frame=2515
+PASS Popup within viewport Panel 1080x1920
+SCREEN result-win actual=1920x1080 frame=2626
+PASS Popup within viewport Menu 1920x1080
+SCREEN result-fail actual=1920x1080 frame=2724
+PASS Popup within viewport Menu 1920x1080
+SCREEN prize-coins actual=1920x1080 frame=2817
+PASS Reward particle systems active and emitting
+PASS Reward UI particle renderers active
+PASS Five distinct money reward icons
+PASS Large rewards use safe and bag
+PASS Popup within viewport Content 1920x1080
+SCREEN prize-compact actual=960x540 frame=2991
+PASS Popup within viewport Content 960x540
+SCREEN prize-safe actual=1920x1080 frame=3163
+PASS Reward particle systems active and emitting
+PASS Reward UI particle renderers active
+SCREEN prize-bag actual=1920x1080 frame=3254
+SCREEN prize-rare actual=1920x1080 frame=3346
+SCREEN prize-epic actual=1920x1080 frame=3439
+SCREEN prize-legendary actual=1920x1080 frame=3532
+ERROR_COUNT 0

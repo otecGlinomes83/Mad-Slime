@@ -10,11 +10,10 @@ namespace Game
 {
     public class LevelPlacementPlanner
     {
-        private const SizeTier ObstacleMinimumTier = SizeTier.Large;
+        private const SizeTier LargeItemGapMinimumTier = SizeTier.Large;
         private const int MaximumBossCount = 10;
 
-        private List<Vector3> _obstaclePositions = new List<Vector3>();
-        private List<float> _obstacleRadii = new List<float>();
+        private PlacementOccupancy _occupancy = new PlacementOccupancy();
         private TierLookup _tierLookup;
         private ZoneLayoutPlanner _layoutPlanner = new ZoneLayoutPlanner(new System.Random());
         private List<Item> _zonePool = new List<Item>(16);
@@ -48,8 +47,7 @@ namespace Game
         {
             _tierLookup = new TierLookup(tierTable);
             _placements.Clear();
-            _obstaclePositions.Clear();
-            _obstacleRadii.Clear();
+            _occupancy.Clear();
             _bossCount = 0;
             bool mirrorX = layout.AllowMirroring == true && Random.value > 0.5f;
             bool mirrorZ = layout.AllowMirroring == true && Random.value > 0.5f;
@@ -127,11 +125,11 @@ namespace Game
         private void AppendPlacements(Dictionary<Item, ItemDefinition> assignedVariants,
             Transform origin, Bounds floorBounds, LayoutSet layout)
         {
-            IReadOnlyList<ZoneLayoutPlanner.Placement> placements = _layoutPlanner.Placements;
+            IReadOnlyList<ZonePlacement> placements = _layoutPlanner.Placements;
 
             for (int i = 0; i < placements.Count; i++)
             {
-                ZoneLayoutPlanner.Placement placement = placements[i];
+                ZonePlacement placement = placements[i];
                 Item prefab = _zonePool[placement.PoolIndex];
                 ItemDefinition definition = assignedVariants[prefab];
 
@@ -142,29 +140,37 @@ namespace Game
 
                 float scale = _tierLookup.Get(definition.Tier).Scale;
                 float radius = _zoneRadii[placement.PoolIndex];
-                Vector3 position = ClampToMap(origin.TransformPoint(placement.Position), floorBounds, radius);
 
-                if (IsSpaceFree(position, radius, definition.Tier, layout) == false)
+                if (radius > floorBounds.extents.x || radius > floorBounds.extents.z)
+                {
+                    continue;
+                }
+
+                Vector3 position = ClampToMap(origin.TransformPoint(placement.Position), floorBounds, radius);
+                float gap = 0f;
+
+                if (definition.Tier >= LargeItemGapMinimumTier)
+                {
+                    gap = layout.LargeItemGap;
+                }
+
+                if (IsStartAreaFree(position, radius, definition.Tier, layout) == false
+                    || _occupancy.IsSpaceFree(position, radius, gap) == false)
                 {
                     continue;
                 }
 
                 _placements.Add(new LevelPlacement(prefab, definition, position, scale));
+                _occupancy.Add(position, radius, gap);
 
                 if (definition.Tier == SizeTier.Boss)
                 {
                     _bossCount++;
                 }
-
-                if (definition.Tier >= ObstacleMinimumTier)
-                {
-                    _obstaclePositions.Add(position);
-                    _obstacleRadii.Add(radius);
-                }
             }
         }
 
-        private bool IsSpaceFree(Vector3 position, float radius, SizeTier tier, LayoutSet layout)
+        private bool IsStartAreaFree(Vector3 position, float radius, SizeTier tier, LayoutSet layout)
         {
             float centerDistance = new Vector2(position.x, position.z).magnitude;
 
@@ -175,24 +181,7 @@ namespace Game
                 clearRadius = layout.SmallItemStartClearRadius;
             }
 
-            if (centerDistance < clearRadius + radius)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < _obstaclePositions.Count; i++)
-            {
-                Vector3 offset = position - _obstaclePositions[i];
-                offset.y = 0f;
-                float clearance = radius + _obstacleRadii[i] + layout.LargeItemGap;
-
-                if (offset.sqrMagnitude < clearance * clearance)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return centerDistance >= clearRadius + radius;
         }
 
         private Vector3 ClampToMap(Vector3 worldPosition, Bounds floorBounds, float margin)

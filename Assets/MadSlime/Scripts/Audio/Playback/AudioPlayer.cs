@@ -30,8 +30,8 @@ namespace Audio
         [Tooltip("За сколько до конца трека начинается перекрытие со следующим (с).")]
         [SerializeField, Min(0.01f)] private float _musicOverlapDuration = 2.5f;
 
-        private VoicePool _uiPool;
-        private VoicePool _gamePool;
+        private AudioVoicePool _uiPool;
+        private AudioVoicePool _gamePool;
         private AudioSource _loopSource;
         private MusicChannel _musicChannel;
         private Dictionary<int, float> _nextAllowedPlayTimeByClipId = new Dictionary<int, float>();
@@ -41,17 +41,19 @@ namespace Audio
             if (_sfxGroup == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: SFX mixer group is not assigned. Open the ProjectScope prefab and drag the SFX group of the MasterMixer into the Sfx Group field.");
+                    $"{name}: SFX mixer group is not assigned. Open the ProjectScope prefab and drag "
+                        + $"the SFX group of the MasterMixer into the Sfx Group field.");
             }
 
             if (_musicGroup == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Music mixer group is not assigned. Open the ProjectScope prefab and drag the Music group of the MasterMixer into the Music Group field.");
+                    $"{name}: Music mixer group is not assigned. Open the ProjectScope prefab and "
+                        + $"drag the Music group of the MasterMixer into the Music Group field.");
             }
 
-            _uiPool = new VoicePool(_uiSourceCount, _sfxGroup, transform);
-            _gamePool = new VoicePool(_gameSourceCount, _sfxGroup, transform);
+            _uiPool = new AudioVoicePool(_uiSourceCount, _sfxGroup, transform);
+            _gamePool = new AudioVoicePool(_gameSourceCount, _sfxGroup, transform);
 
             _loopSource = CreateSource(_sfxGroup);
             _loopSource.loop = true;
@@ -190,66 +192,5 @@ namespace Audio
             }
         }
 
-        private class VoicePool
-        {
-            private List<AudioSource> _sources = new List<AudioSource>();
-            private List<float> _sourceEndTimes = new List<float>();
-            private AudioMixerGroup _mixerGroup;
-            private Transform _ownerTransform;
-
-            public VoicePool(int sourceCount, AudioMixerGroup mixerGroup, Transform ownerTransform)
-            {
-                _mixerGroup = mixerGroup;
-                _ownerTransform = ownerTransform;
-
-                for (int i = 0; i < sourceCount; i++)
-                {
-                    AddSource();
-                }
-            }
-
-            public void Play(AudioClip clip, float volume, float pitch)
-            {
-                int freeIndex = FindFreeSourceIndex();
-
-                if (freeIndex < 0)
-                {
-                    freeIndex = AddSource();
-                }
-
-                AudioSource source = _sources[freeIndex];
-                source.pitch = pitch;
-                source.volume = volume;
-                source.PlayOneShot(clip);
-                _sourceEndTimes[freeIndex] = Time.unscaledTime + clip.length / pitch;
-            }
-
-            private int AddSource()
-            {
-                AudioSource source = _ownerTransform.gameObject.AddComponent<AudioSource>();
-                source.outputAudioMixerGroup = _mixerGroup;
-                source.playOnAwake = false;
-                source.loop = false;
-                source.spatialBlend = 0f;
-
-                _sources.Add(source);
-                _sourceEndTimes.Add(0f);
-
-                return _sources.Count - 1;
-            }
-
-            private int FindFreeSourceIndex()
-            {
-                for (int index = 0; index < _sources.Count; index++)
-                {
-                    if (Time.unscaledTime >= _sourceEndTimes[index])
-                    {
-                        return index;
-                    }
-                }
-
-                return -1;
-            }
-        }
     }
 }

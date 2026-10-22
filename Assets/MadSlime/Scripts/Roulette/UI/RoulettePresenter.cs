@@ -110,7 +110,7 @@ namespace Roulette
                 return;
             }
 
-            StopPresentation();
+            OnViewDisabled();
             _view.Hide();
         }
 
@@ -138,7 +138,7 @@ namespace Roulette
 
         private void OnDisable()
         {
-            StopPresentation();
+            OnViewDisabled();
             Unsubscribe();
         }
 
@@ -153,7 +153,7 @@ namespace Roulette
             _view.AdRequested += OnAdRequested;
             _view.CloseRequested += OnCloseRequested;
             _view.Closed += OnViewClosed;
-            _view.Disabled += StopPresentation;
+            _view.Disabled += OnViewDisabled;
             _view.Wheel.Completed += OnWheelCompleted;
             _sound.Setup(_view.Wheel, _model.Config, _soundPlayer);
             _isSubscribed = true;
@@ -170,7 +170,7 @@ namespace Roulette
             _view.AdRequested -= OnAdRequested;
             _view.CloseRequested -= OnCloseRequested;
             _view.Closed -= OnViewClosed;
-            _view.Disabled -= StopPresentation;
+            _view.Disabled -= OnViewDisabled;
             _view.Wheel.Completed -= OnWheelCompleted;
             _sound.Release();
             _isSubscribed = false;
@@ -343,7 +343,7 @@ namespace Roulette
             onComplete?.Invoke(prize);
         }
 
-        private void StopPresentation()
+        private void OnViewDisabled()
         {
             _isShown = false;
             _isBusy = false;

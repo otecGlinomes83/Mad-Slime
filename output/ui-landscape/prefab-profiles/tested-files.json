@@ -1,0 +1,17 @@
+{
+  "Assets/MadSlime/Resources/Prefabs/UI/FillUI.prefab": "a48594761462f53285740a9e0bfbda0163d664aed97392b2762ee0103474d7c1",
+  "Assets/MadSlime/Resources/Prefabs/UI/LoadingScreen.prefab": "432766728b70a4d51b76f86a12b79d351012548922a8ad0928501b353c2498ba",
+  "Assets/MadSlime/Resources/Prefabs/UI/WinPopup.prefab": "5246b1f439c861404064bcf9509fba9663c7e8d5e4250c7bf1cf42cc46d0a8f6",
+  "Assets/MadSlime/Resources/Prefabs/UI/Buttons/PauseButtonCanvas.prefab": "3cefff93c2ad40cf56e8e14e79c27f2cbc19c1373e93110f8bbab906fff2500c",
+  "Assets/MadSlime/Resources/Prefabs/UI/Menu/PauseMenu.prefab": "72da6b75ca35cfc28fd6544048a13bee5066035c417862b2a4838f826ee1163a",
+  "Assets/MadSlime/Resources/Prefabs/UI/Menu/LeaderboardMenu.prefab": "02b20968260436c118c304cfacfe71aee2abbe66d161895af148a21b21f00b00",
+  "Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab": "2ce752271b674912e03d633198b407c0020082093f4b6936eedc0b8dd9d0985c",
+  "Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/WinMenu.prefab": "b5dfc74fb936cee97c609491ef58a470da3073e9356d9858e6380b2e6804196f",
+  "Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteView.prefab": "f10c80caf1c77061515c5d27a2fda8c578353bc68ce78cfe3cb1bf7697fceacd",
+  "Assets/MadSlime/Resources/Prefabs/UI/Skins/RouletteSectorCard.prefab": "f3af1eb8e8049d0f735e6eaedf72f05931096eb3e0477a0a66864d7bf35fc0d1",
+  "Assets/MadSlime/Editor/UI/ResponsiveCanvasLayoutEditor.cs": "4b19d3f0ef5c5110979524476e725e14a65c50c3dc1fa61a372fb9163d7c14af",
+  "Assets/MadSlime/Editor/UI/PrefabLayoutPreview.cs": "93658bd6f71e76e3a5c56faf8a854da6b76fd97cf3e9f6e9e9a6f90fcc62a347",
+  "Assets/MadSlime/Scripts/UI/Layout/ResponsiveCanvasLayout.cs": "7e0e35c450f8ac5b4c7365f7c8c4da7547581688c1e2cc42ccb9c4ebc6eef9fc",
+  "Assets/MadSlime/Scripts/UI/Layout/RoulettePopupLayout.cs": "204f0a302041ce1ffb79cfbb06fe3d5f2fa7e9c20004fd9c3925324fac635cb6",
+  "Assets/MadSlime/Scripts/UI/Windows/PauseMenu.cs": "ec475ab04fc3bfdaf473e271482c4c67029bd72f4778efd70b6d6cbf5a397200"
+}

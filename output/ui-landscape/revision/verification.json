@@ -1,0 +1,28 @@
+{
+  "checked_at": "2026-10-20T12:38:02.830396",
+  "unity": "2022.3.62f2",
+  "menu_errors": 0,
+  "game_validation": "PASS",
+  "quota_size": [
+    180,
+    86.4
+  ],
+  "quota_gap": 12,
+  "joystick_diameter": 86.66666666666667,
+  "joystick_full_travel": 40,
+  "ui_png_count": 51,
+  "changed_scene_prefab_files": [
+    "Assets/MadSlime/Resources/Prefabs/UI/UpgradePlate.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Menu/PauseMenu.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/Menu/LeaderboardMenu.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/WinPopup.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/WinMenu.prefab",
+    "Assets/MadSlime/Resources/Prefabs/UI/ResultMenu/FailMenu.prefab",
+    "Assets/MadSlime/Scenes/Menu.unity",
+    "Assets/MadSlime/Scenes/Game.unity",
+    "Assets/MadSlime/Resources/Prefabs/UI/Plate.prefab"
+  ],
+  "integrated_asset_content_matches_checked_copy": true,
+  "git_diff_check": "PASS",
+  "standalone_build": "not run"
+}

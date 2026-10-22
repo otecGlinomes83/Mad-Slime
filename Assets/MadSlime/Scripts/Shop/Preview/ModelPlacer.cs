@@ -257,12 +257,17 @@ namespace Shop
 
         private void AddWorldCorners(Transform sourceTransform, Bounds bounds)
         {
-            for (int x = -1; x <= 1; x += 2)
-            for (int y = -1; y <= 1; y += 2)
-            for (int z = -1; z <= 1; z += 2)
+            for (int cornerX = -1; cornerX <= 1; cornerX += 2)
             {
-                Vector3 corner = bounds.center + Vector3.Scale(bounds.extents, new Vector3(x, y, z));
-                _worldCorners.Add(sourceTransform.TransformPoint(corner));
+                for (int cornerY = -1; cornerY <= 1; cornerY += 2)
+                {
+                    for (int cornerZ = -1; cornerZ <= 1; cornerZ += 2)
+                    {
+                        Vector3 direction = new Vector3(cornerX, cornerY, cornerZ);
+                        Vector3 corner = bounds.center + Vector3.Scale(bounds.extents, direction);
+                        _worldCorners.Add(sourceTransform.TransformPoint(corner));
+                    }
+                }
             }
         }
     }

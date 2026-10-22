@@ -275,7 +275,7 @@ namespace Game
             }
         }
 
-        private void DrawZoneDots(IReadOnlyList<Vector3> points, IReadOnlyList<ZoneLayoutPlanner.Placement> placements,
+        private void DrawZoneDots(IReadOnlyList<Vector3> points, IReadOnlyList<ZonePlacement> placements,
             IReadOnlyList<float> poolRadii, Color tierColor)
         {
             Gizmos.color = tierColor;

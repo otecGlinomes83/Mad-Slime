@@ -1,0 +1,198 @@
+{
+  "checked_at": "2026-10-20T11:39:07.935215",
+  "unity": "2022.3.62f2",
+  "menu_play_mode_errors": 0,
+  "game_plate_measurements": 4,
+  "verified_asset_mismatches": [],
+  "git_diff_check_exit": 0,
+  "ui_png_dimensions": {
+    "Speed.png": [
+      1254,
+      1254
+    ],
+    "Adrenaline.png": [
+      1254,
+      1254
+    ],
+    "Taste.png": [
+      1254,
+      1254
+    ],
+    "Metabolism.png": [
+      1254,
+      1254
+    ],
+    "Smell.png": [
+      1254,
+      1254
+    ],
+    "Appetite.png": [
+      1254,
+      1254
+    ],
+    "Ambitions.png": [
+      1254,
+      1254
+    ],
+    "Play.png": [
+      1024,
+      1024
+    ],
+    "Pause.png": [
+      1024,
+      1024
+    ],
+    "Close.png": [
+      1024,
+      1024
+    ],
+    "Back.png": [
+      1024,
+      1024
+    ],
+    "Check.png": [
+      1024,
+      1024
+    ],
+    "Home.png": [
+      1024,
+      1024
+    ],
+    "Settings.png": [
+      1024,
+      1024
+    ],
+    "Timer.png": [
+      1024,
+      1024
+    ],
+    "Coin.png": [
+      1024,
+      1024
+    ],
+    "Coins.png": [
+      1024,
+      1024
+    ],
+    "Lock.png": [
+      1024,
+      1024
+    ],
+    "Trophy.png": [
+      1024,
+      1024
+    ],
+    "Skins.png": [
+      1024,
+      1024
+    ],
+    "Wheel.png": [
+      1024,
+      1024
+    ],
+    "Upgrade.png": [
+      1024,
+      1024
+    ],
+    "Ad.png": [
+      1024,
+      1024
+    ],
+    "Sound.png": [
+      1024,
+      1024
+    ],
+    "SoundOff.png": [
+      1024,
+      1024
+    ],
+    "Music.png": [
+      1024,
+      1024
+    ],
+    "MusicOff.png": [
+      1024,
+      1024
+    ],
+    "Retry.png": [
+      1024,
+      1024
+    ],
+    "Trash.png": [
+      1024,
+      1024
+    ],
+    "Pointer.png": [
+      1024,
+      1024
+    ],
+    "Gift.png": [
+      1024,
+      1024
+    ],
+    "Panel.png": [
+      512,
+      512
+    ],
+    "Card.png": [
+      512,
+      512
+    ],
+    "ButtonGreen.png": [
+      512,
+      512
+    ],
+    "ButtonCoral.png": [
+      512,
+      512
+    ],
+    "ButtonBlue.png": [
+      512,
+      512
+    ],
+    "ButtonCream.png": [
+      512,
+      512
+    ],
+    "ButtonPurple.png": [
+      512,
+      512
+    ],
+    "ButtonGold.png": [
+      512,
+      512
+    ],
+    "Inset.png": [
+      512,
+      512
+    ],
+    "Track.png": [
+      512,
+      512
+    ],
+    "Fill.png": [
+      512,
+      512
+    ],
+    "RouletteRim.png": [
+      1024,
+      1024
+    ],
+    "WheelHub.png": [
+      1024,
+      1024
+    ],
+    "RouletteDisc.png": [
+      1024,
+      1024
+    ]
+  },
+  "skin_png_count": 34,
+  "skin_png_dimensions": [
+    [
+      512,
+      512
+    ]
+  ],
+  "standalone_player_build": "not run"
+}

@@ -55,10 +55,10 @@ namespace DI
         [SerializeField] private ItemDetector _itemDetector;
         [SerializeField] private AttractableDetector _attractableDetector;
         [SerializeField] private ItemAttractor _itemAttractor;
-        [SerializeField] private ItemGhostToggler _itemGhostToggler;
+        [SerializeField] private GhostToggler _ghostToggler;
         [SerializeField] private QuotaItemHighlighter _quotaItemHighlighter;
         [SerializeField] private Collectables.QuotaItemDetector _quotaItemDetector;
-        [SerializeField] private Collectables.CloseItemDetector _closeItemDetector;
+        [SerializeField] private Collectables.CameraObstacleDetector _obstacleDetector;
         [SerializeField] private SmellAbilityActivator _smellAbilityActivator;
         [SerializeField] private Pauser _pauser;
         [SerializeField] private Timer _timer;
@@ -72,6 +72,7 @@ namespace DI
             builder.RegisterInstance(_playerConfig);
             builder.Register<CollectedItemsCounter>(Lifetime.Scoped);
             builder.Register<QuotaGenerator>(Lifetime.Scoped);
+            builder.Register<QuotaOutlineInitializer>(Lifetime.Scoped);
             builder.Register<UiSpawner>(Lifetime.Scoped);
 
             builder.RegisterComponent(_levelGenerator);
@@ -109,10 +110,10 @@ namespace DI
             builder.RegisterComponent(_itemDetector);
             builder.RegisterComponent(_attractableDetector);
             builder.RegisterComponent(_itemAttractor);
-            builder.RegisterComponent(_itemGhostToggler);
+            builder.RegisterComponent(_ghostToggler);
             builder.RegisterComponent(_quotaItemHighlighter);
             builder.RegisterComponent(_quotaItemDetector);
-            builder.RegisterComponent(_closeItemDetector);
+            builder.RegisterComponent(_obstacleDetector);
             builder.RegisterComponent(_smellAbilityActivator);
             builder.RegisterComponent(_pauser);
             builder.RegisterComponent(_timer);
@@ -167,10 +168,10 @@ namespace DI
             ValidateAssigned(_itemDetector, nameof(_itemDetector));
             ValidateAssigned(_attractableDetector, nameof(_attractableDetector));
             ValidateAssigned(_itemAttractor, nameof(_itemAttractor));
-            ValidateAssigned(_itemGhostToggler, nameof(_itemGhostToggler));
+            ValidateAssigned(_ghostToggler, nameof(_ghostToggler));
             ValidateAssigned(_quotaItemHighlighter, nameof(_quotaItemHighlighter));
             ValidateAssigned(_quotaItemDetector, nameof(_quotaItemDetector));
-            ValidateAssigned(_closeItemDetector, nameof(_closeItemDetector));
+            ValidateAssigned(_obstacleDetector, nameof(_obstacleDetector));
             ValidateAssigned(_smellAbilityActivator, nameof(_smellAbilityActivator));
             ValidateAssigned(_pauser, nameof(_pauser));
             ValidateAssigned(_timer, nameof(_timer));

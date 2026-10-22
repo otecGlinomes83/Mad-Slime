@@ -13,13 +13,13 @@ namespace UI
 
         private void OnEnable()
         {
-            Localization.LanguageChanged += UpdateLabel;
-            UpdateLabel();
+            Localization.LanguageChanged += OnLanguageChanged;
+            OnLanguageChanged();
         }
 
         private void OnDisable()
         {
-            Localization.LanguageChanged -= UpdateLabel;
+            Localization.LanguageChanged -= OnLanguageChanged;
         }
 
         public void SetLevel(int level)
@@ -30,10 +30,10 @@ namespace UI
             }
 
             _level = level;
-            UpdateLabel();
+            OnLanguageChanged();
         }
 
-        private void UpdateLabel()
+        private void OnLanguageChanged()
         {
             if (_level <= 0)
             {

@@ -1,0 +1,71 @@
+PASS Player frames advance
+SCREEN main-1920x1080 actual=1920x1080 frame=325
+SCREEN main-portrait actual=1080x1920 frame=458
+SCREEN main-3840x2160 actual=3840x2160 frame=542
+SCREEN upgrades-1920x1080 actual=1920x1080 frame=675
+PASS Seven upgrade/perk cards
+PASS Four skills in left column
+PASS Three perks in right column
+PASS Skills left, perks right
+PASS Description avoids purchase chip Большие амбиции
+PASS Description remains inside Большие амбиции
+CARD Большие амбиции bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Позволяет съесть предметы на один тир крупнее.
+PASS Description avoids purchase chip Адреналин
+PASS Description remains inside Адреналин
+CARD Адреналин bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Ускоряет движение, когда время на исходе.
+PASS Description avoids purchase chip Улучшенный нюх
+PASS Description remains inside Улучшенный нюх
+CARD Улучшенный нюх bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Подсвечивает рядом квотовые предметы, которые можно съесть.
+PASS Step label remains inside Метаболизм
+PASS Description avoids purchase chip Метаболизм
+PASS Description remains inside Метаболизм
+CARD Метаболизм bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Предметы вне квоты сильнее заполняют картинку.
+Вклад +45%
+PASS Step label remains inside Знаток вкуса
+PASS Description avoids purchase chip Знаток вкуса
+PASS Description remains inside Знаток вкуса
+CARD Знаток вкуса bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Больше массы за квотовые предметы.
+Масса от квоты +20%
+PASS Step label remains inside Аппетит
+PASS Description avoids purchase chip Аппетит
+PASS Description remains inside Аппетит
+CARD Аппетит bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Больше массы за каждый съеденный предмет.
+Масса +15%
+PASS Step label remains inside Скорость
+PASS Description avoids purchase chip Скорость
+PASS Description remains inside Скорость
+CARD Скорость bounds=(x:-430.00, y:-91.00, width:860.00, height:182.00) effect=Быстрее двигайся и собирай предметы.
+Скорость +10%
+PASS Upgrade purchase works after rearranging
+SCREEN upgrades-2560x1080 actual=2560x1080 frame=755
+SCREEN upgrades-960x540 actual=960x540 frame=917
+SCREEN upgrades-english actual=1920x1080 frame=1091
+SCREEN upgrades-portrait actual=1080x1920 frame=1221
+PASS Portrait retains seven cards
+PASS Portrait skill and perk sections do not overlap
+SCREEN skins-1920x1080 actual=1920x1080 frame=1364
+PASS Four named rarity groups
+PASS Skin catalog opens at top
+SCREEN skins-1920x1200 actual=1920x1200 frame=1460
+SCREEN skins-portrait actual=1080x1920 frame=1524
+SCREEN daily-roulette actual=1920x1080 frame=1676
+SCREEN skin-roulette actual=1920x1080 frame=1858
+SCREEN settings-menu actual=1920x1080 frame=2041
+SCREEN leaderboard-landscape actual=1920x1080 frame=2199
+PASS Popup within viewport Panel 1920x1080
+SCREEN leaderboard-compact actual=960x540 frame=2368
+PASS Popup within viewport Panel 960x540
+SCREEN leaderboard-portrait actual=1080x1920 frame=2535
+PASS Popup within viewport Panel 1080x1920
+SCREEN result-win actual=1920x1080 frame=2639
+PASS Popup within viewport Menu 1920x1080
+SCREEN result-fail actual=1920x1080 frame=2736
+PASS Popup within viewport Menu 1920x1080
+SCREEN prize-coins actual=1920x1080 frame=2841
+PASS Popup within viewport Content 1920x1080
+SCREEN prize-compact actual=960x540 frame=3049
+PASS Popup within viewport Content 960x540
+SCREEN prize-rare actual=1920x1080 frame=3255
+SCREEN prize-epic actual=1920x1080 frame=3366
+SCREEN prize-legendary actual=1920x1080 frame=3480
+ERROR_COUNT 0

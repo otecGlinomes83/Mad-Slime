@@ -11,4 +11,4 @@
 ## Связи
 
 - Создаётся: [[Квота | QuotaGenerator]]
-- Читается: `QuotaBoard`/`QuotaCounter`, HUD ([[HUD | QuotaUI]]), подсветка/призраки ([[Детекция и сбор | QuotaItemHighlighter, ItemGhostToggler]])
+- Читается: `QuotaBoard`/`QuotaCounter`, HUD ([[HUD | QuotaUI]]), подсветка/призраки ([[Детекция и сбор | QuotaItemHighlighter, GhostToggler]])

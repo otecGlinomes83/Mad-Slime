@@ -25,7 +25,8 @@ namespace ShapeFill
         {
             if (quotaCubes < 0 || bonusCubes < 0 || requiredCubes <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(requiredCubes), "Fill result requires a built nonempty shape and nonnegative counts.");
+                throw new ArgumentOutOfRangeException(nameof(requiredCubes), "Fill result requires a built nonempty shape and "
+                    + "nonnegative counts.");
             }
 
             _quotaCubes = quotaCubes;

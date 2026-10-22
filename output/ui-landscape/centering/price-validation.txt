@@ -1,0 +1,2 @@
+Price multiplier=2, balance multiplier=2
+PASS

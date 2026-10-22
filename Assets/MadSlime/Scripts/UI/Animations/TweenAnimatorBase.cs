@@ -20,7 +20,10 @@ namespace UI.Animations
         protected float ShowDuration => _showDuration;
         protected float HideDuration => _hideDuration;
         protected ReactiveUIView View => _reactiveView;
-        protected bool IsAnimating => _currentTween != null;
+        protected bool IsAnimating()
+        {
+            return _currentTween != null;
+        }
 
         protected virtual void Awake()
         {

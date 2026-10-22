@@ -29,14 +29,14 @@ namespace UI
         private void OnEnable()
         {
             _button.onClick.AddListener(OnButtonClick);
-            Localization.LanguageChanged += Apply;
-            Apply();
+            Localization.LanguageChanged += OnLanguageChanged;
+            OnLanguageChanged();
         }
 
         private void OnDisable()
         {
             _button.onClick.RemoveListener(OnButtonClick);
-            Localization.LanguageChanged -= Apply;
+            Localization.LanguageChanged -= OnLanguageChanged;
         }
 
         private void OnButtonClick()
@@ -44,7 +44,7 @@ namespace UI
             Localization.CycleLanguage();
         }
 
-        private void Apply()
+        private void OnLanguageChanged()
         {
             _label.text = Localization.Get($"lang_self_{Localization.CurrentLanguage}");
         }

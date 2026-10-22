@@ -177,22 +177,17 @@ namespace ShapeFill
 
         private void SortFillBottomToTop()
         {
-            _fillCells.Sort(BottomToTopLeftToRightComparer.Instance);
+            _fillCells.Sort(CompareFillCells);
         }
 
-        private class BottomToTopLeftToRightComparer : IComparer<Vector2Int>
+        private static int CompareFillCells(Vector2Int left, Vector2Int right)
         {
-            public static readonly BottomToTopLeftToRightComparer Instance = new BottomToTopLeftToRightComparer();
-
-            public int Compare(Vector2Int left, Vector2Int right)
+            if (left.y != right.y)
             {
-                if (left.y != right.y)
-                {
-                    return left.y.CompareTo(right.y);
-                }
-
-                return left.x.CompareTo(right.x);
+                return left.y.CompareTo(right.y);
             }
+
+            return left.x.CompareTo(right.x);
         }
     }
 }

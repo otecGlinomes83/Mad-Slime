@@ -1,0 +1,1304 @@
+{
+  "City": [
+    {
+      "name": "SM_CityBlock_East",
+      "size": [
+        1143.00003,
+        490.3,
+        1800.0
+      ],
+      "center": [
+        -998.49998,
+        244.85,
+        6e-05
+      ],
+      "tris": 2204,
+      "ghost": true
+    },
+    {
+      "name": "SM_CityBlock_North",
+      "size": [
+        1800.0,
+        490.3,
+        1143.0
+      ],
+      "center": [
+        0.0,
+        244.85,
+        -998.5
+      ],
+      "tris": 2204,
+      "ghost": true
+    },
+    {
+      "name": "SM_CityBlock_South",
+      "size": [
+        1800.0,
+        490.3,
+        1143.00018
+      ],
+      "center": [
+        0.00012,
+        244.85,
+        998.50003
+      ],
+      "tris": 2204,
+      "ghost": true
+    },
+    {
+      "name": "SM_CityBlock_West",
+      "size": [
+        1143.00018,
+        490.3,
+        1800.00006
+      ],
+      "center": [
+        998.50003,
+        244.85,
+        -9e-05
+      ],
+      "tris": 2204,
+      "ghost": true
+    },
+    {
+      "name": "SM_CityNearBuildings",
+      "size": [
+        417.5,
+        270.0,
+        166.0
+      ],
+      "center": [
+        21.25,
+        135.0,
+        -390.0
+      ],
+      "tris": 172,
+      "ghost": true
+    },
+    {
+      "name": "SM_CityNearPark_East",
+      "size": [
+        42.0,
+        241.0,
+        352.0
+      ],
+      "center": [
+        -325.0,
+        120.5,
+        -5.0
+      ],
+      "tris": 112,
+      "ghost": true
+    },
+    {
+      "name": "SM_CityNearPark_South",
+      "size": [
+        212.0,
+        119.0,
+        81.19614
+      ],
+      "center": [
+        50.0,
+        59.5,
+        375.40193
+      ],
+      "tris": 140,
+      "ghost": true
+    },
+    {
+      "name": "SM_CityNearPark_West",
+      "size": [
+        128.70941,
+        227.25,
+        93.0512
+      ],
+      "center": [
+        350.0,
+        113.375,
+        -12.5
+      ],
+      "tris": 156,
+      "ghost": true
+    },
+    {
+      "name": "SM_CitySurround",
+      "size": [
+        6000.0,
+        32.0,
+        6000.0
+      ],
+      "center": [
+        0.0,
+        -16.25,
+        0.0
+      ],
+      "tris": 32,
+      "ghost": false
+    },
+    {
+      "name": "SM_CityWall_East",
+      "size": [
+        20.00002,
+        65.0,
+        513.56584
+      ],
+      "center": [
+        -259.99999,
+        32.5,
+        3.00001
+      ],
+      "tris": 444,
+      "ghost": true
+    },
+    {
+      "name": "SM_CityWall_North",
+      "size": [
+        544.78293,
+        65.0,
+        20.0
+      ],
+      "center": [
+        1.39146,
+        32.5,
+        -260.0
+      ],
+      "tris": 464,
+      "ghost": true
+    },
+    {
+      "name": "SM_CityWall_South",
+      "size": [
+        544.78293,
+        65.0,
+        20.00006
+      ],
+      "center": [
+        -1.39143,
+        32.5,
+        260.0
+      ],
+      "tris": 464,
+      "ghost": true
+    },
+    {
+      "name": "SM_CityWall_West",
+      "size": [
+        20.00005,
+        65.0,
+        513.56587
+      ],
+      "center": [
+        260.00001,
+        32.5,
+        -3.00002
+      ],
+      "tris": 444,
+      "ghost": true
+    }
+  ],
+  "Parking": [
+    {
+      "name": "SM_ParkingBays_South",
+      "size": [
+        454.0,
+        10.25,
+        210.0
+      ],
+      "center": [
+        0.0,
+        4.875,
+        400.0
+      ],
+      "tris": 84,
+      "ghost": true
+    },
+    {
+      "name": "SM_ParkingBays_West",
+      "size": [
+        43.0,
+        57.0,
+        383.0
+      ],
+      "center": [
+        315.0,
+        28.5,
+        0.0
+      ],
+      "tris": 372,
+      "ghost": true
+    },
+    {
+      "name": "SM_ParkingBooth",
+      "size": [
+        224.0,
+        210.0,
+        192.0
+      ],
+      "center": [
+        105.0,
+        105.0,
+        -370.0
+      ],
+      "tris": 60,
+      "ghost": true
+    },
+    {
+      "name": "SM_ParkingLot_East",
+      "size": [
+        831.00006,
+        241.25,
+        1525.00006
+      ],
+      "center": [
+        -934.49997,
+        120.375,
+        3e-05
+      ],
+      "tris": 2648,
+      "ghost": true
+    },
+    {
+      "name": "SM_ParkingLot_North",
+      "size": [
+        1525.0,
+        241.25,
+        831.0
+      ],
+      "center": [
+        0.0,
+        120.375,
+        -934.5
+      ],
+      "tris": 2648,
+      "ghost": true
+    },
+    {
+      "name": "SM_ParkingLot_South",
+      "size": [
+        1525.0,
+        241.25,
+        831.00006
+      ],
+      "center": [
+        6e-05,
+        120.375,
+        934.49997
+      ],
+      "tris": 2648,
+      "ghost": true
+    },
+    {
+      "name": "SM_ParkingLot_West",
+      "size": [
+        831.00006,
+        241.25,
+        1525.0
+      ],
+      "center": [
+        934.49997,
+        120.375,
+        -6e-05
+      ],
+      "tris": 2648,
+      "ghost": true
+    },
+    {
+      "name": "SM_ParkingNearCar",
+      "size": [
+        114.0,
+        93.07007,
+        198.0
+      ],
+      "center": [
+        -365.0,
+        51.46496,
+        -30.0
+      ],
+      "tris": 240,
+      "ghost": true
+    },
+    {
+      "name": "SM_ParkingSurround",
+      "size": [
+        6000.0,
+        32.0,
+        6000.0
+      ],
+      "center": [
+        0.0,
+        -16.25,
+        0.0
+      ],
+      "tris": 12,
+      "ghost": false
+    },
+    {
+      "name": "SM_ParkingWall_East",
+      "size": [
+        20.00002,
+        65.0,
+        500.0
+      ],
+      "center": [
+        -259.99999,
+        32.5,
+        2e-05
+      ],
+      "tris": 184,
+      "ghost": true
+    },
+    {
+      "name": "SM_ParkingWall_North",
+      "size": [
+        540.0,
+        65.0,
+        20.0
+      ],
+      "center": [
+        0.0,
+        32.5,
+        -260.0
+      ],
+      "tris": 184,
+      "ghost": true
+    },
+    {
+      "name": "SM_ParkingWall_South",
+      "size": [
+        540.0,
+        65.0,
+        20.00006
+      ],
+      "center": [
+        3e-05,
+        32.5,
+        260.0
+      ],
+      "tris": 184,
+      "ghost": true
+    },
+    {
+      "name": "SM_ParkingWall_West",
+      "size": [
+        20.00005,
+        65.0,
+        500.0
+      ],
+      "center": [
+        260.00001,
+        32.5,
+        -2e-05
+      ],
+      "tris": 184,
+      "ghost": true
+    }
+  ],
+  "Room": [
+    {
+      "name": "SM_RoomBackdrop_East",
+      "size": [
+        46.5,
+        350.0,
+        1900.0
+      ],
+      "center": [
+        -1269.75,
+        175.0,
+        6e-05
+      ],
+      "tris": 216,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomBackdrop_North",
+      "size": [
+        1900.0,
+        350.0,
+        46.5
+      ],
+      "center": [
+        0.0,
+        175.0,
+        -1269.75
+      ],
+      "tris": 216,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomBackdrop_South",
+      "size": [
+        1900.0,
+        350.0,
+        46.50024
+      ],
+      "center": [
+        0.00012,
+        175.0,
+        1269.75
+      ],
+      "tris": 216,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomBackdrop_West",
+      "size": [
+        46.50012,
+        350.0,
+        1900.0
+      ],
+      "center": [
+        1269.75006,
+        175.0,
+        -0.00012
+      ],
+      "tris": 216,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomBookshelf",
+      "size": [
+        108.0,
+        250.0,
+        260.0
+      ],
+      "center": [
+        363.0,
+        125.0,
+        -65.0
+      ],
+      "tris": 408,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomFurnishings_East",
+      "size": [
+        352.50006,
+        247.5,
+        1270.00012
+      ],
+      "center": [
+        -813.74997,
+        123.25,
+        -4.99988
+      ],
+      "tris": 1056,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomFurnishings_North",
+      "size": [
+        1270.0,
+        247.5,
+        352.5
+      ],
+      "center": [
+        5.0,
+        123.25,
+        -813.75
+      ],
+      "tris": 1056,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomFurnishings_South",
+      "size": [
+        1270.0,
+        247.5,
+        352.50018
+      ],
+      "center": [
+        -4.99982,
+        123.25,
+        813.74991
+      ],
+      "tris": 1056,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomFurnishings_West",
+      "size": [
+        352.50012,
+        247.5,
+        1270.00006
+      ],
+      "center": [
+        813.74994,
+        123.25,
+        4.99985
+      ],
+      "tris": 1056,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomPlantAndTable",
+      "size": [
+        154.35471,
+        207.25,
+        266.08899
+      ],
+      "center": [
+        -360.82265,
+        103.375,
+        -54.01889
+      ],
+      "tris": 288,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomRugAndGames",
+      "size": [
+        390.0,
+        56.25,
+        220.0
+      ],
+      "center": [
+        -10.0,
+        27.875,
+        401.0
+      ],
+      "tris": 204,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomSofa",
+      "size": [
+        302.0,
+        164.0,
+        174.0
+      ],
+      "center": [
+        45.0,
+        82.0,
+        -383.0
+      ],
+      "tris": 120,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomSurround",
+      "size": [
+        6000.0,
+        32.0,
+        6000.0
+      ],
+      "center": [
+        0.0,
+        -16.25,
+        0.0
+      ],
+      "tris": 12,
+      "ghost": false
+    },
+    {
+      "name": "SM_RoomWall_East",
+      "size": [
+        22.70001,
+        65.0,
+        500.0
+      ],
+      "center": [
+        -258.64999,
+        32.5,
+        2e-05
+      ],
+      "tris": 590,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomWall_North",
+      "size": [
+        540.0,
+        65.0,
+        22.7
+      ],
+      "center": [
+        0.0,
+        32.5,
+        -258.65
+      ],
+      "tris": 590,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomWall_South",
+      "size": [
+        540.0,
+        65.0,
+        22.70004
+      ],
+      "center": [
+        3e-05,
+        32.5,
+        258.65001
+      ],
+      "tris": 590,
+      "ghost": true
+    },
+    {
+      "name": "SM_RoomWall_West",
+      "size": [
+        22.70004,
+        65.0,
+        500.0
+      ],
+      "center": [
+        258.65001,
+        32.5,
+        -2e-05
+      ],
+      "tris": 590,
+      "ghost": true
+    }
+  ],
+  "Space": [
+    {
+      "name": "SM_SpaceColony_East",
+      "size": [
+        1378.40906,
+        221.1,
+        2422.06653
+      ],
+      "center": [
+        -1219.20453,
+        84.45,
+        -0.76971
+      ],
+      "tris": 1604,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceColony_North",
+      "size": [
+        2422.06653,
+        221.1,
+        1378.40906
+      ],
+      "center": [
+        0.76984,
+        84.45,
+        -1219.20453
+      ],
+      "tris": 1604,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceColony_South",
+      "size": [
+        2422.06653,
+        221.1,
+        1378.40912
+      ],
+      "center": [
+        -0.76971,
+        84.45,
+        1219.2045
+      ],
+      "tris": 1604,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceColony_West",
+      "size": [
+        1378.40912,
+        221.1,
+        2422.06653
+      ],
+      "center": [
+        1219.2045,
+        84.45,
+        0.76971
+      ],
+      "tris": 1604,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceLandingPad",
+      "size": [
+        284.0,
+        16.75,
+        284.0
+      ],
+      "center": [
+        0.0,
+        8.125,
+        -425.0
+      ],
+      "tris": 148,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceNearDish",
+      "size": [
+        154.0,
+        191.0,
+        154.0
+      ],
+      "center": [
+        350.0,
+        95.5,
+        0.0
+      ],
+      "tris": 144,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceNearRocks_North",
+      "size": [
+        111.13168,
+        96.0,
+        92.99286
+      ],
+      "center": [
+        -341.90034,
+        35.75,
+        -370.76956
+      ],
+      "tris": 40,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceNearRocks_South",
+      "size": [
+        440.90871,
+        120.0,
+        163.72458
+      ],
+      "center": [
+        -26.62753,
+        44.75,
+        372.79631
+      ],
+      "tris": 160,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceNearRocks_West",
+      "size": [
+        129.06479,
+        115.2,
+        107.33826
+      ],
+      "center": [
+        339.8662,
+        42.95,
+        319.20312
+      ],
+      "tris": 40,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceNearSolar",
+      "size": [
+        150.0,
+        72.5,
+        405.0
+      ],
+      "center": [
+        -375.0,
+        36.25,
+        0.0
+      ],
+      "tris": 208,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceSurround",
+      "size": [
+        6000.0,
+        32.0,
+        6000.0
+      ],
+      "center": [
+        0.0,
+        -16.25,
+        0.0
+      ],
+      "tris": 12,
+      "ghost": false
+    },
+    {
+      "name": "SM_SpaceWall_East",
+      "size": [
+        20.00002,
+        65.0,
+        507.14355
+      ],
+      "center": [
+        -259.99999,
+        32.5,
+        -0.99998
+      ],
+      "tris": 412,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceWall_North",
+      "size": [
+        554.14355,
+        65.0,
+        20.0
+      ],
+      "center": [
+        -2.5,
+        32.5,
+        -260.0
+      ],
+      "tris": 452,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceWall_South",
+      "size": [
+        554.14355,
+        65.0,
+        20.00006
+      ],
+      "center": [
+        2.50003,
+        32.5,
+        260.0
+      ],
+      "tris": 452,
+      "ghost": true
+    },
+    {
+      "name": "SM_SpaceWall_West",
+      "size": [
+        20.00005,
+        65.0,
+        507.14355
+      ],
+      "center": [
+        260.00001,
+        32.5,
+        0.99998
+      ],
+      "tris": 412,
+      "ghost": true
+    }
+  ],
+  "Table": [
+    {
+      "name": "SM_TableBreadBoard",
+      "size": [
+        650.0,
+        167.25,
+        320.0
+      ],
+      "center": [
+        -65.0,
+        83.375,
+        -455.0
+      ],
+      "tris": 56,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableKitchen_East",
+      "size": [
+        963.48279,
+        143.25,
+        1169.00006
+      ],
+      "center": [
+        -1247.74139,
+        71.375,
+        0.50003
+      ],
+      "tris": 1512,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableKitchen_North",
+      "size": [
+        1169.0,
+        143.25,
+        963.48279
+      ],
+      "center": [
+        -0.5,
+        71.375,
+        -1247.74139
+      ],
+      "tris": 1512,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableKitchen_South",
+      "size": [
+        1169.00006,
+        143.25,
+        963.48279
+      ],
+      "center": [
+        0.50009,
+        71.375,
+        1247.74139
+      ],
+      "tris": 1512,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableKitchen_West",
+      "size": [
+        963.48279,
+        143.25,
+        1169.00006
+      ],
+      "center": [
+        1247.74139,
+        71.375,
+        -0.50009
+      ],
+      "tris": 1512,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableMug",
+      "size": [
+        410.0,
+        250.0,
+        368.0
+      ],
+      "center": [
+        -495.0,
+        124.75,
+        -14.0
+      ],
+      "tris": 1424,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableNapkin",
+      "size": [
+        460.0,
+        13.6,
+        390.0
+      ],
+      "center": [
+        535.0,
+        6.55,
+        215.0
+      ],
+      "tris": 48,
+      "ghost": true
+    },
+    {
+      "name": "SM_TablePreserveJar",
+      "size": [
+        236.0,
+        311.0,
+        236.0
+      ],
+      "center": [
+        422.0,
+        155.25,
+        -178.0
+      ],
+      "tris": 816,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableSpoon",
+      "size": [
+        186.0,
+        29.0,
+        463.0
+      ],
+      "center": [
+        -393.0,
+        17.25,
+        528.5
+      ],
+      "tris": 292,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableTeaTowel",
+      "size": [
+        340.0,
+        7.65,
+        500.0
+      ],
+      "center": [
+        -5.0,
+        3.575,
+        540.0
+      ],
+      "tris": 60,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableWall_East",
+      "size": [
+        20.60001,
+        65.0,
+        500.0
+      ],
+      "center": [
+        -259.7,
+        32.5,
+        2e-05
+      ],
+      "tris": 96,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableWall_North",
+      "size": [
+        540.0,
+        65.0,
+        20.60001
+      ],
+      "center": [
+        0.0,
+        32.5,
+        -259.7
+      ],
+      "tris": 96,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableWall_South",
+      "size": [
+        540.0,
+        65.0,
+        20.60004
+      ],
+      "center": [
+        3e-05,
+        32.5,
+        259.70001
+      ],
+      "tris": 96,
+      "ghost": true
+    },
+    {
+      "name": "SM_TableWall_West",
+      "size": [
+        20.60004,
+        65.0,
+        500.0
+      ],
+      "center": [
+        259.70001,
+        32.5,
+        -2e-05
+      ],
+      "tris": 96,
+      "ghost": true
+    },
+    {
+      "name": "SM_TabletopSurround",
+      "size": [
+        6000.0,
+        31.75,
+        6000.0
+      ],
+      "center": [
+        0.0,
+        -16.125,
+        0.0
+      ],
+      "tris": 12,
+      "ghost": false
+    }
+  ],
+  "Universe": [
+    {
+      "name": "SM_UniverseAstralField_East",
+      "size": [
+        1225.93903,
+        515.0,
+        2064.38171
+      ],
+      "center": [
+        -1119.88962,
+        247.5,
+        7.05927
+      ],
+      "tris": 1986,
+      "ghost": true
+    },
+    {
+      "name": "SM_UniverseAstralField_North",
+      "size": [
+        2064.38171,
+        515.0,
+        1225.93906
+      ],
+      "center": [
+        -7.05914,
+        247.5,
+        -1119.8896
+      ],
+      "tris": 1986,
+      "ghost": true
+    },
+    {
+      "name": "SM_UniverseAstralField_South",
+      "size": [
+        2064.38171,
+        515.0,
+        1225.9389
+      ],
+      "center": [
+        7.05927,
+        247.5,
+        1119.88956
+      ],
+      "tris": 1986,
+      "ghost": true
+    },
+    {
+      "name": "SM_UniverseAstralField_West",
+      "size": [
+        1225.93903,
+        515.0,
+        2064.38171
+      ],
+      "center": [
+        1119.88962,
+        247.5,
+        -7.05927
+      ],
+      "tris": 1986,
+      "ghost": true
+    },
+    {
+      "name": "SM_UniverseNearCrystals_East",
+      "size": [
+        104.55328,
+        140.25,
+        107.24207
+      ],
+      "center": [
+        -352.72336,
+        69.875,
+        -110.0
+      ],
+      "tris": 92,
+      "ghost": true
+    },
+    {
+      "name": "SM_UniverseNearCrystals_South",
+      "size": [
+        354.55328,
+        140.25,
+        132.24207
+      ],
+      "center": [
+        2.27664,
+        69.875,
+        372.5
+      ],
+      "tris": 184,
+      "ghost": true
+    },
+    {
+      "name": "SM_UniverseNearCrystals_West",
+      "size": [
+        104.55328,
+        140.25,
+        107.24207
+      ],
+      "center": [
+        337.27664,
+        69.875,
+        100.0
+      ],
+      "tris": 92,
+      "ghost": true
+    },
+    {
+      "name": "SM_UniverseNearGate",
+      "size": [
+        250.0,
+        275.25,
+        216.0
+      ],
+      "center": [
+        0.0,
+        137.375,
+        -365.0
+      ],
+      "tris": 380,
+      "ghost": true
+    },
+    {
+      "name": "SM_UniverseSurround",
+      "size": [
+        6000.0,
+        32.0,
+        6000.0
+      ],
+      "center": [
+        0.0,
+        -16.25,
+        0.0
+      ],
+      "tris": 12,
+      "ghost": false
+    },
+    {
+      "name": "SM_UniverseWall_East",
+      "size": [
+        20.65001,
+        65.0,
+        500.0
+      ],
+      "center": [
+        -259.675,
+        32.5,
+        2e-05
+      ],
+      "tris": 324,
+      "ghost": true
+    },
+    {
+      "name": "SM_UniverseWall_North",
+      "size": [
+        540.0,
+        65.0,
+        20.64999
+      ],
+      "center": [
+        0.0,
+        32.5,
+        -259.675
+      ],
+      "tris": 360,
+      "ghost": true
+    },
+    {
+      "name": "SM_UniverseWall_South",
+      "size": [
+        540.0,
+        65.0,
+        20.65005
+      ],
+      "center": [
+        3e-05,
+        32.5,
+        259.675
+      ],
+      "tris": 360,
+      "ghost": true
+    },
+    {
+      "name": "SM_UniverseWall_West",
+      "size": [
+        20.65004,
+        65.0,
+        500.0
+      ],
+      "center": [
+        259.67501,
+        32.5,
+        -2e-05
+      ],
+      "tris": 324,
+      "ghost": true
+    }
+  ]
+}

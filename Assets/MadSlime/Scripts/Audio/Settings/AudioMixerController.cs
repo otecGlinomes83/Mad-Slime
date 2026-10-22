@@ -56,7 +56,8 @@ namespace Audio
             if (_audioStorage == null || _savesReadiness == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: saves dependencies were not injected. Check that ProjectLifetimeScope registers Saver and AudioMixerController.");
+                    $"{name}: saves dependencies were not injected. Check that ProjectLifetimeScope "
+                        + $"registers Saver and AudioMixerController.");
             }
         }
 

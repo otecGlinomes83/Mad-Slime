@@ -10,7 +10,7 @@ namespace EditorTools
     public class SkinItemFactory : EditorWindow
     {
         private const string PrefsKey = "MadSlime.SkinItemFactory";
-        private const int IconSize = 256;
+        private const int IconSize = 512;
         private const float IconCameraDistance = 10f;
         private const float IconOrthographicPadding = 1f;
         private const float IconLightIntensity = 1.2f;
@@ -29,7 +29,6 @@ namespace EditorTools
         private bool _forceIcon;
         private bool _replaceExisting;
 
-        // Batch entry point for the same factory used by the editor window.
         public static void CreateFromCommandLine()
         {
             string[] args = Environment.GetCommandLineArgs();
@@ -37,22 +36,30 @@ namespace EditorTools
             {
                 int index = Array.IndexOf(args, key);
                 if (index < 0 || index + 1 >= args.Length || args[index + 1].StartsWith("-"))
+                {
                     throw new ArgumentException($"Skin Factory requires {key}.");
+                }
+
                 return args[index + 1];
             }
 
             string path = Argument("-skinSource");
             string id = Argument("-skinId");
-            if (!Enum.TryParse(Argument("-skinRarity"), true, out SkinRarity rarity)
-                || !Enum.IsDefined(typeof(SkinRarity), rarity))
+            if (Enum.TryParse(Argument("-skinRarity"), true, out SkinRarity rarity) == false
+                || Enum.IsDefined(typeof(SkinRarity), rarity) == false)
+            {
                 throw new ArgumentException("Unknown skin rarity.");
+            }
+
             GameObject source = AssetDatabase.LoadAssetAtPath<GameObject>(path);
             if (source == null)
+            {
                 throw new ArgumentException($"Skin model does not exist: {path}");
+            }
+
             RebuildSkin(source, id, rarity);
         }
 
-        // Used by the reference-model importer. Existing SkinItems keep their GUID and save id.
         public static SkinItem RebuildSkin(GameObject sourceModel, string skinId, SkinRarity rarity)
         {
             EnsureFolder(DefaultPrefabsPath);
@@ -324,7 +331,8 @@ namespace EditorTools
 
             if (iconLayer < 0)
             {
-                Debug.LogError("[SkinFactory] No unnamed layer left in 9-31 for icon rendering. Free one in Project Settings → Tags and Layers.");
+                Debug.LogError("[SkinFactory] No unnamed layer left in 9-31 for icon rendering. Free one in "
+                    + "Project Settings → Tags and Layers.");
                 return;
             }
 

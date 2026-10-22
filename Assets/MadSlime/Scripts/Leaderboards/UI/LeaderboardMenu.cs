@@ -35,6 +35,7 @@ namespace UI
         [SerializeField] private Button _retryButton;
         [SerializeField] private LeaderboardRowViewFactory _rowFactory;
         [SerializeField] private ScrollRect _scroll;
+        [SerializeField] private RectTransform _panel;
         [SerializeField] private YandexConfig _config;
 
         private ISavesReadiness _savesReadiness;
@@ -43,6 +44,8 @@ namespace UI
         private LeaderboardRowView _ownRow;
         private CancellationTokenSource _loadSource;
         private State _state;
+        private Vector2Int _screenSize;
+        private float _maximumPanelHeight;
 
         [Inject]
         public void Construct(ISavesReadiness savesReadiness, ILeaderboardService leaderboardService)
@@ -55,7 +58,7 @@ namespace UI
         {
             if (_closeButton == null || _authButton == null || _retryButton == null
                 || _rowFactory == null || _scroll == null || _scroll.content == null || _scroll.viewport == null
-                || _config == null
+                || _panel == null || _config == null
                 || string.IsNullOrEmpty(_config.LeaderboardName))
             {
                 throw new InvalidOperationException($"{name}: leaderboard window references are incomplete.");
@@ -70,8 +73,48 @@ namespace UI
             _authButton.onClick.AddListener(OnAuthClicked);
             _retryButton.onClick.AddListener(OnRetryClicked);
             _savesReadiness.Ready += OnSdkDataReceived;
-            Localization.LanguageChanged += RefreshStatusText;
+            Localization.LanguageChanged += OnLanguageChanged;
+            RememberPanelHeight();
             RequestLeaderboard();
+        }
+
+        private void LateUpdate()
+        {
+            if (_panel == null || _scroll == null)
+            {
+                return;
+            }
+
+            if (_screenSize.x != Screen.width || _screenSize.y != Screen.height)
+            {
+                RememberPanelHeight();
+            }
+
+            if (_state != State.Ready || _rows.Count == 0)
+            {
+                return;
+            }
+
+            float contentHeight = _scroll.content.rect.height;
+
+            if (contentHeight <= 0f)
+            {
+                return;
+            }
+
+            float height = Mathf.Min(_maximumPanelHeight,
+                _panel.rect.height + contentHeight - _scroll.viewport.rect.height);
+
+            if (Mathf.Abs(height - _panel.rect.height) > 1f)
+            {
+                _panel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+            }
+        }
+
+        private void RememberPanelHeight()
+        {
+            _screenSize = new Vector2Int(Screen.width, Screen.height);
+            _maximumPanelHeight = _panel.rect.height;
         }
 
         protected override void OnClosing()
@@ -87,7 +130,7 @@ namespace UI
             _closeButton?.onClick.RemoveListener(OnCloseClicked);
             _authButton?.onClick.RemoveListener(OnAuthClicked);
             _retryButton?.onClick.RemoveListener(OnRetryClicked);
-            Localization.LanguageChanged -= RefreshStatusText;
+            Localization.LanguageChanged -= OnLanguageChanged;
 
             if (_savesReadiness != null)
             {
@@ -233,10 +276,10 @@ namespace UI
             _scroll.gameObject.SetActive(state != State.AuthRequired && _rows.Count > 0);
             _retryButton.gameObject.SetActive(state == State.Empty || state == State.Error);
             _retryButton.interactable = state != State.Loading;
-            RefreshStatusText();
+            OnLanguageChanged();
         }
 
-        private void RefreshStatusText()
+        private void OnLanguageChanged()
         {
             if (_statusText == null)
             {

@@ -30,6 +30,7 @@ namespace Roulette
         [SerializeField] private ReactiveUIView _screenView;
         [SerializeField] private Button _closeButton;
         [SerializeField] private TMP_Text _title;
+        [SerializeField] private RoulettePopupLayout _layout;
 
         public event Action SpinRequested;
         public event Action AdRequested;
@@ -151,6 +152,10 @@ namespace Roulette
             bool canWatchAd, bool showClose, bool canClose)
         {
             _title.text = title;
+            if (_layout != null)
+            {
+                _layout.SetControlsVisible(showSpin, showAd);
+            }
             _spinButton.gameObject.SetActive(showSpin);
             _spinPriceText.text = spinText;
             _spinButton.interactable = canSpin;

@@ -22,13 +22,15 @@ namespace Collectables
             if (_config.MinAbsorbDuration > _config.MaxAbsorbDuration)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerConfig has MinAbsorbDuration {_config.MinAbsorbDuration} greater than MaxAbsorbDuration {_config.MaxAbsorbDuration}.");
+                    $"{name}: PlayerConfig has MinAbsorbDuration {_config.MinAbsorbDuration} greater "
+                        + $"than MaxAbsorbDuration {_config.MaxAbsorbDuration}.");
             }
 
             if (_config.MinArcFraction > _config.MaxArcFraction)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerConfig has MinArcFraction {_config.MinArcFraction} greater than MaxArcFraction {_config.MaxArcFraction}.");
+                    $"{name}: PlayerConfig has MinArcFraction {_config.MinArcFraction} greater than "
+                        + $"MaxArcFraction {_config.MaxArcFraction}.");
             }
 
             if (_config.MinSpinSpeed > _config.MaxSpinSpeed)

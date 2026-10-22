@@ -33,6 +33,7 @@ namespace Game
             edgeCenter.y = edgeTop - theme.PlatformDepth * 0.5f;
             SetSurface(_edge, theme.EdgeMaterial, edgeCenter,
                 new Vector3(floorBounds.size.x, theme.PlatformDepth, floorBounds.size.z));
+            _edge.enabled = theme.EnvironmentPrefab == null;
 
             Vector3 backgroundCenter = floorBounds.center;
             backgroundCenter.y = edgeTop - theme.PlatformDepth - BackgroundThickness * 0.5f;

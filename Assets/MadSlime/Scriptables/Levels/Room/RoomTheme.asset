@@ -15,6 +15,7 @@ MonoBehaviour:
   _floorMaterial: {fileID: 2100000, guid: 64a0e7b8911c1380b9ac68d2dd152c70, type: 2}
   _backgroundMaterial: {fileID: 2100000, guid: 3ee4244fd3494fa294393dab73f51bd3, type: 2}
   _edgeMaterial: {fileID: 2100000, guid: 141cc45c110a49ca8eb35f4b37386585, type: 2}
+  _environmentPrefab: {fileID: 1000, guid: c7259715ce325ac581a53774d852ae60, type: 3}
   _platformDepth: 10
   _fillShapeTexture: {fileID: 2800000, guid: 70756e1e6ddc47a18483436f068b5d39, type: 3}
   _fillShapeTextures:

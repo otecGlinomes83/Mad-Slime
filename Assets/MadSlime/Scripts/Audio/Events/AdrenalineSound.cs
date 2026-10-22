@@ -31,7 +31,8 @@ namespace Audio
             if (_adrenalineBoost == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: AdrenalineBoost was not injected. Check that GameLifetimeScope registers AdrenalineBoost and AdrenalineSound.");
+                    $"{name}: AdrenalineBoost was not injected. Check that GameLifetimeScope "
+                        + $"registers AdrenalineBoost and AdrenalineSound.");
             }
         }
 

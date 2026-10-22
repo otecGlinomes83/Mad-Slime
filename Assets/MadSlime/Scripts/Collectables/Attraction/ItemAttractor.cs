@@ -38,13 +38,15 @@ namespace Collectables
             if (_collectAvailability == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: CollectAvailability was not injected. Check that GameLifetimeScope registers CollectAvailability and ItemAttractor.");
+                    $"{name}: CollectAvailability was not injected. Check that GameLifetimeScope "
+                        + $"registers CollectAvailability and ItemAttractor.");
             }
 
             if (_detector == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: AttractableDetector was not injected. Check that GameLifetimeScope registers AttractableDetector and ItemAttractor.");
+                    $"{name}: AttractableDetector was not injected. Check that GameLifetimeScope "
+                        + $"registers AttractableDetector and ItemAttractor.");
             }
 
             if (_collectDetector == null)
@@ -56,7 +58,8 @@ namespace Collectables
             if (_detector.Radius <= _collectDetector.Radius)
             {
                 throw new InvalidOperationException(
-                    $"{name}: AttractableDetector radius ({_detector.Radius}) must be greater than ItemDetector radius ({_collectDetector.Radius}). " +
+                    $"{name}: AttractableDetector radius ({_detector.Radius}) must be greater than "
+                        + $"ItemDetector radius ({_collectDetector.Radius}). " +
                     "The acceleration ramp lives between them: from the attract edge down to the capture point.");
             }
 

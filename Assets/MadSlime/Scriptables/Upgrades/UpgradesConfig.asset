@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _upgrades:
   - _type: 0
-    _icon: {fileID: 21300000, guid: 0b8bec87f05ff374c98c140306c522b5, type: 3}
+    _icon: {fileID: 21300000, guid: da111127df29c7cea81ce9860fd9798b, type: 3}
     _baseCost: 500
     _costMultiplier: 3
     _stepValues:
@@ -25,7 +25,7 @@ MonoBehaviour:
     - 0.1
     _maxSteps: 5
   - _type: 1
-    _icon: {fileID: 21300000, guid: b1530aa44b0ae8266813324700bb0fd1, type: 3}
+    _icon: {fileID: 21300000, guid: febdf0d01eb533c08a18fc276a14fd71, type: 3}
     _baseCost: 625
     _costMultiplier: 3
     _stepValues:
@@ -36,7 +36,7 @@ MonoBehaviour:
     - 0.15
     _maxSteps: 5
   - _type: 2
-    _icon: {fileID: 21300000, guid: c8464265ac47b0eefb44030d583c8b99, type: 3}
+    _icon: {fileID: 21300000, guid: 63f61f24fe6f21a46bcfe14d8d38260d, type: 3}
     _baseCost: 1000
     _costMultiplier: 3
     _stepValues:
@@ -47,7 +47,7 @@ MonoBehaviour:
     - 0.2
     _maxSteps: 5
   - _type: 3
-    _icon: {fileID: 21300000, guid: 84d53b65a2cdf21488c7bec2e6aeb54b, type: 3}
+    _icon: {fileID: 21300000, guid: 1103c746c238602f58e9accfb4225f11, type: 3}
     _baseCost: 875
     _costMultiplier: 3
     _stepValues:
@@ -59,15 +59,15 @@ MonoBehaviour:
     _maxSteps: 5
   _perks:
   - _type: 0
-    _icon: {fileID: 21300000, guid: 6174cfeceef930048a9513df49fc87bd, type: 3}
+    _icon: {fileID: 21300000, guid: cd46c84928a85525bbc07caf21e88924, type: 3}
     _cost: 7500
     _value: 0
   - _type: 1
-    _icon: {fileID: 21300000, guid: 1f111e30427fc8d7a8c62d976968fd59, type: 3}
+    _icon: {fileID: 21300000, guid: ebe7e04371e650d18a90fc38f443cb7c, type: 3}
     _cost: 10000
     _value: 2
   - _type: 2
-    _icon: {fileID: 21300000, guid: 5436abe91629594858e0fce6cfedd470, type: 3}
+    _icon: {fileID: 21300000, guid: be5c4b893142d18e699eec90cebdaa33, type: 3}
     _cost: 12500
     _value: 1
   _highlightColor: {r: 1, g: 0.85, b: 0.2, a: 1}

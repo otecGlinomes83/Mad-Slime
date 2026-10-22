@@ -26,7 +26,8 @@ namespace Player
             if (_config.SquashCurve == null || _config.SquashCurve.length == 0)
             {
                 throw new InvalidOperationException(
-                    $"{name}: PlayerConfig has an empty SquashCurve. Add at least one keyframe to the Collect Squash curve in PlayerConfig.");
+                    $"{name}: PlayerConfig has an empty SquashCurve. Add at least one keyframe to "
+                        + $"the Collect Squash curve in PlayerConfig.");
             }
 
             if (_deformer == null)

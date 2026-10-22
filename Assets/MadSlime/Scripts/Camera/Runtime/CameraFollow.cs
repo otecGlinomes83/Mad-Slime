@@ -35,7 +35,8 @@ namespace CameraSystem
             if (_pullAnimator == null || _shakeAnimator == null || _fovKickAnimator == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: a camera animator is not assigned. Drag the CameraPullAnimator, CameraShakeAnimator and CameraFovKickAnimator components into the fields.");
+                    $"{name}: a camera animator is not assigned. Drag the CameraPullAnimator, "
+                        + $"CameraShakeAnimator and CameraFovKickAnimator components into the fields.");
             }
 
             if (TryGetComponent(out Camera cameraComponent) == false)
@@ -80,9 +81,21 @@ namespace CameraSystem
         {
             _isStopped = true;
             _positionVelocity = Vector3.zero;
-            _pullAnimator.enabled = false;
-            _shakeAnimator.enabled = false;
-            _fovKickAnimator.enabled = false;
+
+            if (_pullAnimator != null)
+            {
+                _pullAnimator.enabled = false;
+            }
+
+            if (_shakeAnimator != null)
+            {
+                _shakeAnimator.enabled = false;
+            }
+
+            if (_fovKickAnimator != null)
+            {
+                _fovKickAnimator.enabled = false;
+            }
         }
 
         private Vector3 GetShakeOffset()

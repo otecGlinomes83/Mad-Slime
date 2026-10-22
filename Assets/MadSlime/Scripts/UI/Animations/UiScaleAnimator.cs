@@ -89,8 +89,7 @@ namespace UI.Animations
 
         private void LateUpdate()
         {
-            // Apply layout changes outside canvas rebuild callbacks and let transitions finish.
-            if (_needsScaleRefresh == false || View == null || View.IsActive == false || IsAnimating == true)
+            if (_needsScaleRefresh == false || View == null || View.IsActive == false || IsAnimating() == true)
             {
                 return;
             }

@@ -14,7 +14,10 @@ namespace ShapeFill
         private ShapeFiller _shapeFiller;
         private FillResultCalculator _resultCalculator;
 
-        public bool CanRescue => _shapeFiller.CanRescue;
+        public bool CanRescue()
+        {
+            return _shapeFiller.CanRescue();
+        }
 
         [Inject]
         public void Construct(GridBuilder gridBuilder, ShapeFiller shapeFiller, FillResultCalculator resultCalculator)
@@ -41,7 +44,8 @@ namespace ShapeFill
             if (_resultCalculator == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: FillResultCalculator was not injected. Check that FillLifetimeScope registers FillResultCalculator and ShapeFillOrchestrator.");
+                    $"{name}: FillResultCalculator was not injected. Check that FillLifetimeScope "
+                        + $"registers FillResultCalculator and ShapeFillOrchestrator.");
             }
         }
 

@@ -214,7 +214,6 @@ namespace Game
             return LoadAsync(SceneId.Fill);
         }
 
-
         private async UniTask LoadAsync(SceneId targetSceneId)
         {
             if (_isTransitioning)
@@ -266,7 +265,6 @@ namespace Game
             {
                 if (loadedScene.name == targetSceneName && sourceScene.isLoaded)
                 {
-                    // Keep audio available during loading; hand it over before the new scene's first frame.
                     GameObject[] roots = sourceScene.GetRootGameObjects();
 
                     for (int i = 0; i < roots.Length; i++)
@@ -285,7 +283,8 @@ namespace Game
                 if (loadOperation == null)
                 {
                     throw new InvalidOperationException(
-                        $"SceneNavigator: failed to start loading scene '{targetSceneName}'. Check that it is present in the build settings.");
+                        $"SceneNavigator: failed to start loading scene '{targetSceneName}'. Check that "
+                            + $"it is present in the build settings.");
                 }
 
                 loadOperation.allowSceneActivation = false;
@@ -350,7 +349,8 @@ namespace Game
             if (_loadingScreenPrefab == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: Loading screen prefab is not assigned. Drag a loading screen Canvas prefab into the _loadingScreenPrefab field.");
+                    $"{name}: Loading screen prefab is not assigned. Drag a loading screen Canvas "
+                        + $"prefab into the _loadingScreenPrefab field.");
             }
 
             if (_loadingScreenInstance != null)

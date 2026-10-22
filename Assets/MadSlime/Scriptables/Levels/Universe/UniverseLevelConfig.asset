@@ -16,7 +16,7 @@ MonoBehaviour:
   _propSet: {fileID: 11400000, guid: b552226a7b299b85f9e0c076bd4716f1, type: 2}
   _minTier: 0
   _maxTier: 5
-  _timerDuration: 120
+  _timerDuration: 140
   _quotaTypesMin: 3
   _quotaTypesMax: 5
   _quotaTargetMin: 8

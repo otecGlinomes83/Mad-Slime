@@ -34,7 +34,8 @@ namespace Collectables
             if (_collectAvailability == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: CollectAvailability was not injected. Check that GameLifetimeScope registers CollectAvailability and ItemCollector.");
+                    $"{name}: CollectAvailability was not injected. Check that GameLifetimeScope "
+                        + $"registers CollectAvailability and ItemCollector.");
             }
 
             if (_detector == null)

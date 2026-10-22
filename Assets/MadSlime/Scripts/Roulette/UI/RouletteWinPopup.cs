@@ -12,7 +12,7 @@ namespace Roulette
     [RequireComponent(typeof(UiScaleAnimator))]
     public class RouletteWinPopup : BaseWindow
     {
-        private const float FadeAlpha = 0.85f;
+        private const float FadeAlpha = 0.935f;
 
         [SerializeField] private RectTransform _panel;
         [SerializeField] private Image _fade;
@@ -63,7 +63,8 @@ namespace Roulette
             if (_normalPlate == null || _rarePlate == null || _epicPlate == null || _legendaryPlate == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: a plate sprite is not assigned. Drag the GUI Kit grade label sprites (blue, green, purple, orange) into the fields.");
+                    $"{name}: a plate sprite is not assigned. Drag the GUI Kit grade label sprites "
+                        + $"(blue, green, purple, orange) into the fields.");
             }
 
         }
@@ -143,7 +144,23 @@ namespace Roulette
         {
             _plate.sprite = GetPlateSprite(rarity);
             _prizeFrame.sprite = GetFrameSprite(rarity);
+            _prizeFrame.color = GetFrameColor(rarity);
             _plateText.text = label;
+        }
+
+        private Color GetFrameColor(SkinRarity rarity)
+        {
+            switch (rarity)
+            {
+                case SkinRarity.Rare:
+                    return new Color32(167, 228, 90, 255);
+                case SkinRarity.Epic:
+                    return new Color32(197, 165, 232, 255);
+                case SkinRarity.Legendary:
+                    return new Color32(246, 198, 75, 255);
+                default:
+                    return new Color32(113, 198, 221, 255);
+            }
         }
 
         private Sprite GetPlateSprite(SkinRarity rarity)

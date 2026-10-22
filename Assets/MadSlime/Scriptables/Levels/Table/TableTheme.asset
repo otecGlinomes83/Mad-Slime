@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: TableTheme
   m_EditorClassIdentifier: 
   _floorMaterial: {fileID: 2100000, guid: 68cacc9303567245bb739be15cae535d, type: 2}
-  _backgroundMaterial: {fileID: 2100000, guid: f263d479b14d47329d0a51f041993ac4, type: 2}
+  _backgroundMaterial: {fileID: 2100000, guid: 3b18db63afbe502f8deb2b839a32ebad, type: 2}
   _edgeMaterial: {fileID: 2100000, guid: 141cc45c110a49ca8eb35f4b37386585, type: 2}
   _platformDepth: 18
+  _environmentPrefab: {fileID: 1000, guid: 42bfe7c8212e51f98ed8d008b15d291f, type: 3}
   _fillShapeTexture: {fileID: 2800000, guid: 70756e1e6ddc47a18483436f068b5d39, type: 3}
   _fillShapeTextures:
   - {fileID: 2800000, guid: 70756e1e6ddc47a18483436f068b5d39, type: 3}

@@ -1,0 +1,31 @@
+PASS Pause dimensions Landscape home=True
+PASS Pause visible and within viewport
+PASS Home visibility correct
+PASS Slider value survives rotation
+PASS Slider fill still matches value
+PASS Pause dimensions Portrait home=True
+PASS Pause visible and within viewport
+PASS Home visibility correct
+PASS Slider value survives rotation
+PASS Slider fill still matches value
+PASS Pause dimensions Landscape home=True
+PASS Pause visible and within viewport
+PASS Home visibility correct
+PASS Slider value survives rotation
+PASS Slider fill still matches value
+PASS Pause dimensions Landscape home=False
+PASS Pause visible and within viewport
+PASS Home visibility correct
+PASS Slider value survives rotation
+PASS Slider fill still matches value
+PASS Pause dimensions Portrait home=False
+PASS Pause visible and within viewport
+PASS Home visibility correct
+PASS Slider value survives rotation
+PASS Slider fill still matches value
+PASS Pause dimensions Landscape home=False
+PASS Pause visible and within viewport
+PASS Home visibility correct
+PASS Slider value survives rotation
+PASS Slider fill still matches value
+PASS No runtime errors

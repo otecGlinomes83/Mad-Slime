@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "MadSlime.Core",
+        "QuickOutline",
         "VContainer",
         "UniTask",
         "Unity.InputSystem",

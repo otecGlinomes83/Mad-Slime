@@ -12,6 +12,7 @@ namespace Scriptables
         [SerializeField] private Material _backgroundMaterial;
         [SerializeField] private Material _edgeMaterial;
         [SerializeField, Min(1f)] private float _platformDepth = 12f;
+        [SerializeField] private GameObject _environmentPrefab;
 
         [Tooltip("Текстура формы для сцены заливки: альфа задаёт силуэт, цвета проступают в призраке и конфетти.")]
         [SerializeField] private Texture2D _fillShapeTexture;
@@ -23,6 +24,7 @@ namespace Scriptables
         public Material BackgroundMaterial => _backgroundMaterial;
         public Material EdgeMaterial => _edgeMaterial;
         public float PlatformDepth => _platformDepth;
+        public GameObject EnvironmentPrefab => _environmentPrefab;
         public Texture2D FillShapeTexture => _fillShapeTexture;
 
         public Texture2D PickFillShapeTexture()

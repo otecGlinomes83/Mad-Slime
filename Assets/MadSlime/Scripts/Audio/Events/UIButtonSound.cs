@@ -31,7 +31,8 @@ namespace Audio
             if (_soundPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: IUISoundPlayer was not injected. Scene buttons are injected by the scene LifetimeScope; spawned buttons must use IObjectResolver.Instantiate.");
+                    $"{name}: IUISoundPlayer was not injected. Scene buttons are injected by the "
+                        + $"scene LifetimeScope; spawned buttons must use IObjectResolver.Instantiate.");
             }
 
             if (_sfxClip == null)

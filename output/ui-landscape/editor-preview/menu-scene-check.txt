@@ -1,0 +1,22 @@
+PASS Background has no redundant profile component
+PASS MainMenuWindow has populated profile
+PASS MainMenuWindow target 0 assigned
+PASS MainMenuWindow target 1 assigned
+PASS MainMenuWindow target 2 assigned
+PASS MainMenuWindow target 3 assigned
+PASS MainMenuWindow target 4 assigned
+PASS MainMenuWindow target 5 assigned
+PASS MainMenuWindow target 6 assigned
+PASS Main menu has all 7 authored targets
+PASS UpgradesWindow has populated profile
+PASS UpgradesWindow target 0 assigned
+PASS UpgradesWindow target 1 assigned
+PASS UpgradesWindow target 2 assigned
+PASS UpgradesWindow target 3 assigned
+PASS SkinsWindow has populated profile
+PASS SkinsWindow target 0 assigned
+PASS SkinsWindow target 1 assigned
+PASS SkinsWindow target 2 assigned
+PASS SkinsWindow target 3 assigned
+PASS Background fills Game View 1080x1920
+PASS Background fills Game View 1920x1080

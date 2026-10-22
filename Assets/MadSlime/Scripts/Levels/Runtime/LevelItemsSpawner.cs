@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Collectables;
 using Items;
+using Quota;
 using UnityEngine;
 
 namespace Game
@@ -125,6 +126,52 @@ namespace Game
             }
 
             progress?.Invoke(1f);
+        }
+
+        public void AssignQuotaLayers(IReadOnlyList<QuotaEntry> quota)
+        {
+            if (quota == null)
+            {
+                throw new ArgumentNullException(nameof(quota));
+            }
+
+            int collectableLayer = LayerMask.NameToLayer("Collectable");
+            int quotaLayer = LayerMask.NameToLayer("QuotaCollectable");
+
+            if (collectableLayer < 0 || quotaLayer < 0)
+            {
+                throw new InvalidOperationException(
+                    "LevelItemsSpawner requires Collectable and QuotaCollectable layers in Project Settings.");
+            }
+
+            HashSet<ItemDefinition> quotaTypes = new HashSet<ItemDefinition>();
+
+            foreach (QuotaEntry entry in quota)
+            {
+                quotaTypes.Add(entry.Definition);
+            }
+
+            foreach (Item item in _activeItems)
+            {
+                if (item == null)
+                {
+                    continue;
+                }
+
+                if (item.TryGetComponent(out ItemBody body) == false || body.Collider == null)
+                {
+                    throw new InvalidOperationException($"{item.name}: an ItemBody with a collider is required.");
+                }
+
+                if (quotaTypes.Contains(item.Definition))
+                {
+                    body.Collider.gameObject.layer = quotaLayer;
+                }
+                else
+                {
+                    body.Collider.gameObject.layer = collectableLayer;
+                }
+            }
         }
 
         private void OnItemCollected(Item item)

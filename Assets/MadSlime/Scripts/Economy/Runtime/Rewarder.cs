@@ -88,7 +88,7 @@ namespace Game
                     $"{name}: CommitRescueTopUp requires a committed level result. Commit the level result first.");
             }
 
-            if (IsWin == true)
+            if (IsWin)
             {
                 return;
             }

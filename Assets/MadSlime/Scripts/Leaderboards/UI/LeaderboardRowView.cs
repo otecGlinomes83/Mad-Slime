@@ -23,12 +23,12 @@ namespace UI
 
         private void OnEnable()
         {
-            Localization.LanguageChanged += RefreshName;
+            Localization.LanguageChanged += OnLanguageChanged;
         }
 
         private void OnDisable()
         {
-            Localization.LanguageChanged -= RefreshName;
+            Localization.LanguageChanged -= OnLanguageChanged;
         }
 
         public void Initialize(LeaderboardEntryData entry, bool isOwn)
@@ -42,7 +42,7 @@ namespace UI
             _rankText.text = entry.Rank.ToString();
             _nameText.richText = false;
             _nameText.overflowMode = TextOverflowModes.Ellipsis;
-            RefreshName();
+            OnLanguageChanged();
             _scoreText.text = entry.Score.ToString();
             _background.color = _rowColor;
 
@@ -52,7 +52,7 @@ namespace UI
             }
         }
 
-        private void RefreshName()
+        private void OnLanguageChanged()
         {
             if (string.IsNullOrEmpty(_entry.Name) == true || _entry.Name == "anonymous")
             {

@@ -18,7 +18,10 @@ namespace Game
 
         public event Action StateChanged;
 
-        public bool IsPaused => _pauseRequestCount > 0 || _isPlatformPaused;
+        public bool IsPaused()
+        {
+            return _pauseRequestCount > 0 || _isPlatformPaused;
+        }
 
         [Inject]
         public void Construct(IAdsService adsService, IGameVisibility visibility, ICollectedItemsStorage collectedItems)
@@ -108,7 +111,7 @@ namespace Game
             _isPlatformPaused = _adsService.IsPauseGame;
             AudioListener.pause = _hasVisibilityPause || _isPlatformPaused;
 
-            if (IsPaused == true)
+            if (IsPaused() == true)
             {
                 Time.timeScale = 0f;
             }

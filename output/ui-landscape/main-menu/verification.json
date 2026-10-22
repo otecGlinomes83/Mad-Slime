@@ -1,0 +1,13 @@
+{
+  "Assets/MadSlime/Scenes/Menu.unity": {
+    "new_lines_without_trailing_whitespace": true
+  },
+  "Assets/MadSlime/Resources/Prefabs/UI/Skins/SkinRarityGroup.prefab": {
+    "new_lines_without_trailing_whitespace": true
+  },
+  "play_mode": "PASS",
+  "editor_preview_capture": "PASS",
+  "separator_prefabs": [
+    "Assets/MadSlime/Resources/Prefabs/UI/UISeparator.prefab"
+  ]
+}

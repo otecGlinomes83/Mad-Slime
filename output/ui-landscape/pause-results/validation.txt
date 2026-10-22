@@ -1,0 +1,164 @@
+PASS Shop visible
+PASS Price below title without overlap
+PASS Bounds BuySkinButton 1920x1080
+PASS Text fits Label
+PASS Text fits Value
+SCREEN shop-landscape
+PASS Shop visible
+PASS Price below title without overlap
+PASS Bounds BuySkinButton 1080x1920
+PASS Text fits Label
+PASS Text fits Value
+SCREEN shop-portrait
+PASS Bounds Menu 1920x1080
+PASS Text fits SettingsTitle
+PASS Text fits Text (TMP)
+PASS Audio slider dimensions match (509.42, 100.00)
+PASS Slider handles match (100.00, 100.00)
+PASS Language below audio
+PASS Home visibility
+SCREEN settings-landscape
+PASS Bounds Menu 1080x1920
+PASS Text fits SettingsTitle
+PASS Text fits Text (TMP)
+PASS Audio slider dimensions match (509.42, 100.00)
+PASS Slider handles match (100.00, 100.00)
+PASS Language below audio
+PASS Home visibility
+SCREEN settings-portrait
+PASS Bounds Menu 1080x1920
+PASS Text fits SettingsTitle
+PASS Text fits Text (TMP)
+PASS Audio slider dimensions match (509.42, 100.00)
+PASS Slider handles match (100.00, 100.00)
+PASS Language below audio
+PASS Home visibility
+PASS Bounds MenuButton 1080x1920
+PASS Home below language
+SCREEN pause-home-portrait
+PASS Bounds Menu 1920x1080
+PASS Text fits SettingsTitle
+PASS Text fits Text (TMP)
+PASS Audio slider dimensions match (509.42, 100.00)
+PASS Slider handles match (100.00, 100.00)
+PASS Language below audio
+PASS Home visibility
+PASS Bounds MenuButton 1920x1080
+PASS Home below language
+SCREEN pause-home-landscape
+PASS Bounds Menu 1920x1080
+PASS Text fits text
+PASS Text fits ResultText
+PASS Text fits Result
+PASS Text fits DOubler
+PASS Three result buttons
+PASS Button height doubled DoubleRewardButton
+PASS Bounds DoubleRewardButton 1920x1080
+PASS Button height doubled MenuButton
+PASS Bounds MenuButton 1920x1080
+PASS Result buttons do not overlap
+PASS Button height doubled NextLevelButton
+PASS Bounds NextLevelButton 1920x1080
+PASS Result buttons do not overlap
+PASS Result buttons do not overlap
+SCREEN win-landscape
+PASS Bounds Menu 1080x1920
+PASS Text fits text
+PASS Text fits ResultText
+PASS Text fits Result
+PASS Text fits DOubler
+PASS Three result buttons
+PASS Button height doubled DoubleRewardButton
+PASS Bounds DoubleRewardButton 1080x1920
+PASS Button height doubled MenuButton
+PASS Bounds MenuButton 1080x1920
+PASS Result buttons do not overlap
+PASS Button height doubled NextLevelButton
+PASS Bounds NextLevelButton 1080x1920
+PASS Result buttons do not overlap
+PASS Result buttons do not overlap
+SCREEN win-portrait
+PASS Bounds Menu 1080x1920
+PASS Text fits text
+PASS Text fits ResultText (1)
+PASS Text fits Text
+PASS Text fits Result
+PASS Three result buttons
+PASS Button height doubled RestartButton
+PASS Bounds RestartButton 1080x1920
+PASS Button height doubled MenuButton
+PASS Bounds MenuButton 1080x1920
+PASS Result buttons do not overlap
+PASS Button height doubled NextLevel
+PASS Bounds NextLevel 1080x1920
+PASS Result buttons do not overlap
+PASS Result buttons do not overlap
+PASS Fail panel red tint
+SCREEN fail-portrait
+PASS Bounds Menu 1920x1080
+PASS Text fits text
+PASS Text fits ResultText (1)
+PASS Text fits Text
+PASS Text fits Result
+PASS Three result buttons
+PASS Button height doubled RestartButton
+PASS Bounds RestartButton 1920x1080
+PASS Button height doubled MenuButton
+PASS Bounds MenuButton 1920x1080
+PASS Result buttons do not overlap
+PASS Button height doubled NextLevel
+PASS Bounds NextLevel 1920x1080
+PASS Result buttons do not overlap
+PASS Result buttons do not overlap
+PASS Fail panel red tint
+SCREEN fail-landscape
+PASS Bounds Menu 960x540
+PASS Text fits text
+PASS Text fits ResultText (1)
+PASS Text fits Text
+PASS Text fits Result
+PASS Three result buttons
+PASS Button height doubled RestartButton
+PASS Bounds RestartButton 960x540
+PASS Button height doubled MenuButton
+PASS Bounds MenuButton 960x540
+PASS Result buttons do not overlap
+PASS Button height doubled NextLevel
+PASS Bounds NextLevel 960x540
+PASS Result buttons do not overlap
+PASS Result buttons do not overlap
+PASS Fail panel red tint
+SCREEN fail-compact
+PASS Bounds Menu 960x540
+PASS Text fits text
+PASS Text fits ResultText
+PASS Text fits Result
+PASS Text fits DOubler
+PASS Three result buttons
+PASS Button height doubled DoubleRewardButton
+PASS Bounds DoubleRewardButton 960x540
+PASS Button height doubled MenuButton
+PASS Bounds MenuButton 960x540
+PASS Result buttons do not overlap
+PASS Button height doubled NextLevelButton
+PASS Bounds NextLevelButton 960x540
+PASS Result buttons do not overlap
+PASS Result buttons do not overlap
+SCREEN win-compact
+PASS Bounds Menu 960x540
+PASS Text fits text
+PASS Text fits ResultText
+PASS Text fits Result
+PASS Text fits DOubler
+PASS Three result buttons
+PASS Button height doubled DoubleRewardButton
+PASS Bounds DoubleRewardButton 960x540
+PASS Button height doubled MenuButton
+PASS Bounds MenuButton 960x540
+PASS Result buttons do not overlap
+PASS Button height doubled NextLevelButton
+PASS Bounds NextLevelButton 960x540
+PASS Result buttons do not overlap
+PASS Result buttons do not overlap
+SCREEN win-en
+PASS No runtime errors

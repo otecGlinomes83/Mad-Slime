@@ -1,0 +1,9 @@
+PASS Rendered Game View win-landscape
+PASS Rendered Game View fail-landscape
+PASS Rendered Game View reward-landscape
+PASS Rendered Game View buttonless-landscape
+PASS Rendered Game View win-portrait
+PASS Rendered Game View fail-portrait
+PASS Rendered Game View reward-portrait
+PASS Rendered Game View buttonless-portrait
+PASS No runtime errors

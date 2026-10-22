@@ -40,32 +40,29 @@ namespace ShapeFill
 
         public int RequiredFillCount => _gridShape.FillCells.Count;
 
-        public bool CanRescue => _hasResult == true && _isFilling == false && _currentTarget < RequiredFillCount;
-
-        public float FillFraction
+        public bool CanRescue()
         {
-            get
-            {
-                if (_currentTarget <= 0)
-                {
-                    return 0f;
-                }
-
-                return Mathf.Clamp01(_arrivedCount / (float)_currentTarget);
-            }
+            return _hasResult == true && _isFilling == false && _currentTarget < RequiredFillCount;
         }
 
-        public float FormFillFraction
+        public float GetFillFraction()
         {
-            get
+            if (_currentTarget <= 0)
             {
-                if (RequiredFillCount <= 0)
-                {
-                    return 0f;
-                }
-
-                return Mathf.Clamp01(_arrivedCount / (float)RequiredFillCount);
+                return 0f;
             }
+
+            return Mathf.Clamp01(_arrivedCount / (float)_currentTarget);
+        }
+
+        public float GetFormFillFraction()
+        {
+            if (RequiredFillCount <= 0)
+            {
+                return 0f;
+            }
+
+            return Mathf.Clamp01(_arrivedCount / (float)RequiredFillCount);
         }
 
         public event Action<float> FillCompleted;
@@ -124,11 +121,15 @@ namespace ShapeFill
         public void BuildShape()
         {
             StopFill();
+            _fillIndex = 0;
+            _arrivedCount = 0;
+            _currentTarget = 0;
+            _quotaTarget = 0;
+            _hasResult = false;
 
             _gridShape.Build();
             PlaceGhost();
             SpawnBorder();
-            _fillIndex = 0;
         }
 
         public void ShowResult(FillResult result)
@@ -139,22 +140,21 @@ namespace ShapeFill
                     $"{name}: ShowResult requires a calculated fill result.");
             }
 
-            if (result.TargetCubes <= 0)
-            {
-                _hasResult = true;
-                FillCompleted?.Invoke(0f);
-                return;
-            }
-
             StopFill();
             _fillIndex = 0;
             _arrivedCount = 0;
             _quotaTarget = result.QuotaCubes;
             _currentTarget = result.TargetCubes;
             _boostStage = BoostStage.Normal;
-            _isFilling = true;
             _hasResult = true;
 
+            if (result.TargetCubes <= 0)
+            {
+                FillCompleted?.Invoke(0f);
+                return;
+            }
+
+            _isFilling = true;
             _fillCts = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
 
             FillAsync(_fillCts.Token, _currentTarget).Forget();
@@ -162,7 +162,7 @@ namespace ShapeFill
 
         public void Rescue()
         {
-            if (CanRescue == false)
+            if (CanRescue() == false)
             {
                 throw new InvalidOperationException(
                     $"{name}: Rescue requires a finished fill below 100%. Check CanRescue before calling.");

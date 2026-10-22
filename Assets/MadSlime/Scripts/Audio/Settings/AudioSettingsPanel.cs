@@ -46,13 +46,15 @@ namespace Audio
             if (_mixerController == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: AudioMixerController was not injected. The settings prefab must be instantiated through the DI container (IObjectResolver.Instantiate).");
+                    $"{name}: AudioMixerController was not injected. The settings prefab must be "
+                        + $"instantiated through the DI container (IObjectResolver.Instantiate).");
             }
 
             if (_soundPlayer == null)
             {
                 throw new InvalidOperationException(
-                    $"{name}: IUISoundPlayer was not injected. The settings prefab must be instantiated through the DI container (IObjectResolver.Instantiate).");
+                    $"{name}: IUISoundPlayer was not injected. The settings prefab must be "
+                        + $"instantiated through the DI container (IObjectResolver.Instantiate).");
             }
 
             if (_musicSlider == null)

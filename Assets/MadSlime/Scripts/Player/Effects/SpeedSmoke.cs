@@ -8,7 +8,8 @@ namespace Player
 {
     public class SpeedSmoke : MonoBehaviour
     {
-        [Tooltip("Заранее расставленный в сцене зацикленный партикл дыма: масштаб растёт вместе с игроком, настройки эффекта задаются в сцене.")]
+        [Tooltip("Заранее расставленный в сцене зацикленный партикл дыма: масштаб растёт вместе "
+            + "с игроком, настройки эффекта задаются в сцене.")]
         [SerializeField] private ParticleSystem _smoke;
 
         [SerializeField] private PlayerScaler _playerScaler;

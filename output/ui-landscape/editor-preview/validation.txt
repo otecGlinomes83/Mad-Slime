@@ -1,0 +1,19 @@
+PASS Actual custom Inspector selected
+PASS Preview starts outside Play Mode
+PASS Real menu Portrait preview applies
+PASS GameView preview rendered edit-portrait
+PASS Capture stores manual button position
+PASS Inspector confirms registered object count
+PASS Landscape applies in portrait GameView
+PASS Preview does not change GameView resolution
+PASS Real menu Landscape preview applies
+PASS GameView preview rendered edit-landscape
+PASS Switching back restores captured position and size
+PASS GameView preview rendered edit-captured-portrait
+PASS Edited scene saves
+PASS Actual custom Inspector selected
+PASS Captured profile survives scene reopen
+PASS Reopened Inspector preview restores edited profile
+PASS Play Mode uses captured Portrait position and size
+PASS Play Mode rotation applies Landscape
+PASS Play Mode rotation back retains captured edits

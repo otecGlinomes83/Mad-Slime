@@ -1,30 +1,48 @@
 {
-    "CurrentLevel": 4,
-    "MaxLevel": 4,
-    "CollectedItemsCount": 6058,
+    "CurrentLevel": 9,
+    "MaxLevel": 9,
+    "CollectedItemsCount": 13651,
     "Language": "",
     "musicVolume": 0.5,
     "sfxVolume": 0.3499999940395355,
-    "Balance": 349,
+    "Balance": 9603136,
     "TestFundsGranted": true,
-    "SelectedSkinId": "Slime",
+    "SelectedSkinId": "Frog",
     "_openSkinIds": [
-        "Slime"
+        "Slime",
+        "Car",
+        "Dog",
+        "Ufo",
+        "Snail",
+        "Vacuum",
+        "Cat",
+        "Bunny",
+        "Fox",
+        "RedPanda",
+        "Frog"
     ],
     "_showcaseSkinIds": [
         "Chick",
+        "ToyKnight",
         "Sahur",
-        "Jellyfish",
-        "Cat",
-        "RedPanda"
+        "Bee",
+        "Mushroom"
     ],
-    "SpeedLevel": 0,
-    "AppetiteLevel": 0,
-    "TasteLevel": 0,
-    "MetabolismLevel": 0,
-    "PurchasedPerks": [],
-    "LastFreeSpinUnixTime": 0,
-    "RouletteAdSpinTimes": [],
-    "SkinSpinCount": 0,
-    "idSave": 79
+    "SpeedLevel": 5,
+    "AppetiteLevel": 5,
+    "TasteLevel": 5,
+    "MetabolismLevel": 5,
+    "PurchasedPerks": [
+        0,
+        1,
+        2
+    ],
+    "LastFreeSpinUnixTime": 1792618373,
+    "RouletteAdSpinTimes": [
+        1792618382,
+        1792618391,
+        1792618826
+    ],
+    "SkinSpinCount": 10,
+    "idSave": 70
 }

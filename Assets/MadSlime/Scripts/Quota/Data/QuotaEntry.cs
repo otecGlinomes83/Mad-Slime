@@ -15,7 +15,10 @@ namespace Quota
         public ItemDefinition Definition => _definition;
         public int TargetCount => _targetCount;
         public int Collected => _collected;
-        public int Remaining => Mathf.Max(0, _targetCount - _collected);
+        public int GetRemaining()
+        {
+            return Mathf.Max(0, _targetCount - _collected);
+        }
 
         public QuotaEntry(ItemDefinition definition, int targetCount)
         {

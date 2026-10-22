@@ -52,8 +52,8 @@ namespace Quota
         private void OnEnable()
         {
             _board.QuotaChanged += OnQuotaChanged;
-            _board.ResetCompleted += Populate;
-            Populate();
+            _board.ResetCompleted += OnQuotaResetCompleted;
+            OnQuotaResetCompleted();
         }
 
         private void OnDisable()
@@ -61,13 +61,13 @@ namespace Quota
             if (_board != null)
             {
                 _board.QuotaChanged -= OnQuotaChanged;
-                _board.ResetCompleted -= Populate;
+                _board.ResetCompleted -= OnQuotaResetCompleted;
             }
 
             Clear();
         }
 
-        private void Populate()
+        private void OnQuotaResetCompleted()
         {
             Clear();
             IReadOnlyList<QuotaEntry> entries = _board.Entries;
@@ -76,7 +76,7 @@ namespace Quota
             {
                 QuotaEntry entry = entries[i];
 
-                if (entry.Remaining <= 0)
+                if (entry.GetRemaining() <= 0)
                 {
                     continue;
                 }
