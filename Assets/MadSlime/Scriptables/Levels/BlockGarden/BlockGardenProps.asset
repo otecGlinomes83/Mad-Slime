@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c58d0e92b7a64d13a9b5c1e7f3a90d46, type: 3}
+  m_Name: BlockGardenProps
+  m_EditorClassIdentifier: 
+  _props:
+  - {fileID: 1005, guid: 05f8c0157a085acb9af8c319ae6875e7, type: 3}
+  - {fileID: 1005, guid: 5ae566b5bfbb5580975bac61b83c0641, type: 3}
+  - {fileID: 1005, guid: b2a740daf79153b799768ca74c20d0f4, type: 3}
+  - {fileID: 1005, guid: 3ca3247d8ece59fc90d181d63980b6cf, type: 3}
+  - {fileID: 1005, guid: 224ecbe5ff565cdeb6602ad3d8788b31, type: 3}
+  - {fileID: 1005, guid: cc6d75486f01585f86654ba408b23b89, type: 3}
+  _variants:
+  - _prefab: {fileID: 1005, guid: 05f8c0157a085acb9af8c319ae6875e7, type: 3}
+    _definition: {fileID: 11400000, guid: 52949f1e806c573b8543acdb1f953b2d, type: 2}
+  - _prefab: {fileID: 1005, guid: 05f8c0157a085acb9af8c319ae6875e7, type: 3}
+    _definition: {fileID: 11400000, guid: be2a142910315f0cbe11867f02203236, type: 2}
+  - _prefab: {fileID: 1005, guid: 05f8c0157a085acb9af8c319ae6875e7, type: 3}
+    _definition: {fileID: 11400000, guid: fd3894b06c295d4cb856d8109c3aaa62, type: 2}
+  - _prefab: {fileID: 1005, guid: 05f8c0157a085acb9af8c319ae6875e7, type: 3}
+    _definition: {fileID: 11400000, guid: 44a0b05209d453cea729b93f2315f494, type: 2}
+  - _prefab: {fileID: 1005, guid: 05f8c0157a085acb9af8c319ae6875e7, type: 3}
+    _definition: {fileID: 11400000, guid: d82cac656a795962bc8cb3d0cca7e3b5, type: 2}
+  - _prefab: {fileID: 1005, guid: 05f8c0157a085acb9af8c319ae6875e7, type: 3}
+    _definition: {fileID: 11400000, guid: 3ed52a0c265d51bfae1be250cbfef75b, type: 2}
+  - _prefab: {fileID: 1005, guid: 5ae566b5bfbb5580975bac61b83c0641, type: 3}
+    _definition: {fileID: 11400000, guid: 4406005881f351f9850724cd021ed99d, type: 2}
+  - _prefab: {fileID: 1005, guid: 5ae566b5bfbb5580975bac61b83c0641, type: 3}
+    _definition: {fileID: 11400000, guid: 67bf8893ed9f5dce9047c65c07d7a57f, type: 2}
+  - _prefab: {fileID: 1005, guid: 5ae566b5bfbb5580975bac61b83c0641, type: 3}
+    _definition: {fileID: 11400000, guid: 16e41e8e00425aba991427d1b242a353, type: 2}
+  - _prefab: {fileID: 1005, guid: 5ae566b5bfbb5580975bac61b83c0641, type: 3}
+    _definition: {fileID: 11400000, guid: 5a5a73f8da2550f9b95167349fdfc67d, type: 2}
+  - _prefab: {fileID: 1005, guid: 5ae566b5bfbb5580975bac61b83c0641, type: 3}
+    _definition: {fileID: 11400000, guid: cfccd666380f5416a7a0372ce5f2c103, type: 2}
+  - _prefab: {fileID: 1005, guid: 5ae566b5bfbb5580975bac61b83c0641, type: 3}
+    _definition: {fileID: 11400000, guid: 70bd9a380e3558d7b6dd1c0f4948fcef, type: 2}
+  - _prefab: {fileID: 1005, guid: b2a740daf79153b799768ca74c20d0f4, type: 3}
+    _definition: {fileID: 11400000, guid: 0aefa98d82e35753aa37250bf570c85e, type: 2}
+  - _prefab: {fileID: 1005, guid: b2a740daf79153b799768ca74c20d0f4, type: 3}
+    _definition: {fileID: 11400000, guid: ad257941fd87578fbf724ef7a1f58d33, type: 2}
+  - _prefab: {fileID: 1005, guid: b2a740daf79153b799768ca74c20d0f4, type: 3}
+    _definition: {fileID: 11400000, guid: 1dac1bf3901e570ea020f88bfc1027a7, type: 2}
+  - _prefab: {fileID: 1005, guid: b2a740daf79153b799768ca74c20d0f4, type: 3}
+    _definition: {fileID: 11400000, guid: 0592f112c2cd5a27b7aae5b0fe391f48, type: 2}
+  - _prefab: {fileID: 1005, guid: b2a740daf79153b799768ca74c20d0f4, type: 3}
+    _definition: {fileID: 11400000, guid: 24ade12ef9c354108d6cd30c673db7be, type: 2}
+  - _prefab: {fileID: 1005, guid: b2a740daf79153b799768ca74c20d0f4, type: 3}
+    _definition: {fileID: 11400000, guid: d10b2949b5bf5d708fb4cc88e835dbf9, type: 2}
+  - _prefab: {fileID: 1005, guid: 3ca3247d8ece59fc90d181d63980b6cf, type: 3}
+    _definition: {fileID: 11400000, guid: 5254e3137a2a55eb91afeac4a91e73cd, type: 2}
+  - _prefab: {fileID: 1005, guid: 3ca3247d8ece59fc90d181d63980b6cf, type: 3}
+    _definition: {fileID: 11400000, guid: fa02ad9d12145a3b9cf9498f4019fbc2, type: 2}
+  - _prefab: {fileID: 1005, guid: 3ca3247d8ece59fc90d181d63980b6cf, type: 3}
+    _definition: {fileID: 11400000, guid: ca0cc504b4af5bb7845d5f94e75ecd7b, type: 2}
+  - _prefab: {fileID: 1005, guid: 3ca3247d8ece59fc90d181d63980b6cf, type: 3}
+    _definition: {fileID: 11400000, guid: e5c20b8b8cf1522c9f63bb4af5191824, type: 2}
+  - _prefab: {fileID: 1005, guid: 3ca3247d8ece59fc90d181d63980b6cf, type: 3}
+    _definition: {fileID: 11400000, guid: 83c2fffe18b45568b7e67d2dfe141ff2, type: 2}
+  - _prefab: {fileID: 1005, guid: 3ca3247d8ece59fc90d181d63980b6cf, type: 3}
+    _definition: {fileID: 11400000, guid: faff939c264c572b81f9881db4655fce, type: 2}
+  - _prefab: {fileID: 1005, guid: 224ecbe5ff565cdeb6602ad3d8788b31, type: 3}
+    _definition: {fileID: 11400000, guid: 55dfb53ea47c5d93998bc198e9001036, type: 2}
+  - _prefab: {fileID: 1005, guid: 224ecbe5ff565cdeb6602ad3d8788b31, type: 3}
+    _definition: {fileID: 11400000, guid: f4b339b50cf1506d80c930b14a725d70, type: 2}
+  - _prefab: {fileID: 1005, guid: 224ecbe5ff565cdeb6602ad3d8788b31, type: 3}
+    _definition: {fileID: 11400000, guid: c9c3021530b75400863b497429a63290, type: 2}
+  - _prefab: {fileID: 1005, guid: 224ecbe5ff565cdeb6602ad3d8788b31, type: 3}
+    _definition: {fileID: 11400000, guid: 6e3e38e8bd75543bbb8f363328a8edd1, type: 2}
+  - _prefab: {fileID: 1005, guid: 224ecbe5ff565cdeb6602ad3d8788b31, type: 3}
+    _definition: {fileID: 11400000, guid: c4b8db18c97658d5b4e364da423ac1a8, type: 2}
+  - _prefab: {fileID: 1005, guid: 224ecbe5ff565cdeb6602ad3d8788b31, type: 3}
+    _definition: {fileID: 11400000, guid: 5668ea566bcd56829d696bb1ebd50954, type: 2}
+  - _prefab: {fileID: 1005, guid: cc6d75486f01585f86654ba408b23b89, type: 3}
+    _definition: {fileID: 11400000, guid: bc38695829ef5f758f46de5410822dce, type: 2}
+  - _prefab: {fileID: 1005, guid: cc6d75486f01585f86654ba408b23b89, type: 3}
+    _definition: {fileID: 11400000, guid: 7009b3365af45d1bbd0fb0f7dbeac475, type: 2}
+  - _prefab: {fileID: 1005, guid: cc6d75486f01585f86654ba408b23b89, type: 3}
+    _definition: {fileID: 11400000, guid: e837ab2e576958fd82bb13a5702c2915, type: 2}
+  - _prefab: {fileID: 1005, guid: cc6d75486f01585f86654ba408b23b89, type: 3}
+    _definition: {fileID: 11400000, guid: 91621414be0e58d38199eef8007d5ac3, type: 2}
+  - _prefab: {fileID: 1005, guid: cc6d75486f01585f86654ba408b23b89, type: 3}
+    _definition: {fileID: 11400000, guid: 908d9c003ad35f48bac75066ab691631, type: 2}
+  - _prefab: {fileID: 1005, guid: cc6d75486f01585f86654ba408b23b89, type: 3}
+    _definition: {fileID: 11400000, guid: 318b630aa3ce5834a3726b7f2ab8c306, type: 2}

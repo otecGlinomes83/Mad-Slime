@@ -1,32 +1,22 @@
 {
-    "CurrentLevel": 9,
-    "MaxLevel": 9,
-    "CollectedItemsCount": 13651,
+    "CurrentLevel": 12,
+    "MaxLevel": 12,
+    "CollectedItemsCount": 18638,
     "Language": "",
     "musicVolume": 0.5,
     "sfxVolume": 0.3499999940395355,
-    "Balance": 9603136,
+    "Balance": 9611876,
     "TestFundsGranted": true,
-    "SelectedSkinId": "Frog",
+    "SelectedSkinId": "Slime",
     "_openSkinIds": [
-        "Slime",
-        "Car",
-        "Dog",
-        "Ufo",
-        "Snail",
-        "Vacuum",
-        "Cat",
-        "Bunny",
-        "Fox",
-        "RedPanda",
-        "Frog"
+        "Slime"
     ],
     "_showcaseSkinIds": [
-        "Chick",
-        "ToyKnight",
+        "CubeSlime",
         "Sahur",
-        "Bee",
-        "Mushroom"
+        "BabyDragon",
+        "LegacySlime",
+        "Snail"
     ],
     "SpeedLevel": 5,
     "AppetiteLevel": 5,
@@ -37,12 +27,8 @@
         1,
         2
     ],
-    "LastFreeSpinUnixTime": 1792618373,
-    "RouletteAdSpinTimes": [
-        1792618382,
-        1792618391,
-        1792618826
-    ],
-    "SkinSpinCount": 10,
-    "idSave": 70
+    "LastFreeSpinUnixTime": 0,
+    "RouletteAdSpinTimes": [],
+    "SkinSpinCount": 0,
+    "idSave": 47
 }

@@ -30,4 +30,13 @@ MonoBehaviour:
     _config: {fileID: 11400000, guid: 7f7fb19b63b8058b1af31b83b617746b, type: 2}
   - _fromLevel: 16
     _toLevel: 18
+    _config: {fileID: 11400000, guid: 220846b074ee5ec7b27f8a6e9fdbb5f3, type: 2}
+  - _fromLevel: 19
+    _toLevel: 21
+    _config: {fileID: 11400000, guid: da2f3ea1ed8c5bdeb8db927d24ea1707, type: 2}
+  - _fromLevel: 22
+    _toLevel: 24
+    _config: {fileID: 11400000, guid: 6d4a1c3318b85290a08079184ed6f9f2, type: 2}
+  - _fromLevel: 25
+    _toLevel: 27
     _config: {fileID: 11400000, guid: f079b8058128ce922b95c6105d555895, type: 2}
