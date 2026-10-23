@@ -345,7 +345,7 @@ MonoBehaviour:
   m_fontSizeMax: 54
   m_fontStyle: 1
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -479,7 +479,7 @@ MonoBehaviour:
   m_fontSizeMax: 64
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -596,4 +596,4 @@ MonoBehaviour:
   _spacing: 8
   _padding: 12
   _verticalPadding: 4
-  _centerOffset: -0.04
+  _centerOffset: 0
